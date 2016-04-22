@@ -1,9 +1,6 @@
 //
-//  UIFont+FontType.swift
-//  Wallapop
-//
-//  Created by Sergi Gracia on 24/11/15.
-//  Copyright © 2015 Wallapop SL. All rights reserved.
+//  Created by Pierluigi Cifani.
+//  Copyright © 2016 Blurred Software SL. All rights reserved.
 //
 
 import Foundation
