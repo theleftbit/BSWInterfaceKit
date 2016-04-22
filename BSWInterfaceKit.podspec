@@ -21,5 +21,6 @@ Pod::Spec.new do |s|
   s.dependency "SDWebImage"
   s.dependency "Cartography"
   s.dependency "BSWFoundation"
+  s.ios.resource_bundle = { 'BSWInterfaceKit' => '**/*.{xcassets,storyboard}' }
 
 end
