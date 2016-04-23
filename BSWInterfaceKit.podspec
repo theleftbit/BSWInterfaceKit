@@ -15,12 +15,12 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/BlurredSoftware/BSWInterfaceKit.git", :tag => "#{s.version}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "Source/**/*.{swift,m,h}"
+  s.source_files  = "**/*.{swift,m,h}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "SDWebImage"
   s.dependency "Cartography"
   s.dependency "BSWFoundation"
-  s.ios.resource_bundle = { 'BSWInterfaceKit' => '**/*.{xcassets,storyboard}' }
+  s.ios.resource_bundle = { 'BSWInterfaceKit' => '**/*.{xcassets,storyboard}' } #This should not be neccesary
 
 end
