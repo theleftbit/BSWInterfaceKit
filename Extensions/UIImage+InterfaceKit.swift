@@ -19,6 +19,6 @@ extension UIImage {
 
 //Due to some Cocoapods limitations, there is no way of adding resources directly to a framework. This sucks.
 private struct InterfaceBundle {
-    private static let bundle = NSBundle(path: NSBundle(forClass: InterfaceKit.self).pathForResource("BSWInterfaceKit", ofType: "bundle")!)
+    private static let bundle = NSBundle(forClass: InterfaceKit.self)
     private class InterfaceKit: NSObject {}
 }
