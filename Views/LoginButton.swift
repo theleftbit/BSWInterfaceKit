@@ -22,5 +22,4 @@ class LoginButton: UIButton {
     override func intrinsicContentSize() -> CGSize {
         return CGSizeMake(UIViewNoIntrinsicMetric, 50)
     }
-    
 }

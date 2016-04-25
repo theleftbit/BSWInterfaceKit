@@ -31,6 +31,7 @@ class OnboardingViewController: UIViewController {
     weak var onboardingObserver: OnboardingObserver!
     weak var onboardingDataSource: OnboardingDataSource!
     static let Spacing: CGFloat = 10
+    let contentView = UIView()
     
     let socialStackView: UIStackView = {
         let stackView = UIStackView()
@@ -52,6 +53,10 @@ class OnboardingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(contentView)
+        constrain(contentView) { contentView in
+            contentView.edges == contentView.superview!.edges
+        }
         
         //First, the background
         switch onboardingDataSource.onboardingBackground() {
@@ -59,35 +64,52 @@ class OnboardingViewController: UIViewController {
             view.backgroundColor = color
         case .Image(let image):
             let imageView = UIImageView(image: image)
-            view.addSubview(imageView)
+            contentView.addSubview(imageView)
             constrain(imageView) { imageView in
                 imageView.edges == imageView.superview!.edges
             }
         }
         
         //Then, the stackViews
-        view.addSubview(logoStackView)
-        view.addSubview(socialStackView)
+        contentView.addSubview(logoStackView)
+        contentView.addSubview(socialStackView)
         constrain(logoStackView, socialStackView) { logoStackView, socialStackView in
-            logoStackView.top == logoStackView.superview!.top + OnboardingViewController.Spacing
-            logoStackView.leading == logoStackView.superview!.leading + OnboardingViewController.Spacing
-            logoStackView.trailing == logoStackView.superview!.trailing - OnboardingViewController.Spacing
-
-            socialStackView.bottom == socialStackView.superview!.bottom - OnboardingViewController.Spacing
-            socialStackView.leading == socialStackView.superview!.leading + OnboardingViewController.Spacing
-            socialStackView.trailing == socialStackView.superview!.trailing - OnboardingViewController.Spacing
+            logoStackView.topMargin == logoStackView.superview!.topMargin
+            logoStackView.leadingMargin == logoStackView.superview!.leadingMargin
+            logoStackView.trailingMargin == logoStackView.superview!.trailingMargin
+            socialStackView.bottomMargin == socialStackView.superview!.bottomMargin
+            socialStackView.leadingMargin == socialStackView.superview!.leadingMargin
+            socialStackView.trailingMargin == socialStackView.superview!.trailingMargin
         }
         
         prepareLogoStackView()
         prepareSocialStackView()
     }
     
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        prepareMarginsForCurrentTraitCollection()
+    }
+
+    //MARK:- IBAction
+    
     @objc func onLoginFacebook() {
         onboardingObserver.onFacebookAuthenticationRequested()
     }
-    
+
     //MARK:- Private
 
+    private func prepareMarginsForCurrentTraitCollection() {
+        switch self.traitCollection.verticalSizeClass {
+        case .Regular:
+            contentView.layoutMargins = UIEdgeInsetsMake(40, 8, 8, 8)
+        case .Compact:
+            contentView.layoutMargins = UIEdgeInsetsMake(8, 8, 8, 8)
+        case .Unspecified:
+            contentView.layoutMargins = UIEdgeInsetsMake(8, 8, 8, 8)
+        }
+    }
+    
     private func prepareSocialStackView() {
         
         let privacyLabel: UILabel = {
