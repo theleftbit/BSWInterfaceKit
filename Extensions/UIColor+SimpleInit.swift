@@ -16,12 +16,13 @@ extension UIColor {
      
      - returns: An initialized color object. The color information represented by this object is in the device RGB colorspace.
      */
-    convenience init(r: Int, g: Int, b: Int) {
+    convenience public init(r: Int, g: Int, b: Int) {
         self.init(
-            red:CGFloat(r)/255.0,
-            green:CGFloat(g)/255.0,
-            blue:CGFloat(b)/255.0,
-            alpha:1)
+            red: CGFloat(r)/255.0,
+            green: CGFloat(g)/255.0,
+            blue: CGFloat(b)/255.0,
+            alpha:1
+        )
     }
     
     /**
@@ -33,11 +34,12 @@ extension UIColor {
      
      - returns: An initialized color object. The color information represented by this object is in the device HSB colorspace.
      */
-    convenience init(h: Int, s: Int, b: Int) {
+    convenience public init(h: Int, s: Int, b: Int) {
         self.init(
-            hue:CGFloat(h)/360.0,
-            saturation:CGFloat(s)/100.0,
-            brightness:CGFloat(b)/100.0,
-            alpha: 1)
+            hue: CGFloat(h)/360.0,
+            saturation: CGFloat(s)/100.0,
+            brightness: CGFloat(b)/100.0,
+            alpha: 1
+        )
     }
 }

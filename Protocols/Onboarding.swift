@@ -41,7 +41,6 @@ public protocol OnboardingProvider: class {
 public enum OnboardingBackground {
     case Image(UIImage)
     case Color(UIColor)
-    case TintedImage(image: UIImage, color: UIColor, alpha: CGFloat)
 }
 
 public class ClassicOnboardingProvider: OnboardingProvider {
