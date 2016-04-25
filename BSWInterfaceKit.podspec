@@ -21,6 +21,6 @@ Pod::Spec.new do |s|
   s.dependency "SDWebImage"
   s.dependency "Cartography"
   s.dependency "BSWFoundation"
-  s.ios.resource_bundle = { 'BSWInterfaceKit' => '**/*.{xcassets,storyboard}' } #This should not be neccesary
+  s.resources = "**/*.{xcassets,storyboard}"
 
 end
