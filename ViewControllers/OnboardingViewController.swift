@@ -101,10 +101,12 @@ class OnboardingViewController: UIViewController {
         socialStackView.addArrangedSubview(privacyLabel)
         
         let facebookButton: UIButton = {
-            let button = UIButton()
-            button.backgroundColor = UIColor.blueColor()
-            button.setTitle("Login with Facebook", forState: .Normal)
-            button.addTarget(self, action: #selector(onLoginFacebook), forControlEvents: UIControlEvents.TouchDown)
+            let button = LoginButton(
+                title: "Login with Facebook",
+                target: self,
+                selector: #selector(onLoginFacebook),
+                color: UIColor.blueColor()
+            )
             return button
         }()
         
