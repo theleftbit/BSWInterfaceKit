@@ -22,6 +22,7 @@ class LaunchScreenViewController: UIViewController {
         super.viewDidAppear(animated)
         if let controllerToPresentOnAppereance = controllerToPresentOnAppereance {
             presentViewController(controllerToPresentOnAppereance, animated: true, completion: nil)
+            self.controllerToPresentOnAppereance = nil
         }
     }
 }
