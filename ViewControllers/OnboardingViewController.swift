@@ -25,12 +25,16 @@ class LaunchScreenViewController: UIViewController {
             self.controllerToPresentOnAppereance = nil
         }
     }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 }
 
 class OnboardingViewController: UIViewController {
 
     weak var onboardingObserver: OnboardingObserver!
-    weak var onboardingDataSource: OnboardingDataSource!
+    var onboardingCustomization: OnboardingCustomization!
     static let Spacing: CGFloat = 10
     let contentView = UIView()
     
@@ -60,7 +64,7 @@ class OnboardingViewController: UIViewController {
         }
         
         //First, the background
-        switch onboardingDataSource.onboardingBackground() {
+        switch onboardingCustomization.background {
         case .Color(let color):
             view.backgroundColor = color
         case .Image(let image):
@@ -92,6 +96,10 @@ class OnboardingViewController: UIViewController {
         prepareMarginsForCurrentTraitCollection()
     }
 
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return onboardingCustomization.statusBarStyle
+    }
+    
     //MARK:- IBAction
     
     @objc func onLoginFacebook() {
@@ -139,7 +147,7 @@ class OnboardingViewController: UIViewController {
     private func prepareLogoStackView() {
         
         let logoView: UIImageView = {
-            let imageView = UIImageView(image: onboardingDataSource.onboardingAppLogo())
+            let imageView = UIImageView(image: onboardingCustomization.appLogo)
             imageView.contentMode = .ScaleAspectFit
             return imageView
         }()
@@ -149,7 +157,7 @@ class OnboardingViewController: UIViewController {
         let sloganLabel: UILabel = {
             let label = UILabel()
             label.textAlignment = .Center
-            label.attributedText = onboardingDataSource.onboardingAppSlogan()
+            label.attributedText = onboardingCustomization.appSlogan
             return label
         }()
         
