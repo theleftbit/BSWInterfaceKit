@@ -22,26 +22,37 @@ public protocol OnboardingObserver: class {
     func onFacebookAuthenticationRequested()
 }
 
-public protocol OnboardingDataSource: class {
-    func onboardingBackground() -> OnboardingBackground
-    func onboardingAppLogo() -> UIImage
-    func onboardingAppSlogan() -> NSAttributedString
-}
-
 public protocol OnboardingProvider: class {
     func rootViewController() -> UIViewController
+    var onboardingCustomization: OnboardingCustomization { get set }
     weak var onboardingObserver: OnboardingObserver? { get set }
-    weak var onboardingDataSource: OnboardingDataSource? { get set }
     
     //What should this API look like if more social networks are allowed to login?
 }
 
 //MARK:- Type
 
-public enum OnboardingBackground {
-    case Image(UIImage)
-    case Color(UIColor)
+public struct OnboardingCustomization {
+
+    public enum Background {
+        case Image(UIImage)
+        case Color(UIColor)
+    }
+
+    public let background: Background
+    public let appLogo: UIImage
+    public let appSlogan: NSAttributedString
+    public let statusBarStyle: UIStatusBarStyle
+    
+    public init(background: Background, appLogo: UIImage, appSlogan: NSAttributedString, statusBarStyle: UIStatusBarStyle) {
+        //This shouldn't be here... No idea why Swift won't create a default init for this
+        self.background = background
+        self.appLogo = appLogo
+        self.appSlogan = appSlogan
+        self.statusBarStyle = statusBarStyle
+    }
 }
+
 
 public class ClassicOnboardingProvider: OnboardingProvider {
 
@@ -51,9 +62,9 @@ public class ClassicOnboardingProvider: OnboardingProvider {
         }
     }
     
-    weak public var onboardingDataSource: OnboardingDataSource? {
+    public var onboardingCustomization: OnboardingCustomization {
         didSet {
-            onboardingVC.onboardingDataSource = onboardingDataSource
+            onboardingVC.onboardingCustomization = onboardingCustomization
         }
     }
     
@@ -63,9 +74,9 @@ public class ClassicOnboardingProvider: OnboardingProvider {
         return controller
     }()
 
-    public init(onboardingObserver: OnboardingObserver? = nil, onboardingDataSource: OnboardingDataSource? = nil){
+    public init(onboardingObserver: OnboardingObserver? = nil, onboardingCustomization: OnboardingCustomization){
         self.onboardingObserver = onboardingObserver
-        self.onboardingDataSource = onboardingDataSource
+        self.onboardingCustomization = onboardingCustomization
     }
     
     /**
@@ -77,7 +88,7 @@ public class ClassicOnboardingProvider: OnboardingProvider {
     public func rootViewController() -> UIViewController {
         
         //Hook up the onboardingVC to whatever we have
-        onboardingVC.onboardingDataSource = onboardingDataSource
+        onboardingVC.onboardingCustomization = onboardingCustomization
         onboardingVC.onboardingObserver = onboardingObserver
 
         let rootVC = LaunchScreenViewController()
