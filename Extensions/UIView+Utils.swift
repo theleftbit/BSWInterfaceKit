@@ -40,33 +40,4 @@ extension UIView {
         let color = UIColor(red: red, green: green, blue: blue, alpha: alpha)
         return color
     }
-
-    public func distributeHorizontallyViewsInSuperview(views: [UIView]) {
-        guard let firstView = views.first else { return }
-        guard let lastView = views.last else { return }
-        
-        constrain(firstView) { firstView in
-            firstView.leading == firstView.superview!.leading
-        }
-        
-        constrain(lastView) { lastView in
-            lastView.trailing == lastView.superview!.trailing
-        }
-        
-        for i in 1..<views.count {
-            let previousView = views[i-1]
-            let view = views[i]
-            
-            constrain(view, previousView) { view, previousView in
-                view.leading == previousView.trailing
-            }
-        }
-        
-        views.forEach { view in
-            constrain(view) { view in
-                view.top == view.superview!.top
-                view.size == view.superview!.size
-            }
-        }
-    }
 }
