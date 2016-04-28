@@ -7,7 +7,7 @@ import UIKit
 
 public enum CellReuseType {
     case NIB(UINib)
-    case ClassName(AnyClass)
+    case ClassReference(AnyClass)
 }
 
 public protocol ConfigurableCell {
