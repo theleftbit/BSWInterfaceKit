@@ -8,14 +8,14 @@ import Cartography
 
 //MARK: ViewModel
 
-protocol PolaroidPicture {
+public protocol PolaroidPicture {
     var imageURL: String { get }
     var width: Int { get }
     var height: Int { get }
     var hexColor: String { get }
 }
 
-protocol PolaroidViewModel {
+public protocol PolaroidViewModel {
     var cellImage: PolaroidPicture { get }
     var cellTitle: NSAttributedString { get }
     var cellDetails: NSAttributedString { get }
@@ -24,9 +24,9 @@ protocol PolaroidViewModel {
 //MARK: Cells
 
 @available(iOS 8.0, *)
-class PolaroidCollectionViewCell: UICollectionViewCell, ConfigurableCell {
+public class PolaroidCollectionViewCell: UICollectionViewCell {
     
-    typealias T = PolaroidViewModel
+    public typealias T = PolaroidViewModel
     
     private var detailSubview: UIView!
     
@@ -43,11 +43,11 @@ class PolaroidCollectionViewCell: UICollectionViewCell, ConfigurableCell {
         super.init(frame: frame)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func prepareForReuse() {
+    override public func prepareForReuse() {
         super.prepareForReuse()
         cellImageView.bsw_cancelImageLoadFromURL()
         cellImageView.image = nil
@@ -99,7 +99,7 @@ class PolaroidCollectionViewCell: UICollectionViewCell, ConfigurableCell {
         layer.rasterizationScale = UIScreen.mainScreen().scale
     }
     
-    func configureFor(viewModel viewModel: PolaroidViewModel) {
+    public func configureFor(viewModel viewModel: PolaroidViewModel) {
         
         //Set the image
         if let url = NSURL(string: viewModel.cellImage.imageURL) {
@@ -111,34 +111,39 @@ class PolaroidCollectionViewCell: UICollectionViewCell, ConfigurableCell {
         imageHeightConstraint.constant = PolaroidCollectionViewCell.cellImageHeightForViewModel(viewModel, constrainedToWidth: CGRectGetWidth(contentView.frame))
         layoutIfNeeded()
     }
-    
 }
 
 @available(iOS 8.0, *)
-class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell {
+public class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell, ConfigurableCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupWithSubviewType(PolaroidCollectionCellBasicInfoView.self)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func prepareForReuse() {
+    override public func prepareForReuse() {
         super.prepareForReuse()
         let detailSubview = self.detailSubview as! PolaroidCollectionCellBasicInfoView
         detailSubview.setTitle()
     }
     
-    override func configureFor(viewModel viewModel: PolaroidViewModel) {
+    override public func configureFor(viewModel viewModel: PolaroidViewModel) {
         
         super.configureFor(viewModel: viewModel)
         
         //Set the basic info
         let detailSubview = self.detailSubview as! PolaroidCollectionCellBasicInfoView
         detailSubview.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
+    }
+    
+    //MARK:- ConfigurableCell
+    
+    public static var reuseType: CellReuseType {
+        return .ClassReference(PolaroidBasicCollectionViewCell.self)
     }
 }
 

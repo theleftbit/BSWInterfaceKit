@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where Cell:UICollectionView> {
+public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where Cell:UICollectionViewCell> {
     
     /// This is mapper is neccesary since we couldn't figure out how map
     /// the types using just protocols, since making the generics type of both
@@ -13,7 +13,11 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
 
     public typealias ModelMapper = (Model) -> Cell.T
 
-    public var state: ListState<Model>
+    public var state: ListState<Model> {
+        didSet {
+            collectionView?.reloadData()
+        }
+    }
     public weak var collectionView: UICollectionView?
     public let mapper: ModelMapper
 
@@ -37,10 +41,34 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
     
     private lazy var bridgedDataSource: BridgedCollectionDataSource = BridgedCollectionDataSource(
         numberOfRowsInSection: { [unowned self] (section) -> Int in
+            
+            switch self.state {
+            case .Failure(_):
+                return 0
+            case .Loading(_):
+                return 0
+            case .Loaded(let models):
+                return models.count
+            }
+            
             return 0
         },
         cellForItemAtIndexPath: { [unowned self] (collectionView, indexPath) -> UICollectionViewCell in
-            return UICollectionViewCell()
+            
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier(Cell.reuseIdentifier, forIndexPath: indexPath) as! Cell
+            
+            switch self.state {
+            case .Failure(_):
+                break
+            case .Loading(_):
+                break
+            case .Loaded(let models):
+                let model = models[indexPath.row]
+                let viewModel = self.mapper(model)
+                cell.configureFor(viewModel: viewModel)
+            }
+
+            return cell
         },
         cellTappedAtIndexPath: { indexPath in
             

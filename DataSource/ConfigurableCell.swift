@@ -20,12 +20,8 @@ public protocol ConfigurableCell {
 }
 
 extension ConfigurableCell where Self: UICollectionViewCell {
-    static var reuseIdentifier: String {
+    public static var reuseIdentifier: String {
         return NSStringFromClass(self).componentsSeparatedByString(".").last!
-    }
-    
-    static var reuseType: CellReuseType {
-        return .NIB(UINib(nibName: reuseIdentifier, bundle: NSBundle.mainBundle()))
     }
 }
 
