@@ -7,10 +7,9 @@ import UIKit
 
 public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where Cell:UICollectionView> {
     
-    /// This is neccesary since we couldn't figure out how to
-    /// it using just protocols, since they don't support generics
-    /// and making the generics type of both ConfigurableCell and Model
-    /// match impossible as of Swift 2.2
+    /// This is mapper is neccesary since we couldn't figure out how map
+    /// the types using just protocols, since making the generics type of both
+    /// ConfigurableCell and Model match impossible as of Swift 2.2
 
     public typealias ModelMapper = (Model) -> Cell.T
 
@@ -24,8 +23,8 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
         self.mapper = mapper
         
         switch Cell.reuseType {
-        case .ClassName(let className):
-            collectionView.registerClass(className, forCellWithReuseIdentifier: Cell.reuseIdentifier)
+        case .ClassReference(let classReference):
+            collectionView.registerClass(classReference, forCellWithReuseIdentifier: Cell.reuseIdentifier)
         case .NIB(let nib):
             collectionView.registerNib(nib, forCellWithReuseIdentifier: Cell.reuseIdentifier)
         }
