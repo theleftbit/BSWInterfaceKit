@@ -5,14 +5,30 @@
 
 import Foundation
 
+/**
+ Represents the different states that a list can be
+ 
+ - Loading: The data is being remotely fetched.
+ - Loaded:  The data is loaded and ready to be shown to the user
+ - Failure: The data failed to load and an error is shown to the user
+ */
 public enum ListState<T> {
-    case Failure(error: ErrorType)
-    case Loading(message: String)
+    case Loading
     case Loaded(data: [T])
+    case Failure(message: NSAttributedString)
 
     var isLoading: Bool {
         switch self {
         case .Loading(_):
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isError: Bool {
+        switch self {
+        case .Failure(_):
             return true
         default:
             return false
@@ -27,4 +43,83 @@ public enum ListState<T> {
             return false
         }
     }
+}
+
+/**
+ *  Protocol that any type that presents a list can conform to in order
+ *  to customize how to represent the different states of a list
+ */
+public protocol ListStatePresenter: class {
+    var loadingConfiguration: LoadingListConfiguration { get }
+    var errorConfiguration: ErrorListConfiguration { get }
+    var emptyConfiguration: EmptyListConfiguration { get }
+}
+
+public extension ListStatePresenter {
+
+    var loadingConfiguration: LoadingListConfiguration {
+        let defaultConfig = LoadingListConfiguration.DefaultLoadingViewConfiguration()
+        return LoadingListConfiguration.Default(defaultConfig)
+    }
+
+    var emptyConfiguration: EmptyListConfiguration {
+        let defaultConfig = ActionableListConfiguration(
+            title: NSAttributedString(string: "No Results"),
+            message: nil,
+            image: nil,
+            buttonConfiguration: nil
+        )
+        return EmptyListConfiguration.Default(defaultConfig)
+    }
+
+}
+
+public typealias ButtonActionHandler = Void -> Void
+
+public struct ButtonConfiguration {
+    public let title: NSAttributedString
+    public let backgroundColor: UIColor
+    public let actionHandler: ButtonActionHandler
+    
+    public init(title: NSAttributedString, backgroundColor: UIColor = UIColor.blueColor(), actionHandler: ButtonActionHandler) {
+        self.title = title
+        self.backgroundColor = backgroundColor
+        self.actionHandler = actionHandler
+    }
+}
+
+public struct ActionableListConfiguration {
+    public let title: NSAttributedString
+    public let message: NSAttributedString?
+    public let image: UIImage?
+    public let buttonConfiguration: ButtonConfiguration?
+    
+    public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
+        self.title = title
+        self.message = message
+        self.image = image
+        self.buttonConfiguration = buttonConfiguration
+    }
+}
+
+public enum LoadingListConfiguration {
+    
+    public struct DefaultLoadingViewConfiguration {
+        let backgroundColor = UIColor.clearColor()
+        let message: NSAttributedString? = nil
+        let activityIndicatorStyle = UIActivityIndicatorViewStyle.Gray
+    }
+    
+    case Default(DefaultLoadingViewConfiguration)
+    case Custom(UIView)
+}
+
+public enum ErrorListConfiguration {
+    case Default(ActionableListConfiguration)
+    case Custom(UIView)
+}
+
+public enum EmptyListConfiguration {
+    case Default(ActionableListConfiguration)
+    case Custom(UIView)
 }

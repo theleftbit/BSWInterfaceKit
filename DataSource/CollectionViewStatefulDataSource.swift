@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import DZNEmptyDataSet
 
 public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where Cell:UICollectionViewCell> {
     
@@ -19,11 +20,16 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
         }
     }
     public weak var collectionView: UICollectionView?
+    public unowned let listPresenter: ListStatePresenter
     public let mapper: ModelMapper
 
-    public init(state: ListState<Model>, collectionView: UICollectionView, mapper: ModelMapper) {
+    public init(state: ListState<Model>,
+                collectionView: UICollectionView,
+                listPresenter: ListStatePresenter,
+                mapper: ModelMapper) {
         self.state = state
         self.collectionView = collectionView
+        self.listPresenter = listPresenter
         self.mapper = mapper
         
         switch Cell.reuseType {
@@ -35,6 +41,8 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
 
         collectionView.dataSource = bridgedDataSource
         collectionView.delegate = bridgedDataSource
+        collectionView.emptyDataSetSource = bridgedDataSource
+        collectionView.emptyDataSetDelegate = bridgedDataSource
     }
     
     // MARK: Private
@@ -50,8 +58,6 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
             case .Loaded(let models):
                 return models.count
             }
-            
-            return 0
         },
         cellForItemAtIndexPath: { [unowned self] (collectionView, indexPath) -> UICollectionViewCell in
             
@@ -72,6 +78,133 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
         },
         cellTappedAtIndexPath: { indexPath in
             
+        },
+        customViewForEmptyDataSetHandler: {
+            switch self.state {
+            case .Failure(let error):
+                switch self.listPresenter.errorConfiguration {
+                case .Custom(let view):
+                    return view
+                default:
+                    return nil
+                }
+            case .Loading(_):
+                switch self.listPresenter.loadingConfiguration {
+                case .Custom(let view):
+                    return view
+                case .Default(let configuration):
+                    let loadingView = LoadingView(loadingMessage: configuration.message, activityIndicatorStyle: configuration.activityIndicatorStyle)
+                    loadingView.backgroundColor = configuration.backgroundColor
+                    return loadingView
+                }
+            case .Loaded(let models):
+                switch self.listPresenter.emptyConfiguration {
+                case .Custom(let view):
+                    return view
+                default:
+                    return nil
+                }
+            }
+        },
+        titleEmptyDataSetHandler: {
+            switch self.state {
+            case .Failure(let error):
+                switch self.listPresenter.errorConfiguration {
+                case .Default(let configuration):
+                    return configuration.title
+                default:
+                    return nil
+                }
+            case .Loading(_):
+                return nil
+            case .Loaded(let models):
+                switch self.listPresenter.emptyConfiguration {
+                case .Default(let configuration):
+                    return configuration.title
+                default:
+                    return nil
+                }
+            }
+        },
+        detailForEmptyDataSetHandler: {
+            switch self.state {
+            case .Failure(let error):
+                switch self.listPresenter.errorConfiguration {
+                case .Default(let configuration):
+                    return configuration.message
+                default:
+                    return nil
+                }
+            case .Loading(_):
+                return nil
+            case .Loaded(let models):
+                switch self.listPresenter.emptyConfiguration {
+                case .Default(let configuration):
+                    return configuration.message
+                default:
+                    return nil
+                }
+            }
+        },
+        imageForEmptyDataSetHandler: {
+            switch self.state {
+            case .Failure(let error):
+                switch self.listPresenter.errorConfiguration {
+                case .Default(let configuration):
+                    return configuration.image
+                default:
+                    return nil
+                }
+            case .Loading(_):
+                return nil
+            case .Loaded(let models):
+                switch self.listPresenter.emptyConfiguration {
+                case .Default(let configuration):
+                    return configuration.image
+                default:
+                    return nil
+                }
+            }
+        },
+        buttonTitleForEmptyDataSetHandler: {
+            switch self.state {
+            case .Failure(let error):
+                switch self.listPresenter.errorConfiguration {
+                case .Default(let configuration):
+                    return configuration.buttonConfiguration?.title
+                default:
+                    return nil
+                }
+            case .Loading(_):
+                return nil
+            case .Loaded(let models):
+                switch self.listPresenter.emptyConfiguration {
+                case .Default(let configuration):
+                    return configuration.buttonConfiguration?.title
+                default:
+                    return nil
+                }
+            }
+        },
+        buttonTapForEmptyDataSetHandler: {
+            switch self.state {
+            case .Failure(let error):
+                switch self.listPresenter.errorConfiguration {
+                case .Default(let configuration):
+                    configuration.buttonConfiguration?.actionHandler()
+                default:
+                    break
+                }
+            case .Loading(_):
+                break
+            case .Loaded(let models):
+                switch self.listPresenter.emptyConfiguration {
+                case .Default(let configuration):
+                    configuration.buttonConfiguration?.actionHandler()
+                default:
+                    break
+                }
+            }
         }
     )
 }
@@ -81,23 +214,48 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
  Keep classes pure Swift.
  Keep responsibilies focused.
  */
-@objc private final class BridgedCollectionDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
+@objc private final class BridgedCollectionDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     typealias NumberOfRowsInSectionHandler = (Int) -> Int
     typealias CellForItemAtIndexPathHandler = (UICollectionView, NSIndexPath) -> UICollectionViewCell
     typealias CellTappedHandler = (NSIndexPath) -> Void
+
+    typealias CustomViewForEmptyDataSetHandler = (Void) -> UIView?
+    typealias AttributedStringForEmptyDataSetHandler = (Void) -> NSAttributedString?
+    typealias ImageForEmptyDataSetHandler = (Void) -> UIImage?
+    typealias ButtonTapForEmptyDataSetHandler = (Void) -> Void
     
     let numberOfRowsInSection: NumberOfRowsInSectionHandler
     let cellForItemAtIndexPath: CellForItemAtIndexPathHandler
     let cellTappedAtIndexPath: CellTappedHandler
-    
+    let customViewForEmptyDataSetHandler: CustomViewForEmptyDataSetHandler
+    let titleEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler
+    let detailForEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler
+    let imageForEmptyDataSetHandler: ImageForEmptyDataSetHandler
+    let buttonTitleForEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler
+    let buttonTapForEmptyDataSetHandler: ButtonTapForEmptyDataSetHandler
+
     init(numberOfRowsInSection: NumberOfRowsInSectionHandler,
          cellForItemAtIndexPath: CellForItemAtIndexPathHandler,
-         cellTappedAtIndexPath: CellTappedHandler) {
+         cellTappedAtIndexPath: CellTappedHandler,
+         customViewForEmptyDataSetHandler: CustomViewForEmptyDataSetHandler,
+         titleEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler,
+         detailForEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler,
+         imageForEmptyDataSetHandler: ImageForEmptyDataSetHandler,
+         buttonTitleForEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler,
+         buttonTapForEmptyDataSetHandler: ButtonTapForEmptyDataSetHandler) {
         self.numberOfRowsInSection = numberOfRowsInSection
         self.cellForItemAtIndexPath = cellForItemAtIndexPath
         self.cellTappedAtIndexPath = cellTappedAtIndexPath
+        self.customViewForEmptyDataSetHandler = customViewForEmptyDataSetHandler
+        self.titleEmptyDataSetHandler = titleEmptyDataSetHandler
+        self.detailForEmptyDataSetHandler = detailForEmptyDataSetHandler
+        self.imageForEmptyDataSetHandler = imageForEmptyDataSetHandler
+        self.buttonTitleForEmptyDataSetHandler = buttonTitleForEmptyDataSetHandler
+        self.buttonTapForEmptyDataSetHandler = buttonTapForEmptyDataSetHandler
     }
+
+    //MARK:- UICollectionView
 
     public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numberOfRowsInSection(section)
@@ -110,4 +268,31 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
     public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         cellTappedAtIndexPath(indexPath)
     }
+    
+    //MARK:- Empty Data Source
+    
+    public func customViewForEmptyDataSet(scrollView: UIScrollView!) -> UIView! {
+        return customViewForEmptyDataSetHandler()
+    }
+    
+    public func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        return titleEmptyDataSetHandler()
+    }
+    
+    public func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        return detailForEmptyDataSetHandler()
+    }
+    
+    public func imageForEmptyDataSet(scrollView: UIScrollView!) -> UIImage! {
+        return imageForEmptyDataSetHandler()
+    }
+
+    public func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
+        return buttonTitleForEmptyDataSetHandler()
+    }
+    
+    public func emptyDataSet(scrollView: UIScrollView!, didTapButton button: UIButton!) {
+        buttonTapForEmptyDataSetHandler()
+    }
 }
+
