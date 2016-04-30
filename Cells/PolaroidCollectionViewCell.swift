@@ -148,19 +148,22 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        label.textAlignment = .Center
-        label.font = Stylesheet.font(.Caption)
-        label.textColor = Stylesheet.color(.Grey2)
         return label
     }()
     
     let detailLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
-        label.textAlignment = .Center
-        label.font = Stylesheet.font(.Headline)
-        label.textColor = Stylesheet.color(.Grey1)
         return label
+    }()
+
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .Vertical
+        stackView.alignment = .Fill
+        stackView.spacing = Stylesheet.margin(.Smallest)
+        return stackView
     }()
 
     override init(frame: CGRect) {
@@ -181,27 +184,13 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
         backgroundColor = UIColor.whiteColor()
         setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
         
-        addSubview(titleLabel)
-        addSubview(detailLabel)
-        
-        setupConstraints()
-    }
-    
-    private func setupConstraints() {
-        constrain(titleLabel, detailLabel) { titleLabel, detailLabel in
-            
-            titleLabel.top == titleLabel.superview!.top + Stylesheet.margin(.Medium)
-            titleLabel.leading == titleLabel.superview!.leading + Stylesheet.margin(.Medium)
-            
-            detailLabel.top == titleLabel.bottom + Stylesheet.margin(.Smallest)
-            detailLabel.bottom == detailLabel.superview!.bottom - Stylesheet.margin(.Big)
-            
-            titleLabel.leading == titleLabel.superview!.leading + Stylesheet.margin(.Medium)
-            titleLabel.trailing == titleLabel.superview!.trailing - Stylesheet.margin(.Medium)
-            
-            detailLabel.leading == detailLabel.superview!.leading + Stylesheet.margin(.Medium)
-            detailLabel.trailing == detailLabel.superview!.trailing - Stylesheet.margin(.Medium)
+        addSubview(stackView)
+        constrain(stackView) { stackView in
+            stackView.edges == inset(stackView.superview!.edges, Stylesheet.margin(.Medium)) 
         }
+        
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(detailLabel)
     }
 }
 
@@ -222,7 +211,7 @@ extension PolaroidCollectionViewCell {
     
     private static func cellInfoHeightForViewModel(viewModel: PolaroidViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         let infoView = PolaroidCollectionViewCellHeightCalculator.BasicInfoView
-        infoView.setTitle(viewModel.cellTitle)
+        infoView.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
         let height = infoView.systemLayoutSizeFittingSize(CGSize(width: width, height: 0),
                                                           withHorizontalFittingPriority: UILayoutPriorityRequired,
                                                           verticalFittingPriority: UILayoutPriorityFittingSizeLevel
