@@ -15,7 +15,8 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/BlurredSoftware/BSWInterfaceKit.git", :tag => "#{s.version}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "**/*.{swift,m,h}"
+  s.source_files  = "Source/**/*.{swift,m,h}"
+  s.resources     = "Source/**/*.{xcassets,storyboard}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation"
@@ -23,6 +24,5 @@ Pod::Spec.new do |s|
   s.dependency "Cartography"
   s.dependency "DZNEmptyDataSet"
 
-  s.resources = "**/*.{xcassets,storyboard}"
 
 end

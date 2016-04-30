@@ -1,0 +1,42 @@
+PODS:
+  - Alamofire (3.3.1)
+  - BNRDeferred (2.0.0-rc.1)
+  - BSWFoundation (0.0.1):
+    - Alamofire (~> 3.3.1)
+    - BNRDeferred (~> 2.0.0-rc.1)
+    - Decodable (~> 0.4.2)
+  - BSWInterfaceKit (0.0.1):
+    - BSWFoundation
+    - Cartography
+    - DZNEmptyDataSet
+    - SDWebImage
+  - Cartography (0.6.0)
+  - Decodable (0.4.2)
+  - DZNEmptyDataSet (1.8)
+  - SDWebImage (3.7.5):
+    - SDWebImage/Core (= 3.7.5)
+  - SDWebImage/Core (3.7.5)
+
+DEPENDENCIES:
+  - BSWFoundation (from `./../BSWFoundation/`)
+  - BSWInterfaceKit (from `./`)
+
+EXTERNAL SOURCES:
+  BSWFoundation:
+    :path: ./../BSWFoundation/
+  BSWInterfaceKit:
+    :path: ./
+
+SPEC CHECKSUMS:
+  Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
+  BNRDeferred: efc7e733b39ea132ab4d1232687058b5f794a1e9
+  BSWFoundation: 6af92ac542bc86c6fe31cf87a07d12cd75397f46
+  BSWInterfaceKit: 6ca4d389980d8674877fcea083bf3dc433292cd0
+  Cartography: 70af183a248547694a8cfaa6b989cb7e04589985
+  Decodable: b1cd96ad9f722721bc98b0310952214a47f71d6a
+  DZNEmptyDataSet: d2351b2e8daefa40433ef292e246e21f6be31a7b
+  SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
+
+PODFILE CHECKSUM: 72e25c7e0aa85151858e353bad14dd3f5429e61c
+
+COCOAPODS: 1.0.0.beta.8
