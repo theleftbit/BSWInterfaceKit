@@ -114,7 +114,7 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
 }
 
 @available(iOS 8.0, *)
-public class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell, ConfigurableCell {
+public class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell, ViewModelReusable {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -138,12 +138,6 @@ public class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell, Config
         //Set the basic info
         let detailSubview = self.detailSubview as! PolaroidCollectionCellBasicInfoView
         detailSubview.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
-    }
-    
-    //MARK:- ConfigurableCell
-    
-    public static var reuseType: CellReuseType {
-        return .ClassReference(PolaroidBasicCollectionViewCell.self)
     }
 }
 
@@ -236,7 +230,7 @@ extension PolaroidCollectionViewCell {
         return height
     }
     
-    static func cellHeightForViewModel(viewModel: PolaroidViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+    static public func cellHeightForViewModel(viewModel: PolaroidViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         guard viewModel.cellImage.width != 0 && viewModel.cellImage.height != 0 else {
             return width
         }

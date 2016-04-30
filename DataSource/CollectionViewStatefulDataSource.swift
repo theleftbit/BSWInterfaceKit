@@ -6,7 +6,7 @@
 import UIKit
 import DZNEmptyDataSet
 
-public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where Cell:UICollectionViewCell> {
+public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable where Cell:UICollectionViewCell> {
     
     /// This is mapper is neccesary since we couldn't figure out how map
     /// the types using just protocols, since making the generics type of both
@@ -40,9 +40,17 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
         }
 
         collectionView.dataSource = bridgedDataSource
-        collectionView.delegate = bridgedDataSource
         collectionView.emptyDataSetSource = bridgedDataSource
         collectionView.emptyDataSetDelegate = bridgedDataSource
+    }
+    
+    public func modelForIndexPath(indexPath: NSIndexPath) -> Model? {
+        switch self.state {
+        case .Loaded(let data):
+            return data[indexPath.row]
+        default:
+            return nil
+        }
     }
     
     // MARK: Private
@@ -75,9 +83,6 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
             }
 
             return cell
-        },
-        cellTappedAtIndexPath: { indexPath in
-            
         },
         customViewForEmptyDataSetHandler: {
             switch self.state {
@@ -214,11 +219,10 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
  Keep classes pure Swift.
  Keep responsibilies focused.
  */
-@objc private final class BridgedCollectionDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+@objc private final class BridgedCollectionDataSource: NSObject, UICollectionViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     typealias NumberOfRowsInSectionHandler = (Int) -> Int
     typealias CellForItemAtIndexPathHandler = (UICollectionView, NSIndexPath) -> UICollectionViewCell
-    typealias CellTappedHandler = (NSIndexPath) -> Void
 
     typealias CustomViewForEmptyDataSetHandler = (Void) -> UIView?
     typealias AttributedStringForEmptyDataSetHandler = (Void) -> NSAttributedString?
@@ -227,7 +231,6 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
     
     let numberOfRowsInSection: NumberOfRowsInSectionHandler
     let cellForItemAtIndexPath: CellForItemAtIndexPathHandler
-    let cellTappedAtIndexPath: CellTappedHandler
     let customViewForEmptyDataSetHandler: CustomViewForEmptyDataSetHandler
     let titleEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler
     let detailForEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler
@@ -237,7 +240,6 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
 
     init(numberOfRowsInSection: NumberOfRowsInSectionHandler,
          cellForItemAtIndexPath: CellForItemAtIndexPathHandler,
-         cellTappedAtIndexPath: CellTappedHandler,
          customViewForEmptyDataSetHandler: CustomViewForEmptyDataSetHandler,
          titleEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler,
          detailForEmptyDataSetHandler: AttributedStringForEmptyDataSetHandler,
@@ -246,7 +248,6 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
          buttonTapForEmptyDataSetHandler: ButtonTapForEmptyDataSetHandler) {
         self.numberOfRowsInSection = numberOfRowsInSection
         self.cellForItemAtIndexPath = cellForItemAtIndexPath
-        self.cellTappedAtIndexPath = cellTappedAtIndexPath
         self.customViewForEmptyDataSetHandler = customViewForEmptyDataSetHandler
         self.titleEmptyDataSetHandler = titleEmptyDataSetHandler
         self.detailForEmptyDataSetHandler = detailForEmptyDataSetHandler
@@ -255,43 +256,39 @@ public class CollectionViewStatefulDataSource<Model, Cell:ConfigurableCell where
         self.buttonTapForEmptyDataSetHandler = buttonTapForEmptyDataSetHandler
     }
 
-    //MARK:- UICollectionView
+    //MARK:- UICollectionViewDataSource
 
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    @objc func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numberOfRowsInSection(section)
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    @objc func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         return cellForItemAtIndexPath(collectionView, indexPath)
-    }
-    
-    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        cellTappedAtIndexPath(indexPath)
     }
     
     //MARK:- Empty Data Source
     
-    public func customViewForEmptyDataSet(scrollView: UIScrollView!) -> UIView! {
+    @objc func customViewForEmptyDataSet(scrollView: UIScrollView!) -> UIView! {
         return customViewForEmptyDataSetHandler()
     }
     
-    public func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+    @objc func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
         return titleEmptyDataSetHandler()
     }
     
-    public func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+    @objc func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
         return detailForEmptyDataSetHandler()
     }
     
-    public func imageForEmptyDataSet(scrollView: UIScrollView!) -> UIImage! {
+    @objc func imageForEmptyDataSet(scrollView: UIScrollView!) -> UIImage! {
         return imageForEmptyDataSetHandler()
     }
 
-    public func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
+    @objc func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
         return buttonTitleForEmptyDataSetHandler()
     }
     
-    public func emptyDataSet(scrollView: UIScrollView!, didTapButton button: UIButton!) {
+    @objc func emptyDataSet(scrollView: UIScrollView!, didTapButton button: UIButton!) {
         buttonTapForEmptyDataSetHandler()
     }
 }
