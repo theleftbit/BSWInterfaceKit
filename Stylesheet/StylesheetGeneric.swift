@@ -53,15 +53,4 @@ class StylesheetGeneric: StylesheetConfigurable {
             return 60.0
         }
     }
-
-    static func colorState(color: ColorState) -> UIColor {
-        switch color {
-        case .Primary:
-            return self.color(.Main)
-        case .Negative:
-            return self.color(.Negative)
-        case .Positive:
-            return self.color(.Positive)
-        }
-    }
 }
