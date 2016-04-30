@@ -7,12 +7,14 @@ import Foundation
 
 class StylesheetGeneric: StylesheetConfigurable {
     
+    //TODO: remove this crap and use preferredFontForTextStyle for fuck sake
+    
     static func typeface(typeface: Typeface) -> String {
         switch typeface {
         case .Regular:
-            return "AvenirNext-Regular"
+            return UIFont.systemFontOfSize(0).fontName
         case .DemiBold:
-            return "AvenirNext-DemiBold"
+            return UIFont.boldSystemFontOfSize(0).fontName
         }
     }
     
@@ -49,17 +51,6 @@ class StylesheetGeneric: StylesheetConfigurable {
             return 32.0
         case .Huge:
             return 60.0
-        }
-    }
-
-    static func colorState(color: ColorState) -> UIColor {
-        switch color {
-        case .Primary:
-            return self.color(.Main)
-        case .Negative:
-            return self.color(.Negative)
-        case .Positive:
-            return self.color(.Positive)
         }
     }
 }
