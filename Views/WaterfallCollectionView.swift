@@ -15,11 +15,16 @@ public enum CellHeightType {
 public class WaterfallCollectionView: UICollectionView {
     
     public struct Configuration {
-        let minimumColumnSpacing: Float
-        let minimumInteritemSpacing: Float
+        let minimumColumnSpacing: CGFloat
+        let minimumInteritemSpacing: CGFloat
+        let sectionInset: UIEdgeInsets
         
         static func defaultConfiguration() -> Configuration {
-            return Configuration(minimumColumnSpacing: 10, minimumInteritemSpacing: 10)
+            return Configuration(
+                minimumColumnSpacing: 10,
+                minimumInteritemSpacing: 10,
+                sectionInset: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+            )
         }
     }
     
@@ -40,8 +45,9 @@ public class WaterfallCollectionView: UICollectionView {
         self.cellHeight = cellSizing
         
         let waterfallLayout = BSWCollectionViewWaterfallLayout()
-        waterfallLayout.minimumColumnSpacing = CGFloat(configuration.minimumColumnSpacing)
-        waterfallLayout.minimumInteritemSpacing = CGFloat(configuration.minimumInteritemSpacing)
+        waterfallLayout.minimumColumnSpacing = configuration.minimumColumnSpacing
+        waterfallLayout.minimumInteritemSpacing = configuration.minimumInteritemSpacing
+        waterfallLayout.sectionInset = configuration.sectionInset
 
         super.init(frame: CGRectZero, collectionViewLayout: waterfallLayout)
         
