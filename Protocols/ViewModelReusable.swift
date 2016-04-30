@@ -5,23 +5,26 @@
 
 import UIKit
 
-public enum CellReuseType {
+public enum ReuseType {
     case NIB(UINib)
     case ClassReference(AnyClass)
 }
 
-public protocol ConfigurableCell {
-    typealias T
+public protocol ViewModelReusable {
+    associatedtype T
     
-    static var reuseType: CellReuseType { get }
+    static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }
     
     func configureFor(viewModel viewModel: T) -> Void
 }
 
-extension ConfigurableCell where Self: UICollectionViewCell {
+extension ViewModelReusable where Self: UICollectionViewCell {
     public static var reuseIdentifier: String {
         return NSStringFromClass(self).componentsSeparatedByString(".").last!
     }
+    
+    public static var reuseType: ReuseType {
+        return .ClassReference(Self)
+    }
 }
-

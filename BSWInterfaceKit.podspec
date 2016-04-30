@@ -22,7 +22,6 @@ Pod::Spec.new do |s|
   s.dependency "SDWebImage"
   s.dependency "Cartography"
   s.dependency "DZNEmptyDataSet"
-  s.dependency "CHTCollectionViewWaterfallLayout"
 
   s.resources = "**/*.{xcassets,storyboard}"
 
