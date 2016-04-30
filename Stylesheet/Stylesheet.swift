@@ -62,15 +62,6 @@ protocol StylesheetConfigurable {
      - returns: The margin value based on the specified Margin
      */
     static func margin(margin: Margin) -> Double
-
-    /**
-     Returns the UIColor object for the specified ColorState
-     
-     - parameter colorState: The color state
-     
-     - returns: The UIColor object based on the specified color state
-     */
-    static func colorState(colorState: ColorState) -> UIColor
 }
 
 extension StylesheetConfigurable {
