@@ -72,7 +72,7 @@ public class WaterfallCollectionView: UICollectionView {
 
 extension WaterfallCollectionView: BSWCollectionViewDelegateWaterfallLayout {
 
-    public func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize {
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
         let width = waterfallLayout.itemWidthInSectionAtIndex(indexPath.section)
         let height: CGFloat = {
@@ -87,7 +87,7 @@ extension WaterfallCollectionView: BSWCollectionViewDelegateWaterfallLayout {
         return CGSize(width: width, height: height)
     }
     
-    public func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, columnCountForSection section: Int) -> Int {
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, columnCountForSection section: Int) -> Int {
         return columnCount
     }
 }
