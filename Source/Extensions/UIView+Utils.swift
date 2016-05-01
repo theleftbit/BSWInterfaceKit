@@ -4,7 +4,6 @@
 //
 
 import BSWFoundation
-import Cartography
 
 extension UIView {
     
@@ -22,7 +21,7 @@ extension UIView {
         layer.masksToBounds = true
     }
     
-    func getColourFromPoint(point: CGPoint) -> UIColor {
+    func getColorFromPoint(point: CGPoint) -> UIColor {
         let colorSpace = CGColorSpaceCreateDeviceRGB()!
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue).rawValue
         
