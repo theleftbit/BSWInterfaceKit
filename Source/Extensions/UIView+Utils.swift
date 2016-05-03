@@ -4,24 +4,25 @@
 //
 
 import BSWFoundation
+import Cartography
 
 extension UIView {
     
-    func findSubviewWithTag(tag: NSInteger) -> UIView? {
+    public func findSubviewWithTag(tag: NSInteger) -> UIView? {
         return subviews.find({return $0.tag == tag})
     }
     
-    func removeSubviewWithTag(tag: NSInteger) {
+    public func removeSubviewWithTag(tag: NSInteger) {
         findSubviewWithTag(tag)?.removeFromSuperview()
     }
     
-    func roundCorners() {
+    public func roundCorners() {
         let cornerRadius = CGFloat(10.0)
         layer.cornerRadius = cornerRadius
         layer.masksToBounds = true
     }
     
-    func getColorFromPoint(point: CGPoint) -> UIColor {
+    public func getColorFromPoint(point: CGPoint) -> UIColor {
         let colorSpace = CGColorSpaceCreateDeviceRGB()!
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue).rawValue
         
@@ -38,5 +39,11 @@ extension UIView {
         
         let color = UIColor(red: red, green: green, blue: blue, alpha: alpha)
         return color
+    }
+    
+    public func fillSuperview(edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
+        constrain(self) { view in
+            view.edges == inset(view.superview!.edges, edges.top, edges.left, edges.bottom, edges.right)
+        }
     }
 }
