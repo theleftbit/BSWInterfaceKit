@@ -14,4 +14,19 @@ extension UIImage {
             compatibleWithTraitCollection: compatibleWithTraitCollection
         )
     }
+
+    /**
+     Generates an UIImage from a CAGradientLayer
+     
+     - parameter gradientLayer: The defined gradient layer
+     
+     - returns: The UIImage based on the gradient layer
+     */
+    static public func image(fromGradientLayer gradientLayer: CAGradientLayer) -> UIImage {
+        UIGraphicsBeginImageContext(gradientLayer.bounds.size)
+        gradientLayer.renderInContext(UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
 }
