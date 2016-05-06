@@ -35,13 +35,23 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
     }
     
     var photoGallery: PhotoGalleryView!
-    
+    var navBarBehaviour: NavBarTransparentBehavior?
+
     override public func viewDidLoad() {
         super.viewDidLoad()
-
+        automaticallyAdjustsScrollViewInsets = false
+        if let navBar = self.navigationController?.navigationBar {
+            navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView.scrollView)
+        }
+        
         photoGallery = PhotoGalleryView(items: SamplePhoto.samplePhotos())
         photoGallery.heightAnchor.constraintEqualToConstant(280)
         scrollableStackView.stackView.addArrangedSubview(photoGallery)
+    }
+        
+    override public func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        navBarBehaviour?.setNavBar(toState: .Regular)
     }
     
     //MARK:- Private
@@ -59,7 +69,7 @@ struct SamplePhoto: PhotoGalleryItem {
         let photo1 = SamplePhoto(url: NSURL(string: "http://e2.365dm.com/15/09/768x432/alessandro-del-piero-juventus-serie-a_3351343.jpg?20150915122301")!, averageColor: UIColor.randomColor())
         let photo2 = SamplePhoto(url: NSURL(string: "http://images1.fanpop.com/images/photos/2000000/Old-Golden-Days-alessandro-del-piero-2098417-600-705.jpg")!, averageColor: UIColor.randomColor())
         let photo3 = SamplePhoto(url: NSURL(string: "http://e0.365dm.com/14/05/768x432/Alessandro-del-Piero-italy-2002_3144508.jpg?20140520095830")!, averageColor: UIColor.randomColor())
-        let photo4 = SamplePhoto(url: NSURL(string: "http://www.goal.com/en/news/1717/editorial/2014/11/09/5886501/debate-who-was-greater-del-piero-or-totti")!, averageColor: UIColor.randomColor())
+        let photo4 = SamplePhoto(url: NSURL(string: "http://static.goal.com/576000/576031_heroa.jpg")!, averageColor: UIColor.randomColor())
         return [photo1, photo2, photo3, photo4]
     }
 }
