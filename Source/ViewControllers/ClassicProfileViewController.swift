@@ -19,15 +19,23 @@ public protocol ClassicProfileViewModel {
     var editKind: ClassicProfileEditKind { get }
 }
 
-class ClassicProfileViewController: UIViewController, ViewModelConfigurable {
-
-    override func viewDidLoad() {
+public class ClassicProfileViewController: ScrollableStackViewController, ViewModelSettable {
+    
+    public var viewModel: ClassicProfileViewModel? {
+        didSet {
+            if let viewModel = viewModel {
+                configureFor(viewModel: viewModel)
+            }
+        }
+    }
+    
+    override public func viewDidLoad() {
         super.viewDidLoad()
     }
     
     //MARK:- Private
     
-    func configureFor(viewModel viewModel: ClassicProfileViewModel) -> Void {
+    public func configureFor(viewModel viewModel: ClassicProfileViewModel) -> Void {
         
     }
 }
