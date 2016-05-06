@@ -15,7 +15,7 @@ public protocol PolaroidPicture {
     var hexColor: String { get }
 }
 
-public protocol PolaroidViewModel {
+public protocol PolaroidCellViewModel {
     var cellImage: PolaroidPicture { get }
     var cellTitle: NSAttributedString { get }
     var cellDetails: NSAttributedString { get }
@@ -26,7 +26,7 @@ public protocol PolaroidViewModel {
 @available(iOS 8.0, *)
 public class PolaroidCollectionViewCell: UICollectionViewCell {
     
-    public typealias T = PolaroidViewModel
+    public typealias T = PolaroidCellViewModel
     
     private var detailSubview: UIView!
     
@@ -99,7 +99,7 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
         layer.rasterizationScale = UIScreen.mainScreen().scale
     }
     
-    public func configureFor(viewModel viewModel: PolaroidViewModel) {
+    public func configureFor(viewModel viewModel: PolaroidCellViewModel) {
         
         //Set the image
         if let url = NSURL(string: viewModel.cellImage.imageURL) {
@@ -131,7 +131,7 @@ public class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell, ViewMo
         detailSubview.setTitle()
     }
     
-    override public func configureFor(viewModel viewModel: PolaroidViewModel) {
+    override public func configureFor(viewModel viewModel: PolaroidCellViewModel) {
         
         super.configureFor(viewModel: viewModel)
         
@@ -203,13 +203,13 @@ extension PolaroidCollectionViewCell {
         private static let BasicInfoView = PolaroidCollectionCellBasicInfoView()
     }
     
-    private static func cellImageHeightForViewModel(viewModel: PolaroidViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+    private static func cellImageHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         let maxImageHeight = PolaroidCollectionViewCell.MaxImageHeightProportion * width
         let imageHeight = min(maxImageHeight, width * CGFloat(viewModel.cellImage.height) / CGFloat(viewModel.cellImage.width))
         return imageHeight
     }
     
-    private static func cellInfoHeightForViewModel(viewModel: PolaroidViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+    private static func cellInfoHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         let infoView = PolaroidCollectionViewCellHeightCalculator.BasicInfoView
         infoView.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
         let height = infoView.systemLayoutSizeFittingSize(CGSize(width: width, height: 0),
@@ -219,7 +219,7 @@ extension PolaroidCollectionViewCell {
         return height
     }
     
-    static public func cellHeightForViewModel(viewModel: PolaroidViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+    static public func cellHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         guard viewModel.cellImage.width != 0 && viewModel.cellImage.height != 0 else {
             return width
         }

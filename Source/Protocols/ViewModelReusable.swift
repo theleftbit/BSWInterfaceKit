@@ -10,13 +10,9 @@ public enum ReuseType {
     case ClassReference(AnyClass)
 }
 
-public protocol ViewModelReusable {
-    associatedtype T
-    
+public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }
-    
-    func configureFor(viewModel viewModel: T) -> Void
 }
 
 extension ViewModelReusable where Self: UICollectionViewCell {
