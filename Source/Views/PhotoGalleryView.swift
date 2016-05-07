@@ -6,13 +6,6 @@
 import UIKit
 import Cartography
 
-// MARK: PhotoGalleryImage protocol
-
-public protocol PhotoGalleryItem {
-    var url: NSURL { get }
-    var averageColor: UIColor { get }
-}
-
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: class {
@@ -33,7 +26,7 @@ final public class PhotoGalleryView: UIView {
         return pageControl
     }()
     
-    private var items = [PhotoGalleryItem]() {
+    private var photos = [Photo]() {
         didSet {
             layoutImageViews()
         }
@@ -44,15 +37,15 @@ final public class PhotoGalleryView: UIView {
     
     // MARK: Initialization
     
-    public init(items: [PhotoGalleryItem]) {
-        self.items = items
+    public init(photos: [Photo]) {
+        self.photos = photos
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl)
         super.init(frame: CGRectZero)
         setup()
     }
     
     convenience public init() {
-        self.init(items: [])
+        self.init(photos: [])
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -72,7 +65,7 @@ extension PhotoGalleryView {
         scrollableStackView.scrollView.delegate = updatePageControlOnScrollBehavior
         
         // Page control
-        pageControl.numberOfPages = items.count
+        pageControl.numberOfPages = photos.count
         pageControl.currentPage = 0
         addSubview(pageControl)
         
@@ -87,8 +80,8 @@ extension PhotoGalleryView {
         
         scrollableStackView.stackView.removeAllArrangedSubviews()
         
-        items.forEach { image in
-            let imageView = PhotoGalleryView.createImageView(image)
+        photos.forEach { photo in
+            let imageView = createImageView(forPhoto: photo)
             scrollableStackView.stackView.addArrangedSubview(imageView)
 
             //Set the size of the imageView
@@ -97,24 +90,23 @@ extension PhotoGalleryView {
         }
     }
     
-    private static func createImageView(item: PhotoGalleryItem) -> UIImageView {
+    private func createImageView(forPhoto photo: Photo) -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = .ScaleAspectFill
         imageView.clipsToBounds = true
         
         imageView.userInteractionEnabled = true
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(PhotoGalleryView.handleTap(_:)))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         imageView.addGestureRecognizer(tapGestureRecognizer)
         
-        imageView.backgroundColor = item.averageColor
-        imageView.bsw_setImageFromURL(item.url)
+        imageView.bsw_setPhoto(photo)
 
         return imageView
     }
     
     // MARK: UI Action handlers
     
-    @objc func handleTap(tapGestureRecognizer: UITapGestureRecognizer) {
+    func handleTap(tapGestureRecognizer: UITapGestureRecognizer) {
         guard let view = tapGestureRecognizer.view else {
             return
         }
