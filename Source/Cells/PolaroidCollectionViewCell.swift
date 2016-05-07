@@ -8,15 +8,8 @@ import Cartography
 
 //MARK: ViewModel
 
-public protocol PolaroidPicture {
-    var imageURL: String { get }
-    var width: Int { get }
-    var height: Int { get }
-    var hexColor: String { get }
-}
-
 public protocol PolaroidCellViewModel {
-    var cellImage: PolaroidPicture { get }
+    var cellImage: Photo { get }
     var cellTitle: NSAttributedString { get }
     var cellDetails: NSAttributedString { get }
 }
@@ -100,12 +93,10 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
     }
     
     public func configureFor(viewModel viewModel: PolaroidCellViewModel) {
-        
-        //Set the image
-        if let url = NSURL(string: viewModel.cellImage.imageURL) {
-            cellImageView.bsw_setImageFromURL(url)
-        }
 
+        //Set the image
+        cellImageView.bsw_setPhoto(viewModel.cellImage)
+        
         // Make sure that the image is not compressed when doing the final
         // layout by setting it's height to the wanted for a given height
         imageHeightConstraint.constant = PolaroidCollectionViewCell.cellImageHeightForViewModel(viewModel, constrainedToWidth: CGRectGetWidth(contentView.frame))
@@ -205,7 +196,8 @@ extension PolaroidCollectionViewCell {
     
     private static func cellImageHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         let maxImageHeight = PolaroidCollectionViewCell.MaxImageHeightProportion * width
-        let imageHeight = min(maxImageHeight, width * CGFloat(viewModel.cellImage.height) / CGFloat(viewModel.cellImage.width))
+        let imageSize = viewModel.cellImage.size ?? CGSize(width: width, height: width)
+        let imageHeight = min(maxImageHeight, width * CGFloat(imageSize.height) / CGFloat(imageSize.width))
         return imageHeight
     }
     
@@ -220,7 +212,7 @@ extension PolaroidCollectionViewCell {
     }
     
     static public func cellHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
-        guard viewModel.cellImage.width != 0 && viewModel.cellImage.height != 0 else {
+        guard let _ = viewModel.cellImage.size else {
             return width
         }
         
