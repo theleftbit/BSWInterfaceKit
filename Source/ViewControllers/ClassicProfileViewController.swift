@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import Cartography
 
 public typealias ProfileEditionHandler = Void -> Void
 
@@ -36,13 +37,15 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = false
         if let navBar = self.navigationController?.navigationBar {
-            navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView.scrollView)
+            navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
         
         photoGallery = PhotoGalleryView(photos: Photo.samplePhotos())
         photoGallery.delegate = self
-        photoGallery.heightAnchor.constraintEqualToConstant(280)
         scrollableStackView.stackView.addArrangedSubview(photoGallery)
+        constrain(photoGallery) { photoGallery in
+            photoGallery.height == 280
+        }
         
         for i in 1...100 {
             let label = UILabel()

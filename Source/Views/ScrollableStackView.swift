@@ -5,9 +5,8 @@
 
 import Foundation
 
-public class ScrollableStackView: UIView {
+public class ScrollableStackView: UIScrollView {
     
-    public let scrollView = UIScrollView()
     public let stackView = UIStackView()
     
     public init(axis: UILayoutConstraintAxis = .Vertical,
@@ -17,17 +16,15 @@ public class ScrollableStackView: UIView {
         stackView.axis = axis
         stackView.alignment = alignment
 
-        addSubview(scrollView)
-        scrollView.addSubview(stackView)
+        addSubview(stackView)
 
-        scrollView.fillSuperview()
         stackView.fillSuperview()
         
         switch axis {
         case .Horizontal:
-            stackView.heightAnchor.constraintEqualToAnchor(scrollView.heightAnchor).active = true
+            stackView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
         case .Vertical:
-            stackView.widthAnchor.constraintEqualToAnchor(scrollView.widthAnchor).active = true
+            stackView.widthAnchor.constraintEqualToAnchor(widthAnchor).active = true
         }
         
         clipsToBounds = true
