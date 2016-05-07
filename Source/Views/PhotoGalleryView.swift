@@ -60,9 +60,9 @@ extension PhotoGalleryView {
     private func setup() {
         // ScrollableStackView view
         addSubview(scrollableStackView)
-        scrollableStackView.scrollView.pagingEnabled = true
-        scrollableStackView.scrollView.showsHorizontalScrollIndicator = false
-        scrollableStackView.scrollView.delegate = updatePageControlOnScrollBehavior
+        scrollableStackView.pagingEnabled = true
+        scrollableStackView.showsHorizontalScrollIndicator = false
+        scrollableStackView.delegate = updatePageControlOnScrollBehavior
         
         // Page control
         pageControl.numberOfPages = photos.count
