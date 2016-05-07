@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class BSWSplitViewController<Master: UIViewController, Detail: UIViewController>: UISplitViewController, UISplitViewControllerDelegate {
+public class SplitViewController<Master: UIViewController, Detail: UIViewController>: UISplitViewController, UISplitViewControllerDelegate {
     
     public weak var masterVC: Master!
     public weak var detailVC: Detail!
