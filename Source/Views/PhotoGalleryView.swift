@@ -5,11 +5,12 @@
 
 import UIKit
 import Cartography
+import BSWFoundation
 
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: class {
-    func didTapPhotoAt(index index: Int, fromView: UIView)
+    func didTapPhotoAt(index index: UInt, fromView: UIView)
 }
 
 // MARK: - PhotoGalleryView
@@ -51,6 +52,12 @@ final public class PhotoGalleryView: UIView {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }    
+
+    public func scrollToPhoto(atIndex index: UInt, animated: Bool = false) {
+        guard let imageView = scrollableStackView.stackView.arrangedSubviews[safe: Int(index)] else { return }
+        let offset = CGPoint(x: CGRectGetMinX(imageView.frame), y: scrollableStackView.contentOffset.y)
+        scrollableStackView.setContentOffset(offset, animated: animated)
+    }
 }
 
 // MARK: Initial view setup
@@ -113,9 +120,8 @@ extension PhotoGalleryView {
         guard let index = scrollableStackView.stackView.arrangedSubviews.indexOf(view) else {
             return
         }
-        delegate?.didTapPhotoAt(index: index, fromView: view)
-    }
-    
+        delegate?.didTapPhotoAt(index: UInt(index), fromView: view)
+    }    
 }
 
 // MARK: Constraints

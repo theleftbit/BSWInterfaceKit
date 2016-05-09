@@ -32,7 +32,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
     
     var photoGallery: PhotoGalleryView!
     var navBarBehaviour: NavBarTransparentBehavior?
-
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = false
@@ -71,7 +71,22 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
 //MARK:- PhotoGalleryViewDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
-    public func didTapPhotoAt(index index: Int, fromView: UIView) {
-        
+    public func didTapPhotoAt(index index: UInt, fromView: UIView) {
+        let gallery = PhotoGalleryViewController(
+            photos: Photo.samplePhotos(),
+            presentFromView: fromView,
+            initialPageIndex: index,
+            allowShare: false
+        )
+        gallery.delegate = self
+        presentViewController(gallery, animated: true, completion: nil)
+    }
+}
+
+//MARK:- PhotoGalleryViewControllerDelegate
+
+extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
+    public func photoGalleryController(photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
+        photoGallery.scrollToPhoto(atIndex: index)
     }
 }
