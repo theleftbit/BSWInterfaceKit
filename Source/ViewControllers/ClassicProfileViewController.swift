@@ -51,14 +51,15 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
         
         //Add the photoGallery
         photoGallery.delegate = self
-        scrollableStackView.stackView.addArrangedSubview(photoGallery)
+        scrollableStackView.addArrangedSubview(photoGallery)
         constrain(photoGallery) { photoGallery in
             photoGallery.height == 280
         }
         
-        scrollableStackView.stackView.addArrangedSubview(titleLabel)
-        scrollableStackView.stackView.addArrangedSubview(detailsLabel)
-        scrollableStackView.stackView.addArrangedSubview(bioLabel)
+        let layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: layoutMargins)
+        scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: layoutMargins)
+        scrollableStackView.addArrangedSubview(bioLabel, layoutMargins: layoutMargins)
     }
     
     override public func viewWillDisappear(animated: Bool) {
