@@ -5,20 +5,6 @@
 
 import Foundation
 
-enum Typeface {
-    case Regular
-    case DemiBold
-}
-
-enum Font {
-    case Display
-    case Headline
-    case Title
-    case Body
-    case Caption
-    case ButtonText
-}
-
 enum Margin {
     case Smallest
     case Small
@@ -36,23 +22,6 @@ enum ColorState {
 }
 
 protocol StylesheetConfigurable {
-    /**
-     Returns the typo name (as String) for the specified Typeface
-     
-     - parameter typeface: The Typo type
-     
-     - returns: The typo name based on the specified Typeface
-     */
-    static func typeface(typeface: Typeface) -> String
-    
-    /**
-     Returns the UIFont object for the specified Font
-     
-     - parameter font: The Font type
-     
-     - returns: The UIFont object based on the specified Font
-     */
-    static func font(font: Font) -> UIFont
 
     /**
      Returns the Double value for the specified Margin
