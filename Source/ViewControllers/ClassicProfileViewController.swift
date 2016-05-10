@@ -88,5 +88,6 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
 extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     public func photoGalleryController(photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
         photoGallery.scrollToPhoto(atIndex: index)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

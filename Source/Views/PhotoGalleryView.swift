@@ -17,6 +17,7 @@ public protocol PhotoGalleryViewDelegate: class {
 
 final public class PhotoGalleryView: UIView {
     
+    private let imageContentMode: UIViewContentMode
     private let scrollableStackView = ScrollableStackView(axis: .Horizontal)
     
     private let pageControl: UIPageControl = {
@@ -27,19 +28,25 @@ final public class PhotoGalleryView: UIView {
         return pageControl
     }()
     
-    private var photos = [Photo]() {
+    public var photos = [Photo]() {
         didSet {
             layoutImageViews()
         }
     }
+    
     private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     weak var delegate: PhotoGalleryViewDelegate?
     
+    public var currentPage: UInt {
+        return UInt(pageControl.currentPage)
+    }
+    
     // MARK: Initialization
     
-    public init(photos: [Photo]) {
+    public init(photos: [Photo], imageContentMode: UIViewContentMode = .ScaleAspectFill) {
         self.photos = photos
+        self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl)
         super.init(frame: CGRectZero)
         setup()
@@ -54,7 +61,9 @@ final public class PhotoGalleryView: UIView {
     }    
 
     public func scrollToPhoto(atIndex index: UInt, animated: Bool = false) {
-        guard let imageView = scrollableStackView.stackView.arrangedSubviews[safe: Int(index)] else { return }
+        guard let imageView = scrollableStackView.stackView.arrangedSubviews[safe: Int(index)] else {
+            return
+        }
         let offset = CGPoint(x: CGRectGetMinX(imageView.frame), y: scrollableStackView.contentOffset.y)
         scrollableStackView.setContentOffset(offset, animated: animated)
     }
@@ -92,14 +101,14 @@ extension PhotoGalleryView {
             scrollableStackView.stackView.addArrangedSubview(imageView)
 
             //Set the size of the imageView
-            imageView.heightAnchor.constraintEqualToAnchor(self.heightAnchor).active = true
-            imageView.widthAnchor.constraintEqualToAnchor(self.widthAnchor).active = true
+            imageView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
+            imageView.widthAnchor.constraintEqualToAnchor(widthAnchor).active = true
         }
     }
     
     private func createImageView(forPhoto photo: Photo) -> UIImageView {
         let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFill
+        imageView.contentMode = imageContentMode
         imageView.clipsToBounds = true
         
         imageView.userInteractionEnabled = true

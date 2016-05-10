@@ -48,7 +48,7 @@ class AvatarView: UIView {
     private func updateImage() {
         imageView.image = placeholderImage
         if let imageURL = imageURL {
-            imageView.bsw_setImageFromURL(imageURL)
+            imageView.bsw_setImageWithURL(imageURL)
         }
     }
     

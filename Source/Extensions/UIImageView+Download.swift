@@ -20,15 +20,11 @@ extension UIImageView {
         }
     }
 
-    public func bsw_setImageFromURL(url: NSURL) {
-        sd_setImageWithURL(url)
-    }
-    
     public func bsw_cancelImageLoadFromURL() {
         sd_cancelCurrentImageLoad()
     }
     
-    public func bsw_setImageWithURL(url: NSURL, progress progressBlock: BSWImageDownloaderProgressBlock, completed completedBlock: BSWImageCompletionBlock) {
+    public func bsw_setImageWithURL(url: NSURL, progress progressBlock: BSWImageDownloaderProgressBlock? = nil, completed completedBlock: BSWImageCompletionBlock? = nil) {
         sd_setHighlightedImageWithURL(
             url,
             options: BSWImageOptions.Default,
@@ -43,7 +39,11 @@ extension UIImageView {
             self.image = image
         case .URL(let url):
             backgroundColor = photo.averageColor
-            bsw_setImageFromURL(url)
+            bsw_setImageWithURL(url, completed: { image, error, _, _ in
+                guard error == nil else { return }
+                self.image = image
+                self.backgroundColor = nil
+            })
         }
     }
 }
