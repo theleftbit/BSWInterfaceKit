@@ -16,13 +16,12 @@ Pod::Spec.new do |s|
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "Source/**/*.{swift,m,h}"
-  s.resources     = "Source/**/*.{xcassets,storyboard}"
+  s.resources     = "Assets/**/*.{xcassets,storyboard}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation"
   s.dependency "SDWebImage"
   s.dependency "Cartography"
   s.dependency "DZNEmptyDataSet"
-  s.dependency "IDMPhotoBrowser"
 
 end

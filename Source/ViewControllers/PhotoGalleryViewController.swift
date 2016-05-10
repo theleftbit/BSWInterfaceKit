@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import IDMPhotoBrowser
+import Cartography
 
 public protocol PhotoGalleryViewControllerDelegate: class {
     func photoGalleryController(photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt)
@@ -12,20 +12,23 @@ public protocol PhotoGalleryViewControllerDelegate: class {
 
 public class PhotoGalleryViewController: UIViewController {
     
-    var photos: [Photo]
-    var initialPageIndex: UInt
-    var allowShare: Bool
-    weak var presentFromView: UIView?
-    weak var delegate: PhotoGalleryViewControllerDelegate?
+    private let photosGallery: PhotoGalleryView
+    public var allowShare: Bool
+    public weak var presentFromView: UIView?
+    public weak var delegate: PhotoGalleryViewControllerDelegate?
+    public var currentPage: UInt = 0
+    public var photos: [Photo] {
+        return photosGallery.photos
+    }
 
     public init(photos: [Photo],
          presentFromView: UIView? = nil,
          initialPageIndex: UInt = 0,
          allowShare: Bool = true) {
-        self.photos = photos
         self.presentFromView = presentFromView
-        self.initialPageIndex = initialPageIndex
         self.allowShare = allowShare
+        self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .ScaleAspectFit)
+        self.currentPage = initialPageIndex
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,40 +36,34 @@ public class PhotoGalleryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor.blackColor()
+
+        //Set up the Gallery
+        view.addSubview(photosGallery)
+        photosGallery.fillSuperview()
         
-        let browser = IDMPhotoBrowser(
-            photos: photos.map({return $0.toIDMPhoto()}),
-            animatedFromView: presentFromView
-        )
-        browser.usePopAnimation = true
-        browser.displayCounterLabel = true
-        browser.setInitialPageIndex(initialPageIndex)
-        browser.displayActionButton = allowShare
-        browser.delegate = self
+        //Add the close button
+        let closeButton = UIButton(type: UIButtonType.Custom)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setImage(UIImage.interfaceKitImageNamed("PhotoGalleryClose"), forState: UIControlState.Normal)
+        closeButton.addTarget(self, action: #selector(onCloseButton), forControlEvents: .TouchDown)
+        view.addSubview(closeButton)
+        closeButton.trailingAnchor.constraintEqualToAnchor(view.layoutMarginsGuide.trailingAnchor).active = true
+        closeButton.topAnchor.constraintEqualToAnchor(view.layoutMarginsGuide.topAnchor, constant: Stylesheet.margin(.Big)).active = true
         
-        addChildViewController(browser)
-        view.addSubview(browser.view)
-        browser.view.fillSuperview()
-        browser.didMoveToParentViewController(self)
+        view.layoutIfNeeded()
+        photosGallery.scrollToPhoto(atIndex: currentPage)
     }
-}
-
-extension PhotoGalleryViewController: IDMPhotoBrowserDelegate {
-    public func photoBrowser(photoBrowser: IDMPhotoBrowser!, willDismissAtPageIndex index: UInt) {
-        delegate?.photoGalleryController(self, willDismissAtPageIndex: index)
-    }
-}
-
-extension Photo {
-
-    private func toIDMPhoto() -> IDMPhoto {
-        switch self.kind {
-        case .URL(let url):
-            return IDMPhoto(URL: url)
-        case .Image(let image):
-            return IDMPhoto(image: image)
-        }
+    
+    //MARK:- IBActions
+    
+    func onCloseButton() {
+        delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }
 }
