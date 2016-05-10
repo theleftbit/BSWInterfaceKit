@@ -43,6 +43,9 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
         
         //This is set to false in order to layout the image below the transparent navBar
         automaticallyAdjustsScrollViewInsets = false
+        if let tabBar = tabBarController?.tabBar {
+            scrollableStackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: CGRectGetHeight(tabBar.frame), right: 0)
+        }
         
         //This is the transparent navBar behaviour
         if let navBar = self.navigationController?.navigationBar {

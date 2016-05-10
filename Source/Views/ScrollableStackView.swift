@@ -23,8 +23,10 @@ public class ScrollableStackView: UIScrollView {
         switch axis {
         case .Horizontal:
             stackView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
+            alwaysBounceHorizontal = true
         case .Vertical:
             stackView.widthAnchor.constraintEqualToAnchor(widthAnchor).active = true
+            alwaysBounceVertical = true
         }
         
         clipsToBounds = true
