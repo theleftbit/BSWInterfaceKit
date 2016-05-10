@@ -61,7 +61,7 @@ final public class PhotoGalleryView: UIView {
     }    
 
     public func scrollToPhoto(atIndex index: UInt, animated: Bool = false) {
-        guard let imageView = scrollableStackView.stackView.arrangedSubviews[safe: Int(index)] else {
+        guard let imageView = scrollableStackView.viewAtIndex(Int(index)) else {
             return
         }
         let offset = CGPoint(x: CGRectGetMinX(imageView.frame), y: scrollableStackView.contentOffset.y)
@@ -94,11 +94,11 @@ extension PhotoGalleryView {
 
     private func layoutImageViews() {
         
-        scrollableStackView.stackView.removeAllArrangedSubviews()
+        scrollableStackView.removeAllArrangedViews()
         
         photos.forEach { photo in
             let imageView = createImageView(forPhoto: photo)
-            scrollableStackView.stackView.addArrangedSubview(imageView)
+            scrollableStackView.addArrangedSubview(imageView)
 
             //Set the size of the imageView
             imageView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
@@ -126,7 +126,7 @@ extension PhotoGalleryView {
         guard let view = tapGestureRecognizer.view else {
             return
         }
-        guard let index = scrollableStackView.stackView.arrangedSubviews.indexOf(view) else {
+        guard let index = scrollableStackView.indexOfView(view) else {
             return
         }
         delegate?.didTapPhotoAt(index: UInt(index), fromView: view)
