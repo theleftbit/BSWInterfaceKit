@@ -15,8 +15,9 @@ public enum ClassicProfileEditKind {
 
 public protocol ClassicProfileViewModel {
     var photos: [Photo] { get }
-    var titleInfo: [NSAttributedString] { get }
-    var detailInfo: [NSAttributedString] { get }
+    var titleInfo: NSAttributedString { get }
+    var detailsInfo: NSAttributedString { get }
+    var extraInfo: [NSAttributedString] { get }
     var editKind: ClassicProfileEditKind { get }
 }
 
@@ -30,30 +31,34 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
         }
     }
     
-    var photoGallery: PhotoGalleryView!
+    let photoGallery = PhotoGalleryView()
+    let titleLabel = UILabel()
+    let detailsLabel = UILabel()
+    let bioLabel = UILabel()
+
     var navBarBehaviour: NavBarTransparentBehavior?
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
+        //This is set to false in order to layout the image below the transparent navBar
         automaticallyAdjustsScrollViewInsets = false
+        
+        //This is the transparent navBar behaviour
         if let navBar = self.navigationController?.navigationBar {
             navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
         
-        photoGallery = PhotoGalleryView(photos: Photo.samplePhotos())
+        //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.stackView.addArrangedSubview(photoGallery)
         constrain(photoGallery) { photoGallery in
             photoGallery.height == 280
         }
         
-        for i in 1...100 {
-            let label = UILabel()
-            label.text = "Button"
-            label.backgroundColor = UIColor.randomColor()
-            scrollableStackView.stackView.addArrangedSubview(label)
-        }
-        
+        scrollableStackView.stackView.addArrangedSubview(titleLabel)
+        scrollableStackView.stackView.addArrangedSubview(detailsLabel)
+        scrollableStackView.stackView.addArrangedSubview(bioLabel)
     }
     
     override public func viewWillDisappear(animated: Bool) {
@@ -61,10 +66,17 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
         navBarBehaviour?.setNavBar(toState: .Regular)
     }
     
+    override public func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
+    
     //MARK:- Private
     
     public func configureFor(viewModel viewModel: ClassicProfileViewModel) -> Void {
-        
+        photoGallery.photos = viewModel.photos
+        titleLabel.attributedText = viewModel.titleInfo
+        detailsLabel.attributedText = viewModel.detailsInfo
+        bioLabel.attributedText = viewModel.extraInfo.first
     }
 }
 
@@ -72,8 +84,11 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     public func didTapPhotoAt(index index: UInt, fromView: UIView) {
+        
+        guard let viewModel = viewModel else { return }
+        
         let gallery = PhotoGalleryViewController(
-            photos: Photo.samplePhotos(),
+            photos: viewModel.photos,
             presentFromView: fromView,
             initialPageIndex: index,
             allowShare: false
