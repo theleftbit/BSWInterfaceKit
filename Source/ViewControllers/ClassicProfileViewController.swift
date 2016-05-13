@@ -32,10 +32,19 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
     }
     
     let photoGallery = PhotoGalleryView()
-    let titleLabel = UILabel()
-    let detailsLabel = UILabel()
-    let bioLabel = UILabel()
-
+    let titleLabel = UILabel.unlimitedLinesLabel()
+    let detailsLabel = UILabel.unlimitedLinesLabel()
+    let bioLabel = UILabel.unlimitedLinesLabel()
+    let separatorView: UIView = {
+        let view = UIView()
+        constrain(view) { view in
+            view.height == 1
+            view.width == 30
+        }
+        view.backgroundColor = UIColor.lightGrayColor()
+        return view
+    }()
+    
     var navBarBehaviour: NavBarTransparentBehavior?
     
     override public func viewDidLoad() {
@@ -62,6 +71,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
         let layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: layoutMargins)
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: layoutMargins)
+        scrollableStackView.addArrangedSubview(separatorView, layoutMargins: layoutMargins)
         scrollableStackView.addArrangedSubview(bioLabel, layoutMargins: layoutMargins)
     }
     
