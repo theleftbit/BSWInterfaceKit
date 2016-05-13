@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation"
-  s.dependency "SDWebImage"
+  s.dependency "PINRemoteImage"
   s.dependency "Cartography"
   s.dependency "DZNEmptyDataSet"
 
