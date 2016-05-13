@@ -4,6 +4,8 @@
 //
 
 import UIKit
+import BSWFoundation
+import Deferred
 
 //MARK:- Protocols
 
@@ -12,13 +14,31 @@ public protocol ViewModelConfigurable {
     func configureFor(viewModel viewModel: T) -> Void
 }
 
-public protocol ViewModelSettable: ViewModelConfigurable {
-    var viewModel: T? { get set }
-}
-
 public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }
+}
+
+public protocol AsyncViewModelPresenter: ViewModelConfigurable {
+    init (dataProvider: Future<Result<T>>)
+    var dataProvider: Future<Result<T>>! { get set }
+}
+
+extension AsyncViewModelPresenter where Self: UIViewController {
+    
+    public init(dataProvider: Future<Result<T>>) {
+        self.init(nibName: nil, bundle: nil)
+        self.dataProvider = dataProvider
+
+        dataProvider.uponMainQueue { result in
+            switch result {
+            case .Failure(let error):
+                self.showErrorMessage("WTF", error: error)
+            case .Success(let viewModel):
+                self.configureFor(viewModel: viewModel)
+            }
+        }
+    }
 }
 
 //MARK:- Extensions

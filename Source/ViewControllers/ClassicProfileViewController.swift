@@ -5,6 +5,8 @@
 
 import UIKit
 import Cartography
+import Deferred
+import BSWFoundation
 
 public typealias ProfileEditionHandler = Void -> Void
 
@@ -21,16 +23,9 @@ public protocol ClassicProfileViewModel {
     var editKind: ClassicProfileEditKind { get }
 }
 
-public class ClassicProfileViewController: ScrollableStackViewController, ViewModelSettable {
+public class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
     
-    public var viewModel: ClassicProfileViewModel? {
-        didSet {
-            if let viewModel = viewModel {
-                configureFor(viewModel: viewModel)
-            }
-        }
-    }
-    
+    public var dataProvider: Future<Result<ClassicProfileViewModel>>!
     let photoGallery = PhotoGalleryView()
     let titleLabel = UILabel.unlimitedLinesLabel()
     let detailsLabel = UILabel.unlimitedLinesLabel()
@@ -49,7 +44,9 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        view.backgroundColor = UIColor.whiteColor()
+
         //This is set to false in order to layout the image below the transparent navBar
         automaticallyAdjustsScrollViewInsets = false
         if let tabBar = tabBarController?.tabBar {
@@ -99,7 +96,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, ViewMo
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     public func didTapPhotoAt(index index: UInt, fromView: UIView) {
         
-        guard let viewModel = viewModel else { return }
+        guard let viewModel = dataProvider.peek()?.value else { return }
         
         let gallery = PhotoGalleryViewController(
             photos: viewModel.photos,
