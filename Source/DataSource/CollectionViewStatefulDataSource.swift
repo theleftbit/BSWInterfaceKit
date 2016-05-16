@@ -42,6 +42,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         collectionView.dataSource = bridgedDataSource
         collectionView.emptyDataSetSource = bridgedDataSource
         collectionView.emptyDataSetDelegate = bridgedDataSource
+        collectionView.alwaysBounceVertical = true
     }
     
     public func modelForIndexPath(indexPath: NSIndexPath) -> Model? {
