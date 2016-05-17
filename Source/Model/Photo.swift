@@ -27,6 +27,10 @@ public struct Photo {
         self.averageColor = averageColor
         self.size = size
     }
+    
+    public static func emptyPhoto() -> Photo {
+        return Photo(url: NSURL(), averageColor: UIColor.randomColor(), size: nil)
+    }
 }
 
 extension Photo {
