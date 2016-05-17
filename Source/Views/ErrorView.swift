@@ -9,6 +9,7 @@ import Cartography
 public class ErrorView: UIView {
     
     var onButtonTap: ButtonActionHandler?
+    var shouldCollapse = false
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -43,7 +44,7 @@ public class ErrorView: UIView {
 
     override public func layoutSubviews() {
         super.layoutSubviews()
-        if CGRectGetHeight(self.bounds) < 100 {
+        if CGRectGetHeight(self.bounds) < CGRectGetWidth(self.bounds) && shouldCollapse {
             stackView.axis = .Horizontal
         }
     }
