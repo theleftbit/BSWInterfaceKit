@@ -33,15 +33,16 @@ public class TextStyler {
     public static let styler = TextStyler()
     public var preferredFontName: String?
     
-    public func attributedString(string: String, forStyle style: Style = .Body) -> NSAttributedString {
+    public func attributedString(string: String, color: UIColor = UIColor.blackColor(), forStyle style: Style = .Body) -> NSAttributedString {
         
         let font = fontForStyle(style)
         
-        let fontAttribute = [
-            NSFontAttributeName: font
+        let attributes = [
+            NSFontAttributeName: font,
+            NSForegroundColorAttributeName: color,
         ]
         
-        return NSMutableAttributedString(string: string, attributes: fontAttribute)
+        return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
     public func fontForStyle(style: Style) -> UIFont {
