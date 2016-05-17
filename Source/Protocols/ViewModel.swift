@@ -20,7 +20,6 @@ public protocol ViewModelReusable: ViewModelConfigurable {
 }
 
 public protocol AsyncViewModelPresenter: ViewModelConfigurable {
-    init (dataProvider: Future<Result<T>>)
     var dataProvider: Future<Result<T>>! { get set }
 }
 
