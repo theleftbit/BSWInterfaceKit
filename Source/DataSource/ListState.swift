@@ -74,20 +74,6 @@ public extension ListStatePresenter {
 
 }
 
-public typealias ButtonActionHandler = Void -> Void
-
-public struct ButtonConfiguration {
-    public let title: NSAttributedString
-    public let backgroundColor: UIColor
-    public let actionHandler: ButtonActionHandler
-    
-    public init(title: NSAttributedString, backgroundColor: UIColor = UIColor.blueColor(), actionHandler: ButtonActionHandler) {
-        self.title = title
-        self.backgroundColor = backgroundColor
-        self.actionHandler = actionHandler
-    }
-}
-
 public struct ActionableListConfiguration {
     public let title: NSAttributedString
     public let message: NSAttributedString?
