@@ -61,8 +61,9 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
-        constrain(photoGallery) { photoGallery in
+        constrain(photoGallery, scrollableStackView) { photoGallery, scrollableStackView in
             photoGallery.height == 280
+            photoGallery.width == scrollableStackView.width
         }
         
         let layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
