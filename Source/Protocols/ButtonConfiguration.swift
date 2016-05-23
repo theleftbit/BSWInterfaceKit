@@ -40,6 +40,10 @@ extension UIButton {
     
     public convenience init(buttonConfiguration: ButtonConfiguration) {
         self.init()
+        setButtonConfiguration(buttonConfiguration)
+    }
+    
+    public func setButtonConfiguration(buttonConfiguration: ButtonConfiguration) {
         setAttributedTitle(buttonConfiguration.title, forState: .Normal)
         backgroundColor = buttonConfiguration.backgroundColor
         contentEdgeInsets = buttonConfiguration.contentInset
