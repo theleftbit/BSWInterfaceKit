@@ -15,7 +15,7 @@ import Foundation
 public enum ListState<T> {
     case Loading
     case Loaded(data: [T])
-    case Failure(message: NSAttributedString)
+    case Failure(error: ErrorType)
 
     var isLoading: Bool {
         switch self {
