@@ -25,17 +25,17 @@ public struct ButtonConfiguration {
     }
 }
 
+private class ActionBlockWrapper : NSObject {
+    var block : ButtonActionHandler
+    init(block: ButtonActionHandler) {
+        self.block = block
+    }
+}
+
 extension UIButton {
     
     private struct AssociatedObjects {
         static var ActionBlockWrapper = "ActionBlockWrapper"
-    }
-    
-    private class ActionBlockWrapper : NSObject {
-        var block : ButtonActionHandler
-        init(block: ButtonActionHandler) {
-            self.block = block
-        }
     }
     
     public convenience init(buttonConfiguration: ButtonConfiguration) {
@@ -49,6 +49,25 @@ extension UIButton {
         contentEdgeInsets = buttonConfiguration.contentInset
         objc_setAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper, ActionBlockWrapper(block: buttonConfiguration.actionHandler), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         addTarget(self, action: #selector(handleTap), forControlEvents: .TouchDown)
+    }
+    
+    func handleTap() {
+        guard let wrapper = objc_getAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper) as? ActionBlockWrapper else { return }
+        wrapper.block()
+    }
+}
+
+extension UIBarButtonItem {
+
+    private struct AssociatedObjects {
+        static var ActionBlockWrapper = "ActionBlockWrapper"
+    }
+
+    public convenience init(barButtonSystemItem systemItem: UIBarButtonSystemItem, actionHandler: ButtonActionHandler) {
+        self.init(barButtonSystemItem:systemItem, target:nil, action: #selector(handleTap))
+        objc_setAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper, ActionBlockWrapper(block: actionHandler), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        self.target = self
+        self.action = #selector(handleTap)
     }
     
     func handleTap() {
