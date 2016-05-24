@@ -8,11 +8,9 @@ import Cartography
 import Deferred
 import BSWFoundation
 
-public typealias ProfileEditionHandler = Void -> Void
-
 public enum ClassicProfileEditKind {
     case NonEditable
-    case Editable(UIBarButtonItem, ProfileEditionHandler)
+    case Editable(UIBarButtonItem)
 }
 
 public protocol ClassicProfileViewModel {
@@ -20,12 +18,12 @@ public protocol ClassicProfileViewModel {
     var titleInfo: NSAttributedString { get }
     var detailsInfo: NSAttributedString { get }
     var extraInfo: [NSAttributedString] { get }
-    var editKind: ClassicProfileEditKind { get }
 }
 
 public class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
     
     public var dataProvider: Future<Result<ClassicProfileViewModel>>!
+    public var editKind: ClassicProfileEditKind = .NonEditable
     let photoGallery = PhotoGalleryView()
     let titleLabel = UILabel.unlimitedLinesLabel()
     let detailsLabel = UILabel.unlimitedLinesLabel()
@@ -71,6 +69,14 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: layoutMargins)
         scrollableStackView.addArrangedSubview(separatorView, layoutMargins: layoutMargins)
         scrollableStackView.addArrangedSubview(bioLabel, layoutMargins: layoutMargins)
+        
+        //Add the rightBarButtonItem
+        switch editKind {
+        case .Editable(let barButton):
+            navigationItem.rightBarButtonItem = barButton
+        default:
+            break
+        }
     }
     
     override public func viewWillDisappear(animated: Bool) {
