@@ -10,8 +10,8 @@ import Deferred
 //MARK:- Protocols
 
 public protocol ViewModelConfigurable {
-    associatedtype T
-    func configureFor(viewModel viewModel: T) -> Void
+    associatedtype VM
+    func configureFor(viewModel viewModel: VM) -> Void
 }
 
 public protocol ViewModelReusable: ViewModelConfigurable {
@@ -20,12 +20,12 @@ public protocol ViewModelReusable: ViewModelConfigurable {
 }
 
 public protocol AsyncViewModelPresenter: ViewModelConfigurable {
-    var dataProvider: Future<Result<T>>! { get set }
+    var dataProvider: Future<Result<VM>>! { get set }
 }
 
 extension AsyncViewModelPresenter where Self: UIViewController {
     
-    public init(dataProvider: Future<Result<T>>) {
+    public init(dataProvider: Future<Result<VM>>) {
         self.init(nibName: nil, bundle: nil)
         self.dataProvider = dataProvider
 

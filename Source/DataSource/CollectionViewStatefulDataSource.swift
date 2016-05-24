@@ -12,7 +12,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     /// the types using just protocols, since making the generics type of both
     /// ConfigurableCell and Model match impossible as of Swift 2.2
 
-    public typealias ModelMapper = (Model) -> Cell.T
+    public typealias ModelMapper = (Model) -> Cell.VM
 
     public var state: ListState<Model> {
         didSet {
