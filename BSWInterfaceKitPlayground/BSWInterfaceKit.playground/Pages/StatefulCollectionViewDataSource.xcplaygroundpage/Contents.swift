@@ -4,9 +4,18 @@ import BSWInterfaceKit
 //MARK:- TaylorViewController
 
 class TaylorViewController: UIViewController {
+    
     private var collectionView: WaterfallCollectionView!
+    
     private var dataSource: CollectionViewStatefulDataSource<Song, PolaroidCollectionViewCell>!
     
+    private let dateFormatter: NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.dateStyle = NSDateFormatterStyle.LongStyle
+        formatter.timeStyle = .MediumStyle
+        return formatter
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,14 +55,11 @@ class TaylorViewController: UIViewController {
             let cellDetails: NSAttributedString
         }
         
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = NSDateFormatterStyle.LongStyle
-        formatter.timeStyle = .MediumStyle
         
         return SongViewModel(
             cellImage: Photo(kind: .URL(song.thumbnail)),
             cellTitle: NSAttributedString(string: song.name),
-            cellDetails: NSAttributedString(string: formatter.stringFromDate(song.releaseDate))
+            cellDetails: NSAttributedString(string: dateFormatter.stringFromDate(song.releaseDate))
         )
     }
     
