@@ -104,7 +104,7 @@ public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable
         // Make sure that the image is not compressed when doing the final
         // layout by setting it's height to the wanted for a given height
         imageHeightConstraint.constant = PolaroidCollectionViewCell.cellImageHeightForViewModel(viewModel, constrainedToWidth: CGRectGetWidth(contentView.frame))
-        layoutIfNeeded()
+        setNeedsLayout()
     }
 }
 
