@@ -1,4 +1,7 @@
 import Foundation
+import BSWFoundation
+
+//MARK:- Model
 
 public struct Song {
     public let name: String
@@ -15,11 +18,35 @@ public struct Song {
         
         self.name = name
         self.releaseDate = date
-        self.thumbnail = NSURL(string: "http://img.youtube.com/vi/\(youtubeID)/0.jpg")!
+        self.thumbnail = NSURL(string: "https://img.youtube.com/vi/\(youtubeID)/0.jpg")!
     }
 }
 
-public func sampleSongs() -> [Song] {
+//MARK:- Fetching
+
+public enum FetchSongErrors: ErrorType {
+    case UnknownError
+}
+
+public func fetchSongs(handler: Result<[Song]> -> ()) {
+    
+    let shouldFakeError = true
+    
+    let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(3 * Double(NSEC_PER_SEC)))
+    dispatch_after(delayTime, dispatch_get_main_queue()) {
+        
+        if shouldFakeError {
+            handler(Result(error: FetchSongErrors.UnknownError))
+        } else {
+            handler(Result(sampleSongs()))
+        }
+    }
+}
+
+
+//MARK:- Mock Data
+
+private func sampleSongs() -> [Song] {
     
     let shakeItOff = Song(
         name: "Shake It Off",
@@ -50,15 +77,15 @@ public func sampleSongs() -> [Song] {
         year: 2015,
         month: 2,
         day: 13,
-        youtubeID: "CmadmM5cOk"
+        youtubeID: "AgFeZr5ptV8"
     )
     
     let blankSpace = Song(
-        name: "Blank Space",
-        year: 2014,
-        month: 11,
-        day: 2,
-        youtubeID: "ORhEE9VVg"
+        name: "Out Of The Woods",
+        year: 2015,
+        month: 12,
+        day: 31,
+        youtubeID: "JLf9q36UsBk"
     )
     
     let badBlood = Song(
