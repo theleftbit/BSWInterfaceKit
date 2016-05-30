@@ -41,7 +41,7 @@ extension UIView {
         return color
     }
     
-    public func fillSuperview(edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
+    public func fillSuperview(withEdges edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
         constrain(self) { view in
             view.edges == inset(view.superview!.edges, edges.top, edges.left, edges.bottom, edges.right)
         }

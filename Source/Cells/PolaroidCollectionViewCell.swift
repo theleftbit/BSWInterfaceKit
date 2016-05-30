@@ -17,11 +17,11 @@ public protocol PolaroidCellViewModel {
 //MARK: Cells
 
 @available(iOS 8.0, *)
-public class PolaroidCollectionViewCell: UICollectionViewCell {
+public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     
     public typealias T = PolaroidCellViewModel
     
-    private var detailSubview: UIView!
+    private var detailSubview: PolaroidCollectionCellBasicInfoView!
     
     private let cellImageView: UIImageView = {
         let view = UIImageView()
@@ -34,6 +34,7 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setup()
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -46,9 +47,9 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
         cellImageView.image = nil
     }
     
-    private func setupWithSubviewType(type: UIView.Type) {
+    private func setup() {
         
-        detailSubview = type.init()
+        detailSubview = PolaroidCollectionCellBasicInfoView()
         
         contentView.addSubview(cellImageView)
         contentView.addSubview(detailSubview)
@@ -94,6 +95,9 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
     
     public func configureFor(viewModel viewModel: PolaroidCellViewModel) {
 
+        //Set the basic info
+        detailSubview.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
+
         //Set the image
         cellImageView.bsw_setPhoto(viewModel.cellImage)
         
@@ -101,34 +105,6 @@ public class PolaroidCollectionViewCell: UICollectionViewCell {
         // layout by setting it's height to the wanted for a given height
         imageHeightConstraint.constant = PolaroidCollectionViewCell.cellImageHeightForViewModel(viewModel, constrainedToWidth: CGRectGetWidth(contentView.frame))
         layoutIfNeeded()
-    }
-}
-
-@available(iOS 8.0, *)
-public class PolaroidBasicCollectionViewCell: PolaroidCollectionViewCell, ViewModelReusable {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupWithSubviewType(PolaroidCollectionCellBasicInfoView.self)
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override public func prepareForReuse() {
-        super.prepareForReuse()
-        let detailSubview = self.detailSubview as! PolaroidCollectionCellBasicInfoView
-        detailSubview.setTitle()
-    }
-    
-    override public func configureFor(viewModel viewModel: PolaroidCellViewModel) {
-        
-        super.configureFor(viewModel: viewModel)
-        
-        //Set the basic info
-        let detailSubview = self.detailSubview as! PolaroidCollectionCellBasicInfoView
-        detailSubview.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
     }
 }
 

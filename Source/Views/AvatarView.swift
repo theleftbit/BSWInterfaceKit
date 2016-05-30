@@ -13,10 +13,10 @@ class AvatarView: UIView {
         imageView.contentMode = .ScaleAspectFill
         return imageView
     }()
+    
     private let size: Size
     
-    var placeholderImage: UIImage?
-    var imageURL: NSURL? {
+    var photo: Photo {
         didSet {
             updateImage()
         }
@@ -24,10 +24,9 @@ class AvatarView: UIView {
     
     // MARK: Initialization
     
-    init(size: Size, imageURL: NSURL? = nil, placeholderImage: UIImage? = nil) {
+    init(size: Size, photo: Photo) {
         self.size = size
-        self.placeholderImage = placeholderImage
-        self.imageURL = imageURL
+        self.photo = photo
         super.init(frame: CGRectZero)
         setup()
     }
@@ -46,10 +45,7 @@ class AvatarView: UIView {
     }
     
     private func updateImage() {
-        imageView.image = placeholderImage
-        if let imageURL = imageURL {
-            imageView.bsw_setImageWithURL(imageURL)
-        }
+        imageView.bsw_setPhoto(photo)
     }
     
     // MARK: Constraints
@@ -85,5 +81,4 @@ class AvatarView: UIView {
         case Biggest = 60
         case Huge = 80
     }
-    
 }

@@ -51,8 +51,8 @@ public enum ListState<T> {
  */
 public protocol ListStatePresenter: class {
     var loadingConfiguration: LoadingListConfiguration { get }
-    var errorConfiguration: ErrorListConfiguration { get }
     var emptyConfiguration: EmptyListConfiguration { get }
+    func errorConfiguration(forError error: ErrorType) -> ErrorListConfiguration
 }
 
 public extension ListStatePresenter {
