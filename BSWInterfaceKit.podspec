@@ -22,6 +22,5 @@ Pod::Spec.new do |s|
   s.dependency "BSWFoundation"
   s.dependency "PINRemoteImage"
   s.dependency "Cartography"
-  s.dependency "DZNEmptyDataSet"
 
 end

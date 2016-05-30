@@ -1,6 +1,5 @@
 import XCPlayground
 import BSWInterfaceKit
-XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
 
 //MARK:- TaylorViewController
 
@@ -87,6 +86,8 @@ extension TaylorViewController: ListStatePresenter {
 
 let taylorVC = TaylorViewController()
 let navController = UINavigationController(rootViewController: taylorVC)
+navController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 568)
 
+XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
 XCPlaygroundPage.currentPage.liveView = navController.view
 
