@@ -88,7 +88,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         customViewForEmptyDataSetHandler: {
             switch self.state {
             case .Failure(let error):
-                switch self.listPresenter.errorConfiguration {
+                switch self.listPresenter.errorConfiguration(forError:error) {
                 case .Custom(let view):
                     return view
                 default:
@@ -115,7 +115,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         titleEmptyDataSetHandler: {
             switch self.state {
             case .Failure(let error):
-                switch self.listPresenter.errorConfiguration {
+                switch self.listPresenter.errorConfiguration(forError:error) {
                 case .Default(let configuration):
                     return configuration.title
                 default:
@@ -135,7 +135,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         detailForEmptyDataSetHandler: {
             switch self.state {
             case .Failure(let error):
-                switch self.listPresenter.errorConfiguration {
+                switch self.listPresenter.errorConfiguration(forError:error) {
                 case .Default(let configuration):
                     return configuration.message
                 default:
@@ -155,7 +155,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         imageForEmptyDataSetHandler: {
             switch self.state {
             case .Failure(let error):
-                switch self.listPresenter.errorConfiguration {
+                switch self.listPresenter.errorConfiguration(forError:error) {
                 case .Default(let configuration):
                     return configuration.image
                 default:
@@ -175,7 +175,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         buttonTitleForEmptyDataSetHandler: {
             switch self.state {
             case .Failure(let error):
-                switch self.listPresenter.errorConfiguration {
+                switch self.listPresenter.errorConfiguration(forError:error) {
                 case .Default(let configuration):
                     return configuration.buttonConfiguration?.title
                 default:
@@ -195,7 +195,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         buttonTapForEmptyDataSetHandler: {
             switch self.state {
             case .Failure(let error):
-                switch self.listPresenter.errorConfiguration {
+                switch self.listPresenter.errorConfiguration(forError:error) {
                 case .Default(let configuration):
                     configuration.buttonConfiguration?.actionHandler()
                 default:
