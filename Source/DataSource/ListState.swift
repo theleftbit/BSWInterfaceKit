@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import UIKit
 
 /**
  Represents the different states that a list can be
@@ -85,6 +86,36 @@ public struct ActionableListConfiguration {
         self.message = message
         self.image = image
         self.buttonConfiguration = buttonConfiguration
+    }
+    
+    func viewRepresentation() -> UIView {
+        let stackView = UIStackView()
+        stackView.axis = .Vertical
+        stackView.spacing = 10
+        
+        if let image = self.image {
+            let imageView = UIImageView(image: image)
+            stackView.addArrangedSubview(imageView)
+        }
+
+        stackView.addArrangedSubview({
+            let titleLabel = UILabel()
+            titleLabel.attributedText = self.title
+            return titleLabel
+        }())
+        
+        if let message = self.message {
+            let messageLabel = UILabel()
+            messageLabel.attributedText = message
+            stackView.addArrangedSubview(messageLabel)
+        }
+
+        if let buttonConfiguration = self.buttonConfiguration {
+            let button = UIButton(buttonConfiguration: buttonConfiguration)
+            stackView.addArrangedSubview(button)
+        }
+
+        return stackView
     }
 }
 
