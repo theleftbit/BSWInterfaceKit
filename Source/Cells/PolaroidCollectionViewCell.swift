@@ -188,11 +188,7 @@ extension PolaroidCollectionViewCell {
     }
     
     static public func cellHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
-        guard let _ = viewModel.cellImage.size else {
-            return width
-        }
-        
-        let imageHeight = cellImageHeightForViewModel(viewModel, constrainedToWidth: width)
+        let imageHeight = viewModel.cellImage.size == .None ? width : cellImageHeightForViewModel(viewModel, constrainedToWidth: width)
         let infoHeight = cellInfoHeightForViewModel(viewModel, constrainedToWidth: width)
         
         return imageHeight + infoHeight

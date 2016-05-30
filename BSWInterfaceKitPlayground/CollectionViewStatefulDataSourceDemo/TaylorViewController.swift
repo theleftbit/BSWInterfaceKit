@@ -12,8 +12,7 @@ public class TaylorViewController: UIViewController {
     
     private let dateFormatter: NSDateFormatter = {
         let formatter = NSDateFormatter()
-        formatter.dateStyle = NSDateFormatterStyle.LongStyle
-        formatter.timeStyle = .MediumStyle
+        formatter.dateStyle = .MediumStyle
         return formatter
     }()
     
@@ -67,7 +66,7 @@ public class TaylorViewController: UIViewController {
         }
         
         return SongViewModel(
-            cellImage: Photo(kind: .URL(song.thumbnail), size: CGSize(width: 300, height: 300)),
+            cellImage: Photo(kind: .URL(song.thumbnail)),
             cellTitle: TextStyler.styler.attributedString(song.name, forStyle: .Headline),
             cellDetails: TextStyler.styler.attributedString(dateFormatter.stringFromDate(song.releaseDate), forStyle: .Body)
         )
