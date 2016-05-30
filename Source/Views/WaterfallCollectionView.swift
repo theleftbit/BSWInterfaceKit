@@ -48,7 +48,7 @@ public class WaterfallCollectionView: UICollectionView {
         waterfallLayout.minimumColumnSpacing = configuration.minimumColumnSpacing
         waterfallLayout.minimumInteritemSpacing = configuration.minimumInteritemSpacing
         waterfallLayout.sectionInset = configuration.sectionInset
-
+        
         super.init(frame: CGRectZero, collectionViewLayout: waterfallLayout)
         
         waterfallLayout.delegate = self

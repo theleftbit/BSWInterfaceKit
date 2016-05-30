@@ -348,11 +348,7 @@ class BSWCollectionViewWaterfallLayout : UICollectionViewLayout {
     }
     
     override func shouldInvalidateLayoutForBoundsChange (newBounds : CGRect) -> Bool {
-        let oldBounds = self.collectionView!.bounds
-        if CGRectGetWidth(newBounds) != CGRectGetWidth(oldBounds){
-            return true
-        }
-        return false
+        return true
     }
 
 

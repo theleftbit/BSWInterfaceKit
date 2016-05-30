@@ -1,8 +1,11 @@
 use_frameworks!
 
-target 'BSWInterfaceKitPlayground' do
-pod 'BSWInterfaceKit', :path => '/Users/piercifani/Workspace/BlurredSoftware/BSWInterfaceKit'
-pod 'BSWFoundation', :path => '/Users/piercifani/Workspace/BlurredSoftware/BSWFoundation'
+abstract_target 'BSWInterfaceKit' do
+	pod 'BSWInterfaceKit', :path => '/Users/piercifani/Workspace/BlurredSoftware/BSWInterfaceKit'
+	pod 'BSWFoundation', :path => '/Users/piercifani/Workspace/BlurredSoftware/BSWFoundation'
+
+	target 'BSWInterfaceKitPlayground'
+	target 'CollectionViewStatefulDataSourceDemo'
 end
 
 post_install do |installer|
