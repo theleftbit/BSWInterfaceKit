@@ -71,7 +71,9 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     }
     
     @objc public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(Cell.reuseIdentifier, forIndexPath: indexPath) as! Cell
+        guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier(Cell.reuseIdentifier, forIndexPath: indexPath) as? Cell else {
+            fatalError()
+        }
         
         switch self.state {
         case .Failure(_):
