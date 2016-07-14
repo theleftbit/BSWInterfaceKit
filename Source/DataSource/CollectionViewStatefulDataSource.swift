@@ -23,7 +23,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     public let mapper: ModelMapper
     private var emptyView: UIView?
     
-    public init(state: ListState<Model>,
+    public init(state: ListState<Model> = .Loading,
                 collectionView: UICollectionView,
                 listPresenter: ListStatePresenter,
                 mapper: ModelMapper) {
