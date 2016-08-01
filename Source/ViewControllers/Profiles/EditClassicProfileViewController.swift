@@ -5,6 +5,7 @@
 
 import UIKit
 import Cartography
+import BSWFoundation
 
 protocol EditClassicProfileDelegate: EditClassicProfilePhotoDelegate {
     
@@ -12,12 +13,18 @@ protocol EditClassicProfileDelegate: EditClassicProfilePhotoDelegate {
 
 protocol EditClassicProfilePhotoDelegate: class {
     func didChangePhotoArrangement(fromIndex index: UInt, toIndex: UInt)
-    func didDeletePhoto(atIndex index: UInt)
-    func didAddPhoto(photo: Photo, atIndex: UInt)
+    func didRequestDeletePhoto(atIndex index: UInt)
+    func didRequestAddPhoto(atIndex index: UInt)
 }
 
 public class EditClassicProfileViewController: UIViewController {
 
+    struct Constants {
+        static let MaxPhotosCount = 6
+        static let PhotosCellSize = CGSizeMake(80, 80)
+        static let PhotosCollectionViewHeight = CGFloat(250)
+    }
+    
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -38,21 +45,14 @@ public class EditClassicProfileViewController: UIViewController {
         }
     }
     
+    private var collectionViewDataSource: CollectionViewStatefulDataSource<Photo, PhotoCollectionViewCell>!
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(tableView)
-        tableView.dataSource = self
-        tableView.delegate = self
-        constrain(tableView) { tableView in
-            tableView.edges == inset(tableView.superview!.edges, 0)
-        }
-        
-        tableView.tableHeaderView = collectionView
-        constrain(tableView, collectionView) { tableView, collectionView in
-            collectionView.width == tableView.width
-            collectionView.height == CGFloat(250)
-        }
+        automaticallyAdjustsScrollViewInsets = false
+        setupTableView()
+        setupCollectionView()
     }
     
     public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
@@ -64,6 +64,40 @@ public class EditClassicProfileViewController: UIViewController {
         }
     }
     
+    //MARK:- Private
+    
+    private func setupTableView() {
+        view.addSubview(tableView)
+        tableView.dataSource = self
+        tableView.delegate = self
+        constrain(tableView) { tableView in
+            tableView.edges == inset(tableView.superview!.edges, 0)
+        }
+    }
+    
+    private func setupCollectionView() {
+        
+        collectionViewDataSource = CollectionViewStatefulDataSource<Photo, PhotoCollectionViewCell>(
+            state: .Loaded(data: profile.photos),
+            collectionView: collectionView) { _ in
+                return undefined()
+        }
+        
+        flowLayout.scrollDirection = .Horizontal
+        collectionView.dataSource = collectionViewDataSource
+        collectionView.delegate = self
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handlePhotoReordering))
+        collectionView.addGestureRecognizer(longPressGesture)
+        tableView.tableHeaderView = collectionView
+        constrain(tableView, collectionView) { tableView, collectionView in
+            collectionView.width == tableView.width
+            collectionView.height == Constants.PhotosCollectionViewHeight
+        }
+    }
+    
+    private func createPhotoArray() -> PhotoCollectionViewModel {
+        return undefined()
+    }
 }
 
 extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDelegate {
@@ -73,5 +107,55 @@ extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDe
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         return UITableViewCell()
+    }
+}
+
+extension EditClassicProfileViewController: UICollectionViewDelegateFlowLayout {
+
+    public func handlePhotoReordering(gesture: UILongPressGestureRecognizer) {
+        switch(gesture.state) {
+        case .Began:
+            guard let selectedIndexPath = self.collectionView.indexPathForItemAtPoint(gesture.locationInView(self.collectionView)) else {
+                break
+            }
+            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)
+        case .Changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view!))
+        case .Ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+    
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return Constants.PhotosCellSize
+    }
+    
+    public func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+        self.profile = profile.movePhotoAtIndex(sourceIndexPath.item, toIndex: destinationIndexPath.item)
+        self.delegate?.didChangePhotoArrangement(fromIndex: UInt(sourceIndexPath.item), toIndex: UInt(destinationIndexPath.item))
+    }
+    
+    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        self.delegate?.didRequestAddPhoto(atIndex: UInt(indexPath.item))
+    }
+}
+
+private struct PhotoCollectionViewModel {
+    
+    enum State {
+        case Empty
+        case Uploading(NSProgress, UIImage)
+        case Filled(Photo)
+    }
+    
+    let state: State
+}
+
+private class PhotoCollectionViewCell: UICollectionViewCell, ViewModelReusable {
+ 
+    func configureFor(viewModel viewModel: PhotoCollectionViewModel) {
+    
     }
 }

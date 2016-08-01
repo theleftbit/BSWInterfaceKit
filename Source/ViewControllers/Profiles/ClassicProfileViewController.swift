@@ -13,13 +13,6 @@ public enum ClassicProfileEditKind {
     case Editable(UIBarButtonItem)
 }
 
-public protocol ClassicProfileViewModel {
-    var photos: [Photo] { get }
-    var titleInfo: NSAttributedString { get }
-    var detailsInfo: NSAttributedString { get }
-    var extraInfo: [NSAttributedString] { get }
-}
-
 public class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
     
     public var dataProvider: Future<Result<ClassicProfileViewModel>>!

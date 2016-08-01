@@ -11,7 +11,7 @@ import Deferred
 
 public protocol ViewModelConfigurable {
     associatedtype VM
-    func configureFor(viewModel viewModel: VM) -> Void
+    func configureFor(viewModel viewModel: VM)
 }
 
 public protocol ViewModelReusable: ViewModelConfigurable {
