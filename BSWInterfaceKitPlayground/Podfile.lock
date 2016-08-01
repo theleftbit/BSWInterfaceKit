@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (3.3.1)
-  - BNRDeferred (2.0.0-rc.1)
+  - BNRDeferred (2.0.0)
   - BSWFoundation (0.0.1):
     - Alamofire (~> 3.3.1)
     - BNRDeferred (~> 2.0.0-rc.1)
@@ -10,9 +10,9 @@ PODS:
     - Cartography
     - PINRemoteImage
   - Cartography (0.6.0)
-  - Decodable (0.4.2)
+  - Decodable (0.4.3)
   - FLAnimatedImage (1.0.12)
-  - PINCache (2.2.2)
+  - PINCache (2.3)
   - PINRemoteImage (2.1.4):
     - PINRemoteImage/FLAnimatedImage (= 2.1.4)
   - PINRemoteImage/Core (2.1.4):
@@ -27,21 +27,21 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   BSWFoundation:
-    :path: /Users/piercifani/Workspace/BlurredSoftware/BSWFoundation
+    :path: "/Users/piercifani/Workspace/BlurredSoftware/BSWFoundation"
   BSWInterfaceKit:
-    :path: /Users/piercifani/Workspace/BlurredSoftware/BSWInterfaceKit
+    :path: "/Users/piercifani/Workspace/BlurredSoftware/BSWInterfaceKit"
 
 SPEC CHECKSUMS:
   Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
-  BNRDeferred: efc7e733b39ea132ab4d1232687058b5f794a1e9
-  BSWFoundation: 6af92ac542bc86c6fe31cf87a07d12cd75397f46
+  BNRDeferred: 997afb88274c35536349074f731afa11d61ac433
+  BSWFoundation: e0be95f9501b9dddd7073a44ddef83527fb1545b
   BSWInterfaceKit: 9c09654fecff97f680a709b92148c024803ad678
   Cartography: 70af183a248547694a8cfaa6b989cb7e04589985
-  Decodable: b1cd96ad9f722721bc98b0310952214a47f71d6a
+  Decodable: ab6c7d02a5df949d3ab16b2696528a3241e37c76
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  PINCache: 078426d356ab95ef875e9e62e5c35a2ea3333c28
+  PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: 179148f03775bf8454bd1baa5fb85b8e58894d2f
+PODFILE CHECKSUM: 4dbf3d0608f5cfd2a65b6ee6d6f0da09c5454688
 
-COCOAPODS: 1.0.0
+COCOAPODS: 1.0.1
