@@ -13,10 +13,10 @@ let viewModel = ClassicProfileViewModel(
         Photo(kind: Photo.Kind.URL(NSURL(string: "http://ow.ly/ZHvD302NKEF")!))
     ],
     titleInfo: TextStyler.styler.attributedString("Gianluigi Buffon", forStyle: .Title),
-    detailsInfo: TextStyler.styler.attributedString("The best keeper of footbal history", forStyle: .Body),
+    detailsInfo: TextStyler.styler.attributedString("The best keeper of football history", forStyle: .Body),
     extraInfo: [
+        TextStyler.styler.attributedString("1 World Cup 2006", forStyle: .Body),
         TextStyler.styler.attributedString("7 Serie A titles", forStyle: .Body),
-        TextStyler.styler.attributedString("1 World Cup 200", forStyle: .Body),
         TextStyler.styler.attributedString("3 Coppa Italia", forStyle: .Body),
         TextStyler.styler.attributedString("1 Uefa Cup", forStyle: .Body)
     ]
@@ -24,12 +24,8 @@ let viewModel = ClassicProfileViewModel(
 
 let dataProvider = Future(Deferred(value: Result(viewModel)))
 let detailVC = ClassicProfileViewController(dataProvider: dataProvider)
-detailVC.view.frame = CGRect(x: 0, y: 0, width: 500, height: 500)
+let navController = UINavigationController(rootViewController: detailVC)
 
-XCPlaygroundPage.currentPage.liveView = detailVC.view
-
-let whatsGoingOn = XCPlaygroundPage.currentPage.liveView
-
-XCPlaygroundPage.currentPage.finishExecution()
+XCPlaygroundPage.currentPage.liveView = navController
 
 //: [Next](@next)
