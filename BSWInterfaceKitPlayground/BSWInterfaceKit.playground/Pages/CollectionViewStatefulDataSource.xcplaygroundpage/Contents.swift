@@ -41,8 +41,8 @@ let dataSource = CollectionViewStatefulDataSource<Song, PolaroidCollectionViewCe
 )
 
 let songs = [
-    Song(title: "Milkshake", songLenght: 134, artWorkURL: "https://upload.wikimedia.org/wikipedia/en/2/2d/Kelis_milkshake.jpg"),
-    Song(title: "Shake it Off", songLenght: 120, artWorkURL: "https://i.ytimg.com/vi/ufbHJjGJfeI/maxresdefault.jpg"),
+    Song(title: "Milkshake", songLenght: 134, artWorkURL: "http://ow.ly/ZGln302NKHF"),
+    Song(title: "Shake it Off", songLenght: 120, artWorkURL: "http://ow.ly/ow2o302NKJ1"),
 ]
 
 dataSource.state = .Loaded(data: songs)
