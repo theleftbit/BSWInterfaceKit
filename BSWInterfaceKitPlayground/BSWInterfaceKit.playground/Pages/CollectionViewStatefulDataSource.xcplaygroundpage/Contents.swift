@@ -48,7 +48,3 @@ let songs = [
 dataSource.state = .Loaded(data: songs)
 
 XCPlaygroundPage.currentPage.liveView = collectionView
-
-let whatsGoingOn = XCPlaygroundPage.currentPage.liveView
-
-XCPlaygroundPage.currentPage.finishExecution()

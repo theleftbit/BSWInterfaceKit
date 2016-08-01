@@ -29,12 +29,14 @@ extension AsyncViewModelPresenter where Self: UIViewController {
         self.init(nibName: nil, bundle: nil)
         self.dataProvider = dataProvider
 
-        dataProvider.uponMainQueue { result in
+        dataProvider.uponMainQueue { [weak self] result in            
+            guard let strongSelf = self else { return }
             switch result {
             case .Failure(let error):
-                self.showErrorMessage("WTF", error: error)
+                strongSelf.showErrorMessage("WTF", error: error)
             case .Success(let viewModel):
-                self.configureFor(viewModel: viewModel)
+                guard let _ = strongSelf.view else { return }
+                strongSelf.configureFor(viewModel: viewModel)
             }
         }
     }

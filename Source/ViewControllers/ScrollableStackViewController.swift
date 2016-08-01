@@ -7,7 +7,7 @@ import Foundation
 
 public class ScrollableStackViewController: UIViewController {
     
-    var scrollableStackView: ScrollableStackView { return view as! ScrollableStackView }
+    public var scrollableStackView: ScrollableStackView { return view as! ScrollableStackView }
     
     public override func loadView() {
         view = ScrollableStackView()

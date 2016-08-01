@@ -20,7 +20,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
     let photoGallery = PhotoGalleryView()
     let titleLabel = UILabel.unlimitedLinesLabel()
     let detailsLabel = UILabel.unlimitedLinesLabel()
-    let bioLabel = UILabel.unlimitedLinesLabel()
+    let extraDetailsLabel = UILabel.unlimitedLinesLabel()
     let separatorView: UIView = {
         let view = UIView()
         constrain(view) { view in
@@ -35,7 +35,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = UIColor.whiteColor()
 
         //This is set to false in order to layout the image below the transparent navBar
@@ -61,7 +61,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: layoutMargins)
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: layoutMargins)
         scrollableStackView.addArrangedSubview(separatorView, layoutMargins: layoutMargins)
-        scrollableStackView.addArrangedSubview(bioLabel, layoutMargins: layoutMargins)
+        scrollableStackView.addArrangedSubview(extraDetailsLabel, layoutMargins: layoutMargins)
         
         //Add the rightBarButtonItem
         switch editKind {
@@ -83,11 +83,26 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
     
     //MARK:- Private
     
-    public func configureFor(viewModel viewModel: ClassicProfileViewModel) -> Void {
+    public func configureFor(viewModel viewModel: ClassicProfileViewModel) {
+        
         photoGallery.photos = viewModel.photos
         titleLabel.attributedText = viewModel.titleInfo
         detailsLabel.attributedText = viewModel.detailsInfo
-        bioLabel.attributedText = viewModel.extraInfo.first
+        extraDetailsLabel.attributedText = {
+            
+            //This makes me puke, but hey, choose your battles
+            
+            var extraDetailsString: NSMutableAttributedString? = nil
+            viewModel.extraInfo.forEach { (string) in
+                if let extraDetailsString_ = extraDetailsString {
+                    let sumString = extraDetailsString_ + NSAttributedString(string: "\n") + string
+                    extraDetailsString = sumString.mutableCopy() as! NSMutableAttributedString
+                } else {
+                    extraDetailsString = string.mutableCopy() as! NSMutableAttributedString
+                }
+            }
+            return extraDetailsString
+        }()
     }
 }
 
