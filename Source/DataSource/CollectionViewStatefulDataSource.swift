@@ -19,13 +19,13 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         }
     }
     public weak var collectionView: UICollectionView?
-    public unowned let listPresenter: ListStatePresenter
+    public weak var listPresenter: ListStatePresenter?
     public let mapper: ModelMapper
     private var emptyView: UIView?
     
     public init(state: ListState<Model> = .Loading,
                 collectionView: UICollectionView,
-                listPresenter: ListStatePresenter,
+                listPresenter: ListStatePresenter? = nil,
                 mapper: ModelMapper) {
         self.state = state
         self.collectionView = collectionView
@@ -92,6 +92,9 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     //MARK:- Private
     
     private func addEmptyViewForCurrentState() {
+        
+        guard let listPresenter = self.listPresenter else { return }
+        
         self.emptyView?.removeFromSuperview()
         
         switch state {
