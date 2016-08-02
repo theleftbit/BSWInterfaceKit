@@ -96,9 +96,9 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
             viewModel.extraInfo.forEach { (string) in
                 if let extraDetailsString_ = extraDetailsString {
                     let sumString = extraDetailsString_ + NSAttributedString(string: "\n") + string
-                    extraDetailsString = sumString.mutableCopy() as! NSMutableAttributedString
+                    extraDetailsString = sumString.mutableCopy() as? NSMutableAttributedString
                 } else {
-                    extraDetailsString = string.mutableCopy() as! NSMutableAttributedString
+                    extraDetailsString = string.mutableCopy() as? NSMutableAttributedString
                 }
             }
             return extraDetailsString

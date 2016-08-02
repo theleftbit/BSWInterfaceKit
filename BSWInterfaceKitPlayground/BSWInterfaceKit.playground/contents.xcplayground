@@ -3,5 +3,6 @@
     <pages>
         <page name='CollectionViewStatefulDataSource'/>
         <page name='ClassicProfileViewController'/>
+        <page name='EditClassicProfileViewController'/>
     </pages>
 </playground>
