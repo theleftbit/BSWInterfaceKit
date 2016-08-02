@@ -53,7 +53,7 @@ final public class NavBarTransparentBehavior: NSObject {
     }
 
     private func updateNavBar(forScrollView scrollView: UIScrollView) {
-        guard let navBar = navBar else { return }
+        guard let _ = navBar else { return }
         if scrollView.contentOffset.y < CGFloat(NavBarTransparentBehavior.limitOffsetTransparentNavBar) {
             setNavBar(toState: .Transparent)
         }
@@ -93,7 +93,7 @@ final public class NavBarTransparentBehavior: NSObject {
 
 extension NavBarTransparentBehavior: UIScrollViewDelegate {
     public func scrollViewDidScroll(scrollView: UIScrollView) {
-        guard let navBar = navBar else { return }
+        guard let _ = navBar else { return }
         updateNavBar(forScrollView: scrollView)
     }
 }

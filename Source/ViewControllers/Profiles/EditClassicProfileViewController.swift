@@ -19,10 +19,8 @@ protocol EditClassicProfilePhotoDelegate: class {
 
 public class EditClassicProfileViewController: UIViewController {
 
-    struct Constants {
+    enum Constants {
         static let MaxPhotosCount = 6
-        static let PhotosCellSize = CGSizeMake(80, 80)
-        static let PhotosCollectionViewHeight = CGFloat(250)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -38,30 +36,25 @@ public class EditClassicProfileViewController: UIViewController {
     weak var delegate: EditClassicProfileDelegate?
 
     let tableView = UITableView(frame: CGRectZero, style: .Grouped)
-    let collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: UICollectionViewFlowLayout())
+    let collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: BSWCollectionViewFlowLayout())
     var flowLayout: UICollectionViewFlowLayout {
         get {
-            return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+            return collectionView.collectionViewLayout as! BSWCollectionViewFlowLayout
         }
     }
     
-    private var collectionViewDataSource: CollectionViewStatefulDataSource<Photo, PhotoCollectionViewCell>!
+    private var collectionViewDataSource: CollectionViewStatefulDataSource<PhotoUploadViewModel, PhotoCollectionViewCell>!
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-
-        automaticallyAdjustsScrollViewInsets = false
+        automaticallyAdjustsScrollViewInsets = true
         setupTableView()
         setupCollectionView()
-    }
-    
-    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        guard self.traitCollection.horizontalSizeClass != .Regular else {
-            fatalError("We're not ready for this")
-        }
+        //Fuck you UIKit!
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+        flowLayout.invalidateLayout()
     }
     
     //MARK:- Private
@@ -71,32 +64,43 @@ public class EditClassicProfileViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         constrain(tableView) { tableView in
-            tableView.edges == inset(tableView.superview!.edges, 0)
+            tableView.edges == tableView.superview!.edges
         }
     }
     
     private func setupCollectionView() {
-        
-        collectionViewDataSource = CollectionViewStatefulDataSource<Photo, PhotoCollectionViewCell>(
-            state: .Loaded(data: profile.photos),
-            collectionView: collectionView) { _ in
-                return undefined()
-        }
-        
-        flowLayout.scrollDirection = .Horizontal
-        collectionView.dataSource = collectionViewDataSource
-        collectionView.delegate = self
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handlePhotoReordering))
-        collectionView.addGestureRecognizer(longPressGesture)
+
+        /// Layout the collectionView
         tableView.tableHeaderView = collectionView
         constrain(tableView, collectionView) { tableView, collectionView in
             collectionView.width == tableView.width
-            collectionView.height == Constants.PhotosCollectionViewHeight
+            collectionView.height == tableView.width * (2 / 3)
         }
+        
+        /// Prepare the FlowLayout
+        flowLayout.scrollDirection = .Vertical
+        flowLayout.minimumLineSpacing = 0
+        flowLayout.minimumInteritemSpacing = 0
+
+        /// Prepare the Gesture Recognizer
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handlePhotoReordering))
+        collectionView.addGestureRecognizer(longPressGesture)
+        
+        /// Prepare the collectionViewDataSource
+        collectionViewDataSource = CollectionViewStatefulDataSource<PhotoUploadViewModel, PhotoCollectionViewCell>(
+            state: .Loaded(data: createPhotoArray(profile.photos)),
+            collectionView: collectionView,
+            mapper: { return $0 }
+        )
+        collectionView.dataSource = collectionViewDataSource
+        collectionView.delegate = self
     }
     
-    private func createPhotoArray() -> PhotoCollectionViewModel {
-        return undefined()
+    private func createPhotoArray(photos: [Photo]) -> [PhotoUploadViewModel] {
+        let photosAsUploadPhotos = photos.map { return PhotoUploadViewModel.Filled($0)  }
+        let missingPhotos = Constants.MaxPhotosCount - photosAsUploadPhotos.count
+        let emptyPhotos = [PhotoUploadViewModel](count:missingPhotos, repeatedValue: PhotoUploadViewModel.Empty)
+        return photosAsUploadPhotos + emptyPhotos
     }
 }
 
@@ -129,7 +133,18 @@ extension EditClassicProfileViewController: UICollectionViewDelegateFlowLayout {
     }
     
     public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return Constants.PhotosCellSize
+        
+        guard CGRectGetWidth(self.collectionView.frame) != 0  else {
+            return CGSizeZero
+        }
+        guard CGRectGetHeight(self.collectionView.frame) != 0  else {
+            return CGSizeZero
+        }
+        
+        return CGSizeMake(
+            CGRectGetWidth(self.collectionView.frame) / 3,
+            CGRectGetHeight(self.collectionView.frame) / 2
+        )
     }
     
     public func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
@@ -142,20 +157,50 @@ extension EditClassicProfileViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-private struct PhotoCollectionViewModel {
-    
-    enum State {
-        case Empty
-        case Uploading(NSProgress, UIImage)
-        case Filled(Photo)
-    }
-    
-    let state: State
+enum PhotoUploadViewModel {
+    case Empty
+    case Uploading(NSProgress, UIImage)
+    case Filled(Photo)
 }
 
 private class PhotoCollectionViewCell: UICollectionViewCell, ViewModelReusable {
  
-    func configureFor(viewModel viewModel: PhotoCollectionViewModel) {
+    enum Constants {
+        static let CellPadding = CGFloat(5)
+    }
+
+    let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .ScaleAspectFill
+        return imageView
+    }()
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setup()
+    }
+    
+    private func setup() {
+        contentView.addSubview(imageView)
+        imageView.backgroundColor = .whiteColor()
+        constrain(imageView) { imageView in
+            imageView.edges == inset(imageView.superview!.edges, Constants.CellPadding)
+        }
+    }
+    
+    func configureFor(viewModel viewModel: PhotoUploadViewModel) {
+        switch viewModel {
+        case .Empty:
+            imageView.image = UIImage.templateImage(.Plus)
+        case .Uploading(_, _):
+            break
+        case .Filled(let photo):
+            imageView.bsw_setPhoto(photo)
+        }
     }
 }

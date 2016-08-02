@@ -15,6 +15,15 @@ extension UIImage {
         )
     }
 
+    public enum Template: String {
+        case Plus = "Plus"
+        case Close = "Close"
+    }
+    
+    public class func templateImage(template: Template) -> UIImage {
+        return UIImage.interfaceKitImageNamed(template.rawValue)!
+    }
+    
     /**
      Generates an UIImage from a CAGradientLayer
      
