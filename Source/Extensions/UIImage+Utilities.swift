@@ -16,7 +16,8 @@ extension UIImage {
     }
 
     public enum Template: String {
-        case Plus = "Plus"
+        case PlusRound = "PlusRound"
+        case CancelRound = "CancelRound"
         case Close = "Close"
     }
     
