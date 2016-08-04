@@ -20,11 +20,11 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     
     private var photosDataSource: CollectionViewStatefulDataSource<PhotoPickerViewModel, ProfilePhotoPickerCollectionViewCell>!
     
-    public private(set) var photos: [Photo]?
+    public private(set) var photos: [Photo]
     
-    public init(photos: [Photo]? = nil) {
-        super.init(frame: CGRectZero, collectionViewLayout: BSWCollectionViewFlowLayout())
+    public init(photos: [Photo] = []) {
         self.photos = photos
+        super.init(frame: CGRectZero, collectionViewLayout: BSWCollectionViewFlowLayout())
         
         /// Prepare the FlowLayout
         flowLayout.scrollDirection = .Vertical
@@ -35,25 +35,23 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         let reorderSupport = CollectionViewReorderSupport(
             canMoveItemAtIndexPath: { (indexPath) -> Bool in
                 //Only allow moving of valid photos
-                guard let _ = self.photos?[safe:indexPath.item] else { return false }
+                guard let _ = self.photos[safe:indexPath.item] else { return false }
                 return true
             },
             moveItemAtIndexPath: { (from, to) in
-                guard let photos = self.photos else { return }
-                
                 //If the destination is not valid, transition back
                 guard let _ = photos[safe:from.item], let _ = photos[safe:to.item] else {
                     self.photosDataSource.moveItem(fromIndexPath: to, toIndexPath: from)
                     return
                 }
                 
-                self.photos!.moveItem(fromIndex: from.item, toIndex: to.item)
+                self.photos.moveItem(fromIndex: from.item, toIndex: to.item)
             }
         )
         
         /// Prepare the collectionViewDataSource
         photosDataSource = CollectionViewStatefulDataSource(
-            state: stateForCurrentPhotosValue(),
+            state: .Loaded(data: createPhotoArray(photos)),
             collectionView: self,
             reorderSupport: reorderSupport,
             mapper: { return $0 }
@@ -77,7 +75,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     
     public func updatePhotos(photos: [Photo]) {
         self.photos = photos
-        photosDataSource.updateState(stateForCurrentPhotosValue())
+        photosDataSource.updateState(.Loaded(data: createPhotoArray(photos)))
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
@@ -109,14 +107,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         let emptyPhotos = [PhotoPickerViewModel](count:missingPhotos, repeatedValue: PhotoPickerViewModel.Empty)
         return photosAsUploadPhotos + emptyPhotos
     }
-    
-    private func stateForCurrentPhotosValue() -> ListState<PhotoPickerViewModel>{
-        if let photos = photos {
-            return ListState.Loaded(data: createPhotoArray(photos))
-        } else {
-            return ListState.Loading
-        }
-    }
+
 }
 
 private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewModelReusable {
