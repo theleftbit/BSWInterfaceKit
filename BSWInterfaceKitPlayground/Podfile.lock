@@ -1,9 +1,9 @@
 PODS:
   - Alamofire (3.3.1)
   - BNRDeferred (2.0.0)
-  - BSWFoundation (0.0.1):
+  - BSWFoundation (0.1.0):
     - Alamofire (~> 3.3.1)
-    - BNRDeferred (~> 2.0.0-rc.1)
+    - BNRDeferred (~> 2.0.0)
     - Decodable (~> 0.4.2)
   - BSWInterfaceKit (0.0.1):
     - BSWFoundation
@@ -34,7 +34,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
   BNRDeferred: 997afb88274c35536349074f731afa11d61ac433
-  BSWFoundation: e0be95f9501b9dddd7073a44ddef83527fb1545b
+  BSWFoundation: ccbd3f4fd87fccc8371ee343aee55e1448bd566b
   BSWInterfaceKit: 9c09654fecff97f680a709b92148c024803ad678
   Cartography: 70af183a248547694a8cfaa6b989cb7e04589985
   Decodable: ab6c7d02a5df949d3ab16b2696528a3241e37c76
