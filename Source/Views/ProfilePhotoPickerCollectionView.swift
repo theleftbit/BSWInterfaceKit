@@ -40,7 +40,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
             },
             moveItemAtIndexPath: { (from, to) in
                 //If the destination is not valid, transition back
-                guard let _ = photos[safe:from.item], let _ = photos[safe:to.item] else {
+                guard let _ = self.photos[safe:from.item], let _ = self.photos[safe:to.item] else {
                     self.photosDataSource.moveItem(fromIndexPath: to, toIndexPath: from)
                     return
                 }
