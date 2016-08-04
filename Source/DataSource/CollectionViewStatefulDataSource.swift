@@ -12,24 +12,23 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     /// ConfigurableCell and Model match impossible as of Swift 2.2
 
     public typealias ModelMapper = (Model) -> Cell.VM
-
-    public var state: ListState<Model> {
-        didSet {
-            collectionView?.reloadData()
-        }
-    }
+    
+    public private(set) var state: ListState<Model>
     public weak var collectionView: UICollectionView?
     public weak var listPresenter: ListStatePresenter?
     public let mapper: ModelMapper
     private var emptyView: UIView?
+    public let reorderSupport: CollectionViewReorderSupport?
     
     public init(state: ListState<Model> = .Loading,
                 collectionView: UICollectionView,
                 listPresenter: ListStatePresenter? = nil,
+                reorderSupport: CollectionViewReorderSupport? = nil,
                 mapper: ModelMapper) {
         self.state = state
         self.collectionView = collectionView
         self.listPresenter = listPresenter
+        self.reorderSupport = reorderSupport
         self.mapper = mapper
         
         super.init()
@@ -43,8 +42,21 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
 
         collectionView.dataSource = self
         collectionView.alwaysBounceVertical = true
+        if let reorderSupport = self.reorderSupport {
+            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
+            self.collectionView?.addGestureRecognizer(longPressGesture)
+        }
     }
     
+    public func updateState(state: ListState<Model>) {
+        self.state = state
+        collectionView?.reloadData()
+    }
+    
+    public func moveItem(fromIndexPath from: NSIndexPath, toIndexPath to: NSIndexPath) {
+        commitMoveItem(from, to: to, moveKind: .APIInitiated)
+    }
+
     public func modelForIndexPath(indexPath: NSIndexPath) -> Model? {
         switch self.state {
         case .Loaded(let data):
@@ -87,6 +99,16 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         }
         
         return cell
+    }
+    
+    @objc public func collectionView(collectionView: UICollectionView, canMoveItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        guard let reorderSupport = self.reorderSupport else { return false }
+        return reorderSupport.canMoveItemAtIndexPath(indexPath)
+    }
+    
+    @objc public func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+        guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
+        commitMoveItem(sourceIndexPath, to: destinationIndexPath, moveKind: .UserInitiated(commitMoveHandler))
     }
     
     //MARK:- Private
@@ -138,4 +160,65 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         emptyView.centerXAnchor.constraintEqualToAnchor(collectionView.centerXAnchor).active = true
         emptyView.centerYAnchor.constraintEqualToAnchor(collectionView.centerYAnchor, constant: -20).active = true
     }
+    
+    //MARK: IBAction
+    
+    func handleLongPressGesture(gesture: UILongPressGestureRecognizer) {
+        guard let collectionView = self.collectionView else { return }
+        
+        switch(gesture.state) {
+        case .Began:
+            guard let selectedIndexPath = collectionView.indexPathForItemAtPoint(gesture.locationInView(collectionView)) else {
+                break
+            }
+            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)
+        case .Changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view!))
+        case .Ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
 }
+
+//MARK: - Reorder Support
+
+extension CollectionViewStatefulDataSource {
+
+    private func commitMoveItem(from: NSIndexPath, to: NSIndexPath, moveKind: CollectionViewReorderSupport.MoveKind) {
+        switch self.state {
+        case .Failure(_):
+            break
+        case .Loading(_):
+            break
+        case .Loaded(var models):
+            models.moveItem(fromIndex: from.item, toIndex: to.item)
+            self.state = .Loaded(data: models)
+            switch moveKind {
+            case .APIInitiated:
+                collectionView?.performBatchUpdates({
+                    self.collectionView?.moveItemAtIndexPath(from, toIndexPath: to)
+                    }, completion: nil)
+            case .UserInitiated(let handler):
+                handler(from: from, to: to)
+            }
+        }
+    }
+
+}
+
+public struct CollectionViewReorderSupport {
+    
+    typealias CommitMoveItemHandler = ((from: NSIndexPath, to: NSIndexPath) -> Void)
+    typealias CanMoveItemHandler = (NSIndexPath -> Bool)
+    
+    private enum MoveKind {
+        case APIInitiated
+        case UserInitiated(CollectionViewReorderSupport.CommitMoveItemHandler)
+    }
+
+    let canMoveItemAtIndexPath: (NSIndexPath -> Bool)
+    let moveItemAtIndexPath: CommitMoveItemHandler
+}
+
