@@ -49,7 +49,8 @@ extension UIView {
     
     public class func instantiateFromNib<T: UIView>(viewType: T.Type) -> T? {
         let className = NSStringFromClass(viewType).componentsSeparatedByString(".").last!
-        return NSBundle.mainBundle().loadNibNamed(className, owner: nil, options: nil).first as? T
+        let bundle = NSBundle(forClass: self)
+        return bundle.loadNibNamed(className, owner: nil, options: nil).first as? T
     }
     
     public class func instantiateFromNib() -> Self? {
