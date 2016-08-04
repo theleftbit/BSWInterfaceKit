@@ -61,6 +61,9 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         
         /// Don't move, please
         alwaysBounceVertical = false
+        
+        /// Make me customizable
+        backgroundColor = .whiteColor()
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -114,6 +117,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     
     enum Constants {
         static let CellPadding = CGFloat(5)
+        static let AccesorySize = CGFloat(20)
     }
     
     let imageView: UIImageView = {
@@ -121,7 +125,13 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         imageView.contentMode = .ScaleAspectFit
         return imageView
     }()
-    
+
+    let accesoryView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .ScaleAspectFit
+        return imageView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -134,9 +144,15 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     
     private func setup() {
         contentView.addSubview(imageView)
+        imageView.addSubview(accesoryView)
         imageView.backgroundColor = .whiteColor()
-        constrain(imageView) { imageView in
+        imageView.roundCorners()
+        constrain(imageView, accesoryView) { imageView, accesoryView in
             imageView.edges == inset(imageView.superview!.edges, Constants.CellPadding)
+            accesoryView.bottom == imageView.bottom - Constants.CellPadding
+            accesoryView.right == imageView.right - Constants.CellPadding
+            accesoryView.width == Constants.AccesorySize
+            accesoryView.height == Constants.AccesorySize
         }
     }
     
@@ -149,11 +165,14 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     func configureFor(viewModel viewModel: PhotoPickerViewModel) {
         switch viewModel {
         case .Empty:
-            imageView.image = UIImage.templateImage(.Plus)
+            imageView.image = nil
+            imageView.backgroundColor = .lightGrayColor()
+            accesoryView.image = UIImage.templateImage(.PlusRound)
         case .Uploading(_, _):
             break
         case .Filled(let photo):
             imageView.bsw_setPhoto(photo)
+            accesoryView.image = UIImage.templateImage(.CancelRound)
         }
     }
 }
