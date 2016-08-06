@@ -36,9 +36,9 @@
 		421629A8412B159ACA82BB03 = {
 			isa = PBXGroup;
 			children = (
+				053162F30068FA295473A9D8 /* BSWInterfaceKit.playground */,
 				9F252AEF9DC385C64E668E8B /* Products */,
 				E8668C1A6301F6D5C33A656D /* Frameworks */,
-				053162F30068FA295473A9D8 /* BSWInterfaceKit.playground */,
 				7B54BF0681DDCE081CC3A8C5 /* Pods */,
 			);
 			sourceTree = "<group>";
