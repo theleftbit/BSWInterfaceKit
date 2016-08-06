@@ -45,6 +45,6 @@ let songs = [
     Song(title: "Shake it Off", songLenght: 120, artWorkURL: "http://ow.ly/ow2o302NKJ1"),
 ]
 
-dataSource.state = .Loaded(data: songs)
+dataSource.updateState(.Loaded(data: songs))
 
 XCPlaygroundPage.currentPage.liveView = collectionView

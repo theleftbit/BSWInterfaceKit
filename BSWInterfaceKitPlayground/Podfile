@@ -1,8 +1,7 @@
 use_frameworks!
 
 target 'BSWInterfaceKitPlayground' do
-pod 'BSWInterfaceKit', :path => '/Users/piercifani/Workspace/BlurredSoftware/BSWInterfaceKit'
-pod 'BSWFoundation', :path => '/Users/piercifani/Workspace/BlurredSoftware/BSWFoundation'
+	pod 'BSWInterfaceKit', :path => '../BSWInterfaceKit.podspec'
 end
 
 post_install do |installer|
