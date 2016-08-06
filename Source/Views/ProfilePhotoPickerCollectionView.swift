@@ -126,11 +126,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         return imageView
     }()
 
-    let accesoryView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFit
-        return imageView
-    }()
+    let accesoryView = UIButton(type: .Custom)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -147,6 +143,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         imageView.addSubview(accesoryView)
         imageView.backgroundColor = .whiteColor()
         imageView.roundCorners()
+        imageView.userInteractionEnabled = true
         constrain(imageView, accesoryView) { imageView, accesoryView in
             imageView.edges == inset(imageView.superview!.edges, Constants.CellPadding)
             accesoryView.bottom == imageView.bottom - Constants.CellPadding
@@ -160,19 +157,29 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         super.prepareForReuse()
         imageView.image = nil
         imageView.backgroundColor = .whiteColor()
+        accesoryView.removeTarget(self, action: #selector(onAccesoryTapped), forControlEvents: .TouchDown)
     }
     
     func configureFor(viewModel viewModel: PhotoPickerViewModel) {
+        
+        accesoryView.addTarget(self, action: #selector(onAccesoryTapped), forControlEvents: .TouchDown)
+
         switch viewModel {
         case .Empty:
             imageView.image = nil
             imageView.backgroundColor = .lightGrayColor()
-            accesoryView.image = UIImage.templateImage(.PlusRound)
+            accesoryView.setImage(UIImage.templateImage(.PlusRound), forState: .Normal)
         case .Uploading(_, _):
             break
         case .Filled(let photo):
             imageView.bsw_setPhoto(photo)
-            accesoryView.image = UIImage.templateImage(.CancelRound)
+            accesoryView.setImage(UIImage.templateImage(.CancelRound), forState: .Normal)
         }
+    }
+    
+    // MARK: IBActions
+    
+    @objc func onAccesoryTapped() {
+        print("Button tapped")
     }
 }

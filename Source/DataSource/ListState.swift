@@ -3,7 +3,7 @@
 //  Copyright © 2016 Blurred Software SL. All rights reserved.
 //
 
-import Foundation
+import BSWFoundation
 import UIKit
 
 /**
@@ -42,6 +42,17 @@ public enum ListState<T> {
             return array.count == 0
         default:
             return false
+        }
+    }
+}
+
+extension ListState {
+    public func mapListState<T>(result: Result<[T]>) -> ListState<T> {
+        switch result {
+        case .Success(let value):
+            return .Loaded(data: value)
+        case .Failure(let error):
+            return .Failure(error: error)
         }
     }
 }
