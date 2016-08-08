@@ -83,6 +83,7 @@ extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDe
         case .PhotoPicker:
             guard let cell = tableView.dequeueReusableCellWithIdentifier(Constants.PhotoPickerCellReuseID) as? PhotoPickerTableViewCell else { fatalError()}
             cell.prepareForPhotos(self.profile.photos)
+            cell.setPresentingViewController(self, profilePhotoDelegate: self)
             return cell
         }
     }
@@ -109,6 +110,18 @@ extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDe
     }
 }
 
+// MARK: ProfilePhotoPickerDelegate
+
+extension EditClassicProfileViewController: ProfilePhotoPickerDelegate {
+    public func userAddedProfilePicture(url: NSURL) {
+        
+    }
+    
+    public func userDeletedProfilePictureAtIndex(index: Int) {
+    
+    }
+}
+
 // MARK: Private classes
 
 private class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout {
@@ -131,6 +144,19 @@ private class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegat
     }
     
     public func prepareForPhotos(photos: [Photo]) {
-        photosCollectionView.updatePhotos(photos)
+        
+        func createPhotoArray(photos: [Photo]) -> [PhotoPickerViewModel] {
+            let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.Filled($0)  }
+            let missingPhotos = ProfilePhotoPickerCollectionView.Constants.MaxPhotosCount - photosAsUploadPhotos.count
+            let emptyPhotos = [PhotoPickerViewModel](count:missingPhotos, repeatedValue: PhotoPickerViewModel.Empty)
+            return photosAsUploadPhotos + emptyPhotos
+        }
+
+        photosCollectionView.updatePhotos(createPhotoArray(photos))
+    }
+    
+    public func setPresentingViewController(vc: UIViewController, profilePhotoDelegate: ProfilePhotoPickerDelegate) {
+        photosCollectionView.presentingViewController = vc
+        photosCollectionView.profilePhotoDelegate = profilePhotoDelegate
     }
 }
