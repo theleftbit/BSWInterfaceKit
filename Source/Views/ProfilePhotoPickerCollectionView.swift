@@ -10,19 +10,38 @@ public enum PhotoPickerViewModel {
     case Empty
     case Uploading(NSProgress, UIImage)
     case Filled(Photo)
+    
+    func isEmpty() -> Bool {
+        switch self {
+        case .Empty:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
-public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout {
+public protocol ProfilePhotoPickerDelegate: class {
+    func userAddedProfilePicture(url: NSURL)
+    func userDeletedProfilePictureAtIndex(index: Int)
+}
+
+public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {
         static let MaxPhotosCount = 6
     }
     
     private var photosDataSource: CollectionViewStatefulDataSource<PhotoPickerViewModel, ProfilePhotoPickerCollectionViewCell>!
+    private lazy var mediaPicker: MediaPickerBehavior = {
+        return MediaPickerBehavior(presentingVC: self.presentingViewController!)
+    }()
     
-    public private(set) var photos: [Photo]
-    
-    public init(photos: [Photo] = []) {
+    public private(set) var photos: [PhotoPickerViewModel]
+    public weak var presentingViewController: UIViewController?
+    public weak var profilePhotoDelegate: ProfilePhotoPickerDelegate?
+
+    public init(photos: [PhotoPickerViewModel] = []) {
         self.photos = photos
         super.init(frame: CGRectZero, collectionViewLayout: BSWCollectionViewFlowLayout())
         
@@ -35,12 +54,12 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         let reorderSupport = CollectionViewReorderSupport(
             canMoveItemAtIndexPath: { (indexPath) -> Bool in
                 //Only allow moving of valid photos
-                guard let _ = self.photos[safe:indexPath.item] else { return false }
+                guard let fromPhoto = self.photos[safe:indexPath.item] where !fromPhoto.isEmpty()  else { return false }
                 return true
             },
             moveItemAtIndexPath: { (from, to) in
                 //If the destination is not valid, transition back
-                guard let _ = self.photos[safe:from.item], let _ = self.photos[safe:to.item] else {
+                guard let destinationPhoto = self.photos[safe:to.item] where !destinationPhoto.isEmpty() else {
                     self.photosDataSource.moveItem(fromIndexPath: to, toIndexPath: from)
                     return
                 }
@@ -51,7 +70,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         
         /// Prepare the collectionViewDataSource
         photosDataSource = CollectionViewStatefulDataSource(
-            state: .Loaded(data: createPhotoArray(photos)),
+            state: .Loaded(data: photos),
             collectionView: self,
             reorderSupport: reorderSupport,
             mapper: { return $0 }
@@ -76,9 +95,14 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         }
     }
     
-    public func updatePhotos(photos: [Photo]) {
+    public func updatePhotos(photos: [PhotoPickerViewModel]) {
         self.photos = photos
-        photosDataSource.updateState(.Loaded(data: createPhotoArray(photos)))
+        photosDataSource.updateState(.Loaded(data: photos))
+    }
+    
+    private func userAddedProfilePicture(url: NSURL?) {
+        guard let url = url else { return }
+        profilePhotoDelegate?.userAddedProfilePicture(url)
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
@@ -98,19 +122,65 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         )
     }
     
-    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        
+    public func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        guard let cell = cell as? ProfilePhotoPickerCollectionViewCell else { return }
+        cell.cellDelegate = self
     }
     
-    // MARK: Private
-    
-    private func createPhotoArray(photos: [Photo]) -> [PhotoPickerViewModel] {
-        let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.Filled($0)  }
-        let missingPhotos = Constants.MaxPhotosCount - photosAsUploadPhotos.count
-        let emptyPhotos = [PhotoPickerViewModel](count:missingPhotos, repeatedValue: PhotoPickerViewModel.Empty)
-        return photosAsUploadPhotos + emptyPhotos
-    }
+    // MARK: ProfilePhotoPickerCollectionViewCellDelegate
 
+    private func didTapOnProfilePhotoCell(cell: ProfilePhotoPickerCollectionViewCell) {
+        guard let index = indexPathForCell(cell) else { return }
+        guard let photo = photosDataSource.state.data?[safe: index.item] else { return }
+        guard let presentingVC = presentingViewController else { return }
+        
+        let _alertController: UIAlertController? = {
+            switch photo {
+            case .Empty:
+                let alert = UIAlertController(title: localizableString(.AddPhotoTitle), message: nil, preferredStyle: .ActionSheet)
+                
+                let cameraAction = UIAlertAction(title: localizableString(.Camera), style: .Default) { _ in
+                    self.mediaPicker.getMedia(source: .Camera, handler: self.userAddedProfilePicture)
+                }
+                
+                let albumAction = UIAlertAction(title: localizableString(.PhotoAlbum), style: .Default) { _ in
+                    self.mediaPicker.getMedia(source: .PhotoAlbum, handler: self.userAddedProfilePicture)
+                }
+                
+                let dismissAction = UIAlertAction(title: localizableString(.Dismiss), style: .Cancel) { _ in
+                    
+                }
+                
+                alert.addAction(cameraAction)
+                alert.addAction(albumAction)
+                alert.addAction(dismissAction)
+                return alert
+            case .Filled(let photo):
+                let alert = UIAlertController(title: localizableString(.ConfirmDeleteTitle), message: nil, preferredStyle: .Alert)
+                
+                let yesAction = UIAlertAction(title: localizableString(.Yes), style: .Destructive) { _ in
+                    self.profilePhotoDelegate?.userDeletedProfilePictureAtIndex(index.item)
+                }
+                
+                let noAction = UIAlertAction(title: localizableString(.No), style: .Default) { _ in
+                    
+                }
+                
+                alert.addAction(yesAction)
+                alert.addAction(noAction)
+                return alert
+            case .Uploading(_, _):
+                return nil
+            }
+        }()
+        
+        guard let alertController = _alertController else { return }
+        presentingVC.presentViewController(alertController, animated: true, completion: nil)
+    }
+}
+
+private protocol ProfilePhotoPickerCollectionViewCellDelegate: class {
+    func didTapOnProfilePhotoCell(cell: ProfilePhotoPickerCollectionViewCell)
 }
 
 private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewModelReusable {
@@ -128,6 +198,8 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
 
     let accesoryView = UIButton(type: .Custom)
 
+    var cellDelegate: ProfilePhotoPickerCollectionViewCellDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -180,6 +252,6 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     // MARK: IBActions
     
     @objc func onAccesoryTapped() {
-        print("Button tapped")
+        cellDelegate?.didTapOnProfilePhotoCell(self)
     }
 }

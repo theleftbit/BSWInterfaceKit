@@ -18,7 +18,7 @@ public enum ListState<T> {
     case Loaded(data: [T])
     case Failure(error: ErrorType)
 
-    var isLoading: Bool {
+    public var isLoading: Bool {
         switch self {
         case .Loading(_):
             return true
@@ -27,7 +27,7 @@ public enum ListState<T> {
         }
     }
 
-    var isError: Bool {
+    public var isError: Bool {
         switch self {
         case .Failure(_):
             return true
@@ -36,12 +36,21 @@ public enum ListState<T> {
         }
     }
 
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         switch self {
         case .Loaded(let array):
             return array.count == 0
         default:
             return false
+        }
+    }
+    
+    public var data: [T]? {
+        switch self {
+        case .Loaded(let array):
+            return array
+        default:
+            return nil
         }
     }
 }

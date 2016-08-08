@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "Source/**/*.{swift,m,h}"
-  s.resources     = "Assets/**/*.{xcassets,storyboard}"
+  s.resources     = "Assets/**/*.{xcassets,storyboard,strings}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation"
