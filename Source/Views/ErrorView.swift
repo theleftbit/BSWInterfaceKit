@@ -13,7 +13,6 @@ public class ErrorView: UIView {
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .Vertical
         stackView.alignment = .Center
         stackView.spacing = 10

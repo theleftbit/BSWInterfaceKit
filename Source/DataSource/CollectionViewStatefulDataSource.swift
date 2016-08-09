@@ -66,6 +66,9 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
                 case .Move(let from, let to):
                     models.moveItem(fromIndex: from.item, toIndex: to.item)
                     self.state = .Loaded(data: models)
+                case .Reload(let model, let indexPath):
+                    models[indexPath.item] = model
+                    self.state = .Loaded(data: models)
                 }
             }
             
@@ -205,6 +208,7 @@ public enum CollectionViewEditActionKind<Model> {
     case Insert(item: Model, atIndexPath: NSIndexPath)
     case Remove(fromIndexPath: NSIndexPath)
     case Move(fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath)
+    case Reload(item: Model, indexPath: NSIndexPath)
 }
 
 public struct CollectionViewReorderSupport {
@@ -227,6 +231,8 @@ extension UICollectionView {
                     self.insertItemsAtIndexPaths([at])
                 case .Move(let from, let to):
                     self.moveItemAtIndexPath(from, toIndexPath: to)
+                case .Reload(let _, let indexPath):
+                    self.reloadItemsAtIndexPaths([indexPath])
                 }
             }
 
