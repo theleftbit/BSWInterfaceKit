@@ -5,6 +5,7 @@
 
 import UIKit
 import MobileCoreServices
+import Photos
 
 public typealias MediaHandler = (NSURL? -> Void)
 
@@ -20,6 +21,15 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
                 return .Photo
             case .Video:
                 return .Video
+            }
+        }
+        
+        func pathExtension() -> String {
+            switch self {
+            case .Photo:
+                return "png"
+            case .Video:
+                return "mov"
             }
         }
     }
@@ -105,16 +115,33 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
             return
         }
         
-        guard let mediaURL = info[UIImagePickerControllerReferenceURL] as? NSURL else {
+        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
             self.currentRequest?.handler(nil)
             return
         }
 
-        self.currentRequest?.handler(mediaURL)
+        guard let data = UIImageJPEGRepresentation(image, 0.6) else {
+            self.currentRequest?.handler(nil)
+            return
+        }
+        
+        do {
+            let finalURL = cachePathForMedia(currentRequest.kind)
+            try data.writeToURL(finalURL, options: [.DataWritingAtomic])
+            self.currentRequest?.handler(finalURL)
+        } catch {
+            self.currentRequest?.handler(nil)
+        }
     }
     
     public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         currentRequest?.handler(nil)
         currentRequest = nil
+    }
+    
+    private func cachePathForMedia(kind: Kind) -> NSURL {
+        let fileManager = NSFileManager.defaultManager()
+        let cachesDirectory = fileManager.URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask)[0]
+        return cachesDirectory.URLByAppendingPathComponent("\(NSUUID().UUIDString).\(kind.pathExtension())")
     }
 }

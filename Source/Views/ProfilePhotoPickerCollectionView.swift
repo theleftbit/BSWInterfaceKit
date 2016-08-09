@@ -11,20 +11,21 @@ public enum PhotoPickerViewModel {
     case Uploading(NSProgress, UIImage)
     case Filled(Photo)
     
-    func isEmpty() -> Bool {
+    func isFilled() -> Bool {
         switch self {
-        case .Empty:
+        case .Filled(_):
             return true
         default:
             return false
         }
     }
     
-    static func createPhotoArray(photos: [Photo], maxPhotos: Int) -> [PhotoPickerViewModel] {
+    static func createPhotoArray(photos: [Photo], uploadingPhotos: [(NSProgress, UIImage)] = [], maxPhotos: Int) -> [PhotoPickerViewModel] {
         let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.Filled($0)  }
-        let missingPhotos = maxPhotos - photosAsUploadPhotos.count
+        let uploadingPhotos = uploadingPhotos.map { return PhotoPickerViewModel.Uploading($0)  }
+        let missingPhotos = maxPhotos - photosAsUploadPhotos.count - uploadingPhotos.count
         let emptyPhotos = [PhotoPickerViewModel](count:missingPhotos, repeatedValue: PhotoPickerViewModel.Empty)
-        return photosAsUploadPhotos + emptyPhotos
+        return photosAsUploadPhotos + uploadingPhotos + emptyPhotos
     }
 }
 
@@ -62,12 +63,12 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         let reorderSupport = CollectionViewReorderSupport(
             canMoveItemAtIndexPath: { (indexPath) -> Bool in
                 //Only allow moving of valid photos
-                guard let fromPhoto = self.photos[safe:indexPath.item] where !fromPhoto.isEmpty()  else { return false }
+                guard let fromPhoto = self.photos[safe:indexPath.item] where fromPhoto.isFilled()  else { return false }
                 return true
             },
             moveItemAtIndexPath: { (from, to) in
                 //If the destination is not valid, transition back
-                guard let destinationPhoto = self.photos[safe:to.item] where !destinationPhoto.isEmpty() else {                    
+                guard let destinationPhoto = self.photos[safe:to.item] where destinationPhoto.isFilled() else {
                     self.photosDataSource.performEditActions([.Move(fromIndexPath: to, toIndexPath: from)])
                     return
                 }
@@ -208,12 +209,12 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     
     let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFit
+        imageView.contentMode = .ScaleAspectFill
         return imageView
     }()
 
     let accesoryView = UIButton(type: .Custom)
-
+    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .White)
     var cellDelegate: ProfilePhotoPickerCollectionViewCellDelegate?
     
     override init(frame: CGRect) {
@@ -228,16 +229,20 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     
     private func setup() {
         contentView.addSubview(imageView)
+        contentView.addSubview(spinner)
         imageView.addSubview(accesoryView)
         imageView.backgroundColor = .whiteColor()
         imageView.roundCorners()
         imageView.userInteractionEnabled = true
-        constrain(imageView, accesoryView) { imageView, accesoryView in
+        spinner.hidesWhenStopped = true
+        constrain(imageView, accesoryView, spinner) { imageView, accesoryView, spinner in
             imageView.edges == inset(imageView.superview!.edges, Constants.CellPadding)
             accesoryView.bottom == imageView.bottom - Constants.CellPadding
             accesoryView.right == imageView.right - Constants.CellPadding
             accesoryView.width == Constants.AccesorySize
             accesoryView.height == Constants.AccesorySize
+            spinner.centerX == spinner.superview!.centerX
+            spinner.centerY == spinner.superview!.centerY
         }
     }
     
@@ -254,13 +259,20 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
 
         switch viewModel {
         case .Empty:
+            spinner.stopAnimating()
             imageView.image = nil
             imageView.backgroundColor = .lightGrayColor()
+            imageView.removeBlurImage()
             accesoryView.setImage(UIImage.templateImage(.PlusRound), forState: .Normal)
-        case .Uploading(_, _):
-            break
+        case .Uploading(_, let image):
+            spinner.startAnimating()
+            imageView.image = image
+            imageView.makeBlurImage()
+            accesoryView.setImage(nil, forState: .Normal)
         case .Filled(let photo):
+            spinner.stopAnimating()
             imageView.bsw_setPhoto(photo)
+            imageView.removeBlurImage()
             accesoryView.setImage(UIImage.templateImage(.CancelRound), forState: .Normal)
         }
     }
