@@ -29,7 +29,7 @@ extension UIImageView {
         }
     }
 
-    func makeBlurImage() {
+    func addBlurEffect() {
         self.blurEffectView = {
             let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
             self.addSubview(effectView)
@@ -38,7 +38,7 @@ extension UIImageView {
         }()
     }
     
-    func removeBlurImage() {
+    func removeBlurEffect() {
         blurEffectView?.removeFromSuperview()
         blurEffectView = nil
     }

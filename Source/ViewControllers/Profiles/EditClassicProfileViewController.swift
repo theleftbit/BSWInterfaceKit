@@ -112,14 +112,13 @@ extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDe
 // MARK: ProfilePhotoPickerDelegate
 
 extension EditClassicProfileViewController: ProfilePhotoPickerDelegate {
-    public func userAddedProfilePicture(url: NSURL) {
-        
-        guard let delegate = self.delegate else { return }
-        guard let data = NSData(contentsOfURL: url) else { return }
-        guard let image = UIImage(data: data) else { return }
-        guard let progress = delegate.didRequestAddPhoto(imageURL: url) else { return }
+    public func userAddedProfilePicture(url: NSURL) -> (NSProgress, UIImage)? {
+        guard let data = NSData(contentsOfURL: url) else { return nil }
+        guard let image = UIImage(data: data) else { return nil }
+        guard let delegate = self.delegate else { return nil }
+        guard let progress = delegate.didRequestAddPhoto(imageURL: url) else { return nil }
         PhotoUploadObserver.observer.observeProgress(progress, forImage: image)
-        tableView.reloadData()
+        return (progress, image)
     }
     
     public func userDeletedProfilePictureAtIndex(index: Int) {

@@ -19,7 +19,25 @@ public enum PhotoPickerViewModel {
             return false
         }
     }
-    
+
+    func isUploading() -> Bool {
+        switch self {
+        case .Uploading(_, _):
+            return true
+        default:
+            return false
+        }
+    }
+
+    func isEmpty() -> Bool {
+        switch self {
+        case .Empty:
+            return true
+        default:
+            return false
+        }
+    }
+
     static func createPhotoArray(photos: [Photo], uploadingPhotos: [(NSProgress, UIImage)] = [], maxPhotos: Int) -> [PhotoPickerViewModel] {
         let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.Filled($0)  }
         let uploadingPhotos = uploadingPhotos.map { return PhotoPickerViewModel.Uploading($0)  }
@@ -30,7 +48,7 @@ public enum PhotoPickerViewModel {
 }
 
 public protocol ProfilePhotoPickerDelegate: class {
-    func userAddedProfilePicture(url: NSURL)
+    func userAddedProfilePicture(url: NSURL) -> (NSProgress, UIImage)?
     func userDeletedProfilePictureAtIndex(index: Int)
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
@@ -112,7 +130,13 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     
     private func userAddedProfilePicture(url: NSURL?) {
         guard let url = url else { return }
-        profilePhotoDelegate?.userAddedProfilePicture(url)
+        guard let photos = self.photosDataSource.state.data else { return }
+        guard let index = photos.indexOf({ return $0.isEmpty() }) else { return }
+        guard let tuple = profilePhotoDelegate?.userAddedProfilePicture(url) else { return }
+        
+        let firstEmptyIndexPath = NSIndexPath(forItem: index, inSection: 0)
+        let action: CollectionViewEditActionKind<PhotoPickerViewModel> = .Reload(item: .Uploading(tuple), indexPath: firstEmptyIndexPath)
+        photosDataSource.performEditActions([action])
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
@@ -250,6 +274,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         super.prepareForReuse()
         imageView.image = nil
         imageView.backgroundColor = .whiteColor()
+        imageView.removeBlurEffect()
         accesoryView.removeTarget(self, action: #selector(onAccesoryTapped), forControlEvents: .TouchDown)
     }
     
@@ -262,17 +287,15 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
             spinner.stopAnimating()
             imageView.image = nil
             imageView.backgroundColor = .lightGrayColor()
-            imageView.removeBlurImage()
             accesoryView.setImage(UIImage.templateImage(.PlusRound), forState: .Normal)
         case .Uploading(_, let image):
             spinner.startAnimating()
             imageView.image = image
-            imageView.makeBlurImage()
+            imageView.addBlurEffect()
             accesoryView.setImage(nil, forState: .Normal)
         case .Filled(let photo):
             spinner.stopAnimating()
             imageView.bsw_setPhoto(photo)
-            imageView.removeBlurImage()
             accesoryView.setImage(UIImage.templateImage(.CancelRound), forState: .Normal)
         }
     }
