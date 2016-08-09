@@ -53,8 +53,24 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         collectionView?.reloadData()
     }
     
-    public func moveItem(fromIndexPath from: NSIndexPath, toIndexPath to: NSIndexPath) {
-        commitMoveItem(from, to: to, moveKind: .APIInitiated)
+    public func performEditActions(actions: [CollectionViewEditActionKind<Model>]) {
+        if case .Loaded(var models) = self.state {
+            actions.forEach {
+                switch $0 {
+                case .Insert(let item, let indexPath):
+                    models.insert(item, atIndex: indexPath.item)
+                    self.state = .Loaded(data: models)
+                case .Remove(let fromIndexPath):
+                    models.removeAtIndex(fromIndexPath.item)
+                    self.state = .Loaded(data: models)
+                case .Move(let from, let to):
+                    models.moveItem(fromIndex: from.item, toIndex: to.item)
+                    self.state = .Loaded(data: models)
+                }
+            }
+            
+            collectionView?.performEditActions(actions)
+        }
     }
 
     public func modelForIndexPath(indexPath: NSIndexPath) -> Model? {
@@ -68,17 +84,19 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     
     //MARK:- UICollectionViewDataSource
 
+    @objc public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     @objc public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         defer { addEmptyViewForCurrentState() }
         
         switch self.state {
-        case .Failure(_):
-            return 0
-        case .Loading(_):
-            return 0
         case .Loaded(let models):
             return models.count
+        default:
+            return 0
         }
     }
     
@@ -87,12 +105,7 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
             fatalError()
         }
         
-        switch self.state {
-        case .Failure(_):
-            break
-        case .Loading(_):
-            break
-        case .Loaded(let models):
+        if case .Loaded(let models) = self.state {
             let model = models[indexPath.row]
             let viewModel = self.mapper(model)
             cell.configureFor(viewModel: viewModel)
@@ -108,7 +121,11 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     
     @objc public func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
-        commitMoveItem(sourceIndexPath, to: destinationIndexPath, moveKind: .UserInitiated(commitMoveHandler))
+        if case .Loaded(var models) = self.state {
+            models.moveItem(fromIndex: sourceIndexPath.item, toIndex: destinationIndexPath.item)
+            self.state = .Loaded(data: models)
+            commitMoveHandler(from: sourceIndexPath, to: destinationIndexPath)
+        }
     }
     
     //MARK:- Private
@@ -184,41 +201,35 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
 
 //MARK: - Reorder Support
 
-extension CollectionViewStatefulDataSource {
-
-    private func commitMoveItem(from: NSIndexPath, to: NSIndexPath, moveKind: CollectionViewReorderSupport.MoveKind) {
-        switch self.state {
-        case .Failure(_):
-            break
-        case .Loading(_):
-            break
-        case .Loaded(var models):
-            models.moveItem(fromIndex: from.item, toIndex: to.item)
-            self.state = .Loaded(data: models)
-            switch moveKind {
-            case .APIInitiated:
-                collectionView?.performBatchUpdates({
-                    self.collectionView?.moveItemAtIndexPath(from, toIndexPath: to)
-                    }, completion: nil)
-            case .UserInitiated(let handler):
-                handler(from: from, to: to)
-            }
-        }
-    }
-
+public enum CollectionViewEditActionKind<Model> {
+    case Insert(item: Model, atIndexPath: NSIndexPath)
+    case Remove(fromIndexPath: NSIndexPath)
+    case Move(fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath)
 }
 
 public struct CollectionViewReorderSupport {
+    public typealias CommitMoveItemHandler = ((from: NSIndexPath, to: NSIndexPath) -> Void)
+    public typealias CanMoveItemHandler = (NSIndexPath -> Bool)
     
-    typealias CommitMoveItemHandler = ((from: NSIndexPath, to: NSIndexPath) -> Void)
-    typealias CanMoveItemHandler = (NSIndexPath -> Bool)
-    
-    private enum MoveKind {
-        case APIInitiated
-        case UserInitiated(CollectionViewReorderSupport.CommitMoveItemHandler)
-    }
-
-    let canMoveItemAtIndexPath: (NSIndexPath -> Bool)
-    let moveItemAtIndexPath: CommitMoveItemHandler
+    public let canMoveItemAtIndexPath: CanMoveItemHandler
+    public let moveItemAtIndexPath: CommitMoveItemHandler
 }
 
+extension UICollectionView {
+    private func performEditActions<T>(actions: [CollectionViewEditActionKind<T>]) {
+        performBatchUpdates({ 
+            
+            actions.forEach {
+                switch $0 {
+                case .Remove(let from):
+                    self.deleteItemsAtIndexPaths([from])
+                case .Insert(let _, let at):
+                    self.insertItemsAtIndexPaths([at])
+                case .Move(let from, let to):
+                    self.moveItemAtIndexPath(from, toIndexPath: to)
+                }
+            }
+
+            }, completion: nil)
+    }
+}
