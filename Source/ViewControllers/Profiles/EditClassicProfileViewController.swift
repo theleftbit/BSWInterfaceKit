@@ -7,11 +7,11 @@ import UIKit
 import Cartography
 import BSWFoundation
 
-protocol EditClassicProfileDelegate: EditClassicProfilePhotoDelegate {
+public protocol EditClassicProfileDelegate: EditClassicProfilePhotoDelegate {
     
 }
 
-protocol EditClassicProfilePhotoDelegate: class {
+public protocol EditClassicProfilePhotoDelegate: class {
     func didChangePhotoArrangement(fromIndex index: Int, toIndex: Int)
     func didRequestDeletePhoto(photoIndex: Int)
     func didRequestAddPhoto(imageURL url: NSURL) -> NSProgress?
@@ -42,10 +42,9 @@ public class EditClassicProfileViewController: UIViewController, ViewModelConfig
     }
     
     var profile: ClassicProfileViewModel
-    weak var delegate: EditClassicProfileDelegate?
-
-    let tableView = UITableView(frame: CGRectZero, style: .Grouped)
+    public weak var delegate: EditClassicProfileDelegate?
     
+    private let tableView = UITableView(frame: CGRectZero, style: .Grouped)
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -114,7 +113,13 @@ extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDe
 
 extension EditClassicProfileViewController: ProfilePhotoPickerDelegate {
     public func userAddedProfilePicture(url: NSURL) {
-        guard let _ = self.delegate else { return }
+        
+        guard let delegate = self.delegate else { return }
+        guard let data = NSData(contentsOfURL: url) else { return }
+        guard let image = UIImage(data: data) else { return }
+        guard let progress = delegate.didRequestAddPhoto(imageURL: url) else { return }
+        PhotoUploadObserver.observer.observeProgress(progress, forImage: image)
+        tableView.reloadData()
     }
     
     public func userDeletedProfilePictureAtIndex(index: Int) {
@@ -152,6 +157,7 @@ private class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegat
         photosCollectionView.updatePhotos(
             PhotoPickerViewModel.createPhotoArray(
                 photos,
+                uploadingPhotos: PhotoUploadObserver.observer.currentUploads,
                 maxPhotos: ProfilePhotoPickerCollectionView.Constants.MaxPhotosCount
             )
         )
@@ -160,5 +166,15 @@ private class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegat
     public func setPresentingViewController(vc: UIViewController, profilePhotoDelegate: ProfilePhotoPickerDelegate) {
         photosCollectionView.presentingViewController = vc
         photosCollectionView.profilePhotoDelegate = profilePhotoDelegate
+    }
+}
+
+private class PhotoUploadObserver {
+    
+    static let observer = PhotoUploadObserver()
+    private var currentUploads:[(NSProgress, UIImage)] = []
+    
+    func observeProgress(progress: NSProgress, forImage image: UIImage) {
+        currentUploads.append((progress, image))
     }
 }
