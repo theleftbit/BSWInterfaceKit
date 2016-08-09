@@ -12,9 +12,9 @@ protocol EditClassicProfileDelegate: EditClassicProfilePhotoDelegate {
 }
 
 protocol EditClassicProfilePhotoDelegate: class {
-    func didChangePhotoArrangement(fromIndex index: UInt, toIndex: UInt)
-    func didRequestDeletePhoto(atIndex index: UInt)
-    func didRequestAddPhoto(atIndex index: UInt)
+    func didChangePhotoArrangement(fromIndex index: Int, toIndex: Int)
+    func didRequestDeletePhoto(photoIndex: Int)
+    func didRequestAddPhoto(imageURL url: NSURL) -> NSProgress?
 }
 
 public class EditClassicProfileViewController: UIViewController, ViewModelConfigurable {
@@ -114,11 +114,16 @@ extension EditClassicProfileViewController: UITableViewDataSource, UITableViewDe
 
 extension EditClassicProfileViewController: ProfilePhotoPickerDelegate {
     public func userAddedProfilePicture(url: NSURL) {
-        
+        guard let _ = self.delegate else { return }
     }
     
     public func userDeletedProfilePictureAtIndex(index: Int) {
+        self.delegate?.didRequestDeletePhoto(index)
+        self.profile = profile.removePhotoAtIndex(index)
+    }
     
+    public func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int) {
+        self.delegate?.didChangePhotoArrangement(fromIndex: index, toIndex: toIndex)
     }
 }
 
@@ -144,15 +149,12 @@ private class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegat
     }
     
     public func prepareForPhotos(photos: [Photo]) {
-        
-        func createPhotoArray(photos: [Photo]) -> [PhotoPickerViewModel] {
-            let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.Filled($0)  }
-            let missingPhotos = ProfilePhotoPickerCollectionView.Constants.MaxPhotosCount - photosAsUploadPhotos.count
-            let emptyPhotos = [PhotoPickerViewModel](count:missingPhotos, repeatedValue: PhotoPickerViewModel.Empty)
-            return photosAsUploadPhotos + emptyPhotos
-        }
-
-        photosCollectionView.updatePhotos(createPhotoArray(photos))
+        photosCollectionView.updatePhotos(
+            PhotoPickerViewModel.createPhotoArray(
+                photos,
+                maxPhotos: ProfilePhotoPickerCollectionView.Constants.MaxPhotosCount
+            )
+        )
     }
     
     public func setPresentingViewController(vc: UIViewController, profilePhotoDelegate: ProfilePhotoPickerDelegate) {

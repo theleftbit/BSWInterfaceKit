@@ -17,10 +17,25 @@ public struct ClassicProfileViewModel {
         self.detailsInfo = detailsInfo
         self.extraInfo = extraInfo
     }
-    
+}
+
+// MARK: - Photo handling
+
+extension ClassicProfileViewModel {
     func movePhotoAtIndex(index: Int, toIndex: Int) -> ClassicProfileViewModel {
         var photos = self.photos
         photos.moveItem(fromIndex: index, toIndex: toIndex)
+        return ClassicProfileViewModel(
+            photos: photos,
+            titleInfo: titleInfo,
+            detailsInfo: detailsInfo,
+            extraInfo: extraInfo
+        )
+    }
+    
+    func removePhotoAtIndex(index: Int) -> ClassicProfileViewModel {
+        var photos = self.photos
+        photos.removeAtIndex(index)
         return ClassicProfileViewModel(
             photos: photos,
             titleInfo: titleInfo,

@@ -19,11 +19,19 @@ public enum PhotoPickerViewModel {
             return false
         }
     }
+    
+    static func createPhotoArray(photos: [Photo], maxPhotos: Int) -> [PhotoPickerViewModel] {
+        let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.Filled($0)  }
+        let missingPhotos = maxPhotos - photosAsUploadPhotos.count
+        let emptyPhotos = [PhotoPickerViewModel](count:missingPhotos, repeatedValue: PhotoPickerViewModel.Empty)
+        return photosAsUploadPhotos + emptyPhotos
+    }
 }
 
 public protocol ProfilePhotoPickerDelegate: class {
     func userAddedProfilePicture(url: NSURL)
     func userDeletedProfilePictureAtIndex(index: Int)
+    func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
 
 public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
@@ -59,12 +67,13 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
             },
             moveItemAtIndexPath: { (from, to) in
                 //If the destination is not valid, transition back
-                guard let destinationPhoto = self.photos[safe:to.item] where !destinationPhoto.isEmpty() else {
-                    self.photosDataSource.moveItem(fromIndexPath: to, toIndexPath: from)
+                guard let destinationPhoto = self.photos[safe:to.item] where !destinationPhoto.isEmpty() else {                    
+                    self.photosDataSource.performEditActions([.Move(fromIndexPath: to, toIndexPath: from)])
                     return
                 }
                 
                 self.photos.moveItem(fromIndex: from.item, toIndex: to.item)
+                self.profilePhotoDelegate?.userChangedPhotoArrangement(fromIndex: from.item, toIndex: to.item)
             }
         )
         
@@ -139,20 +148,20 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
             case .Empty:
                 let alert = UIAlertController(title: localizableString(.AddPhotoTitle), message: nil, preferredStyle: .ActionSheet)
                 
-                let cameraAction = UIAlertAction(title: localizableString(.Camera), style: .Default) { _ in
-                    self.mediaPicker.getMedia(source: .Camera, handler: self.userAddedProfilePicture)
-                }
-                
                 let albumAction = UIAlertAction(title: localizableString(.PhotoAlbum), style: .Default) { _ in
                     self.mediaPicker.getMedia(source: .PhotoAlbum, handler: self.userAddedProfilePicture)
+                }
+
+                let cameraAction = UIAlertAction(title: localizableString(.Camera), style: .Default) { _ in
+                    self.mediaPicker.getMedia(source: .Camera, handler: self.userAddedProfilePicture)
                 }
                 
                 let dismissAction = UIAlertAction(title: localizableString(.Dismiss), style: .Cancel) { _ in
                     
                 }
-                
-                alert.addAction(cameraAction)
+
                 alert.addAction(albumAction)
+                alert.addAction(cameraAction)
                 alert.addAction(dismissAction)
                 return alert
             case .Filled(let photo):
@@ -160,6 +169,13 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
                 
                 let yesAction = UIAlertAction(title: localizableString(.Yes), style: .Destructive) { _ in
                     self.profilePhotoDelegate?.userDeletedProfilePictureAtIndex(index.item)
+                    
+                    let actions: [CollectionViewEditActionKind<PhotoPickerViewModel>] = [
+                        .Insert(item: PhotoPickerViewModel.Empty, atIndexPath: NSIndexPath(forItem: Constants.MaxPhotosCount - 1, inSection: 0)),
+                        .Remove(fromIndexPath: index)
+                    ]
+
+                    self.photosDataSource.performEditActions(actions)
                 }
                 
                 let noAction = UIAlertAction(title: localizableString(.No), style: .Default) { _ in
