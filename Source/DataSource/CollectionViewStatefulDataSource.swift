@@ -18,12 +18,12 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     public weak var listPresenter: ListStatePresenter?
     public let mapper: ModelMapper
     private var emptyView: UIView?
-    public let reorderSupport: CollectionViewReorderSupport?
+    public let reorderSupport: CollectionViewReorderSupport<Model>?
     
     public init(state: ListState<Model> = .Loading,
                 collectionView: UICollectionView,
                 listPresenter: ListStatePresenter? = nil,
-                reorderSupport: CollectionViewReorderSupport? = nil,
+                reorderSupport: CollectionViewReorderSupport<Model>? = nil,
                 mapper: ModelMapper) {
         self.state = state
         self.collectionView = collectionView
@@ -125,9 +125,10 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     @objc public func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
         if case .Loaded(var models) = self.state {
+            let movedItem = models[destinationIndexPath.item]
             models.moveItem(fromIndex: sourceIndexPath.item, toIndex: destinationIndexPath.item)
             self.state = .Loaded(data: models)
-            commitMoveHandler(from: sourceIndexPath, to: destinationIndexPath)
+            commitMoveHandler(from: sourceIndexPath, to: destinationIndexPath, movedItem: movedItem)
         }
     }
     
@@ -211,8 +212,8 @@ public enum CollectionViewEditActionKind<Model> {
     case Reload(item: Model, indexPath: NSIndexPath)
 }
 
-public struct CollectionViewReorderSupport {
-    public typealias CommitMoveItemHandler = ((from: NSIndexPath, to: NSIndexPath) -> Void)
+public struct CollectionViewReorderSupport<Model> {
+    public typealias CommitMoveItemHandler = ((from: NSIndexPath, to: NSIndexPath, movedItem: Model) -> Void)
     public typealias CanMoveItemHandler = (NSIndexPath -> Bool)
     
     public let canMoveItemAtIndexPath: CanMoveItemHandler

@@ -64,12 +64,16 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         return MediaPickerBehavior(presentingVC: self.presentingViewController!)
     }()
     
-    public private(set) var photos: [PhotoPickerViewModel]
+    private var photos: [PhotoPickerViewModel] {
+        get {
+            return photosDataSource.state.data ?? []
+        }
+    }
     public weak var presentingViewController: UIViewController?
     public weak var profilePhotoDelegate: ProfilePhotoPickerDelegate?
 
     public init(photos: [PhotoPickerViewModel] = []) {
-        self.photos = photos
+
         super.init(frame: CGRectZero, collectionViewLayout: BSWCollectionViewFlowLayout())
         
         /// Prepare the FlowLayout
@@ -78,20 +82,20 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         flowLayout.minimumInteritemSpacing = 0
         
         /// Add Reorder support
-        let reorderSupport = CollectionViewReorderSupport(
+        let reorderSupport = CollectionViewReorderSupport<PhotoPickerViewModel>(
             canMoveItemAtIndexPath: { (indexPath) -> Bool in
                 //Only allow moving of valid photos
                 guard let fromPhoto = self.photos[safe:indexPath.item] where fromPhoto.isFilled()  else { return false }
                 return true
             },
-            moveItemAtIndexPath: { (from, to) in
+            moveItemAtIndexPath: { (from, to, movedItem) in
+                
                 //If the destination is not valid, transition back
-                guard let destinationPhoto = self.photos[safe:to.item] where destinationPhoto.isFilled() else {
+                guard movedItem.isFilled() else {
                     self.photosDataSource.performEditActions([.Move(fromIndexPath: to, toIndexPath: from)])
                     return
                 }
                 
-                self.photos.moveItem(fromIndex: from.item, toIndex: to.item)
                 self.profilePhotoDelegate?.userChangedPhotoArrangement(fromIndex: from.item, toIndex: to.item)
             }
         )
@@ -124,7 +128,6 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     }
     
     public func updatePhotos(photos: [PhotoPickerViewModel]) {
-        self.photos = photos
         photosDataSource.updateState(.Loaded(data: photos))
     }
     
