@@ -56,7 +56,10 @@ public protocol ProfilePhotoPickerDelegate: class {
 public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {
-        static let MaxPhotosCount = 6
+        static let Columns = 3
+        static let Rows = 2
+        static var MaxPhotosCount: Int { return Columns * Rows }
+        static var PhotoPickerRatio: CGFloat { return (CGFloat(Rows) / CGFloat(Columns)) }
     }
     
     private var photosDataSource: CollectionViewStatefulDataSource<PhotoPickerViewModel, ProfilePhotoPickerCollectionViewCell>!
@@ -154,8 +157,8 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         }
         
         return CGSizeMake(
-            CGRectGetWidth(self.frame) / 3,
-            CGRectGetHeight(self.frame) / 2
+            CGRectGetWidth(self.frame) / CGFloat(Constants.Columns),
+            CGRectGetHeight(self.frame) / CGFloat(Constants.Rows)
         )
     }
     
