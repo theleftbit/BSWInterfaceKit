@@ -81,8 +81,6 @@ extension PhotoGalleryView {
         scrollableStackView.delegate = updatePageControlOnScrollBehavior
         
         // Page control
-        pageControl.numberOfPages = photos.count
-        pageControl.currentPage = 0
         addSubview(pageControl)
         
         // Image views
@@ -104,6 +102,8 @@ extension PhotoGalleryView {
             imageView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
             imageView.widthAnchor.constraintEqualToAnchor(widthAnchor).active = true
         }
+        
+        pageControl.numberOfPages = photos.count
     }
     
     private func createImageView(forPhoto photo: Photo) -> UIImageView {

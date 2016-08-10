@@ -48,7 +48,7 @@ public enum PhotoPickerViewModel {
 }
 
 public protocol ProfilePhotoPickerDelegate: class {
-    func userAddedProfilePicture(url: NSURL) -> (NSProgress, UIImage)?
+    func userAddedProfilePicture(url: NSURL, handler: ((NSProgress, UIImage)? -> Void)) -> Void
     func userDeletedProfilePictureAtIndex(index: Int)
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
@@ -138,11 +138,12 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         guard let url = url else { return }
         guard let photos = self.photosDataSource.state.data else { return }
         guard let index = photos.indexOf({ return $0.isEmpty() }) else { return }
-        guard let tuple = profilePhotoDelegate?.userAddedProfilePicture(url) else { return }
-        
-        let firstEmptyIndexPath = NSIndexPath(forItem: index, inSection: 0)
-        let action: CollectionViewEditActionKind<PhotoPickerViewModel> = .Reload(item: .Uploading(tuple), indexPath: firstEmptyIndexPath)
-        photosDataSource.performEditActions([action])
+        profilePhotoDelegate?.userAddedProfilePicture(url) {
+            guard let tuple = $0 else { return }
+            let firstEmptyIndexPath = NSIndexPath(forItem: index, inSection: 0)
+            let action: CollectionViewEditActionKind<PhotoPickerViewModel> = .Reload(item: .Uploading(tuple), indexPath: firstEmptyIndexPath)
+            self.photosDataSource.performEditActions([action])
+        }
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
