@@ -6,6 +6,10 @@
 import UIKit
 import QuartzCore
 
+enum Constants {
+    static let thickness = CGFloat(3) // this is the closes i found to UISlider
+}
+
 class RangeSliderTrackLayer: CALayer {
     weak var rangeSlider: RangeSlider?
     
@@ -14,9 +18,11 @@ class RangeSliderTrackLayer: CALayer {
             return
         }
         
+        let sliderY = CGRectGetMidY(bounds) - Constants.thickness / 2
+        
         // Clip
         let cornerRadius = bounds.height * slider.curvaceousness / 2.0
-        let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
+        let path = UIBezierPath(roundedRect: CGRectMake(bounds.origin.x, sliderY, bounds.size.width, Constants.thickness), cornerRadius: cornerRadius)
         CGContextAddPath(ctx, path.CGPath)
         
         // Fill the track
@@ -28,7 +34,7 @@ class RangeSliderTrackLayer: CALayer {
         CGContextSetFillColorWithColor(ctx, slider.trackHighlightTintColor.CGColor)
         let lowerValuePosition = CGFloat(slider.positionForValue(slider.lowerValue))
         let upperValuePosition = CGFloat(slider.positionForValue(slider.upperValue))
-        let rect = CGRect(x: lowerValuePosition, y: 0.0, width: upperValuePosition - lowerValuePosition, height: bounds.height)
+        let rect = CGRect(x: lowerValuePosition, y: sliderY, width: upperValuePosition - lowerValuePosition, height: Constants.thickness)
         CGContextFillRect(ctx, rect)
     }
 }
@@ -193,6 +199,10 @@ public class RangeSlider: UIControl {
         upperThumbLayer.rangeSlider = self
         upperThumbLayer.contentsScale = UIScreen.mainScreen().scale
         layer.addSublayer(upperThumbLayer)
+    }
+    
+    public override func intrinsicContentSize() -> CGSize {
+        return CGSize(width: UIViewNoIntrinsicMetric, height: 30)
     }
     
     func updateLayerFrames() {
