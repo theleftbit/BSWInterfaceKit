@@ -6,11 +6,12 @@
 import UIKit
 import Cartography
 
-class LaunchScreenViewController: UIViewController {
+public class LaunchScreenViewController: UIViewController {
     
-    var controllerToPresentOnAppereance: UIViewController?
+    public var controllerToPresentOnAppereance: UIViewController?
+    public var showSpinner = false
     
-    override func loadView() {
+    public override func loadView() {
         //Folks, don't do this at home!
         let baseVC = UIStoryboard(name: "LaunchScreen", bundle: NSBundle.mainBundle()).instantiateInitialViewController()!
         let view = baseVC.view
@@ -18,15 +19,27 @@ class LaunchScreenViewController: UIViewController {
         self.view = view
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        if let controllerToPresentOnAppereance = controllerToPresentOnAppereance {
-            presentViewController(controllerToPresentOnAppereance, animated: true, completion: nil)
-            self.controllerToPresentOnAppereance = nil
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        if showSpinner {
+            let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            view.addSubview(spinner)
+            spinner.startAnimating()
+            constrain(spinner) { spinner in
+                spinner.bottom == spinner.superview!.bottom - 80
+                spinner.centerX == spinner.superview!.centerX
+            }
         }
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    public override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        guard let controllerToPresentOnAppereance = controllerToPresentOnAppereance else { return }
+        presentViewController(controllerToPresentOnAppereance, animated: true, completion: nil)
+        self.controllerToPresentOnAppereance = nil
+    }
+    
+    public override func prefersStatusBarHidden() -> Bool {
         return true
     }
 }
