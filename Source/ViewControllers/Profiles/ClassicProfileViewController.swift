@@ -11,6 +11,15 @@ import BSWFoundation
 public enum ClassicProfileEditKind {
     case NonEditable
     case Editable(UIBarButtonItem)
+    
+    public var isEditable: Bool {
+        switch self {
+        case .Editable(_):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 public class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
