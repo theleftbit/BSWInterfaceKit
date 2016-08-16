@@ -5,6 +5,13 @@
 
 import Foundation
 
+extension UIWindow {
+    public func showErrorMessage(message: String, error: ErrorType) {
+        guard let rootViewController = self.visibleViewController else { return }
+        rootViewController.showErrorMessage(message, error: error)
+    }
+}
+
 extension UIViewController {
 
     public func showErrorMessage(message: String, error: ErrorType) {
@@ -34,8 +41,7 @@ private class PresentAlertOperation: NSOperation {
     override func main() {
         
         guard cancelled == false else {
-            self.executing = false
-            self.finished = true
+            self.finishOperation()
             return
         }
         
@@ -44,11 +50,14 @@ private class PresentAlertOperation: NSOperation {
 
         NSOperationQueue.mainQueue().addOperationWithBlock {
         
+            guard let _ = self.presentingViewController.view.window else {
+                self.finishOperation()
+                return
+            }
+            
             let alert = UIAlertController(title: "Error", message: self.message, preferredStyle: UIAlertControllerStyle.Alert)
             let action = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Cancel) { _ in
-                
-                self.executing = false
-                self.finished = true
+                self.finishOperation()
             }
             
             alert.addAction(action)
@@ -61,8 +70,10 @@ private class PresentAlertOperation: NSOperation {
     var _finished = false
     var _executing = false
 
-    override var executing:Bool {
-        get { return _executing }
+    override var executing: Bool {
+        get {
+            return _executing
+        }
         set {
             willChangeValueForKey("isExecuting")
             _executing = newValue
@@ -70,12 +81,19 @@ private class PresentAlertOperation: NSOperation {
         }
     }
     
-    override var finished:Bool {
-        get { return _finished }
+    override var finished: Bool {
+        get {
+            return _finished
+        }
         set {
             willChangeValueForKey("isFinished")
             _finished = newValue
             didChangeValueForKey("isFinished")
         }
+    }
+    
+    private func finishOperation() {
+        self.executing = false
+        self.finished = true
     }
 }
