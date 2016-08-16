@@ -43,6 +43,7 @@ public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable
     
     override public func prepareForReuse() {
         super.prepareForReuse()
+        cellImageView.backgroundColor = UIColor.clearColor()
         cellImageView.bsw_cancelImageLoadFromURL()
         cellImageView.image = nil
     }
