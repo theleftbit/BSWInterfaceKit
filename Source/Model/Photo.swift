@@ -22,6 +22,12 @@ public struct Photo {
         self.size = size
     }
 
+    public init(image: UIImage, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
+        self.kind = .Image(image)
+        self.averageColor = averageColor
+        self.size = size
+    }
+
     public init(url: NSURL, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
         self.kind = .URL(url)
         self.averageColor = averageColor
