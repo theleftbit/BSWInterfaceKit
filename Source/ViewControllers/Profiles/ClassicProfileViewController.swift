@@ -30,13 +30,26 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         static let PhotoGallerySize = CGFloat(250)
     }
     
-    public var dataProvider: Future<Result<ClassicProfileViewModel>>!
+    public var dataProvider: Future<Result<ClassicProfileViewModel>>! {
+        didSet {
+            scrollableStackView.alpha = 0
+            view.addSubview(loadingView)
+            loadingView.centerInSuperview()
+            
+            dataProvider.uponMainQueue { [weak self] _ in
+                guard let strongSelf = self else { return }
+                strongSelf.scrollableStackView.alpha = 1
+                strongSelf.loadingView.removeFromSuperview()
+            }
+        }
+    }
     public var editKind: ClassicProfileEditKind = .NonEditable
-    let photoGallery = PhotoGalleryView()
-    let titleLabel = UILabel.unlimitedLinesLabel()
-    let detailsLabel = UILabel.unlimitedLinesLabel()
-    let extraDetailsLabel = UILabel.unlimitedLinesLabel()
-    let separatorView: UIView = {
+    private lazy var loadingView = LoadingView()
+    private let photoGallery = PhotoGalleryView()
+    private let titleLabel = UILabel.unlimitedLinesLabel()
+    private let detailsLabel = UILabel.unlimitedLinesLabel()
+    private let extraDetailsLabel = UILabel.unlimitedLinesLabel()
+    private let separatorView: UIView = {
         let view = UIView()
         constrain(view) { view in
             view.height == Constants.SeparatorSize.height
@@ -46,7 +59,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         return view
     }()
     
-    var navBarBehaviour: NavBarTransparentBehavior?
+    private var navBarBehaviour: NavBarTransparentBehavior?
     
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -58,11 +71,6 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         automaticallyAdjustsScrollViewInsets = false
         if let tabBar = tabBarController?.tabBar {
             scrollableStackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: CGRectGetHeight(tabBar.frame), right: 0)
-        }
-        
-        //This is the transparent navBar behaviour
-        if let navBar = self.navigationController?.navigationBar {
-            navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
         
         //Add the photoGallery
@@ -84,6 +92,14 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
             navigationItem.rightBarButtonItem = barButton
         default:
             break
+        }
+    }
+    
+    override public func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        //This is the transparent navBar behaviour
+        if let navBar = self.navigationController?.navigationBar {
+            navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
     }
     
