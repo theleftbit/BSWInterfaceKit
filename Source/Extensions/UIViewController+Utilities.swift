@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Cartography
 
 extension UIWindow {
     public func showErrorMessage(message: String, error: ErrorType) {
@@ -16,11 +17,31 @@ extension UIViewController {
 
     public func showErrorMessage(message: String, error: ErrorType) {
         let operation = PresentAlertOperation(message: message, error: error, presentingViewController: self)
-        operationQueue.addOperation(operation)
+        errorQueue.addOperation(operation)
+    }
+    
+    public func addBottomActionButton(buttonConfig: ButtonConfiguration) {
+    
+        guard traitCollection.horizontalSizeClass == .Compact else { fatalError() }
+        view.removeSubviewWithTag(BottomActionTag)
+        
+        let button = UIButton()
+        button.tag = BottomActionTag
+        button.setButtonConfiguration(buttonConfig)
+        view.addSubview(button)
+        constrain(button) { winkButton in
+            winkButton.height >= 50
+            winkButton.bottom == winkButton.superview!.bottom
+            winkButton.leading == winkButton.superview!.leading
+            winkButton.trailing == winkButton.superview!.trailing
+        }
     }
 }
 
-private let operationQueue: NSOperationQueue = {
+// MARK: Private
+private let BottomActionTag = 345678
+
+private let errorQueue: NSOperationQueue = {
     let operationQueue = NSOperationQueue()
     operationQueue.maxConcurrentOperationCount = 1
     return operationQueue
