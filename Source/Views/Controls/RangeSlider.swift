@@ -6,7 +6,7 @@
 import UIKit
 import QuartzCore
 
-enum Constants {
+private enum Constants {
     static let thickness = CGFloat(3) // this is the closes i found to UISlider
 }
 
