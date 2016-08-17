@@ -46,7 +46,13 @@ extension UIView {
             view.edges == inset(view.superview!.edges, edges.top, edges.left, edges.bottom, edges.right)
         }
     }
-    
+
+    public func centerInSuperview() {
+        constrain(self) { view in
+            view.center == view.superview!.center
+        }
+    }
+
     public class func instantiateFromNib<T: UIView>(viewType: T.Type) -> T? {
         let className = NSStringFromClass(viewType).componentsSeparatedByString(".").last!
         let bundle = NSBundle(forClass: self)

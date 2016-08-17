@@ -34,7 +34,11 @@ extension AsyncViewModelPresenter where Self: UIViewController {
             let _ = strongSelf.view //This touches the view, making sure that the outlets are set
             switch result {
             case .Failure(let error):
-                strongSelf.showErrorMessage("Error fetching data", error: error)
+                #if DEBUG
+                    strongSelf.showErrorMessage("Error fetching data", error: error)
+                #else
+                    print("AsyncViewModelPresenter error: \(error)")
+                #endif
             case .Success(let viewModel):
                 guard let _ = strongSelf.view else { return }
                 strongSelf.configureFor(viewModel: viewModel)
