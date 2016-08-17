@@ -16,30 +16,86 @@ extension UIWindow {
 extension UIViewController {
 
     public func showErrorMessage(message: String, error: ErrorType) {
-        let operation = PresentAlertOperation(message: message, error: error, presentingViewController: self)
+        
+        #if DEBUG
+            let errorMessage = "\(message). \(error)"
+        #else
+            let errorMessage = message
+        #endif
+        
+        let operation = PresentAlertOperation(title: "Error", message: errorMessage, presentingViewController: self)
         errorQueue.addOperation(operation)
     }
-    
+
+    public func showTodoMessage() {
+        let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
+        errorQueue.addOperation(operation)
+    }
+
     public func addBottomActionButton(buttonConfig: ButtonConfiguration) {
     
         guard traitCollection.horizontalSizeClass == .Compact else { fatalError() }
-        view.removeSubviewWithTag(BottomActionTag)
         
-        let button = UIButton()
-        button.tag = BottomActionTag
-        button.setButtonConfiguration(buttonConfig)
-        view.addSubview(button)
-        constrain(button) { winkButton in
-            winkButton.height >= 50
-            winkButton.bottom == winkButton.superview!.bottom
-            winkButton.leading == winkButton.superview!.leading
-            winkButton.trailing == winkButton.superview!.trailing
+        func animateChanges(changes: () -> ()) {
+            UIView.animateWithDuration(
+                Constants.ButtonAnimationDuration,
+                delay: 0,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 0.3,
+                options: UIViewAnimationOptions(),
+                animations: {
+                    changes()
+                },
+                completion: nil
+            )
         }
+        
+        if let actionButton = view.findSubviewWithTag(Constants.BottomActionTag) as? UIButton {
+            animateChanges {
+                actionButton.setButtonConfiguration(buttonConfig)
+            }
+        } else {
+            
+            removeBottonActionButton()
+
+            let button = UIButton()
+            button.tag = Constants.BottomActionTag
+            button.setButtonConfiguration(buttonConfig)
+            view.addSubview(button)
+            
+            var bottomConstraint: NSLayoutConstraint?
+            
+            constrain(button) { button in
+                button.height >= Constants.ButtonHeight
+                bottomConstraint = (button.bottom == button.superview!.bottom)
+                button.leading == button.superview!.leading
+                button.trailing == button.superview!.trailing
+            }
+
+            view.layoutIfNeeded()
+
+            //Now, let's animate how this is shown
+            bottomConstraint?.constant = CGRectGetHeight(button.bounds)
+            view.layoutIfNeeded()
+            bottomConstraint?.constant = 0
+            animateChanges {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    public func removeBottonActionButton() {
+        view.removeSubviewWithTag(Constants.BottomActionTag)
     }
 }
 
 // MARK: Private
-private let BottomActionTag = 345678
+
+private enum Constants {
+    private static let BottomActionTag = 345678
+    private static let ButtonAnimationDuration = 0.6
+    private static let ButtonHeight = CGFloat(50)
+}
 
 private let errorQueue: NSOperationQueue = {
     let operationQueue = NSOperationQueue()
@@ -49,12 +105,12 @@ private let errorQueue: NSOperationQueue = {
 
 private class PresentAlertOperation: NSOperation {
     
-    let message: String
-    let error: ErrorType
+    let title: String
+    let message: String?
     unowned let presentingViewController: UIViewController
-    init(message: String, error: ErrorType, presentingViewController: UIViewController) {
+    init(title: String, message: String?, presentingViewController: UIViewController) {
+        self.title = title
         self.message = message
-        self.error = error
         self.presentingViewController = presentingViewController
         super.init()
     }
@@ -76,7 +132,7 @@ private class PresentAlertOperation: NSOperation {
                 return
             }
             
-            let alert = UIAlertController(title: "Error", message: self.message, preferredStyle: UIAlertControllerStyle.Alert)
+            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: UIAlertControllerStyle.Alert)
             let action = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Cancel) { _ in
                 self.finishOperation()
             }

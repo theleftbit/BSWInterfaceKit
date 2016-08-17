@@ -13,7 +13,18 @@ public struct ButtonConfiguration {
     public let backgroundColor: UIColor
     public let contentInset: UIEdgeInsets
     public let actionHandler: ButtonActionHandler
-    
+
+    public init(title: String,
+                titleColor: UIColor = .blackColor(),
+                backgroundColor: UIColor = UIColor.blueColor(),
+                contentInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5),
+                actionHandler: ButtonActionHandler) {
+        self.title = TextStyler.styler.attributedString(title, color: titleColor)
+        self.backgroundColor = backgroundColor
+        self.actionHandler = actionHandler
+        self.contentInset = contentInset
+    }
+
     public init(title: NSAttributedString,
                 backgroundColor: UIColor = UIColor.blueColor(),
                 contentInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5),
