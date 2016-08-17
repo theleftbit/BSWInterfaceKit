@@ -24,6 +24,12 @@ public enum ClassicProfileEditKind {
 
 public class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
     
+    enum Constants {
+        static let SeparatorSize = CGSize(width: 30, height: 1)
+        static let LayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        static let PhotoGallerySize = CGFloat(250)
+    }
+    
     public var dataProvider: Future<Result<ClassicProfileViewModel>>!
     public var editKind: ClassicProfileEditKind = .NonEditable
     let photoGallery = PhotoGalleryView()
@@ -33,8 +39,8 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
     let separatorView: UIView = {
         let view = UIView()
         constrain(view) { view in
-            view.height == 1
-            view.width == 30
+            view.height == Constants.SeparatorSize.height
+            view.width == Constants.SeparatorSize.width
         }
         view.backgroundColor = UIColor.lightGrayColor()
         return view
@@ -44,6 +50,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        guard let _ = dataProvider else { fatalError() }
         
         view.backgroundColor = UIColor.whiteColor()
 
@@ -62,15 +69,14 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
         constrain(photoGallery, scrollableStackView) { photoGallery, scrollableStackView in
-            photoGallery.height == 280
+            photoGallery.height == Constants.PhotoGallerySize
             photoGallery.width == scrollableStackView.width
         }
         
-        let layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: layoutMargins)
-        scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: layoutMargins)
-        scrollableStackView.addArrangedSubview(separatorView, layoutMargins: layoutMargins)
-        scrollableStackView.addArrangedSubview(extraDetailsLabel, layoutMargins: layoutMargins)
+        scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: Constants.LayoutMargins)
+        scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: Constants.LayoutMargins)
+        scrollableStackView.addArrangedSubview(separatorView, layoutMargins: Constants.LayoutMargins)
+        scrollableStackView.addArrangedSubview(extraDetailsLabel, layoutMargins: Constants.LayoutMargins)
         
         //Add the rightBarButtonItem
         switch editKind {
@@ -97,21 +103,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         photoGallery.photos = viewModel.photos
         titleLabel.attributedText = viewModel.titleInfo
         detailsLabel.attributedText = viewModel.detailsInfo
-        extraDetailsLabel.attributedText = {
-            
-            //This makes me puke, but hey, choose your battles
-            
-            var extraDetailsString: NSMutableAttributedString? = nil
-            viewModel.extraInfo.forEach { (string) in
-                if let extraDetailsString_ = extraDetailsString {
-                    let sumString = extraDetailsString_ + NSAttributedString(string: "\n") + string
-                    extraDetailsString = sumString.mutableCopy() as? NSMutableAttributedString
-                } else {
-                    extraDetailsString = string.mutableCopy() as? NSMutableAttributedString
-                }
-            }
-            return extraDetailsString
-        }()
+        extraDetailsLabel.attributedText = viewModel.extraInfo.joinedStrings()
     }
 }
 
