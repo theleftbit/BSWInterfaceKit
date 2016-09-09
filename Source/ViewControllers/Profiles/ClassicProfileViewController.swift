@@ -101,6 +101,15 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         if let navBar = self.navigationController?.navigationBar {
             navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
+        
+        //Add the rightBarButtonItem
+        switch editKind {
+        case .Editable(let barButton):
+            navigationItem.rightBarButtonItem = barButton
+        default:
+            break
+        }
+
     }
     
     override public func viewWillDisappear(animated: Bool) {
