@@ -1,7 +1,10 @@
 use_frameworks!
 
-target 'BSWInterfaceKitPlayground' do
+abstract_target 'Common' do
 	pod 'BSWInterfaceKit', :path => '../BSWInterfaceKit.podspec'
+    
+    target 'BSWInterfaceKitPlayground'
+    target 'Tests'
 end
 
 post_install do |installer|
