@@ -13,8 +13,8 @@
 
 /* Begin PBXFileReference section */
 		053162F30068FA295473A9D8 /* BSWInterfaceKit.playground */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.playground; path = BSWInterfaceKit.playground; sourceTree = "<group>"; };
-		06772FD360A8D19F8B81DD6F /* Pods-BSWInterfaceKitPlayground.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitPlayground.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitPlayground/Pods-BSWInterfaceKitPlayground.release.xcconfig"; sourceTree = "<group>"; };
-		45BCD0D9B791586CF276C1C8 /* Pods-BSWInterfaceKitPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitPlayground.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitPlayground/Pods-BSWInterfaceKitPlayground.debug.xcconfig"; sourceTree = "<group>"; };
+		40F8F8C27E66E69BDD7B6733 /* Pods-BSWInterfaceKitPlayground.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitPlayground.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitPlayground/Pods-BSWInterfaceKitPlayground.release.xcconfig"; sourceTree = "<group>"; };
+		7B83F07EFE0928DEA96DD6A9 /* Pods-BSWInterfaceKitPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitPlayground.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitPlayground/Pods-BSWInterfaceKitPlayground.debug.xcconfig"; sourceTree = "<group>"; };
 		876CB44B6FD0A748932B75CC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D898CFB9CD31BED2463F8BD6 /* Pods_BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE043E195E238D065AE621AF /* BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,8 +46,8 @@
 		7B54BF0681DDCE081CC3A8C5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				06772FD360A8D19F8B81DD6F /* Pods-BSWInterfaceKitPlayground.release.xcconfig */,
-				45BCD0D9B791586CF276C1C8 /* Pods-BSWInterfaceKitPlayground.debug.xcconfig */,
+				40F8F8C27E66E69BDD7B6733 /* Pods-BSWInterfaceKitPlayground.release.xcconfig */,
+				7B83F07EFE0928DEA96DD6A9 /* Pods-BSWInterfaceKitPlayground.debug.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -239,7 +239,7 @@
 		};
 		AEC41478D27ECDF5A1A380BC /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 06772FD360A8D19F8B81DD6F /* Pods-BSWInterfaceKitPlayground.release.xcconfig */;
+			baseConfigurationReference = 40F8F8C27E66E69BDD7B6733 /* Pods-BSWInterfaceKitPlayground.release.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -265,7 +265,7 @@
 		};
 		ED6A33649D7975C1B8606070 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 45BCD0D9B791586CF276C1C8 /* Pods-BSWInterfaceKitPlayground.debug.xcconfig */;
+			baseConfigurationReference = 7B83F07EFE0928DEA96DD6A9 /* Pods-BSWInterfaceKitPlayground.debug.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
