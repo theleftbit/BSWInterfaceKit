@@ -1,20 +1,20 @@
 //: Please build the scheme 'BSWInterfaceKitPlayground' first
-import XCPlayground
+import PlaygroundSupport
 import BSWInterfaceKit
 import BSWFoundation
 
-XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
+PlaygroundPage.current.needsIndefiniteExecution = true
 
 extension Song: PolaroidCellViewModel {
-    public var cellImage: Photo { return Photo(kind: .URL(NSURL(string: artWorkURL)!)) }
-    public var cellTitle: NSAttributedString { return TextStyler.styler.attributedString(title, forStyle: .Title) }
-    public var cellDetails: NSAttributedString { return TextStyler.styler.attributedString("\(songLenght) seconds", forStyle: .Body) }
+    public var cellImage: Photo { return Photo(kind: .url(URL(string: artWorkURL)!)) }
+    public var cellTitle: NSAttributedString { return TextStyler.styler.attributedString(title, forStyle: .title) }
+    public var cellDetails: NSAttributedString { return TextStyler.styler.attributedString("\(songLenght) seconds", forStyle: .body) }
 }
 
 class PlainListPresenter: ListStatePresenter {
     static let presenter = PlainListPresenter()
-    func errorConfiguration(forError error: ErrorType) -> ErrorListConfiguration {
-        return .Default(ActionableListConfiguration(title: TextStyler.styler.attributedString("Error", forStyle: .Title)))
+    func errorConfiguration(forError error: Error) -> ErrorListConfiguration {
+        return .default(ActionableListConfiguration(title: TextStyler.styler.attributedString("Error", forStyle: .title)))
     }
 }
 
@@ -27,8 +27,8 @@ let collectionViewLayout: UICollectionViewFlowLayout = {
 }()
 
 let collectionView: UICollectionView = {
-    let collectionView = UICollectionView(frame: CGRectMake(0, 0, 500, 320), collectionViewLayout: collectionViewLayout)
-    collectionView.backgroundColor = .lightGrayColor()
+    let collectionView = UICollectionView(frame: CGRect(x:0, y:0, width: 500, height: 320), collectionViewLayout: collectionViewLayout)
+    collectionView.backgroundColor = .lightGray
     return collectionView
 }()
 
@@ -45,6 +45,6 @@ let songs = [
     Song(title: "Shake it Off", songLenght: 120, artWorkURL: "http://ow.ly/ow2o302NKJ1"),
 ]
 
-dataSource.updateState(.Loaded(data: songs))
+dataSource.updateState(.loaded(data: songs))
 
-XCPlaygroundPage.currentPage.liveView = collectionView
+PlaygroundPage.current.liveView = collectionView
