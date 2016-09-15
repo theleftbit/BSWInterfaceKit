@@ -8,13 +8,13 @@ import Cartography
 
 class AvatarView: UIView {
     
-    private let imageView: UIImageView = {
+    fileprivate let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFill
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    private let size: Size
+    fileprivate let size: Size
     
     var photo: Photo {
         didSet {
@@ -27,7 +27,7 @@ class AvatarView: UIView {
     init(size: Size, photo: Photo) {
         self.size = size
         self.photo = photo
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         setup()
     }
     
@@ -37,29 +37,29 @@ class AvatarView: UIView {
     
     // MARK: View setup
     
-    private func setup() {
+    fileprivate func setup() {
         layer.masksToBounds = true
         addSubview(imageView)
         updateImage()
         setupConstraints()
     }
     
-    private func updateImage() {
+    fileprivate func updateImage() {
         imageView.bsw_setPhoto(photo)
     }
     
     // MARK: Constraints
     
-    private func setupConstraints() {
-        self.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
-        self.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Vertical)
+    fileprivate func setupConstraints() {
+        self.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
+        self.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
         
         constrain(imageView) { imageView in
             imageView.edges == imageView.superview!.edges
         }
     }
     
-    override func intrinsicContentSize() -> CGSize {
+    override var intrinsicContentSize : CGSize {
         return CGSize(width: size.rawValue, height: size.rawValue)
     }
     
@@ -67,18 +67,18 @@ class AvatarView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layer.cornerRadius = CGRectGetWidth(bounds) / 2
+        layer.cornerRadius = bounds.width / 2
     }
     
     // MARK: Avatar size
     
     enum Size: CGFloat {
-        case Smallest = 18
-        case Small = 25
-        case Medium = 30
-        case Big = 40
-        case Bigger = 44
-        case Biggest = 60
-        case Huge = 80
+        case smallest = 18
+        case small = 25
+        case medium = 30
+        case big = 40
+        case bigger = 44
+        case biggest = 60
+        case huge = 80
     }
 }

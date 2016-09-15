@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension CollectionType where Generator.Element : NSAttributedString {
+extension Collection where Iterator.Element : NSAttributedString {
 
     func joinedStrings() -> NSAttributedString {
         
@@ -32,7 +32,7 @@ extension CollectionType where Generator.Element : NSAttributedString {
 // concatenate attributed strings
 func + (left: NSAttributedString, right: NSAttributedString) -> NSAttributedString {
     let result = NSMutableAttributedString()
-    result.appendAttributedString(left)
-    result.appendAttributedString(right)
+    result.append(left)
+    result.append(right)
     return result
 }

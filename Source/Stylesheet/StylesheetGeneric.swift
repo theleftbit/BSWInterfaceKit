@@ -6,21 +6,21 @@
 import Foundation
 
 class StylesheetGeneric: StylesheetConfigurable {
-    static func margin(margin: Margin) -> Double {
+    static func margin(_ margin: Margin) -> Double {
         switch margin {
-        case .Smallest:
+        case .smallest:
             return 2.0
-        case .Small:
+        case .small:
             return 4.0
-        case .Medium:
+        case .medium:
             return 8.0
-        case .Big:
+        case .big:
             return 12.0
-        case .Bigger:
+        case .bigger:
             return 20.0
-        case .Biggest:
+        case .biggest:
             return 32.0
-        case .Huge:
+        case .huge:
             return 60.0
         }
     }

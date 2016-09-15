@@ -11,7 +11,7 @@ import Deferred
 
 public protocol ViewModelConfigurable {
     associatedtype VM
-    func configureFor(viewModel viewModel: VM)
+    func configureFor(viewModel: VM)
 }
 
 public protocol ViewModelReusable: ViewModelConfigurable {
@@ -29,17 +29,17 @@ extension AsyncViewModelPresenter where Self: UIViewController {
         self.init(nibName: nil, bundle: nil)
         self.dataProvider = dataProvider
 
-        dataProvider.uponMainQueue { [weak self] result in            
+        dataProvider.upon(.main) { [weak self] result in
             guard let strongSelf = self else { return }
             let _ = strongSelf.view //This touches the view, making sure that the outlets are set
             switch result {
-            case .Failure(let error):
+            case .failure(let error):
                 #if DEBUG
                     strongSelf.showErrorMessage("Error fetching data", error: error)
                 #else
                     print("AsyncViewModelPresenter error: \(error)")
                 #endif
-            case .Success(let viewModel):
+            case .success(let viewModel):
                 guard let _ = strongSelf.view else { return }
                 strongSelf.configureFor(viewModel: viewModel)
             }
@@ -51,18 +51,18 @@ extension AsyncViewModelPresenter where Self: UIViewController {
 
 extension ViewModelReusable where Self: UICollectionViewCell {
     public static var reuseIdentifier: String {
-        return NSStringFromClass(self).componentsSeparatedByString(".").last!
+        return NSStringFromClass(self).components(separatedBy: ".").last!
     }
     
     public static var reuseType: ReuseType {
-        return .ClassReference(Self)
+        return .classReference(Self)
     }
 }
 
 //MARK:- Types
 
 public enum ReuseType {
-    case NIB(UINib)
-    case ClassReference(AnyClass)
+    case nib(UINib)
+    case classReference(AnyClass)
 }
 

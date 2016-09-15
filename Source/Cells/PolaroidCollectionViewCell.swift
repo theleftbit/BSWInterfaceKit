@@ -17,20 +17,20 @@ public protocol PolaroidCellViewModel {
 //MARK: Cells
 
 @available(iOS 8.0, *)
-public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
+open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     
     public typealias T = PolaroidCellViewModel
     
-    private var detailSubview: PolaroidCollectionCellBasicInfoView!
+    fileprivate var detailSubview: PolaroidCollectionCellBasicInfoView!
     
-    private let cellImageView: UIImageView = {
+    fileprivate let cellImageView: UIImageView = {
         let view = UIImageView()
-        view.contentMode = .ScaleAspectFill
+        view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
         return view
     }()
     
-    private static let MaxImageHeightProportion = CGFloat(1.4)
+    fileprivate static let MaxImageHeightProportion = CGFloat(1.4)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,14 +41,14 @@ public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func prepareForReuse() {
+    override open func prepareForReuse() {
         super.prepareForReuse()
-        cellImageView.backgroundColor = UIColor.clearColor()
+        cellImageView.backgroundColor = UIColor.clear
         cellImageView.bsw_cancelImageLoadFromURL()
         cellImageView.image = nil
     }
     
-    private func setup() {
+    fileprivate func setup() {
         
         detailSubview = PolaroidCollectionCellBasicInfoView()
         
@@ -63,9 +63,9 @@ public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable
     
     /// This is a placeholder constraint to make sure that when doing the final
     /// layout for the wanted viewModel, the image height is not compressed
-    private var imageHeightConstraint: NSLayoutConstraint!
+    fileprivate var imageHeightConstraint: NSLayoutConstraint!
     
-    private func setupConstraints() {
+    fileprivate func setupConstraints() {
         constrain(cellImageView, detailSubview, self.contentView) { cellImageView, detailSubview, contentView in
             
             //Subview Layout
@@ -77,24 +77,27 @@ public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable
             detailSubview.trailing == contentView.trailing
             detailSubview.bottom == contentView.bottom
             
-            self.imageHeightConstraint = (cellImageView.height == 80 ~ 999)
+            self.imageHeightConstraint = (cellImageView.height == 80)
         }
+        
+        //TODO: Move to the constrain block when they fix Cartography
+        self.imageHeightConstraint.priority = 999
     }
     
-    private func setupRoundedCorners() {
+    fileprivate func setupRoundedCorners() {
         contentView.roundCorners()
     }
     
-    private func setupShadow(opacity: CGFloat) {
-        layer.shadowColor = UIColor.blackColor().CGColor
-        layer.shadowOffset = CGSizeMake(0, 1)
+    fileprivate func setupShadow(_ opacity: CGFloat) {
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 1)
         layer.shadowOpacity = Float(opacity)
         layer.shadowRadius = CGFloat(2)
         layer.shouldRasterize = true
-        layer.rasterizationScale = UIScreen.mainScreen().scale
+        layer.rasterizationScale = UIScreen.main.scale
     }
     
-    public func configureFor(viewModel viewModel: PolaroidCellViewModel) {
+    open func configureFor(viewModel: PolaroidCellViewModel) {
 
         //Set the basic info
         detailSubview.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
@@ -104,7 +107,7 @@ public class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable
         
         // Make sure that the image is not compressed when doing the final
         // layout by setting it's height to the wanted for a given height
-        imageHeightConstraint.constant = PolaroidCollectionViewCell.cellImageHeightForViewModel(viewModel, constrainedToWidth: CGRectGetWidth(contentView.frame))
+        imageHeightConstraint.constant = PolaroidCollectionViewCell.cellImageHeightForViewModel(viewModel, constrainedToWidth: contentView.frame.width)
         setNeedsLayout()
     }
 }
@@ -128,9 +131,9 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
     let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .Vertical
-        stackView.alignment = .Fill
-        stackView.spacing = Stylesheet.margin(.Smallest)
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.spacing = Stylesheet.margin(.smallest)
         return stackView
     }()
 
@@ -143,18 +146,18 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTitle(title: NSAttributedString? =  nil, subtitle: NSAttributedString? = nil) {
+    func setTitle(_ title: NSAttributedString? =  nil, subtitle: NSAttributedString? = nil) {
         titleLabel.attributedText = title
         detailLabel.attributedText = subtitle
     }
     
-    private func setup() {
-        backgroundColor = UIColor.whiteColor()
-        setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+    fileprivate func setup() {
+        backgroundColor = UIColor.white
+        setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
         
         addSubview(stackView)
         constrain(stackView) { stackView in
-            stackView.edges == inset(stackView.superview!.edges, Stylesheet.margin(.Medium)) 
+            stackView.edges == inset(stackView.superview!.edges, Stylesheet.margin(.medium)) 
         }
         
         stackView.addArrangedSubview(titleLabel)
@@ -167,29 +170,29 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
 @available(iOS 8.0, *)
 extension PolaroidCollectionViewCell {
     
-    private struct PolaroidCollectionViewCellHeightCalculator {
-        private static let BasicInfoView = PolaroidCollectionCellBasicInfoView()
+    fileprivate struct PolaroidCollectionViewCellHeightCalculator {
+        fileprivate static let BasicInfoView = PolaroidCollectionCellBasicInfoView()
     }
     
-    private static func cellImageHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+    fileprivate static func cellImageHeightForViewModel(_ viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         let maxImageHeight = PolaroidCollectionViewCell.MaxImageHeightProportion * width
         let imageSize = viewModel.cellImage.size ?? CGSize(width: width, height: width)
         let imageHeight = min(maxImageHeight, width * CGFloat(imageSize.height) / CGFloat(imageSize.width))
         return imageHeight
     }
     
-    private static func cellInfoHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+    fileprivate static func cellInfoHeightForViewModel(_ viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
         let infoView = PolaroidCollectionViewCellHeightCalculator.BasicInfoView
         infoView.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
-        let height = infoView.systemLayoutSizeFittingSize(CGSize(width: width, height: 0),
+        let height = infoView.systemLayoutSizeFitting(CGSize(width: width, height: 0),
                                                           withHorizontalFittingPriority: UILayoutPriorityRequired,
                                                           verticalFittingPriority: UILayoutPriorityFittingSizeLevel
             ).height
         return height
     }
     
-    static public func cellHeightForViewModel(viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
-        let imageHeight = viewModel.cellImage.size == .None ? width : cellImageHeightForViewModel(viewModel, constrainedToWidth: width)
+    static public func cellHeightForViewModel(_ viewModel: PolaroidCellViewModel, constrainedToWidth width: CGFloat) -> CGFloat {
+        let imageHeight = viewModel.cellImage.size == .none ? width : cellImageHeightForViewModel(viewModel, constrainedToWidth: width)
         let infoHeight = cellInfoHeightForViewModel(viewModel, constrainedToWidth: width)
         
         return imageHeight + infoHeight

@@ -8,10 +8,10 @@ import Foundation
 class LoginButton: UIButton {
     
     init(title: String, target: AnyObject, selector: Selector, color: UIColor) {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
-        setTitle(title, forState: .Normal)
-        addTarget(target, action: selector, forControlEvents: UIControlEvents.TouchDown)
+        setTitle(title, for: UIControlState())
+        addTarget(target, action: selector, for: UIControlEvents.touchDown)
         backgroundColor = color
     }
     
@@ -19,7 +19,7 @@ class LoginButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        return CGSizeMake(UIViewNoIntrinsicMetric, 50)
+    override var intrinsicContentSize : CGSize {
+        return CGSize(width: UIViewNoIntrinsicMetric, height: 50)
     }
 }

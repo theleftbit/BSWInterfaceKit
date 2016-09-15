@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable where Cell:UICollectionViewCell>: NSObject, UICollectionViewDataSource {
+open class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
     
     /// This is mapper is neccesary since we couldn't figure out how map
     /// the types using just protocols, since making the generics type of both
@@ -13,18 +13,18 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
 
     public typealias ModelMapper = (Model) -> Cell.VM
     
-    public private(set) var state: ListState<Model>
-    public weak var collectionView: UICollectionView?
-    public weak var listPresenter: ListStatePresenter?
-    public let mapper: ModelMapper
-    private var emptyView: UIView?
-    public let reorderSupport: CollectionViewReorderSupport<Model>?
+    open fileprivate(set) var state: ListState<Model>
+    open weak var collectionView: UICollectionView?
+    open weak var listPresenter: ListStatePresenter?
+    open let mapper: ModelMapper
+    fileprivate var emptyView: UIView?
+    open let reorderSupport: CollectionViewReorderSupport<Model>?
     
-    public init(state: ListState<Model> = .Loading,
+    public init(state: ListState<Model> = .loading,
                 collectionView: UICollectionView,
                 listPresenter: ListStatePresenter? = nil,
                 reorderSupport: CollectionViewReorderSupport<Model>? = nil,
-                mapper: ModelMapper) {
+                mapper: @escaping ModelMapper) {
         self.state = state
         self.collectionView = collectionView
         self.listPresenter = listPresenter
@@ -34,10 +34,10 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         super.init()
         
         switch Cell.reuseType {
-        case .ClassReference(let classReference):
-            collectionView.registerClass(classReference, forCellWithReuseIdentifier: Cell.reuseIdentifier)
-        case .NIB(let nib):
-            collectionView.registerNib(nib, forCellWithReuseIdentifier: Cell.reuseIdentifier)
+        case .classReference(let classReference):
+            collectionView.register(classReference, forCellWithReuseIdentifier: Cell.reuseIdentifier)
+        case .nib(let nib):
+            collectionView.register(nib, forCellWithReuseIdentifier: Cell.reuseIdentifier)
         }
 
         collectionView.dataSource = self
@@ -48,27 +48,27 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         }
     }
     
-    public func updateState(state: ListState<Model>) {
+    open func updateState(_ state: ListState<Model>) {
         self.state = state
         collectionView?.reloadData()
     }
     
-    public func performEditActions(actions: [CollectionViewEditActionKind<Model>]) {
-        if case .Loaded(var models) = self.state {
+    open func performEditActions(_ actions: [CollectionViewEditActionKind<Model>]) {
+        if case .loaded(var models) = self.state {
             actions.forEach {
                 switch $0 {
-                case .Insert(let item, let indexPath):
-                    models.insert(item, atIndex: indexPath.item)
-                    self.state = .Loaded(data: models)
-                case .Remove(let fromIndexPath):
-                    models.removeAtIndex(fromIndexPath.item)
-                    self.state = .Loaded(data: models)
-                case .Move(let from, let to):
+                case .insert(let item, let indexPath):
+                    models.insert(item, at: (indexPath as NSIndexPath).item)
+                    self.state = .loaded(data: models)
+                case .remove(let fromIndexPath):
+                    models.remove(at: (fromIndexPath as NSIndexPath).item)
+                    self.state = .loaded(data: models)
+                case .move(let from, let to):
                     models.moveItem(fromIndex: from.item, toIndex: to.item)
-                    self.state = .Loaded(data: models)
-                case .Reload(let model, let indexPath):
-                    models[indexPath.item] = model
-                    self.state = .Loaded(data: models)
+                    self.state = .loaded(data: models)
+                case .reload(let model, let indexPath):
+                    models[(indexPath as NSIndexPath).item] = model
+                    self.state = .loaded(data: models)
                 }
             }
             
@@ -76,10 +76,10 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         }
     }
 
-    public func modelForIndexPath(indexPath: NSIndexPath) -> Model? {
+    open func modelForIndexPath(_ indexPath: IndexPath) -> Model? {
         switch self.state {
-        case .Loaded(let data):
-            return data[indexPath.row]
+        case .loaded(let data):
+            return data[(indexPath as NSIndexPath).row]
         default:
             return nil
         }
@@ -87,29 +87,29 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
     
     //MARK:- UICollectionViewDataSource
 
-    @objc public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    @objc open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    @objc public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    @objc open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         defer { addEmptyViewForCurrentState() }
         
         switch self.state {
-        case .Loaded(let models):
+        case .loaded(let models):
             return models.count
         default:
             return 0
         }
     }
     
-    @objc public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier(Cell.reuseIdentifier, forIndexPath: indexPath) as? Cell else {
+    @objc open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cell.reuseIdentifier, for: indexPath) as? Cell else {
             fatalError()
         }
         
-        if case .Loaded(let models) = self.state {
-            let model = models[indexPath.row]
+        if case .loaded(let models) = self.state {
+            let model = models[(indexPath as NSIndexPath).row]
             let viewModel = self.mapper(model)
             cell.configureFor(viewModel: viewModel)
         }
@@ -117,35 +117,35 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
         return cell
     }
     
-    @objc public func collectionView(collectionView: UICollectionView, canMoveItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    @objc open func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         guard let reorderSupport = self.reorderSupport else { return false }
         return reorderSupport.canMoveItemAtIndexPath(indexPath)
     }
     
-    @objc public func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+    @objc open func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
-        if case .Loaded(var models) = self.state {
-            let movedItem = models[destinationIndexPath.item]
+        if case .loaded(var models) = self.state {
+            let movedItem = models[(destinationIndexPath as NSIndexPath).item]
             models.moveItem(fromIndex: sourceIndexPath.item, toIndex: destinationIndexPath.item)
-            self.state = .Loaded(data: models)
-            commitMoveHandler(from: sourceIndexPath, to: destinationIndexPath, movedItem: movedItem)
+            self.state = .loaded(data: models)
+            commitMoveHandler(sourceIndexPath, destinationIndexPath, movedItem)
         }
     }
     
     //MARK:- Private
     
-    private func addEmptyViewForCurrentState() {
+    fileprivate func addEmptyViewForCurrentState() {
         
         guard let listPresenter = self.listPresenter else { return }
         
         self.emptyView?.removeFromSuperview()
         
         switch state {
-        case .Loading:
+        case .loading:
             switch listPresenter.loadingConfiguration {
-            case .Custom(let view):
+            case .custom(let view):
                 emptyView = view
-            case .Default(let configuration):
+            case .default(let configuration):
                 let loadingView = LoadingView(
                     loadingMessage: configuration.message,
                     activityIndicatorStyle: configuration.activityIndicatorStyle
@@ -153,19 +153,19 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
                 loadingView.backgroundColor = configuration.backgroundColor
                 emptyView = loadingView
             }
-        case .Failure(let error):
+        case .failure(let error):
             switch listPresenter.errorConfiguration(forError: error) {
-            case .Custom(let view):
+            case .custom(let view):
                 emptyView = view
-            case .Default(let config):
+            case .default(let config):
                 emptyView = config.viewRepresentation()
             }
-        case .Loaded(let data):
+        case .loaded(let data):
             if data.count == 0 {
                 switch listPresenter.emptyConfiguration {
-                case .Custom(let view):
+                case .custom(let view):
                     emptyView = view
-                case .Default(let config):
+                case .default(let config):
                     emptyView = config.viewRepresentation()
                 }
             } else {
@@ -173,29 +173,29 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
             }
         }
         
-        guard let emptyView = self.emptyView, collectionView = self.collectionView else { return }
+        guard let emptyView = self.emptyView, let collectionView = self.collectionView else { return }
         
         collectionView.addSubview(emptyView)
         
         emptyView.translatesAutoresizingMaskIntoConstraints = false
-        emptyView.centerXAnchor.constraintEqualToAnchor(collectionView.centerXAnchor).active = true
-        emptyView.centerYAnchor.constraintEqualToAnchor(collectionView.centerYAnchor, constant: -20).active = true
+        emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
+        emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -20).isActive = true
     }
     
     //MARK: IBAction
     
-    func handleLongPressGesture(gesture: UILongPressGestureRecognizer) {
+    func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
         guard let collectionView = self.collectionView else { return }
         
         switch(gesture.state) {
-        case .Began:
-            guard let selectedIndexPath = collectionView.indexPathForItemAtPoint(gesture.locationInView(collectionView)) else {
+        case .began:
+            guard let selectedIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {
                 break
             }
-            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)
-        case .Changed:
-            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view!))
-        case .Ended:
+            collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case .ended:
             collectionView.endInteractiveMovement()
         default:
             collectionView.cancelInteractiveMovement()
@@ -206,34 +206,34 @@ public class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable wher
 //MARK: - Reorder Support
 
 public enum CollectionViewEditActionKind<Model> {
-    case Insert(item: Model, atIndexPath: NSIndexPath)
-    case Remove(fromIndexPath: NSIndexPath)
-    case Move(fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath)
-    case Reload(item: Model, indexPath: NSIndexPath)
+    case insert(item: Model, atIndexPath: IndexPath)
+    case remove(fromIndexPath: IndexPath)
+    case move(fromIndexPath: IndexPath, toIndexPath: IndexPath)
+    case reload(item: Model, indexPath: IndexPath)
 }
 
 public struct CollectionViewReorderSupport<Model> {
-    public typealias CommitMoveItemHandler = ((from: NSIndexPath, to: NSIndexPath, movedItem: Model) -> Void)
-    public typealias CanMoveItemHandler = (NSIndexPath -> Bool)
+    public typealias CommitMoveItemHandler = ((_ from: IndexPath, _ to: IndexPath, _ movedItem: Model) -> Void)
+    public typealias CanMoveItemHandler = ((IndexPath) -> Bool)
     
     public let canMoveItemAtIndexPath: CanMoveItemHandler
     public let moveItemAtIndexPath: CommitMoveItemHandler
 }
 
 extension UICollectionView {
-    private func performEditActions<T>(actions: [CollectionViewEditActionKind<T>]) {
+    fileprivate func performEditActions<T>(_ actions: [CollectionViewEditActionKind<T>]) {
         performBatchUpdates({ 
             
             actions.forEach {
                 switch $0 {
-                case .Remove(let from):
-                    self.deleteItemsAtIndexPaths([from])
-                case .Insert(let _, let at):
-                    self.insertItemsAtIndexPaths([at])
-                case .Move(let from, let to):
-                    self.moveItemAtIndexPath(from, toIndexPath: to)
-                case .Reload(let _, let indexPath):
-                    self.reloadItemsAtIndexPaths([indexPath])
+                case .remove(let from):
+                    self.deleteItems(at: [from])
+                case .insert(let _, let at):
+                    self.insertItems(at: [at])
+                case .move(let from, let to):
+                    self.moveItem(at: from, to: to)
+                case .reload(let _, let indexPath):
+                    self.reloadItems(at: [indexPath])
                 }
             }
 

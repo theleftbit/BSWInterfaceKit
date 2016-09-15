@@ -7,7 +7,7 @@ import Foundation
 import Cartography
 
 extension UIWindow {
-    public func showErrorMessage(message: String, error: ErrorType) {
+    public func showErrorMessage(_ message: String, error: Error) {
         guard let rootViewController = self.visibleViewController else { return }
         rootViewController.showErrorMessage(message, error: error)
     }
@@ -15,7 +15,7 @@ extension UIWindow {
 
 extension UIViewController {
 
-    public func showErrorMessage(message: String, error: ErrorType) {
+    public func showErrorMessage(_ message: String, error: Error) {
         
         #if DEBUG
             let errorMessage = "\(message). \(error)"
@@ -32,13 +32,13 @@ extension UIViewController {
         errorQueue.addOperation(operation)
     }
 
-    public func addBottomActionButton(buttonConfig: ButtonConfiguration) {
+    public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
     
-        guard traitCollection.horizontalSizeClass == .Compact else { fatalError() }
+        guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         
-        func animateChanges(changes: () -> ()) {
-            UIView.animateWithDuration(
-                Constants.ButtonAnimationDuration,
+        func animateChanges(_ changes: @escaping () -> ()) {
+            UIView.animate(
+                withDuration: Constants.ButtonAnimationDuration,
                 delay: 0,
                 usingSpringWithDamping: 0.7,
                 initialSpringVelocity: 0.3,
@@ -75,7 +75,7 @@ extension UIViewController {
             view.layoutIfNeeded()
 
             //Now, let's animate how this is shown
-            bottomConstraint?.constant = CGRectGetHeight(button.bounds)
+            bottomConstraint?.constant = button.bounds.height
             view.layoutIfNeeded()
             bottomConstraint?.constant = 0
             animateChanges {
@@ -92,18 +92,18 @@ extension UIViewController {
 // MARK: Private
 
 private enum Constants {
-    private static let BottomActionTag = 345678
-    private static let ButtonAnimationDuration = 0.6
-    private static let ButtonHeight = CGFloat(50)
+    fileprivate static let BottomActionTag = 345678
+    fileprivate static let ButtonAnimationDuration = 0.6
+    fileprivate static let ButtonHeight = CGFloat(50)
 }
 
-private let errorQueue: NSOperationQueue = {
-    let operationQueue = NSOperationQueue()
+private let errorQueue: OperationQueue = {
+    let operationQueue = OperationQueue()
     operationQueue.maxConcurrentOperationCount = 1
     return operationQueue
 }()
 
-private class PresentAlertOperation: NSOperation {
+private class PresentAlertOperation: Operation {
     
     let title: String
     let message: String?
@@ -117,28 +117,28 @@ private class PresentAlertOperation: NSOperation {
     
     override func main() {
         
-        guard cancelled == false else {
+        guard isCancelled == false else {
             self.finishOperation()
             return
         }
         
-        self.executing = true
-        self.finished = false
+        self.isExecuting = true
+        self.isFinished = false
 
-        NSOperationQueue.mainQueue().addOperationWithBlock {
+        OperationQueue.main.addOperation {
         
             guard let _ = self.presentingViewController.view.window else {
                 self.finishOperation()
                 return
             }
             
-            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: UIAlertControllerStyle.Alert)
-            let action = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Cancel) { _ in
+            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: UIAlertControllerStyle.alert)
+            let action = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel) { _ in
                 self.finishOperation()
             }
             
             alert.addAction(action)
-            self.presentingViewController.presentViewController(alert, animated: true, completion: nil)
+            self.presentingViewController.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -147,30 +147,30 @@ private class PresentAlertOperation: NSOperation {
     var _finished = false
     var _executing = false
 
-    override var executing: Bool {
+    override var isExecuting: Bool {
         get {
             return _executing
         }
         set {
-            willChangeValueForKey("isExecuting")
+            willChangeValue(forKey: "isExecuting")
             _executing = newValue
-            didChangeValueForKey("isExecuting")
+            didChangeValue(forKey: "isExecuting")
         }
     }
     
-    override var finished: Bool {
+    override var isFinished: Bool {
         get {
             return _finished
         }
         set {
-            willChangeValueForKey("isFinished")
+            willChangeValue(forKey: "isFinished")
             _finished = newValue
-            didChangeValueForKey("isFinished")
+            didChangeValue(forKey: "isFinished")
         }
     }
     
-    private func finishOperation() {
-        self.executing = false
-        self.finished = true
+    fileprivate func finishOperation() {
+        self.isExecuting = false
+        self.isFinished = true
     }
 }

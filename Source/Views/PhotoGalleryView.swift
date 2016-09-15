@@ -10,21 +10,21 @@ import BSWFoundation
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: class {
-    func didTapPhotoAt(index index: UInt, fromView: UIView)
+    func didTapPhotoAt(index: UInt, fromView: UIView)
 }
 
 // MARK: - PhotoGalleryView
 
 final public class PhotoGalleryView: UIView {
     
-    private let imageContentMode: UIViewContentMode
-    private let scrollableStackView = ScrollableStackView(axis: .Horizontal)
+    fileprivate let imageContentMode: UIViewContentMode
+    fileprivate let scrollableStackView = ScrollableStackView(axis: .horizontal)
     
-    private let pageControl: UIPageControl = {
+    fileprivate let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.hidesForSinglePage = true
-        pageControl.pageIndicatorTintColor = UIColor.whiteColor()
-        pageControl.pageIndicatorTintColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        pageControl.pageIndicatorTintColor = UIColor.white
+        pageControl.pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.5)
         return pageControl
     }()
     
@@ -34,7 +34,7 @@ final public class PhotoGalleryView: UIView {
         }
     }
     
-    private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
+    fileprivate let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     weak var delegate: PhotoGalleryViewDelegate?
     
@@ -44,11 +44,11 @@ final public class PhotoGalleryView: UIView {
     
     // MARK: Initialization
     
-    public init(photos: [Photo], imageContentMode: UIViewContentMode = .ScaleAspectFill) {
+    public init(photos: [Photo], imageContentMode: UIViewContentMode = .scaleAspectFill) {
         self.photos = photos
         self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl)
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         setup()
     }
     
@@ -64,7 +64,7 @@ final public class PhotoGalleryView: UIView {
         guard let imageView = scrollableStackView.viewAtIndex(Int(index)) else {
             return
         }
-        let offset = CGPoint(x: CGRectGetMinX(imageView.frame), y: scrollableStackView.contentOffset.y)
+        let offset = CGPoint(x: imageView.frame.minX, y: scrollableStackView.contentOffset.y)
         scrollableStackView.setContentOffset(offset, animated: animated)
     }
 }
@@ -73,10 +73,10 @@ final public class PhotoGalleryView: UIView {
 
 extension PhotoGalleryView {
     
-    private func setup() {
+    fileprivate func setup() {
         // ScrollableStackView view
         addSubview(scrollableStackView)
-        scrollableStackView.pagingEnabled = true
+        scrollableStackView.isPagingEnabled = true
         scrollableStackView.showsHorizontalScrollIndicator = false
         scrollableStackView.delegate = updatePageControlOnScrollBehavior
         
@@ -90,7 +90,7 @@ extension PhotoGalleryView {
         setupConstraints()
     }
 
-    private func layoutImageViews() {
+    fileprivate func layoutImageViews() {
         
         scrollableStackView.removeAllArrangedViews()
         
@@ -99,19 +99,19 @@ extension PhotoGalleryView {
             scrollableStackView.addArrangedSubview(imageView)
 
             //Set the size of the imageView
-            imageView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
-            imageView.widthAnchor.constraintEqualToAnchor(widthAnchor).active = true
+            imageView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+            imageView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         }
         
         pageControl.numberOfPages = photos.count
     }
     
-    private func createImageView(forPhoto photo: Photo) -> UIImageView {
+    fileprivate func createImageView(forPhoto photo: Photo) -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = imageContentMode
         imageView.clipsToBounds = true
         
-        imageView.userInteractionEnabled = true
+        imageView.isUserInteractionEnabled = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         imageView.addGestureRecognizer(tapGestureRecognizer)
         
@@ -122,7 +122,7 @@ extension PhotoGalleryView {
     
     // MARK: UI Action handlers
     
-    func handleTap(tapGestureRecognizer: UITapGestureRecognizer) {
+    func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
         guard let view = tapGestureRecognizer.view else {
             return
         }
@@ -137,12 +137,12 @@ extension PhotoGalleryView {
 
 extension PhotoGalleryView {
     
-    private func setupConstraints() {
+    fileprivate func setupConstraints() {
         scrollableStackView.fillSuperview()
 
         constrain(pageControl) { pageControl in
             pageControl.centerX == pageControl.superview!.centerX
-            pageControl.bottom == pageControl.superview!.bottom - CGFloat(Stylesheet.margin(.Small))
+            pageControl.bottom == pageControl.superview!.bottom - CGFloat(Stylesheet.margin(.small))
         }
     }
 }
