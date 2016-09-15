@@ -7,11 +7,11 @@ import Foundation
 
 extension UIImage {
 
-    public class func interfaceKitImageNamed(name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
+    public class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
         return UIImage(
             named: name,
-            inBundle: NSBundle.interfaceKitBundle(),
-            compatibleWithTraitCollection: compatibleWithTraitCollection
+            in: Bundle.interfaceKitBundle(),
+            compatibleWith: compatibleWithTraitCollection
         )
     }
 
@@ -21,7 +21,7 @@ extension UIImage {
         case Close = "Close"
     }
     
-    public class func templateImage(template: Template) -> UIImage {
+    public class func templateImage(_ template: Template) -> UIImage {
         return UIImage.interfaceKitImageNamed(template.rawValue)!
     }
     
@@ -34,9 +34,9 @@ extension UIImage {
      */
     static public func image(fromGradientLayer gradientLayer: CAGradientLayer) -> UIImage {
         UIGraphicsBeginImageContext(gradientLayer.bounds.size)
-        gradientLayer.renderInContext(UIGraphicsGetCurrentContext()!)
+        gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 }

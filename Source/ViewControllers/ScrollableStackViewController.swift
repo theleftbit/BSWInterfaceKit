@@ -5,11 +5,11 @@
 
 import Foundation
 
-public class ScrollableStackViewController: UIViewController {
+open class ScrollableStackViewController: UIViewController {
     
-    public var scrollableStackView = ScrollableStackView()
+    open var scrollableStackView = ScrollableStackView()
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(scrollableStackView)
         scrollableStackView.fillSuperview()

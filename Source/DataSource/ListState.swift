@@ -14,13 +14,13 @@ import UIKit
  - Failure: The data failed to load and an error is shown to the user
  */
 public enum ListState<T> {
-    case Loading
-    case Loaded(data: [T])
-    case Failure(error: ErrorType)
+    case loading
+    case loaded(data: [T])
+    case failure(error: Error)
 
     public var isLoading: Bool {
         switch self {
-        case .Loading(_):
+        case .loading(_):
             return true
         default:
             return false
@@ -29,7 +29,7 @@ public enum ListState<T> {
 
     public var isError: Bool {
         switch self {
-        case .Failure(_):
+        case .failure(_):
             return true
         default:
             return false
@@ -38,7 +38,7 @@ public enum ListState<T> {
 
     public var isEmpty: Bool {
         switch self {
-        case .Loaded(let array):
+        case .loaded(let array):
             return array.count == 0
         default:
             return false
@@ -47,7 +47,7 @@ public enum ListState<T> {
     
     public var data: [T]? {
         switch self {
-        case .Loaded(let array):
+        case .loaded(let array):
             return array
         default:
             return nil
@@ -56,12 +56,12 @@ public enum ListState<T> {
 }
 
 extension ListState {
-    public func mapListState<T>(result: Result<[T]>) -> ListState<T> {
+    public func mapListState<T>(_ result: Result<[T]>) -> ListState<T> {
         switch result {
-        case .Success(let value):
-            return .Loaded(data: value)
-        case .Failure(let error):
-            return .Failure(error: error)
+        case .success(let value):
+            return .loaded(data: value)
+        case .failure(let error):
+            return .failure(error: error)
         }
     }
 }
@@ -73,14 +73,14 @@ extension ListState {
 public protocol ListStatePresenter: class {
     var loadingConfiguration: LoadingListConfiguration { get }
     var emptyConfiguration: EmptyListConfiguration { get }
-    func errorConfiguration(forError error: ErrorType) -> ErrorListConfiguration
+    func errorConfiguration(forError error: Error) -> ErrorListConfiguration
 }
 
 public extension ListStatePresenter {
 
     var loadingConfiguration: LoadingListConfiguration {
         let defaultConfig = LoadingListConfiguration.DefaultLoadingViewConfiguration()
-        return LoadingListConfiguration.Default(defaultConfig)
+        return LoadingListConfiguration.default(defaultConfig)
     }
 
     var emptyConfiguration: EmptyListConfiguration {
@@ -90,7 +90,7 @@ public extension ListStatePresenter {
             image: nil,
             buttonConfiguration: nil
         )
-        return EmptyListConfiguration.Default(defaultConfig)
+        return EmptyListConfiguration.default(defaultConfig)
     }
 
 }
@@ -110,7 +110,7 @@ public struct ActionableListConfiguration {
     
     func viewRepresentation() -> UIView {
         let stackView = UIStackView()
-        stackView.axis = .Vertical
+        stackView.axis = .vertical
         stackView.spacing = 10
         
         if let image = self.image {
@@ -142,21 +142,21 @@ public struct ActionableListConfiguration {
 public enum LoadingListConfiguration {
     
     public struct DefaultLoadingViewConfiguration {
-        let backgroundColor = UIColor.clearColor()
+        let backgroundColor = UIColor.clear
         let message: NSAttributedString? = nil
-        let activityIndicatorStyle = UIActivityIndicatorViewStyle.Gray
+        let activityIndicatorStyle = UIActivityIndicatorViewStyle.gray
     }
     
-    case Default(DefaultLoadingViewConfiguration)
-    case Custom(UIView)
+    case `default`(DefaultLoadingViewConfiguration)
+    case custom(UIView)
 }
 
 public enum ErrorListConfiguration {
-    case Default(ActionableListConfiguration)
-    case Custom(UIView)
+    case `default`(ActionableListConfiguration)
+    case custom(UIView)
 }
 
 public enum EmptyListConfiguration {
-    case Default(ActionableListConfiguration)
-    case Custom(UIView)
+    case `default`(ActionableListConfiguration)
+    case custom(UIView)
 }

@@ -5,14 +5,14 @@
 
 import Foundation
 
-public typealias CellHeightForIndexPath = (NSIndexPath, CGFloat) -> CGFloat
+public typealias CellHeightForIndexPath = (IndexPath, CGFloat) -> CGFloat
 
 public enum CellHeightType {
-    case Dynamic(CellHeightForIndexPath)
-    case Fixed(CGFloat)
+    case dynamic(CellHeightForIndexPath)
+    case fixed(CGFloat)
 }
 
-public class WaterfallCollectionView: UICollectionView {
+open class WaterfallCollectionView: UICollectionView {
     
     public struct Configuration {
         let minimumColumnSpacing: CGFloat
@@ -28,11 +28,11 @@ public class WaterfallCollectionView: UICollectionView {
         }
     }
     
-    private var waterfallLayout: BSWCollectionViewWaterfallLayout {
+    fileprivate var waterfallLayout: BSWCollectionViewWaterfallLayout {
         return collectionViewLayout as! BSWCollectionViewWaterfallLayout
     }
     
-    public var columnCount: Int {
+    open var columnCount: Int {
         didSet {
             waterfallLayout.columnCount = columnCount
         }
@@ -49,7 +49,7 @@ public class WaterfallCollectionView: UICollectionView {
         waterfallLayout.minimumInteritemSpacing = configuration.minimumInteritemSpacing
         waterfallLayout.sectionInset = configuration.sectionInset
         
-        super.init(frame: CGRectZero, collectionViewLayout: waterfallLayout)
+        super.init(frame: CGRect.zero, collectionViewLayout: waterfallLayout)
         
         waterfallLayout.delegate = self
     }
@@ -58,11 +58,11 @@ public class WaterfallCollectionView: UICollectionView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    static public func preferredColumnCountForTraitCollection(traitCollection: UITraitCollection) -> Int {
+    static open func preferredColumnCountForTraitCollection(_ traitCollection: UITraitCollection) -> Int {
         switch traitCollection.horizontalSizeClass {
-        case .Compact:
+        case .compact:
             return 2
-        case .Regular:
+        case .regular:
             return 4
         default:
             return 2
@@ -72,14 +72,14 @@ public class WaterfallCollectionView: UICollectionView {
 
 extension WaterfallCollectionView: BSWCollectionViewDelegateWaterfallLayout {
 
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
         
-        let width = waterfallLayout.itemWidthInSectionAtIndex(indexPath.section)
+        let width = waterfallLayout.itemWidthInSectionAtIndex((indexPath as NSIndexPath).section)
         let height: CGFloat = {
             switch self.cellHeight {
-            case .Fixed(let height):
+            case .fixed(let height):
                 return height
-            case .Dynamic(let sizer):
+            case .dynamic(let sizer):
                 return sizer(indexPath, width)
             }
         }()
@@ -87,7 +87,7 @@ extension WaterfallCollectionView: BSWCollectionViewDelegateWaterfallLayout {
         return CGSize(width: width, height: height)
     }
     
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, columnCountForSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, columnCountForSection section: Int) -> Int {
         return columnCount
     }
 }

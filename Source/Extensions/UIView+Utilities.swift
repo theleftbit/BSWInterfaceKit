@@ -8,11 +8,11 @@ import Cartography
 
 extension UIView {
     
-    public func findSubviewWithTag(tag: NSInteger) -> UIView? {
-        return subviews.find({return $0.tag == tag})
+    public func findSubviewWithTag(_ tag: NSInteger) -> UIView? {
+        return subviews.find(predicate: { return $0.tag == tag} )
     }
     
-    public func removeSubviewWithTag(tag: NSInteger) {
+    public func removeSubviewWithTag(_ tag: NSInteger) {
         findSubviewWithTag(tag)?.removeFromSuperview()
     }
     
@@ -22,15 +22,15 @@ extension UIView {
         layer.masksToBounds = true
     }
     
-    public func getColorFromPoint(point: CGPoint) -> UIColor {
-        let colorSpace = CGColorSpaceCreateDeviceRGB()!
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue).rawValue
+    public func getColorFromPoint(_ point: CGPoint) -> UIColor {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue).rawValue
         
         var pixelData: [UInt8] = [0, 0, 0, 0]
         
-        let context = CGBitmapContextCreate(&pixelData, 1, 1, 8, 4, colorSpace, bitmapInfo)
-        CGContextTranslateCTM(context, -point.x, -point.y);
-        self.layer.renderInContext(context!)
+        let context = CGContext(data: &pixelData, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo)
+        context?.translateBy(x: -point.x, y: -point.y);
+        self.layer.render(in: context!)
         
         let red = CGFloat(pixelData[0]) / CGFloat(255.0)
         let green = CGFloat(pixelData[1]) / CGFloat(255.0)
@@ -53,10 +53,10 @@ extension UIView {
         }
     }
 
-    public class func instantiateFromNib<T: UIView>(viewType: T.Type) -> T? {
-        let className = NSStringFromClass(viewType).componentsSeparatedByString(".").last!
-        let bundle = NSBundle(forClass: self)
-        return bundle.loadNibNamed(className, owner: nil, options: nil).first as? T
+    public class func instantiateFromNib<T: UIView>(_ viewType: T.Type) -> T? {
+        let className = NSStringFromClass(viewType).components(separatedBy: ".").last!
+        let bundle = Bundle(for: self)
+        return bundle.loadNibNamed(className, owner: nil, options: nil)?.first as? T
     }
     
     public class func instantiateFromNib() -> Self? {

@@ -5,13 +5,13 @@
 
 import Foundation
 
-public class ScrollableStackView: UIScrollView {
+open class ScrollableStackView: UIScrollView {
     
-    private let stackView = UIStackView()
+    fileprivate let stackView = UIStackView()
     
-    public init(axis: UILayoutConstraintAxis = .Vertical,
-                alignment: UIStackViewAlignment = .Leading) {
-        super.init(frame: CGRectZero)
+    public init(axis: UILayoutConstraintAxis = .vertical,
+                alignment: UIStackViewAlignment = .leading) {
+        super.init(frame: CGRect.zero)
         
         stackView.axis = axis
         stackView.alignment = alignment
@@ -21,18 +21,18 @@ public class ScrollableStackView: UIScrollView {
         stackView.fillSuperview()
         
         switch axis {
-        case .Horizontal:
-            stackView.heightAnchor.constraintEqualToAnchor(heightAnchor).active = true
+        case .horizontal:
+            stackView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
             alwaysBounceHorizontal = true
-        case .Vertical:
-            stackView.widthAnchor.constraintEqualToAnchor(widthAnchor).active = true
+        case .vertical:
+            stackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
             alwaysBounceVertical = true
         }
         
         clipsToBounds = true
     }
 
-    public func addArrangedSubview(subview: UIView, layoutMargins: UIEdgeInsets) {
+    open func addArrangedSubview(_ subview: UIView, layoutMargins: UIEdgeInsets) {
 
         subview.translatesAutoresizingMaskIntoConstraints = false
         
@@ -45,24 +45,24 @@ public class ScrollableStackView: UIScrollView {
         
         dummyView.addSubview(subview)
 
-        subview.topAnchor.constraintEqualToAnchor(dummyView.layoutMarginsGuide.topAnchor).active = true
-        subview.bottomAnchor.constraintEqualToAnchor(dummyView.layoutMarginsGuide.bottomAnchor).active = true
+        subview.topAnchor.constraint(equalTo: dummyView.layoutMarginsGuide.topAnchor).isActive = true
+        subview.bottomAnchor.constraint(equalTo: dummyView.layoutMarginsGuide.bottomAnchor).isActive = true
 
         //If the subview will be used for text layout, use readableContentGuide instead
         let layoutGuideX: UILayoutGuide
-        if subview.isKindOfClass(UILabel) || subview.isKindOfClass(UITextView) {
+        if subview.isKind(of: UILabel.self) || subview.isKind(of: UITextView.self) {
             layoutGuideX = dummyView.readableContentGuide
         } else {
             layoutGuideX = dummyView.layoutMarginsGuide
         }
 
-        subview.leadingAnchor.constraintEqualToAnchor(layoutGuideX.leadingAnchor).active = true
-        subview.trailingAnchor.constraintEqualToAnchor(layoutGuideX.trailingAnchor).active = true
+        subview.leadingAnchor.constraint(equalTo: layoutGuideX.leadingAnchor).isActive = true
+        subview.trailingAnchor.constraint(equalTo: layoutGuideX.trailingAnchor).isActive = true
 
         stackView.addArrangedSubview(dummyView)
     }
     
-    public func addArrangedSubview(subview: UIView) {
+    open func addArrangedSubview(_ subview: UIView) {
         stackView.addArrangedSubview(subview)
     }
     
@@ -70,19 +70,19 @@ public class ScrollableStackView: UIScrollView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override class func requiresConstraintBasedLayout() -> Bool {
+    open override class var requiresConstraintBasedLayout : Bool {
         return true
     }
     
-    public func viewAtIndex(index: Int) -> UIView? {
+    open func viewAtIndex(_ index: Int) -> UIView? {
         return stackView.arrangedSubviews[safe: index]
     }
     
-    public func indexOfView(view: UIView) -> Int? {
-        return stackView.arrangedSubviews.indexOf(view)
+    open func indexOfView(_ view: UIView) -> Int? {
+        return stackView.arrangedSubviews.index(of: view)
     }
 
-    public func removeAllArrangedViews() {
+    open func removeAllArrangedViews() {
         stackView.removeAllArrangedSubviews()
     }
 }

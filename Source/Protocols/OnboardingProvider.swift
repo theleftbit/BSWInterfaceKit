@@ -35,8 +35,8 @@ public protocol OnboardingProvider: class {
 public struct OnboardingCustomization {
 
     public enum Background {
-        case Image(UIImage)
-        case Color(UIColor)
+        case image(UIImage)
+        case color(UIColor)
     }
 
     public let background: Background
@@ -54,15 +54,15 @@ public struct OnboardingCustomization {
 }
 
 
-public class ClassicOnboardingProvider: OnboardingProvider {
+open class ClassicOnboardingProvider: OnboardingProvider {
 
-    weak public var onboardingObserver: OnboardingObserver? {
+    weak open var onboardingObserver: OnboardingObserver? {
         didSet {
             onboardingVC.onboardingObserver = onboardingObserver
         }
     }
     
-    public var onboardingCustomization: OnboardingCustomization {
+    open var onboardingCustomization: OnboardingCustomization {
         didSet {
             onboardingVC.onboardingCustomization = onboardingCustomization
         }
@@ -70,7 +70,7 @@ public class ClassicOnboardingProvider: OnboardingProvider {
     
     let onboardingVC: OnboardingViewController = {
         let controller = OnboardingViewController()
-        controller.modalPresentationStyle = .FormSheet
+        controller.modalPresentationStyle = .formSheet
         return controller
     }()
 
@@ -85,7 +85,7 @@ public class ClassicOnboardingProvider: OnboardingProvider {
      - note: This method assumes you use a LaunchScreen.storyboard to launch your app. It'll crash otherwise
      - returns: The viewController you should set as Root of your app's window in order for the onboarding process to proceed
      */
-    public func rootViewController() -> UIViewController {
+    open func rootViewController() -> UIViewController {
         
         //Hook up the onboardingVC to whatever we have
         onboardingVC.onboardingCustomization = onboardingCustomization
