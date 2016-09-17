@@ -3,20 +3,20 @@ use_frameworks!
 abstract_target 'Common' do
 	pod 'BSWInterfaceKit', :path => '../BSWInterfaceKit.podspec'
     
-
     #Swift 3 Pods
-	pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :branch => 'swift3'
+	pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :branch => 'task'
 	pod 'Cartography', :git => 'https://github.com/raphaelcruzeiro/Cartography.git', :branch => 'swift3'
-    pod 'BNRDeferred',  :git => 'https://github.com/bignerdranch/Deferred.git', :branch => 'zwaldowski/swift-3_0/naming'
+  pod 'BNRDeferred',  :git => 'https://github.com/bignerdranch/Deferred.git', :branch => 'zwaldowski/swift-3_0/naming'
 
-    target 'BSWInterfaceKitPlayground'
-    target 'Tests'
+  target 'BSWInterfaceKitPlayground'
+  target 'Tests'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['CONFIGURATION_BUILD_DIR'] = '$PODS_CONFIGURATION_BUILD_DIR'
+      config.build_settings['SWIFT_VERSION'] = "3.0"
     end
   end
 end

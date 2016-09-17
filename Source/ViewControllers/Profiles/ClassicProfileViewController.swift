@@ -30,7 +30,7 @@ open class ClassicProfileViewController: ScrollableStackViewController, AsyncVie
         static let PhotoGallerySize = CGFloat(250)
     }
     
-    open var dataProvider: Future<Result<ClassicProfileViewModel>>! {
+    open var dataProvider: Task<ClassicProfileViewModel>! {
         didSet {
             scrollableStackView.alpha = 0
             view.addSubview(loadingView)

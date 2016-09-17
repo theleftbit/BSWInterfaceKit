@@ -4,6 +4,7 @@
 //
 
 import BSWFoundation
+import Deferred
 import UIKit
 
 /**
@@ -56,7 +57,7 @@ public enum ListState<T> {
 }
 
 extension ListState {
-    public func mapListState<T>(_ result: Result<[T]>) -> ListState<T> {
+    public func mapListState<T>(_ result: TaskResult<[T]>) -> ListState<T> {
         switch result {
         case .success(let value):
             return .loaded(data: value)
