@@ -5,9 +5,10 @@
 
 import PINRemoteImage
 import BSWFoundation
+import Deferred
 
 public typealias BSWImageDownloaderProgressBlock = (Int, Int) -> Void
-public typealias BSWImageCompletionBlock = (Result<UIImage>) -> Void
+public typealias BSWImageCompletionBlock = (TaskResult<UIImage>) -> Void
 
 extension UIImageView {
 
@@ -25,13 +26,13 @@ extension UIImageView {
         
         pin_setImage(from: url) { (downloadResult) in
 
-            let result: Result<UIImage>
+            let result: TaskResult<UIImage>
             if let image = downloadResult.image {
-                result = Result(value: image)
+                result = .success(image)
             } else if let error = downloadResult.error {
-                result = Result(error: error)
+                result = .failure(error)
             } else {
-                result = Result(error: NSError(domain: "com.bswinterfacekit.uiimageview", code: 0, userInfo: nil))
+                result = .failure(NSError(domain: "com.bswinterfacekit.uiimageview", code: 0, userInfo: nil))
             }
             
             completedBlock?(result)

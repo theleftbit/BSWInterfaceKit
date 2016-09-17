@@ -20,12 +20,12 @@ public protocol ViewModelReusable: ViewModelConfigurable {
 }
 
 public protocol AsyncViewModelPresenter: ViewModelConfigurable {
-    var dataProvider: Future<Result<VM>>! { get set }
+    var dataProvider: Task<VM>! { get set }
 }
 
 extension AsyncViewModelPresenter where Self: UIViewController {
     
-    public init(dataProvider: Future<Result<VM>>) {
+    public init(dataProvider: Task<VM>) {
         self.init(nibName: nil, bundle: nil)
         self.dataProvider = dataProvider
 
