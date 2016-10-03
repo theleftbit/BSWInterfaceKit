@@ -48,7 +48,7 @@ public enum PhotoPickerViewModel {
 }
 
 public protocol ProfilePhotoPickerDelegate: class {
-    func userAddedProfilePicture(_ url: URL, handler: (((Progress, UIImage)?) -> Void)) -> Void
+    func userAddedProfilePicture(_ url: URL, handler: @escaping (((Progress, UIImage)?) -> Void)) -> Void
     func userDeletedProfilePictureAtIndex(_ index: Int)
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
