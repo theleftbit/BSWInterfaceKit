@@ -7,62 +7,62 @@ import UIKit
 import MobileCoreServices
 import Photos
 
-public typealias MediaHandler = (NSURL? -> Void)
+public typealias MediaHandler = ((URL?) -> Void)
 
 final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     public enum Kind {
-        case Photo
-        case Video
+        case photo
+        case video
         
         func toUIKit() -> UIImagePickerControllerCameraCaptureMode {
             switch self {
-            case .Photo:
-                return .Photo
-            case .Video:
-                return .Video
+            case .photo:
+                return .photo
+            case .video:
+                return .video
             }
         }
         
         func pathExtension() -> String {
             switch self {
-            case .Photo:
+            case .photo:
                 return "png"
-            case .Video:
+            case .video:
                 return "mov"
             }
         }
     }
     
     public enum Source {
-        case PhotoAlbum
-        case Camera
+        case photoAlbum
+        case camera
         
         func toUIKit() -> UIImagePickerControllerSourceType {
             switch self {
-            case .Camera:
-                return .Camera
-            case .PhotoAlbum:
-                return .PhotoLibrary
+            case .camera:
+                return .camera
+            case .photoAlbum:
+                return .photoLibrary
             }
         }
     }
 
-    private struct Request {
+    fileprivate struct Request {
         let handler: MediaHandler
         let kind: Kind
     }
     
-    private weak var presentingVC: UIViewController?
-    private var currentRequest: Request?
-    private let imagePicker = UIImagePickerController()
+    fileprivate weak var presentingVC: UIViewController?
+    fileprivate var currentRequest: Request?
+    fileprivate let imagePicker = UIImagePickerController()
 
     public init(presentingVC: UIViewController) {
         self.presentingVC = presentingVC
         super.init()
     }
  
-    public func getMedia(kind: Kind = .Photo, source: Source = .PhotoAlbum, handler: MediaHandler) {
+    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) {
         
         guard self.currentRequest == nil else {
             handler(nil)
@@ -80,22 +80,22 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         imagePicker.sourceType = source.toUIKit()
         imagePicker.delegate = self
         switch kind {
-        case .Video:
+        case .video:
             imagePicker.mediaTypes = [kUTTypeMovie as String]
-        case .Photo:
+        case .photo:
             imagePicker.mediaTypes = [kUTTypeImage as String]
         }
         
-        presentingVC?.presentViewController(imagePicker, animated: true, completion: nil)
+        presentingVC?.present(imagePicker, animated: true, completion: nil)
     }
     
     // MARK: UIImagePickerControllerDelegate
     
-    public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         defer {
             self.currentRequest = nil
-            picker.dismissViewControllerAnimated(true, completion: nil)
+            picker.dismiss(animated: true, completion: nil)
         }
         
         guard let currentRequest = self.currentRequest else { return }
@@ -103,9 +103,9 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         let validMedia: Bool = {
             guard let mediaTypeString = info[UIImagePickerControllerMediaType] as? String else { return false }
             switch currentRequest.kind {
-            case .Video:
+            case .video:
                 return mediaTypeString == kUTTypeMovie as String
-            case .Photo:
+            case .photo:
                 return mediaTypeString == kUTTypeImage as String
             }
         }()
@@ -127,21 +127,21 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         
         do {
             let finalURL = cachePathForMedia(currentRequest.kind)
-            try data.writeToURL(finalURL, options: [.DataWritingAtomic])
+            try data.write(to: finalURL, options: [.atomic])
             self.currentRequest?.handler(finalURL)
         } catch {
             self.currentRequest?.handler(nil)
         }
     }
     
-    public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         currentRequest?.handler(nil)
         currentRequest = nil
     }
     
-    private func cachePathForMedia(kind: Kind) -> NSURL {
-        let fileManager = NSFileManager.defaultManager()
-        let cachesDirectory = fileManager.URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask)[0]
-        return cachesDirectory.URLByAppendingPathComponent("\(NSUUID().UUIDString).\(kind.pathExtension())")
+    fileprivate func cachePathForMedia(_ kind: Kind) -> URL {
+        let fileManager = FileManager.default
+        let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+        return cachesDirectory.appendingPathComponent("\(UUID().uuidString).\(kind.pathExtension())")
     }
 }

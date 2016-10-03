@@ -7,17 +7,17 @@ import Foundation
 import Cartography
 
 public protocol PhotoGalleryViewControllerDelegate: class {
-    func photoGalleryController(photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt)
+    func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt)
 }
 
-public class PhotoGalleryViewController: UIViewController {
+open class PhotoGalleryViewController: UIViewController {
     
-    private let photosGallery: PhotoGalleryView
-    public var allowShare: Bool
-    public weak var presentFromView: UIView?
-    public weak var delegate: PhotoGalleryViewControllerDelegate?
-    public var currentPage: UInt = 0
-    public var photos: [Photo] {
+    fileprivate let photosGallery: PhotoGalleryView
+    open var allowShare: Bool
+    open weak var presentFromView: UIView?
+    open weak var delegate: PhotoGalleryViewControllerDelegate?
+    open var currentPage: UInt = 0
+    open var photos: [Photo] {
         return photosGallery.photos
     }
 
@@ -27,7 +27,7 @@ public class PhotoGalleryViewController: UIViewController {
          allowShare: Bool = true) {
         self.presentFromView = presentFromView
         self.allowShare = allowShare
-        self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .ScaleAspectFit)
+        self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .scaleAspectFit)
         self.currentPage = initialPageIndex
         super.init(nibName: nil, bundle: nil)
     }
@@ -36,26 +36,26 @@ public class PhotoGalleryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func prefersStatusBarHidden() -> Bool {
+    open override var prefersStatusBarHidden : Bool {
         return true
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.blackColor()
+        view.backgroundColor = UIColor.black
 
         //Set up the Gallery
         view.addSubview(photosGallery)
         photosGallery.fillSuperview()
         
         //Add the close button
-        let closeButton = UIButton(type: UIButtonType.Custom)
+        let closeButton = UIButton(type: UIButtonType.custom)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.setImage(UIImage.templateImage(.Close), forState: UIControlState.Normal)
-        closeButton.addTarget(self, action: #selector(onCloseButton), forControlEvents: .TouchDown)
+        closeButton.setImage(UIImage.templateImage(.Close), for: UIControlState())
+        closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchDown)
         view.addSubview(closeButton)
-        closeButton.trailingAnchor.constraintEqualToAnchor(view.layoutMarginsGuide.trailingAnchor).active = true
-        closeButton.topAnchor.constraintEqualToAnchor(view.layoutMarginsGuide.topAnchor, constant: Stylesheet.margin(.Big)).active = true
+        closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor).isActive = true
+        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: Stylesheet.margin(.big)).isActive = true
         
         view.layoutIfNeeded()
         photosGallery.scrollToPhoto(atIndex: currentPage)

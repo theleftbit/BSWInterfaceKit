@@ -6,17 +6,17 @@
 import UIKit
 import Cartography
 
-public class FormLabelTableViewCell: UITableViewCell {
+open class FormLabelTableViewCell: UITableViewCell {
 
-    private let titleLabel: UILabel = {
+    fileprivate let titleLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .Left
+        label.textAlignment = .left
         return label
     }()
     
-    private let textField: UITextField = {
+    fileprivate let textField: UITextField = {
         let field = UITextField()
-        field.textAlignment = .Right
+        field.textAlignment = .right
         return field
     }()
     
@@ -30,7 +30,7 @@ public class FormLabelTableViewCell: UITableViewCell {
         setup()
     }
     
-    private func setup() {
+    fileprivate func setup() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(textField)
         constrain(titleLabel, textField) { titleLabel, textField in
@@ -43,17 +43,17 @@ public class FormLabelTableViewCell: UITableViewCell {
         }
     }
     
-    public func configureFor(title title: NSAttributedString, value: NSAttributedString) {
+    open func configureFor(title: NSAttributedString, value: NSAttributedString) {
         titleLabel.attributedText = title
         textField.attributedText = value
         titleLabel.sizeToFit()
     }
     
-    public func setKeyboardType(type: UIKeyboardType) {
+    open func setKeyboardType(_ type: UIKeyboardType) {
         textField.keyboardType = type
     }
     
-    public override func becomeFirstResponder() -> Bool {
+    open override func becomeFirstResponder() -> Bool {
         return textField.becomeFirstResponder()
     }
 }

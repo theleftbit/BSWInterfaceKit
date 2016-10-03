@@ -3,7 +3,7 @@ import Cartography
 
 // MARK: Private classes
 
-public class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout {
+open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout {
     
     let photosCollectionView = ProfilePhotoPickerCollectionView()
     
@@ -17,7 +17,7 @@ public class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegate
         setup()
     }
     
-    private func setup() {
+    fileprivate func setup() {
         contentView.addSubview(photosCollectionView)
         photosCollectionView.fillSuperview()
         constrain(photosCollectionView) { photosCollectionView in
@@ -25,7 +25,7 @@ public class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegate
         }
     }
     
-    public func prepareForPhotos(photos: [Photo], currentUploads: [(NSProgress, UIImage)] = []) {
+    open func prepareForPhotos(_ photos: [Photo], currentUploads: [(Progress, UIImage)] = []) {
         photosCollectionView.updatePhotos(
             PhotoPickerViewModel.createPhotoArray(
                 photos,
@@ -35,7 +35,7 @@ public class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegate
         )
     }
     
-    public func setPresentingViewController(vc: UIViewController, profilePhotoDelegate: ProfilePhotoPickerDelegate) {
+    open func setPresentingViewController(_ vc: UIViewController, profilePhotoDelegate: ProfilePhotoPickerDelegate) {
         photosCollectionView.presentingViewController = vc
         photosCollectionView.profilePhotoDelegate = profilePhotoDelegate
     }

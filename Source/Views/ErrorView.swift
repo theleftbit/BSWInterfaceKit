@@ -6,21 +6,21 @@
 import UIKit
 import Cartography
 
-public class ErrorView: UIView {
+open class ErrorView: UIView {
     
     var onButtonTap: ButtonActionHandler?
     var shouldCollapse = false
     
-    private let stackView: UIStackView = {
+    fileprivate let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.axis = .Vertical
-        stackView.alignment = .Center
+        stackView.axis = .vertical
+        stackView.alignment = .center
         stackView.spacing = 10
         return stackView
     }()
     
     public init(errorMessage: NSAttributedString? = nil, buttonConfiguration: ButtonConfiguration) {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         self.addSubview(stackView)
         
         constrain(stackView) { stackView in
@@ -41,10 +41,10 @@ public class ErrorView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
-        if CGRectGetHeight(self.bounds) < CGRectGetWidth(self.bounds) && shouldCollapse {
-            stackView.axis = .Horizontal
+        if self.bounds.height < self.bounds.width && shouldCollapse {
+            stackView.axis = .horizontal
         }
     }
 }

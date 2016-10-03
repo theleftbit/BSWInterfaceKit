@@ -5,15 +5,16 @@
 
 import PINRemoteImage
 import BSWFoundation
+import Deferred
 
 public typealias BSWImageDownloaderProgressBlock = (Int, Int) -> Void
-public typealias BSWImageCompletionBlock = (Result<UIImage>) -> Void
+public typealias BSWImageCompletionBlock = (TaskResult<UIImage>) -> Void
 
 extension UIImageView {
 
-    public func bsw_setImageFromURLString(url: String) {
-        if let url = NSURL(string: url) {
-            pin_setImageFromURL(url)
+    public func bsw_setImageFromURLString(_ url: String) {
+        if let url = URL(string: url) {
+            pin_setImage(from: url)
         }
     }
 
@@ -21,34 +22,36 @@ extension UIImageView {
         pin_cancelImageDownload()
     }
     
-    public func bsw_setImageWithURL(url: NSURL, completed completedBlock: BSWImageCompletionBlock? = nil) {
+    public func bsw_setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
         
-        pin_setImageFromURL(url) { (downloadResult) in
+        pin_setImage(from: url) { (downloadResult) in
 
-            let result: Result<UIImage>
+            let result: TaskResult<UIImage>
             if let image = downloadResult.image {
-                result = Result(value: image)
+                result = .success(image)
             } else if let error = downloadResult.error {
-                result = Result(error: error)
+                result = .failure(error)
             } else {
-                result = Result(error: NSError(domain: "com.bswinterfacekit.uiimageview", code: 0, userInfo: nil))
+                result = .failure(NSError(domain: "com.bswinterfacekit.uiimageview", code: 0, userInfo: nil))
             }
             
             completedBlock?(result)
         }
     }
     
-    public func bsw_setPhoto(photo: Photo) {
+    public func bsw_setPhoto(_ photo: Photo) {
         switch photo.kind {
-        case .Image(let image):
+        case .image(let image):
             self.image = image
-        case .URL(let url):
+        case .url(let url):
             backgroundColor = photo.averageColor
             bsw_setImageWithURL(url) { result in
                 guard result.error == nil else { return }
                 self.image = result.value
                 self.backgroundColor = nil
             }
+        case .empty:
+            backgroundColor = photo.averageColor
         }
     }
 }

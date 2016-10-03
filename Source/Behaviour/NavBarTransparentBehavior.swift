@@ -6,22 +6,22 @@
 import Foundation
 
 enum NavBarState {
-    case Regular, Transparent
+    case regular, transparent
     
     var backgroundImage: UIImage? {
         switch self {
-        case .Regular:
+        case .regular:
             return nil
-        case .Transparent:
+        case .transparent:
             return NavBarTransparentBehavior.transparentGradientImage()
         }
     }
     
     var shadowImage: UIImage? {
         switch self {
-        case .Regular:
+        case .regular:
             return nil
-        case .Transparent:
+        case .transparent:
             return UIImage()
         }
     }
@@ -29,10 +29,10 @@ enum NavBarState {
 
 final public class NavBarTransparentBehavior: NSObject {
     
-    private static let heightOfNavBarAndStatusBar = 64
-    private static let limitOffsetTransparentNavBar = 100
+    fileprivate static let heightOfNavBarAndStatusBar = 64
+    fileprivate static let limitOffsetTransparentNavBar = 100
     
-    private weak var navBar: UINavigationBar?
+    fileprivate weak var navBar: UINavigationBar?
 
     init(navBar: UINavigationBar, scrollView: UIScrollView) {
         self.navBar = navBar
@@ -48,51 +48,51 @@ final public class NavBarTransparentBehavior: NSObject {
         UIView.setAnimationsEnabled(false)
         NavBarTransparentBehavior.animate(navBar)
         navBar.shadowImage = state.shadowImage
-        navBar.setBackgroundImage(state.backgroundImage, forBarMetrics: .Default)
+        navBar.setBackgroundImage(state.backgroundImage, for: .default)
         UIView.setAnimationsEnabled(true)
     }
 
-    private func updateNavBar(forScrollView scrollView: UIScrollView) {
+    fileprivate func updateNavBar(forScrollView scrollView: UIScrollView) {
         guard let _ = navBar else { return }
         if scrollView.contentOffset.y < CGFloat(NavBarTransparentBehavior.limitOffsetTransparentNavBar) {
-            setNavBar(toState: .Transparent)
+            setNavBar(toState: .transparent)
         }
         else {
-            setNavBar(toState: .Regular)
+            setNavBar(toState: .regular)
         }
     }
     
-    private func currentState(forNavBar navBar: UINavigationBar) -> NavBarState {
-        if navBar.backgroundImageForBarMetrics(.Default) != nil {
-            return .Transparent
+    fileprivate func currentState(forNavBar navBar: UINavigationBar) -> NavBarState {
+        if navBar.backgroundImage(for: .default) != nil {
+            return .transparent
         }
         else {
-            return .Regular
+            return .regular
         }
     }
     
-    private static func animate(navBar: UINavigationBar) {
+    fileprivate static func animate(_ navBar: UINavigationBar) {
         let transition = CATransition()
         transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         transition.type = kCATransitionFade
         transition.duration = 0.3
-        transition.removedOnCompletion = true
-        navBar.layer.addAnimation(transition, forKey: nil)
+        transition.isRemovedOnCompletion = true
+        navBar.layer.add(transition, forKey: nil)
     }
     
-    private static func transparentGradientImage() -> UIImage {
+    fileprivate static func transparentGradientImage() -> UIImage {
         let colorTop = UIColor(white: 0.1, alpha: 0.5)
         let colorBottom = UIColor(white: 0.1, alpha: 0.0)
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = CGRect(x: 0, y: 0, width: 1, height: heightOfNavBarAndStatusBar)
-        gradientLayer.colors = [colorTop, colorBottom].map{$0.CGColor}
+        gradientLayer.colors = [colorTop, colorBottom].map{$0.cgColor}
         gradientLayer.locations = [0.0, 1.0]
         return UIImage.image(fromGradientLayer: gradientLayer)
     }
 }
 
 extension NavBarTransparentBehavior: UIScrollViewDelegate {
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let _ = navBar else { return }
         updateNavBar(forScrollView: scrollView)
     }

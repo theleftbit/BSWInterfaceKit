@@ -7,28 +7,28 @@ import UIKit
 
 final public class UpdatePageControlOnScrollBehavior: NSObject {
     
-    private weak var pageControl: UIPageControl?
-    private let scrollingDirection: ScrollingDirection
+    fileprivate weak var pageControl: UIPageControl?
+    fileprivate let scrollingDirection: ScrollingDirection
     
-    init(pageControl: UIPageControl, scrollingDirection: ScrollingDirection = .Horizontal) {
+    init(pageControl: UIPageControl, scrollingDirection: ScrollingDirection = .horizontal) {
         self.pageControl = pageControl
         self.scrollingDirection = scrollingDirection
         super.init()
     }
     
     enum ScrollingDirection {
-        case Horizontal, Vertical
+        case horizontal, vertical
     }
 }
 
 extension UpdatePageControlOnScrollBehavior: UIScrollViewDelegate {
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let pageControl = pageControl else { return }
         
-        let isScrollingHorizontal = scrollingDirection == .Horizontal
+        let isScrollingHorizontal = scrollingDirection == .horizontal
         
         let viewBounds = scrollView.bounds
-        let viewSize = isScrollingHorizontal ? CGRectGetWidth(viewBounds) : CGRectGetHeight(viewBounds)
+        let viewSize = isScrollingHorizontal ? viewBounds.width : viewBounds.height
         
         guard viewSize != 0 else { return }
         

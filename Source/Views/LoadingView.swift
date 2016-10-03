@@ -7,17 +7,17 @@ import UIKit
 import Cartography
 
 public class LoadingView: UIView {
-    private let stackView: UIStackView = {
+    fileprivate let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .Vertical
-        stackView.alignment = .Center
+        stackView.axis = .vertical
+        stackView.alignment = .center
         stackView.spacing = 10
         return stackView
     }()
     
-    public init(loadingMessage: NSAttributedString? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle = .Gray) {
-        super.init(frame: CGRectZero)
+    public init(loadingMessage: NSAttributedString? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle = .gray) {
+        super.init(frame: CGRect.zero)
         self.addSubview(stackView)
         constrain(stackView) { stackView in
             stackView.centerX == stackView.superview!.centerX

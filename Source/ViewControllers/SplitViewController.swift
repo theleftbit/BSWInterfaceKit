@@ -5,10 +5,10 @@
 
 import UIKit
 
-public class SplitViewController<Master: UIViewController, Detail: UIViewController>: UISplitViewController, UISplitViewControllerDelegate {
+open class SplitViewController<Master: UIViewController, Detail: UIViewController>: UISplitViewController, UISplitViewControllerDelegate {
     
-    public weak var masterVC: Master!
-    public weak var detailVC: Detail!
+    open weak var masterVC: Master!
+    open weak var detailVC: Detail!
     
     public init(masterVC: Master, detailVC: Detail) {
         
@@ -26,7 +26,7 @@ public class SplitViewController<Master: UIViewController, Detail: UIViewControl
         super.init(coder: aDecoder)
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         self.delegate = self
@@ -34,7 +34,7 @@ public class SplitViewController<Master: UIViewController, Detail: UIViewControl
     
     //MARK:- UISplitViewControllerDelegate
     
-    public func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
+    open func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
         
         //TODO: Review on iPad
         

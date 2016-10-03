@@ -20,7 +20,7 @@ extension UIFont {
         if let font = UIFont(name: fontType, size: CGFloat(fontSize)) {
             return font
         } else {
-            return UIFont.systemFontOfSize(CGFloat(fontSize))
+            return UIFont.systemFont(ofSize: CGFloat(fontSize))
         }
     }
 }

@@ -4,19 +4,19 @@ import Foundation
 
 enum BSWInterfaceKitStrings {
     /// Dismiss
-    case Dismiss
+    case dismiss
     /// Yes
-    case Yes
+    case yes
     /// No
-    case No
+    case no
     /// Do you want to delete this photo?
-    case ConfirmDeleteTitle
+    case confirmDeleteTitle
     /// Add Photo
-    case AddPhotoTitle
+    case addPhotoTitle
     /// Photo Album
-    case PhotoAlbum
+    case photoAlbum
     /// Camera
-    case Camera
+    case camera
 }
 
 extension BSWInterfaceKitStrings: CustomStringConvertible {
@@ -24,29 +24,29 @@ extension BSWInterfaceKitStrings: CustomStringConvertible {
     
     var string: String {
         switch self {
-        case .Dismiss:
+        case .dismiss:
             return BSWInterfaceKitStrings.tr("dismiss")
-        case .Yes:
+        case .yes:
             return BSWInterfaceKitStrings.tr("yes")
-        case .No:
+        case .no:
             return BSWInterfaceKitStrings.tr("no")
-        case .ConfirmDeleteTitle:
+        case .confirmDeleteTitle:
             return BSWInterfaceKitStrings.tr("confirm-delete-title")
-        case .AddPhotoTitle:
+        case .addPhotoTitle:
             return BSWInterfaceKitStrings.tr("add-photo-title")
-        case .PhotoAlbum:
+        case .photoAlbum:
             return BSWInterfaceKitStrings.tr("photo-album")
-        case .Camera:
+        case .camera:
             return BSWInterfaceKitStrings.tr("camera")
         }
     }
     
-    private static func tr(key: String, _ args: CVarArgType...) -> String {
-        let format = NSLocalizedString(key, bundle: NSBundle.interfaceKitBundle(), comment: "")
-        return String(format: format, locale: NSLocale.currentLocale(), arguments: args)
+    fileprivate static func tr(_ key: String, _ args: CVarArg...) -> String {
+        let format = NSLocalizedString(key, bundle: Bundle.interfaceKitBundle(), comment: "")
+        return String(format: format, locale: Locale.current, arguments: args)
     }
 }
 
-internal func localizableString(key: BSWInterfaceKitStrings) -> String {
+internal func localizableString(_ key: BSWInterfaceKitStrings) -> String {
     return key.string
 }

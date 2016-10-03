@@ -5,35 +5,35 @@
 
 import UIKit
 
-public class TextStyler {
+open class TextStyler {
     
     public enum Style {
-        case Title
-        case Headline
-        case Subheadline
-        case Body
-        case Footnote
+        case title
+        case headline
+        case subheadline
+        case body
+        case footnote
         
-        private func toUIKit() -> String {
+        fileprivate func toUIKit() -> String {
             switch self {
-            case .Title:
-                return UIFontTextStyleTitle1
-            case .Headline:
-                return UIFontTextStyleHeadline
-            case .Subheadline:
-                return UIFontTextStyleSubheadline
-            case .Body:
-                return UIFontTextStyleBody
-            case .Footnote:
-                return UIFontTextStyleFootnote
+            case .title:
+                return UIFontTextStyle.title1.rawValue
+            case .headline:
+                return UIFontTextStyle.headline.rawValue
+            case .subheadline:
+                return UIFontTextStyle.subheadline.rawValue
+            case .body:
+                return UIFontTextStyle.body.rawValue
+            case .footnote:
+                return UIFontTextStyle.footnote.rawValue
             }
         }
     }
     
-    public static let styler = TextStyler()
-    public var preferredFontName: String?
+    open static let styler = TextStyler()
+    open var preferredFontName: String?
     
-    public func attributedString(string: String, color: UIColor = UIColor.blackColor(), forStyle style: Style = .Body) -> NSAttributedString {
+    open func attributedString(_ string: String, color: UIColor = UIColor.black, forStyle style: Style = .body) -> NSAttributedString {
         
         let font = fontForStyle(style)
         
@@ -45,11 +45,11 @@ public class TextStyler {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
-    public func fontForStyle(style: Style) -> UIFont {
+    open func fontForStyle(_ style: Style) -> UIFont {
     
         let font: UIFont = {
             
-            let systemFont = UIFont.preferredFontForTextStyle(style.toUIKit())
+            let systemFont = UIFont.preferredFont(forTextStyle: UIFontTextStyle(rawValue: style.toUIKit()))
             
             guard let preferredFontName = preferredFontName,
                 let font = UIFont(name: preferredFontName, size: systemFont.pointSize) else {

@@ -9,12 +9,12 @@ import Deferred
 import BSWFoundation
 
 public enum ClassicProfileEditKind {
-    case NonEditable
-    case Editable(UIBarButtonItem)
+    case nonEditable
+    case editable(UIBarButtonItem)
     
     public var isEditable: Bool {
         switch self {
-        case .Editable(_):
+        case .editable(_):
             return true
         default:
             return false
@@ -22,7 +22,7 @@ public enum ClassicProfileEditKind {
     }
 }
 
-public class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
+open class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
     
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
@@ -30,47 +30,49 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         static let PhotoGallerySize = CGFloat(250)
     }
     
-    public var dataProvider: Future<Result<ClassicProfileViewModel>>! {
+    open var dataProvider: Task<ClassicProfileViewModel>! {
         didSet {
             scrollableStackView.alpha = 0
             view.addSubview(loadingView)
             loadingView.centerInSuperview()
             
-            dataProvider.uponMainQueue { [weak self] _ in
+            dataProvider.upon(.main) { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.scrollableStackView.alpha = 1
                 strongSelf.loadingView.removeFromSuperview()
             }
         }
     }
-    public var editKind: ClassicProfileEditKind = .NonEditable
-    private lazy var loadingView = LoadingView()
-    private let photoGallery = PhotoGalleryView()
-    private let titleLabel = UILabel.unlimitedLinesLabel()
-    private let detailsLabel = UILabel.unlimitedLinesLabel()
-    private let extraDetailsLabel = UILabel.unlimitedLinesLabel()
-    private let separatorView: UIView = {
+    
+    open var editKind: ClassicProfileEditKind = .nonEditable
+    
+    fileprivate lazy var loadingView: LoadingView = LoadingView()
+    fileprivate let photoGallery = PhotoGalleryView()
+    fileprivate let titleLabel = UILabel.unlimitedLinesLabel()
+    fileprivate let detailsLabel = UILabel.unlimitedLinesLabel()
+    fileprivate let extraDetailsLabel = UILabel.unlimitedLinesLabel()
+    fileprivate let separatorView: UIView = {
         let view = UIView()
         constrain(view) { view in
             view.height == Constants.SeparatorSize.height
             view.width == Constants.SeparatorSize.width
         }
-        view.backgroundColor = UIColor.lightGrayColor()
+        view.backgroundColor = UIColor.lightGray
         return view
     }()
     
-    private var navBarBehaviour: NavBarTransparentBehavior?
+    fileprivate var navBarBehaviour: NavBarTransparentBehavior?
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         guard let _ = dataProvider else { fatalError() }
         
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
 
         //This is set to false in order to layout the image below the transparent navBar
         automaticallyAdjustsScrollViewInsets = false
         if let tabBar = tabBarController?.tabBar {
-            scrollableStackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: CGRectGetHeight(tabBar.frame), right: 0)
+            scrollableStackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBar.frame.height, right: 0)
         }
         
         //Add the photoGallery
@@ -88,14 +90,14 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         
         //Add the rightBarButtonItem
         switch editKind {
-        case .Editable(let barButton):
+        case .editable(let barButton):
             navigationItem.rightBarButtonItem = barButton
         default:
             break
         }
     }
     
-    override public func viewWillAppear(animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //This is the transparent navBar behaviour
         if let navBar = self.navigationController?.navigationBar {
@@ -104,7 +106,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
         
         //Add the rightBarButtonItem
         switch editKind {
-        case .Editable(let barButton):
+        case .editable(let barButton):
             navigationItem.rightBarButtonItem = barButton
         default:
             break
@@ -112,18 +114,18 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
 
     }
     
-    override public func viewWillDisappear(animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navBarBehaviour?.setNavBar(toState: .Regular)
+        navBarBehaviour?.setNavBar(toState: .regular)
     }
     
-    override public func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override open var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
     
     //MARK:- Private
     
-    public func configureFor(viewModel viewModel: ClassicProfileViewModel) {
+    open func configureFor(viewModel: ClassicProfileViewModel) {
         
         photoGallery.photos = viewModel.photos
         titleLabel.attributedText = viewModel.titleInfo
@@ -135,7 +137,7 @@ public class ClassicProfileViewController: ScrollableStackViewController, AsyncV
 //MARK:- PhotoGalleryViewDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
-    public func didTapPhotoAt(index index: UInt, fromView: UIView) {
+    public func didTapPhotoAt(index: UInt, fromView: UIView) {
         
         guard let viewModel = dataProvider.peek()?.value else { return }
         
@@ -146,15 +148,15 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
             allowShare: false
         )
         gallery.delegate = self
-        presentViewController(gallery, animated: true, completion: nil)
+        present(gallery, animated: true, completion: nil)
     }
 }
 
 //MARK:- PhotoGalleryViewControllerDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
-    public func photoGalleryController(photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
+    public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
         photoGallery.scrollToPhoto(atIndex: index)
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 }
