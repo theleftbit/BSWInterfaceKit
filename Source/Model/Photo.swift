@@ -8,8 +8,9 @@ import Foundation
 public struct Photo {
     
     public enum Kind {
-        case URL(NSURL)
-        case Image(UIImage)
+        case url(Foundation.URL)
+        case image(UIImage)
+        case empty
     }
     
     public let kind: Kind
@@ -23,28 +24,28 @@ public struct Photo {
     }
 
     public init(image: UIImage, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
-        self.kind = .Image(image)
+        self.kind = .image(image)
         self.averageColor = averageColor
         self.size = size
     }
 
-    public init(url: NSURL, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
-        self.kind = .URL(url)
+    public init(url: URL, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
+        self.kind = .url(url)
         self.averageColor = averageColor
         self.size = size
     }
     
     public static func emptyPhoto() -> Photo {
-        return Photo(url: NSURL(), averageColor: UIColor.randomColor(), size: nil)
+        return Photo(kind: .empty, averageColor: UIColor.randomColor(), size: nil)
     }
 }
 
 extension Photo {
     static func samplePhotos() -> [Photo] {
-        let photo1 = Photo(url: NSURL(string: "http://e2.365dm.com/15/09/768x432/alessandro-del-piero-juventus-serie-a_3351343.jpg?20150915122301")!)
-        let photo2 = Photo(url: NSURL(string: "http://images1.fanpop.com/images/photos/2000000/Old-Golden-Days-alessandro-del-piero-2098417-600-705.jpg")!)
-        let photo3 = Photo(url: NSURL(string: "http://e0.365dm.com/14/05/768x432/Alessandro-del-Piero-italy-2002_3144508.jpg?20140520095830")!)
-        let photo4 = Photo(url: NSURL(string: "http://static.goal.com/576000/576031_heroa.jpg")!)
+        let photo1 = Photo(url: URL(string: "http://e2.365dm.com/15/09/768x432/alessandro-del-piero-juventus-serie-a_3351343.jpg?20150915122301")!)
+        let photo2 = Photo(url: URL(string: "http://images1.fanpop.com/images/photos/2000000/Old-Golden-Days-alessandro-del-piero-2098417-600-705.jpg")!)
+        let photo3 = Photo(url: URL(string: "http://e0.365dm.com/14/05/768x432/Alessandro-del-Piero-italy-2002_3144508.jpg?20140520095830")!)
+        let photo4 = Photo(url: URL(string: "http://static.goal.com/576000/576031_heroa.jpg")!)
         return [photo1, photo2, photo3, photo4]
     }
 }

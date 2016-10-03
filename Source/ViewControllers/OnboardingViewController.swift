@@ -6,23 +6,23 @@
 import UIKit
 import Cartography
 
-public class LaunchScreenViewController: UIViewController {
+open class LaunchScreenViewController: UIViewController {
     
-    public var controllerToPresentOnAppereance: UIViewController?
-    public var showSpinner = false
+    open var controllerToPresentOnAppereance: UIViewController?
+    open var showSpinner = false
     
-    public override func loadView() {
+    open override func loadView() {
         //Folks, don't do this at home!
-        let baseVC = UIStoryboard(name: "LaunchScreen", bundle: NSBundle.mainBundle()).instantiateInitialViewController()!
+        let baseVC = UIStoryboard(name: "LaunchScreen", bundle: Bundle.main).instantiateInitialViewController()!
         let view = baseVC.view
         baseVC.view = nil
         self.view = view
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         if showSpinner {
-            let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            let spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
             view.addSubview(spinner)
             spinner.startAnimating()
             constrain(spinner) { spinner in
@@ -32,14 +32,14 @@ public class LaunchScreenViewController: UIViewController {
         }
     }
     
-    public override func viewDidAppear(animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         guard let controllerToPresentOnAppereance = controllerToPresentOnAppereance else { return }
-        presentViewController(controllerToPresentOnAppereance, animated: true, completion: nil)
+        present(controllerToPresentOnAppereance, animated: true, completion: nil)
         self.controllerToPresentOnAppereance = nil
     }
     
-    public override func prefersStatusBarHidden() -> Bool {
+    open override var prefersStatusBarHidden : Bool {
         return true
     }
 }
@@ -53,18 +53,18 @@ class OnboardingViewController: UIViewController {
     
     let socialStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.axis = .Vertical
-        stackView.alignment = .Fill
-        stackView.distribution = .FillProportionally
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fillProportionally
         stackView.spacing = OnboardingViewController.Spacing
         return stackView
     }()
 
     let logoStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.axis = .Vertical
-        stackView.alignment = .Fill
-        stackView.distribution = .FillProportionally
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fillProportionally
         stackView.spacing = OnboardingViewController.Spacing
         return stackView
     }()
@@ -78,9 +78,9 @@ class OnboardingViewController: UIViewController {
         
         //First, the background
         switch onboardingCustomization.background {
-        case .Color(let color):
+        case .color(let color):
             view.backgroundColor = color
-        case .Image(let image):
+        case .image(let image):
             let imageView = UIImageView(image: image)
             contentView.addSubview(imageView)
             constrain(imageView) { imageView in
@@ -104,12 +104,12 @@ class OnboardingViewController: UIViewController {
         prepareSocialStackView()
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         prepareMarginsForCurrentTraitCollection()
     }
 
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override var preferredStatusBarStyle : UIStatusBarStyle {
         return onboardingCustomization.statusBarStyle
     }
     
@@ -121,23 +121,23 @@ class OnboardingViewController: UIViewController {
 
     //MARK:- Private
 
-    private func prepareMarginsForCurrentTraitCollection() {
+    fileprivate func prepareMarginsForCurrentTraitCollection() {
         switch self.traitCollection.verticalSizeClass {
-        case .Regular:
+        case .regular:
             contentView.layoutMargins = UIEdgeInsetsMake(40, 8, 8, 8)
-        case .Compact:
+        case .compact:
             contentView.layoutMargins = UIEdgeInsetsMake(8, 8, 8, 8)
-        case .Unspecified:
+        case .unspecified:
             contentView.layoutMargins = UIEdgeInsetsMake(8, 8, 8, 8)
         }
     }
     
-    private func prepareSocialStackView() {
+    fileprivate func prepareSocialStackView() {
         
         let privacyLabel: UILabel = {
             let label = UILabel()
             label.text = "We will never post in your wall"
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.numberOfLines = 0
             return label
         }()
@@ -149,7 +149,7 @@ class OnboardingViewController: UIViewController {
                 title: "Login with Facebook",
                 target: self,
                 selector: #selector(onLoginFacebook),
-                color: UIColor.blueColor()
+                color: UIColor.blue
             )
             return button
         }()
@@ -157,11 +157,11 @@ class OnboardingViewController: UIViewController {
         socialStackView.addArrangedSubview(facebookButton)
     }
     
-    private func prepareLogoStackView() {
+    fileprivate func prepareLogoStackView() {
         
         let logoView: UIImageView = {
             let imageView = UIImageView(image: onboardingCustomization.appLogo)
-            imageView.contentMode = .ScaleAspectFit
+            imageView.contentMode = .scaleAspectFit
             return imageView
         }()
         
@@ -169,7 +169,7 @@ class OnboardingViewController: UIViewController {
         
         let sloganLabel: UILabel = {
             let label = UILabel()
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.attributedText = onboardingCustomization.appSlogan
             return label
         }()

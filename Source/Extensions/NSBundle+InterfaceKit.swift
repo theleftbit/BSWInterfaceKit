@@ -8,14 +8,14 @@
 
 import Foundation
 
-extension NSBundle {
+extension Bundle {
 
-    class func interfaceKitBundle() -> NSBundle {
+    class func interfaceKitBundle() -> Bundle {
         return InterfaceBundle.bundle
     }
 }
 
 private struct InterfaceBundle {
-    private static let bundle = NSBundle(forClass: InterfaceKit.self)
-    private class InterfaceKit: NSObject {}
+    fileprivate static let bundle = Bundle(for: InterfaceKit.self)
+    fileprivate class InterfaceKit: NSObject {}
 }

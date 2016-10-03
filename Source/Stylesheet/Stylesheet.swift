@@ -6,19 +6,19 @@
 import Foundation
 
 enum Margin {
-    case Smallest
-    case Small
-    case Medium
-    case Big
-    case Bigger
-    case Biggest
-    case Huge
+    case smallest
+    case small
+    case medium
+    case big
+    case bigger
+    case biggest
+    case huge
 }
 
 enum ColorState {
-    case Primary
-    case Negative
-    case Positive
+    case primary
+    case negative
+    case positive
 }
 
 protocol StylesheetConfigurable {
@@ -30,7 +30,7 @@ protocol StylesheetConfigurable {
      
      - returns: The margin value based on the specified Margin
      */
-    static func margin(margin: Margin) -> Double
+    static func margin(_ margin: Margin) -> Double
 }
 
 extension StylesheetConfigurable {
@@ -41,7 +41,7 @@ extension StylesheetConfigurable {
      
      - returns: The margin value based on the specified Margin
      */
-    static func margin(margin: Margin) -> CGFloat {
+    static func margin(_ margin: Margin) -> CGFloat {
         return CGFloat(self.margin(margin))
     }
 }

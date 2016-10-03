@@ -5,8 +5,8 @@
 
 import UIKit
 
-public class BSWCollectionViewFlowLayout: UICollectionViewFlowLayout {
-    override public func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
+open class BSWCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    override open func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return true
     }
 }

@@ -22,7 +22,7 @@ public struct ClassicProfileViewModel {
 // MARK: - Photo handling
 
 extension ClassicProfileViewModel {
-    func movePhotoAtIndex(index: Int, toIndex: Int) -> ClassicProfileViewModel {
+    func movePhotoAtIndex(_ index: Int, toIndex: Int) -> ClassicProfileViewModel {
         var photos = self.photos
         photos.moveItem(fromIndex: index, toIndex: toIndex)
         return ClassicProfileViewModel(
@@ -33,9 +33,9 @@ extension ClassicProfileViewModel {
         )
     }
     
-    func removePhotoAtIndex(index: Int) -> ClassicProfileViewModel {
+    func removePhotoAtIndex(_ index: Int) -> ClassicProfileViewModel {
         var photos = self.photos
-        photos.removeAtIndex(index)
+        photos.remove(at: index)
         return ClassicProfileViewModel(
             photos: photos,
             titleInfo: titleInfo,
@@ -51,16 +51,16 @@ extension ClassicProfileViewModel {
     public static func buffon() -> ClassicProfileViewModel {
         return ClassicProfileViewModel(
             photos: [
-                Photo(kind: Photo.Kind.URL(NSURL(string: "http://ow.ly/ZHvD302NKEF")!)),
-                Photo(kind: Photo.Kind.URL(NSURL(string: "http://ow.ly/1n7d302UNLr")!))
+                Photo(kind: Photo.Kind.url(URL(string: "http://ow.ly/ZHvD302NKEF")!)),
+                Photo(kind: Photo.Kind.url(URL(string: "http://ow.ly/1n7d302UNLr")!))
             ],
-            titleInfo: TextStyler.styler.attributedString("Gianluigi Buffon", forStyle: .Title),
-            detailsInfo: TextStyler.styler.attributedString("The best keeper of football history", forStyle: .Body),
+            titleInfo: TextStyler.styler.attributedString("Gianluigi Buffon", forStyle: .title),
+            detailsInfo: TextStyler.styler.attributedString("The best keeper of football history", forStyle: .body),
             extraInfo: [
-                TextStyler.styler.attributedString("1 World Cup 2006", forStyle: .Body),
-                TextStyler.styler.attributedString("7 Serie A titles", forStyle: .Body),
-                TextStyler.styler.attributedString("3 Coppa Italia", forStyle: .Body),
-                TextStyler.styler.attributedString("1 Uefa Cup", forStyle: .Body)
+                TextStyler.styler.attributedString("1 World Cup 2006", forStyle: .body),
+                TextStyler.styler.attributedString("7 Serie A titles", forStyle: .body),
+                TextStyler.styler.attributedString("3 Coppa Italia", forStyle: .body),
+                TextStyler.styler.attributedString("1 Uefa Cup", forStyle: .body)
             ]
         )
     }
