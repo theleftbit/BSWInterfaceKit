@@ -1,15 +1,15 @@
 PODS:
-  - Alamofire (4.0.0)
-  - BNRDeferred (2.2.0-rc.1)
-  - BSWFoundation (0.1.0):
+  - Alamofire (4.0.1)
+  - BNRDeferred (3.0.0-beta.1)
+  - BSWFoundation (0.2.0):
     - Alamofire (~> 4.0.0)
-    - BNRDeferred
+    - BNRDeferred (= 3.0.0-beta.1)
     - Decodable (~> 0.5)
   - BSWInterfaceKit (0.0.1):
     - BSWFoundation
-    - Cartography
+    - Cartography (~> 1.0.1)
     - PINRemoteImage
-  - Cartography (0.7.0)
+  - Cartography (1.0.1)
   - Decodable (0.5)
   - FLAnimatedImage (1.0.12)
   - PINCache (2.3)
@@ -22,46 +22,32 @@ PODS:
     - PINRemoteImage/Core
 
 DEPENDENCIES:
-  - BNRDeferred (from `https://github.com/bignerdranch/Deferred.git`, branch `zwaldowski/swift-3_0/naming`)
-  - BSWFoundation (from `https://github.com/BlurredSoftware/BSWFoundation.git`, branch `task`)
+  - BSWFoundation (from `https://github.com/BlurredSoftware/BSWFoundation.git`, tag `0.2.0`)
   - BSWInterfaceKit (from `../BSWInterfaceKit.podspec`)
-  - Cartography (from `https://github.com/raphaelcruzeiro/Cartography.git`, branch `swift3`)
 
 EXTERNAL SOURCES:
-  BNRDeferred:
-    :branch: zwaldowski/swift-3_0/naming
-    :git: https://github.com/bignerdranch/Deferred.git
   BSWFoundation:
-    :branch: task
     :git: https://github.com/BlurredSoftware/BSWFoundation.git
+    :tag: 0.2.0
   BSWInterfaceKit:
     :path: "../BSWInterfaceKit.podspec"
-  Cartography:
-    :branch: swift3
-    :git: https://github.com/raphaelcruzeiro/Cartography.git
 
 CHECKOUT OPTIONS:
-  BNRDeferred:
-    :commit: eb06b3a16ded452e23b469367db0c4ad891614d9
-    :git: https://github.com/bignerdranch/Deferred.git
   BSWFoundation:
-    :commit: cedbabd4dd4b0155ae29ab210087cd42e6fad418
     :git: https://github.com/BlurredSoftware/BSWFoundation.git
-  Cartography:
-    :commit: 01906c8e862d046d3aed9ed654130d031bf8e69d
-    :git: https://github.com/raphaelcruzeiro/Cartography.git
+    :tag: 0.2.0
 
 SPEC CHECKSUMS:
-  Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
-  BNRDeferred: e68ca797204d81a4516606a0cb597bc46fd0788b
-  BSWFoundation: aae825d810ce652e2e09525583e59e986bfc41b0
-  BSWInterfaceKit: 82625376c2b1bef8ee5fa94713c0e4a42f9feed5
-  Cartography: dd6044b6fe352252f68b648df5bff47841e591cc
+  Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
+  BNRDeferred: d5be6829872c65f39c0470cdc322d85dc50e9d10
+  BSWFoundation: 80dee8079f404f9cb745f3d5637a24764e8d1519
+  BSWInterfaceKit: 6177f710da94f77332970d15c2aefcefde5240b7
+  Cartography: c1460e99395b824d9d75360b0382faeb0b33dcd7
   Decodable: 7c90acc68d357b71d0d6efc120faf9c53c644b7e
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: ea5ef256daecb731537c3b0a70fb7fd9068973b1
+PODFILE CHECKSUM: b77b5a050bf2d24af12b0b1b811d1336196050e2
 
-COCOAPODS: 1.1.0.beta.2
+COCOAPODS: 1.1.0.rc.2

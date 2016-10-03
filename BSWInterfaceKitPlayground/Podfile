@@ -4,9 +4,7 @@ abstract_target 'Common' do
 	pod 'BSWInterfaceKit', :path => '../BSWInterfaceKit.podspec'
     
     #Swift 3 Pods
-	pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :branch => 'task'
-	pod 'Cartography', :git => 'https://github.com/raphaelcruzeiro/Cartography.git', :branch => 'swift3'
-  pod 'BNRDeferred',  :git => 'https://github.com/bignerdranch/Deferred.git', :branch => 'zwaldowski/swift-3_0/naming'
+	pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :tag => '0.2.0'
 
   target 'BSWInterfaceKitPlayground'
   target 'Tests'

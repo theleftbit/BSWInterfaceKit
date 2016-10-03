@@ -21,6 +21,5 @@ Pod::Spec.new do |s|
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation"
   s.dependency "PINRemoteImage"
-  s.dependency "Cartography"
-
+  s.dependency "Cartography", "~> 1.0.1"
 end
