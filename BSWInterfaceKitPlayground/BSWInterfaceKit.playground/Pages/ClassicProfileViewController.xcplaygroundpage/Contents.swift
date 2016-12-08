@@ -10,7 +10,7 @@ PlaygroundPage.current.needsIndefiniteExecution = true
 
 let viewModel = ClassicProfileViewModel.buffon()
 
-let dataProvider = Future(Deferred(filledWith: Result(viewModel)))
+let dataProvider = Task(success: viewModel)
 let detailVC = ClassicProfileViewController(dataProvider: dataProvider)
 let navController = UINavigationController(rootViewController: detailVC)
 
