@@ -23,27 +23,28 @@ public protocol AsyncViewModelPresenter: ViewModelConfigurable {
     var dataProvider: Task<VM>! { get set }
 }
 
-extension AsyncViewModelPresenter where Self: UIViewController {
-    
-    public init(dataProvider: Task<VM>) {
-        self.init(nibName: nil, bundle: nil)
-        self.dataProvider = dataProvider
+public class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewModelPresenter {
+
+    public var dataProvider: Task<ViewModel>!
+
+    override public func viewDidLoad() {
+        super.viewDidLoad()
 
         dataProvider.upon(.main) { [weak self] result in
             guard let strongSelf = self else { return }
             let _ = strongSelf.view //This touches the view, making sure that the outlets are set
             switch result {
             case .failure(let error):
-                #if DEBUG
-                    strongSelf.showErrorMessage("Error fetching data", error: error)
-                #else
-                    print("AsyncViewModelPresenter error: \(error)")
-                #endif
+                strongSelf.showErrorMessage("Error fetching data", error: error)
             case .success(let viewModel):
                 guard let _ = strongSelf.view else { return }
                 strongSelf.configureFor(viewModel: viewModel)
             }
         }
+    }
+    
+    public func configureFor(viewModel: ViewModel) {
+        fatalError("Implement this on Subclasses")
     }
 }
 
