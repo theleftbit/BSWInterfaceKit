@@ -5,31 +5,22 @@
 
 import UIKit
 
-open class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
+open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
     
-    /// This is mapper is neccesary since we couldn't figure out how map
-    /// the types using just protocols, since making the generics type of both
-    /// ConfigurableCell and Model match impossible as of Swift 2.2
-
-    public typealias ModelMapper = (Model) -> Cell.VM
-    
-    open fileprivate(set) var state: ListState<Model>
+    open fileprivate(set) var state: ListState<Cell.VM>
     open weak var collectionView: UICollectionView?
     open weak var listPresenter: ListStatePresenter?
-    open let mapper: ModelMapper
     fileprivate var emptyView: UIView?
-    open let reorderSupport: CollectionViewReorderSupport<Model>?
+    open let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
     
-    public init(state: ListState<Model> = .loading,
+    public init(state: ListState<Cell.VM> = .loading,
                 collectionView: UICollectionView,
                 listPresenter: ListStatePresenter? = nil,
-                reorderSupport: CollectionViewReorderSupport<Model>? = nil,
-                mapper: @escaping ModelMapper) {
+                reorderSupport: CollectionViewReorderSupport<Cell.VM>? = nil) {
         self.state = state
         self.collectionView = collectionView
         self.listPresenter = listPresenter
         self.reorderSupport = reorderSupport
-        self.mapper = mapper
         
         super.init()
         
@@ -48,12 +39,12 @@ open class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable>: NSOb
         }
     }
     
-    open func updateState(_ state: ListState<Model>) {
+    open func updateState(_ state: ListState<Cell.VM>) {
         self.state = state
         collectionView?.reloadData()
     }
     
-    open func performEditActions(_ actions: [CollectionViewEditActionKind<Model>]) {
+    open func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>]) {
         if case .loaded(var models) = self.state {
             actions.forEach {
                 switch $0 {
@@ -76,7 +67,7 @@ open class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable>: NSOb
         }
     }
 
-    open func modelForIndexPath(_ indexPath: IndexPath) -> Model? {
+    open func modelForIndexPath(_ indexPath: IndexPath) -> Cell.VM? {
         switch self.state {
         case .loaded(let data):
             return data[(indexPath as NSIndexPath).row]
@@ -110,8 +101,7 @@ open class CollectionViewStatefulDataSource<Model, Cell:ViewModelReusable>: NSOb
         
         if case .loaded(let models) = self.state {
             let model = models[(indexPath as NSIndexPath).row]
-            let viewModel = self.mapper(model)
-            cell.configureFor(viewModel: viewModel)
+            cell.configureFor(viewModel: model)
         }
         
         return cell
