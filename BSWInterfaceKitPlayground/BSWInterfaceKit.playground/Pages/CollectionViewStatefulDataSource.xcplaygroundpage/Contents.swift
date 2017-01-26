@@ -32,12 +32,9 @@ let collectionView: UICollectionView = {
     return collectionView
 }()
 
-let dataSource = CollectionViewStatefulDataSource<Song, PolaroidCollectionViewCell>(
+let dataSource = CollectionViewStatefulDataSource<PolaroidCollectionViewCell>(
     collectionView: collectionView,
-    listPresenter: PlainListPresenter.presenter,
-    mapper: { song in
-        return song
-    }
+    listPresenter: PlainListPresenter.presenter
 )
 
 let songs = [

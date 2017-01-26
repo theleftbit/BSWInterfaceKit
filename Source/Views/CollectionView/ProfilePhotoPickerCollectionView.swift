@@ -62,7 +62,7 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
         static var PhotoPickerRatio: CGFloat { return (CGFloat(Rows) / CGFloat(Columns)) }
     }
     
-    fileprivate var photosDataSource: CollectionViewStatefulDataSource<PhotoPickerViewModel, ProfilePhotoPickerCollectionViewCell>!
+    fileprivate var photosDataSource: CollectionViewStatefulDataSource<ProfilePhotoPickerCollectionViewCell>!
     fileprivate lazy var mediaPicker: MediaPickerBehavior = {
         return MediaPickerBehavior(presentingVC: self.presentingViewController!)
     }()
@@ -107,8 +107,7 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
         photosDataSource = CollectionViewStatefulDataSource(
             state: .loaded(data: photos),
             collectionView: self,
-            reorderSupport: reorderSupport,
-            mapper: { return $0 }
+            reorderSupport: reorderSupport
         )
         dataSource = photosDataSource
         delegate = self
