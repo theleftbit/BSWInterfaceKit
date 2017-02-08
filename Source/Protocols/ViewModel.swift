@@ -30,9 +30,10 @@ public class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncVie
     override public func viewDidLoad() {
         super.viewDidLoad()
 
+        //TODO: showLoader
+        
         dataProvider.upon(.main) { [weak self] result in
             guard let strongSelf = self else { return }
-            let _ = strongSelf.view //This touches the view, making sure that the outlets are set
             switch result {
             case .failure(let error):
                 strongSelf.showErrorMessage("Error fetching data", error: error)
