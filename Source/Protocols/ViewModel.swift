@@ -38,7 +38,6 @@ public class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncVie
             case .failure(let error):
                 strongSelf.showErrorMessage("Error fetching data", error: error)
             case .success(let viewModel):
-                guard let _ = strongSelf.view else { return }
                 strongSelf.configureFor(viewModel: viewModel)
             }
         }
