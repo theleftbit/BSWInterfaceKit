@@ -23,11 +23,20 @@ public protocol AsyncViewModelPresenter: ViewModelConfigurable {
     var dataProvider: Task<VM>! { get set }
 }
 
-public class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewModelPresenter {
+open class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewModelPresenter {
+
+    public init(dataProvider: Task<ViewModel>) {
+        self.dataProvider = dataProvider
+        super.init(nibName:nil, bundle:nil)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public var dataProvider: Task<ViewModel>!
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         //TODO: showLoader
