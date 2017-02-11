@@ -25,11 +25,11 @@ PODS:
 
 DEPENDENCIES:
   - BSWFoundation (= 1.0.0)
-  - BSWInterfaceKit (from `../BSWInterfaceKit.podspec`)
+  - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
 
 EXTERNAL SOURCES:
   BSWInterfaceKit:
-    :path: ../BSWInterfaceKit.podspec
+    :path: ./BSWInterfaceKit.podspec
 
 SPEC CHECKSUMS:
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
@@ -43,6 +43,6 @@ SPEC CHECKSUMS:
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: e16604e7923416281748d11db38c5cd2ccb6fba8
+PODFILE CHECKSUM: 3f09c40eb18cbc51b5151b218fd2db852ac38a78
 
 COCOAPODS: 1.2.0
