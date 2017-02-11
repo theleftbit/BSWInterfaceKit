@@ -9,7 +9,6 @@ import Deferred
 PlaygroundPage.current.needsIndefiniteExecution = true
 
 let viewModel = ClassicProfileViewModel.buffon()
-
 let dataProvider = Task(success: viewModel)
 let detailVC = ClassicProfileViewController(dataProvider: dataProvider)
 let navController = UINavigationController(rootViewController: detailVC)
