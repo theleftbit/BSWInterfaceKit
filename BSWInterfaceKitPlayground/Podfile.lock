@@ -1,17 +1,19 @@
 PODS:
-  - Alamofire (4.0.1)
-  - BNRDeferred (3.0.0-rc.1)
-  - BSWFoundation (0.2.3):
-    - Alamofire (~> 4.0.1)
-    - BNRDeferred (= 3.0.0-rc.1)
+  - Alamofire (4.3.0)
+  - BNRDeferred (3.0.0-rc.2)
+  - BSWFoundation (1.0.0):
+    - Alamofire (~> 4.3.0)
+    - BNRDeferred (= 3.0.0-rc.2)
     - Decodable (~> 0.5)
+    - KeychainAccess (~> 3.0.1)
   - BSWInterfaceKit (0.0.1):
-    - BSWFoundation
+    - BSWFoundation (~> 1.0.0)
     - Cartography (~> 1.0.1)
     - PINRemoteImage
   - Cartography (1.0.1)
   - Decodable (0.5)
   - FLAnimatedImage (1.0.12)
+  - KeychainAccess (3.0.1)
   - PINCache (2.3)
   - PINRemoteImage (2.1.4):
     - PINRemoteImage/FLAnimatedImage (= 2.1.4)
@@ -22,32 +24,25 @@ PODS:
     - PINRemoteImage/Core
 
 DEPENDENCIES:
-  - BSWFoundation (from `https://github.com/BlurredSoftware/BSWFoundation.git`, tag `0.2.3`)
+  - BSWFoundation (= 1.0.0)
   - BSWInterfaceKit (from `../BSWInterfaceKit.podspec`)
 
 EXTERNAL SOURCES:
-  BSWFoundation:
-    :git: https://github.com/BlurredSoftware/BSWFoundation.git
-    :tag: 0.2.3
   BSWInterfaceKit:
     :path: ../BSWInterfaceKit.podspec
 
-CHECKOUT OPTIONS:
-  BSWFoundation:
-    :git: https://github.com/BlurredSoftware/BSWFoundation.git
-    :tag: 0.2.3
-
 SPEC CHECKSUMS:
-  Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
-  BNRDeferred: ee885e75509f2a3ddb58893d97d7768953e534b3
-  BSWFoundation: f775fe6bfa4c27e5c38e8e90505b789ac3353368
-  BSWInterfaceKit: 6177f710da94f77332970d15c2aefcefde5240b7
+  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
+  BNRDeferred: 2d806418ccb601fee328a1e0d634684ec1e5db3a
+  BSWFoundation: 6b1c9888cccc082b0f4e69e888760dd79118924e
+  BSWInterfaceKit: 96f7e076c23e6d1b64e5f60a786a6da0254a4ec8
   Cartography: c1460e99395b824d9d75360b0382faeb0b33dcd7
   Decodable: 7c90acc68d357b71d0d6efc120faf9c53c644b7e
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: a862d0d17c1b28988a23550608c7260d8fa304ab
+PODFILE CHECKSUM: e16604e7923416281748d11db38c5cd2ccb6fba8
 
 COCOAPODS: 1.2.0
