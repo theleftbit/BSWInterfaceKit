@@ -65,7 +65,7 @@ extension ViewModelReusable where Self: UICollectionViewCell {
     }
     
     public static var reuseType: ReuseType {
-        return .classReference(Self)
+        return .classReference(Self.self)
     }
 }
 
