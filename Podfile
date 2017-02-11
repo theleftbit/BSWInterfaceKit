@@ -1,7 +1,7 @@
 use_frameworks!
 
 abstract_target 'Common' do
-	pod 'BSWInterfaceKit', :path => '../BSWInterfaceKit.podspec'
+	pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
     
 	pod 'BSWFoundation', '1.0.0'
 
