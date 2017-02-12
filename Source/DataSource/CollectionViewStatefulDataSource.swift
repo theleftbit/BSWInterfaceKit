@@ -33,7 +33,7 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
 
         collectionView.dataSource = self
         collectionView.alwaysBounceVertical = true
-        if let reorderSupport = self.reorderSupport {
+        if let _ = self.reorderSupport {
             let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
             self.collectionView?.addGestureRecognizer(longPressGesture)
         }
@@ -218,11 +218,11 @@ extension UICollectionView {
                 switch $0 {
                 case .remove(let from):
                     self.deleteItems(at: [from])
-                case .insert(let _, let at):
+                case .insert(_, let at):
                     self.insertItems(at: [at])
                 case .move(let from, let to):
                     self.moveItem(at: from, to: to)
-                case .reload(let _, let indexPath):
+                case .reload(_, let indexPath):
                     self.reloadItems(at: [indexPath])
                 }
             }

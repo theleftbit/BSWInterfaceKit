@@ -1,10 +1,7 @@
 use_frameworks!
 
 abstract_target 'Common' do
-	pod 'BSWInterfaceKit', :path => '../BSWInterfaceKit.podspec'
-    
-    #Swift 3 Pods
-	pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :tag => '0.2.3'
+	pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
 
   target 'BSWInterfaceKitPlayground'
   target 'Tests'

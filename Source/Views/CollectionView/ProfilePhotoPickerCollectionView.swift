@@ -195,7 +195,7 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
                 alert.addAction(cameraAction)
                 alert.addAction(dismissAction)
                 return alert
-            case .filled(let photo):
+            case .filled:
                 let alert = UIAlertController(title: localizableString(.confirmDeleteTitle), message: nil, preferredStyle: .alert)
                 
                 let yesAction = UIAlertAction(title: localizableString(.yes), style: .destructive) { _ in

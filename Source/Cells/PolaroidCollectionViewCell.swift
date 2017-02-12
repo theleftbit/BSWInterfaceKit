@@ -8,18 +8,16 @@ import Cartography
 
 //MARK: ViewModel
 
-public protocol PolaroidCellViewModel {
-    var cellImage: Photo { get }
-    var cellTitle: NSAttributedString { get }
-    var cellDetails: NSAttributedString { get }
+public struct PolaroidCellViewModel {
+    public let cellImage: Photo
+    public let cellTitle: NSAttributedString
+    public let cellDetails: NSAttributedString
 }
 
 //MARK: Cells
 
 @available(iOS 8.0, *)
 open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
-    
-    public typealias T = PolaroidCellViewModel
     
     fileprivate var detailSubview: PolaroidCollectionCellBasicInfoView!
     
