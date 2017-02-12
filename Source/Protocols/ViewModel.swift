@@ -38,11 +38,10 @@ open class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewM
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-
-        //TODO: showLoader
-        
+        showLoader()
         dataProvider.upon(.main) { [weak self] result in
             guard let strongSelf = self else { return }
+            strongSelf.hideLoader()
             switch result {
             case .failure(let error):
                 strongSelf.showErrorMessage("Error fetching data", error: error)

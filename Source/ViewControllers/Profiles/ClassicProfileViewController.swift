@@ -29,26 +29,11 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
         static let LayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        static let PhotoGallerySize = CGFloat(250)
-    }
-    
-    open override var dataProvider: Task<ClassicProfileViewModel>! {
-        didSet {
-            scrollableStackView.alpha = 0
-            view.addSubview(loadingView)
-            loadingView.centerInSuperview()
-            
-            dataProvider.upon(.main) { [weak self] _ in
-                guard let strongSelf = self else { return }
-                strongSelf.scrollableStackView.alpha = 1
-                strongSelf.loadingView.removeFromSuperview()
-            }
-        }
+        static let PhotoGalleryRatio = CGFloat(0.78)
     }
     
     open var editKind: ClassicProfileEditKind = .nonEditable
     
-    fileprivate lazy var loadingView: LoadingView = LoadingView()
     fileprivate let photoGallery = PhotoGalleryView()
     fileprivate let titleLabel = UILabel.unlimitedLinesLabel()
     fileprivate let detailsLabel = UILabel.unlimitedLinesLabel()
@@ -84,7 +69,7 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
         constrain(photoGallery, scrollableStackView) { photoGallery, scrollableStackView in
-            photoGallery.height == Constants.PhotoGallerySize
+            photoGallery.height == photoGallery.width * Constants.PhotoGalleryRatio
             photoGallery.width == scrollableStackView.width
         }
         

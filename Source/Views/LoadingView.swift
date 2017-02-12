@@ -17,7 +17,7 @@ public class LoadingView: UIView {
     }()
     
     public init(loadingMessage: NSAttributedString? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle = .gray) {
-        super.init(frame: CGRect.zero)
+        super.init(frame: .zero)
         self.addSubview(stackView)
         constrain(stackView) { stackView in
             stackView.centerX == stackView.superview!.centerX
@@ -37,5 +37,9 @@ public class LoadingView: UIView {
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    public override var intrinsicContentSize: CGSize {
+        return stackView.arrangedSubviews.count > 0 ? stackView.intrinsicContentSize : .zero
     }
 }
