@@ -7,14 +7,23 @@ import PINRemoteImage
 import BSWFoundation
 import Deferred
 
-public typealias BSWImageDownloaderProgressBlock = (Int, Int) -> Void
 public typealias BSWImageCompletionBlock = (TaskResult<UIImage>) -> Void
 
 extension UIImageView {
 
+    private static var webDownloadsEnabled = true
+
+    static public func bsw_disableWebDownloads() {
+        webDownloadsEnabled = false
+    }
+
+    static public func bsw_enableWebDownloads() {
+        webDownloadsEnabled = false
+    }
+
     public func bsw_setImageFromURLString(_ url: String) {
         if let url = URL(string: url) {
-            pin_setImage(from: url)
+            bsw_setImageWithURL(url)
         }
     }
 
@@ -23,7 +32,7 @@ extension UIImageView {
     }
     
     public func bsw_setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        
+        guard UIImageView.webDownloadsEnabled else { return }
         pin_setImage(from: url) { (downloadResult) in
 
             let result: TaskResult<UIImage>

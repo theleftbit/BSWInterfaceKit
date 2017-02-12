@@ -52,11 +52,6 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
 
     open override func loadView() {
         view = scrollableStackView
-    }
-
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        
         view.backgroundColor = UIColor.white
 
         //This is set to false in order to layout the image below the transparent navBar
