@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EBA3C3F91D8304910019CA89"
-               BuildableName = "Tests.xctest"
-               BlueprintName = "Tests"
+               BlueprintIdentifier = "EBB3CEC71E50C60B0063303C"
+               BuildableName = "BSWInterfaceKitDemoTests.xctest"
+               BlueprintName = "BSWInterfaceKitDemoTests"
                ReferencedContainer = "container:BSWInterfaceKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -70,6 +70,13 @@
             ReferencedContainer = "container:BSWInterfaceKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "FB_REFERENCE_IMAGE_DIR"
+            value = "$(SOURCE_ROOT)/$(PROJECT_NAME)DemoTests/ReferenceImages"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
