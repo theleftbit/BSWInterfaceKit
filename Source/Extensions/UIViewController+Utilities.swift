@@ -6,14 +6,22 @@
 import Foundation
 import Cartography
 
-extension UIWindow {
-    public func showErrorMessage(_ message: String, error: Error) {
-        guard let rootViewController = self.visibleViewController else { return }
-        rootViewController.showErrorMessage(message, error: error)
-    }
-}
+// MARK: - Error and Loading
 
 extension UIViewController {
+
+    public func showLoader() {
+        view.subviews.forEach { $0.alpha = 0.0 }
+        let spinner = LoadingView()
+        spinner.tag = Constants.LoaderTag
+        view.addSubview(spinner)
+        spinner.centerInSuperview()
+    }
+
+    public func hideLoader() {
+        view.findSubviewWithTag(Constants.LoaderTag)?.removeFromSuperview()
+        view.subviews.forEach { $0.alpha = 1.0 }
+    }
 
     public func showErrorMessage(_ message: String, error: Error) {
         
@@ -31,6 +39,11 @@ extension UIViewController {
         let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
         errorQueue.addOperation(operation)
     }
+}
+
+// MARK: - Bottom Action Button
+
+extension UIViewController {
 
     public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
     
@@ -95,6 +108,7 @@ private enum Constants {
     fileprivate static let BottomActionTag = 345678
     fileprivate static let ButtonAnimationDuration = 0.6
     fileprivate static let ButtonHeight = CGFloat(50)
+    fileprivate static let LoaderTag = Int(888)
 }
 
 private let errorQueue: OperationQueue = {
