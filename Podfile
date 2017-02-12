@@ -5,6 +5,10 @@ abstract_target 'Common' do
 
   target 'BSWInterfaceKitPlayground'
   target 'BSWInterfaceKitDemo'
+  target 'BSWInterfaceKitDemoTests' do
+      inherit! :search_paths
+      pod 'FBSnapshotTestCase'
+  end
 end
 
 post_install do |installer|
