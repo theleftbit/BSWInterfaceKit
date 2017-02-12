@@ -5,10 +5,12 @@ import BSWFoundation
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 
-extension Song: PolaroidCellViewModel {
-    public var cellImage: Photo { return Photo(kind: .url(URL(string: artWorkURL)!)) }
-    public var cellTitle: NSAttributedString { return TextStyler.styler.attributedString(title, forStyle: .title) }
-    public var cellDetails: NSAttributedString { return TextStyler.styler.attributedString("\(songLenght) seconds", forStyle: .body) }
+extension PolaroidCellViewModel {
+    init(song: Song) {
+        self.cellImage = Photo(kind: .url(URL(string: song.artWorkURL)!))
+        self.cellTitle = TextStyler.styler.attributedString(song.title, forStyle: .title)
+        self.cellDetails = TextStyler.styler.attributedString("\(song.songLenght) seconds", forStyle: .body)
+    }
 }
 
 class PlainListPresenter: ListStatePresenter {
@@ -42,6 +44,8 @@ let songs = [
     Song(title: "Dale don Dale", songLenght: 100, artWorkURL: "https://i.imgur.com/ChnWmiK.png"),
 ]
 
-dataSource.updateState(.loaded(data: songs))
+let vm = songs.map { PolaroidCellViewModel(song: $0) }
+
+dataSource.updateState(.loaded(data: vm))
 
 PlaygroundPage.current.liveView = collectionView

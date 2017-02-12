@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.resources     = "Assets/**/*.{xcassets,storyboard,strings}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.dependency "BSWFoundation"
+  s.dependency "BSWFoundation", "~> 1.0.0"
   s.dependency "PINRemoteImage"
   s.dependency "Cartography", "~> 1.0.1"
 end

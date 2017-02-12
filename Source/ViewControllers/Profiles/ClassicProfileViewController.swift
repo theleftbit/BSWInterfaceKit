@@ -22,15 +22,17 @@ public enum ClassicProfileEditKind {
     }
 }
 
-open class ClassicProfileViewController: ScrollableStackViewController, AsyncViewModelPresenter {
-    
+open class ClassicProfileViewController: AsyncViewModelViewController<ClassicProfileViewModel> {
+
+    public let scrollableStackView = ScrollableStackView()
+
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
         static let LayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         static let PhotoGallerySize = CGFloat(250)
     }
     
-    open var dataProvider: Task<ClassicProfileViewModel>! {
+    open override var dataProvider: Task<ClassicProfileViewModel>! {
         didSet {
             scrollableStackView.alpha = 0
             view.addSubview(loadingView)
@@ -62,10 +64,13 @@ open class ClassicProfileViewController: ScrollableStackViewController, AsyncVie
     }()
     
     fileprivate var navBarBehaviour: NavBarTransparentBehavior?
-    
+
+    open override func loadView() {
+        view = scrollableStackView
+    }
+
     override open func viewDidLoad() {
         super.viewDidLoad()
-        guard let _ = dataProvider else { fatalError() }
         
         view.backgroundColor = UIColor.white
 
@@ -125,7 +130,7 @@ open class ClassicProfileViewController: ScrollableStackViewController, AsyncVie
     
     //MARK:- Private
     
-    open func configureFor(viewModel: ClassicProfileViewModel) {
+    open override func configureFor(viewModel: ClassicProfileViewModel) {
         
         photoGallery.photos = viewModel.photos
         titleLabel.attributedText = viewModel.titleInfo
