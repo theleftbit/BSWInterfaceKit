@@ -24,3 +24,10 @@ public extension UIWindow {
         }
     }
 }
+
+extension UIWindow {
+    public func showErrorMessage(_ message: String, error: Error) {
+        guard let rootViewController = self.visibleViewController else { return }
+        rootViewController.showErrorMessage(message, error: error)
+    }
+}
