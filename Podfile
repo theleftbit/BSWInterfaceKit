@@ -4,7 +4,11 @@ abstract_target 'Common' do
 	pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
 
   target 'BSWInterfaceKitPlayground'
-  target 'Tests'
+  target 'BSWInterfaceKitDemo'
+  target 'BSWInterfaceKitDemoTests' do
+      inherit! :search_paths
+      pod 'FBSnapshotTestCase'
+  end
 end
 
 post_install do |installer|

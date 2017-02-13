@@ -22,7 +22,7 @@ public struct ClassicProfileViewModel {
 // MARK: - Photo handling
 
 extension ClassicProfileViewModel {
-    func movePhotoAtIndex(_ index: Int, toIndex: Int) -> ClassicProfileViewModel {
+    func movingPhotoAtIndex(_ index: Int, toIndex: Int) -> ClassicProfileViewModel {
         var photos = self.photos
         photos.moveItem(fromIndex: index, toIndex: toIndex)
         return ClassicProfileViewModel(
@@ -33,7 +33,7 @@ extension ClassicProfileViewModel {
         )
     }
     
-    func removePhotoAtIndex(_ index: Int) -> ClassicProfileViewModel {
+    func removingPhotoAtIndex(_ index: Int) -> ClassicProfileViewModel {
         var photos = self.photos
         photos.remove(at: index)
         return ClassicProfileViewModel(
