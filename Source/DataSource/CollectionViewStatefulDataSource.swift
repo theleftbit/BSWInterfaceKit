@@ -49,16 +49,16 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
             actions.forEach {
                 switch $0 {
                 case .insert(let item, let indexPath):
-                    models.insert(item, at: (indexPath as NSIndexPath).item)
+                    models.insert(item, at: indexPath.item)
                     self.state = .loaded(data: models)
                 case .remove(let fromIndexPath):
-                    models.remove(at: (fromIndexPath as NSIndexPath).item)
+                    models.remove(at: fromIndexPath.item)
                     self.state = .loaded(data: models)
                 case .move(let from, let to):
                     models.moveItem(fromIndex: from.item, toIndex: to.item)
                     self.state = .loaded(data: models)
                 case .reload(let model, let indexPath):
-                    models[(indexPath as NSIndexPath).item] = model
+                    models[indexPath.item] = model
                     self.state = .loaded(data: models)
                 }
             }
@@ -70,7 +70,7 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
     open func modelForIndexPath(_ indexPath: IndexPath) -> Cell.VM? {
         switch self.state {
         case .loaded(let data):
-            return data[(indexPath as NSIndexPath).row]
+            return data[indexPath.item]
         default:
             return nil
         }
@@ -100,7 +100,7 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
         }
         
         if case .loaded(let models) = self.state {
-            let model = models[(indexPath as NSIndexPath).row]
+            let model = models[indexPath.item]
             cell.configureFor(viewModel: model)
         }
         
