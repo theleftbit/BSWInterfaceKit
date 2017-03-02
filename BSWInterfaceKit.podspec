@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "BSWInterfaceKit"
-  s.version      = "0.0.1"
+  s.version      = "0.2.2"
   s.summary      = "A short description of BSWInterfaceKit."
   s.homepage     = "https://github.com/BlurredSoftware/BSWInterfaceKit"
   s.license      = "MIT"
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.resources     = "Assets/**/*.{xcassets,storyboard,strings}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.dependency "BSWFoundation", "~> 1.0.0"
+  s.dependency "BSWFoundation", "~> 1.0.1"
   s.dependency "PINRemoteImage"
   s.dependency "Cartography", "~> 1.0.1"
 end
