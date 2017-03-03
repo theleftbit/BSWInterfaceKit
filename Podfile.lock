@@ -1,13 +1,13 @@
 PODS:
   - Alamofire (4.3.0)
-  - BNRDeferred (3.0.0-rc.2)
-  - BSWFoundation (1.0.0):
+  - BNRDeferred (3.0.0)
+  - BSWFoundation (1.0.1):
     - Alamofire (~> 4.3.0)
-    - BNRDeferred (= 3.0.0-rc.2)
+    - BNRDeferred (= 3.0.0)
     - Decodable (~> 0.5)
     - KeychainAccess (~> 3.0.1)
-  - BSWInterfaceKit (0.0.1):
-    - BSWFoundation (~> 1.0.0)
+  - BSWInterfaceKit (0.2.2):
+    - BSWFoundation (~> 1.0.1)
     - Cartography (~> 1.0.1)
     - PINRemoteImage
   - Cartography (1.0.1)
@@ -38,9 +38,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
-  BNRDeferred: 2d806418ccb601fee328a1e0d634684ec1e5db3a
-  BSWFoundation: 6b1c9888cccc082b0f4e69e888760dd79118924e
-  BSWInterfaceKit: 96f7e076c23e6d1b64e5f60a786a6da0254a4ec8
+  BNRDeferred: 0757b256613622d3f3db21bd126ba63031ca3deb
+  BSWFoundation: b6633919abf3549e3d43bb04e3263a0139621c9b
+  BSWInterfaceKit: 6c26d4296517c91f342667c7edf27d420571d7f6
   Cartography: c1460e99395b824d9d75360b0382faeb0b33dcd7
   Decodable: 7c90acc68d357b71d0d6efc120faf9c53c644b7e
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
@@ -49,6 +49,6 @@ SPEC CHECKSUMS:
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: fbb8a5649d8fbdb198660d0c3bdbda32f7b3a578
+PODFILE CHECKSUM: ede7f2b377b36eda79ca04a0505e92b5528c9dd9
 
 COCOAPODS: 1.2.0
