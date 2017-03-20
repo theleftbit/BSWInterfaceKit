@@ -10,6 +10,8 @@ import Cartography
 
 extension UIViewController {
 
+    // MARK: - Loaders
+
     public func showLoader() {
         view.subviews.forEach { $0.alpha = 0.0 }
         let spinner = LoadingView()
@@ -23,8 +25,11 @@ extension UIViewController {
         view.subviews.forEach { $0.alpha = 1.0 }
     }
 
+
+    // MARK: - Alerts
+
     public func showErrorMessage(_ message: String, error: Error) {
-        
+
         #if DEBUG
             let errorMessage = "\(message). \(error)"
         #else
@@ -39,11 +44,8 @@ extension UIViewController {
         let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
         errorQueue.addOperation(operation)
     }
-}
 
-// MARK: - Bottom Action Button
-
-extension UIViewController {
+  // MARK: - Bottom Action Button
 
     public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
     
@@ -112,79 +114,7 @@ private enum Constants {
 }
 
 private let errorQueue: OperationQueue = {
-    let operationQueue = OperationQueue()
-    operationQueue.maxConcurrentOperationCount = 1
-    return operationQueue
+  let operationQueue = OperationQueue()
+  operationQueue.maxConcurrentOperationCount = 1
+  return operationQueue
 }()
-
-private class PresentAlertOperation: Operation {
-    
-    let title: String
-    let message: String?
-    unowned let presentingViewController: UIViewController
-    init(title: String, message: String?, presentingViewController: UIViewController) {
-        self.title = title
-        self.message = message
-        self.presentingViewController = presentingViewController
-        super.init()
-    }
-    
-    override func main() {
-        
-        guard isCancelled == false else {
-            self.finishOperation()
-            return
-        }
-        
-        self.isExecuting = true
-        self.isFinished = false
-
-        OperationQueue.main.addOperation {
-        
-            guard let _ = self.presentingViewController.view.window else {
-                self.finishOperation()
-                return
-            }
-            
-            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: UIAlertControllerStyle.alert)
-            let action = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel) { _ in
-                self.finishOperation()
-            }
-            
-            alert.addAction(action)
-            self.presentingViewController.present(alert, animated: true, completion: nil)
-        }
-    }
-    
-    
-    //Don't look here, it's disgusting
-    var _finished = false
-    var _executing = false
-
-    override var isExecuting: Bool {
-        get {
-            return _executing
-        }
-        set {
-            willChangeValue(forKey: "isExecuting")
-            _executing = newValue
-            didChangeValue(forKey: "isExecuting")
-        }
-    }
-    
-    override var isFinished: Bool {
-        get {
-            return _finished
-        }
-        set {
-            willChangeValue(forKey: "isFinished")
-            _finished = newValue
-            didChangeValue(forKey: "isFinished")
-        }
-    }
-    
-    fileprivate func finishOperation() {
-        self.isExecuting = false
-        self.isFinished = true
-    }
-}
