@@ -8,7 +8,7 @@ import Foundation
 extension UIButton {
     func configureAsCheckbox() {
         self.contentMode = .scaleAspectFit
-        self.setImage(UIImage(named: "ic_checkbox"), for: UIControlState())
+        self.setImage(UIImage(named: "ic_checkbox"), for: .normal)
         self.setImage(UIImage(named: "ic_checkbox_selected"), for: .selected)
     }
 }

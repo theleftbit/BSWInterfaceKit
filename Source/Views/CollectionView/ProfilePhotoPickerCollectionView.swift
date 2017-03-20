@@ -77,7 +77,7 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
 
     public init(photos: [PhotoPickerViewModel] = []) {
 
-        super.init(frame: CGRect.zero, collectionViewLayout: BSWCollectionViewFlowLayout())
+        super.init(frame: .zero, collectionViewLayout: BSWCollectionViewFlowLayout())
         
         /// Prepare the FlowLayout
         flowLayout.scrollDirection = .vertical
@@ -149,11 +149,8 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        guard self.frame.width != 0  else {
-            return CGSize.zero
-        }
-        guard self.frame.height != 0  else {
-            return CGSize.zero
+        guard self.frame.width != 0, self.frame.height != 0  else {
+            return .zero
         }
         
         return CGSize(
@@ -293,16 +290,16 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
             spinner.stopAnimating()
             imageView.image = nil
             imageView.backgroundColor = .lightGray
-            accesoryView.setImage(UIImage.templateImage(.PlusRound), for: UIControlState())
+            accesoryView.setImage(UIImage.templateImage(.plusRound), for: .normal)
         case .uploading(_, let image):
             spinner.startAnimating()
             imageView.image = image
             imageView.addBlurEffect()
-            accesoryView.setImage(nil, for: UIControlState())
+            accesoryView.setImage(nil, for: .normal)
         case .filled(let photo):
             spinner.stopAnimating()
             imageView.bsw_setPhoto(photo)
-            accesoryView.setImage(UIImage.templateImage(.CancelRound), for: UIControlState())
+            accesoryView.setImage(UIImage.templateImage(.cancelRound), for: .normal)
         }
     }
     
