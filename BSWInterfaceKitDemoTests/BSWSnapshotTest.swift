@@ -11,6 +11,9 @@ import FBSnapshotTestCase
 import BSWInterfaceKit
 
 class BSWSnapshotTest: FBSnapshotTestCase {
+
+    let waiter = XCTWaiter()
+
     override func setUp() {
         super.setUp()
 
@@ -39,8 +42,8 @@ class BSWSnapshotTest: FBSnapshotTestCase {
     /// Add the view controller on the window and wait infinitly
     func debugViewController(_ viewController: UIViewController) {
         rootViewController = viewController
-        _ = expectation(description: "No expectation")
-        waitForExpectations(timeout: 6666, handler: nil)
+        let exp = expectation(description: "No expectation")
+        let _ = waiter.wait(for: [exp], timeout: 1000)
     }
 
     /// Presents the VC using a fresh rootVC in the host's main window.
@@ -52,7 +55,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         rootViewController!.present(viewController, animated: true, completion: {
             exp.fulfill()
         })
-        waitForExpectations(timeout: 10, handler: nil)
+        let _ = waiter.wait(for: [exp], timeout: 10)
     }
 
     func waitABitAndVerify(viewController: UIViewController) {
@@ -80,6 +83,6 @@ class BSWSnapshotTest: FBSnapshotTestCase {
             self.FBSnapshotVerifyView(view)
             exp.fulfill()
         }
-        waitForExpectations(timeout: 1) { _ in }
+        let _ = waiter.wait(for: [exp], timeout: 1)
     }
 }
