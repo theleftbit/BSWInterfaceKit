@@ -13,7 +13,6 @@ class ButtonTests: BSWSnapshotTest {
     override func setUp() {
         super.setUp()
         isDeviceAgnostic = false
-        recordMode = true
     }
 
     func testRadioButton() {
@@ -27,7 +26,7 @@ class ButtonTests: BSWSnapshotTest {
         waitABitAndVerify(view: button)
     }
 
-    static func buttonForRadioTests() -> UIButton {
+    fileprivate static func buttonForRadioTests() -> UIButton {
         let button = CheckboxButton()
         button.backgroundColor = .white
         button.setTitleColor(.black, for: .normal)
