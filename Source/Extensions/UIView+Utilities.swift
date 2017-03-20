@@ -7,7 +7,12 @@ import BSWFoundation
 import Cartography
 
 extension UIView {
-    
+
+    public func addAutolayoutSubview(_ view: UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(view)
+    }
+
     public func findSubviewWithTag(_ tag: NSInteger) -> UIView? {
         return subviews.find(predicate: { return $0.tag == tag} )
     }
@@ -45,6 +50,11 @@ extension UIView {
         constrain(self) { view in
             view.edges == inset(view.superview!.edges, edges.top, edges.left, edges.bottom, edges.right)
         }
+    }
+
+    public func fillSuperview(withMargin margin: CGFloat) {
+        let inset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
+        fillSuperview(withEdges: inset)
     }
 
     public func centerInSuperview() {

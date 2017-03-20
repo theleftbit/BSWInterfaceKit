@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 class AvatarView: UIView {
     
@@ -40,31 +39,22 @@ class AvatarView: UIView {
     fileprivate func setup() {
         layer.masksToBounds = true
         addSubview(imageView)
+        imageView.fillSuperview()
         updateImage()
-        setupConstraints()
+        setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
+        setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
     }
     
     fileprivate func updateImage() {
         imageView.bsw_setPhoto(photo)
     }
     
-    // MARK: Constraints
-    
-    fileprivate func setupConstraints() {
-        self.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
-        self.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
-        
-        constrain(imageView) { imageView in
-            imageView.edges == imageView.superview!.edges
-        }
-    }
-    
+  // MARK: Layout
+
     override var intrinsicContentSize : CGSize {
         return CGSize(width: size.rawValue, height: size.rawValue)
     }
-    
-    // MARK: Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = bounds.width / 2

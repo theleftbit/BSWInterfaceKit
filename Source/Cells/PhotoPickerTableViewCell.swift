@@ -1,5 +1,5 @@
 
-import Cartography
+import UIKit
 
 // MARK: Private classes
 
@@ -20,9 +20,7 @@ open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFl
     fileprivate func setup() {
         contentView.addSubview(photosCollectionView)
         photosCollectionView.fillSuperview()
-        constrain(photosCollectionView) { photosCollectionView in
-            photosCollectionView.height == photosCollectionView.superview!.width * (ProfilePhotoPickerCollectionView.Constants.PhotoPickerRatio)
-        }
+        photosCollectionView.heightAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: ProfilePhotoPickerCollectionView.Constants.PhotoPickerRatio).isActive = true
     }
     
     open func prepareForPhotos(_ photos: [Photo], currentUploads: [(Progress, UIImage)] = []) {
