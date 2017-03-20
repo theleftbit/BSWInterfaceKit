@@ -50,7 +50,7 @@ open class PhotoGalleryViewController: UIViewController {
         //Add the close button
         let closeButton = UIButton(type: UIButtonType.custom)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.setImage(UIImage.templateImage(.Close), for: UIControlState())
+        closeButton.setImage(UIImage.templateImage(.close), for: .normal)
         closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchDown)
         view.addSubview(closeButton)
         closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor).isActive = true
