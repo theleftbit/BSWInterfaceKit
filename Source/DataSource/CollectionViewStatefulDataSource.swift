@@ -5,13 +5,13 @@
 
 import UIKit
 
-open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
+public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
     
-    open fileprivate(set) var state: ListState<Cell.VM>
-    open weak var collectionView: UICollectionView?
-    open weak var listPresenter: ListStatePresenter?
+    public fileprivate(set) var state: ListState<Cell.VM>
+    public weak var collectionView: UICollectionView?
+    public weak var listPresenter: ListStatePresenter?
     fileprivate var emptyView: UIView?
-    open let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
+    public let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
     
     public init(state: ListState<Cell.VM> = .loading,
                 collectionView: UICollectionView,
@@ -39,12 +39,12 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
         }
     }
     
-    open func updateState(_ state: ListState<Cell.VM>) {
+    public func updateState(_ state: ListState<Cell.VM>) {
         self.state = state
         collectionView?.reloadData()
     }
     
-    open func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>]) {
+    public func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>]) {
         if case .loaded(var models) = self.state {
             actions.forEach {
                 switch $0 {
@@ -67,7 +67,7 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
         }
     }
 
-    open func modelForIndexPath(_ indexPath: IndexPath) -> Cell.VM? {
+    public func modelForIndexPath(_ indexPath: IndexPath) -> Cell.VM? {
         switch self.state {
         case .loaded(let data):
             return data[indexPath.item]
@@ -78,11 +78,11 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
     
     //MARK:- UICollectionViewDataSource
 
-    @objc open func numberOfSections(in collectionView: UICollectionView) -> Int {
+    @objc public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    @objc open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    @objc public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         defer { addEmptyViewForCurrentState() }
         
@@ -94,7 +94,7 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
         }
     }
     
-    @objc open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    @objc public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cell.reuseIdentifier, for: indexPath) as? Cell else {
             fatalError()
         }
@@ -107,12 +107,12 @@ open class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, U
         return cell
     }
     
-    @objc open func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+    @objc public func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         guard let reorderSupport = self.reorderSupport else { return false }
         return reorderSupport.canMoveItemAtIndexPath(indexPath)
     }
     
-    @objc open func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    @objc public func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
         if case .loaded(var models) = self.state {
             let movedItem = models[(destinationIndexPath as NSIndexPath).item]
