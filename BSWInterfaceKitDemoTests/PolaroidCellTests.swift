@@ -3,7 +3,6 @@
 //
 //
 
-import FBSnapshotTestCase
 @testable import BSWInterfaceKit
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
