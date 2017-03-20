@@ -1,9 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 20/03/2017.
 //
-//
 
-import FBSnapshotTestCase
 @testable import BSWInterfaceKit
 
 class ButtonTests: BSWSnapshotTest {
