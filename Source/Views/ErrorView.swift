@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 open class ErrorView: UIView {
     
@@ -22,12 +21,7 @@ open class ErrorView: UIView {
     public init(errorMessage: NSAttributedString? = nil, buttonConfiguration: ButtonConfiguration) {
         super.init(frame: CGRect.zero)
         self.addSubview(stackView)
-        
-        constrain(stackView) { stackView in
-            stackView.centerX == stackView.superview!.centerX
-            stackView.centerY == stackView.superview!.centerY
-        }
-        
+        stackView.centerInSuperview()
         let label = UILabel()
         label.attributedText = errorMessage
         

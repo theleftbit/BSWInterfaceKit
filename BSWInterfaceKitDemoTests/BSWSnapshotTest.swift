@@ -65,6 +65,15 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         view.setNeedsLayout()
         view.layoutIfNeeded()
 
+        if let scrollView = view as? UIScrollView, !isDeviceAgnostic {
+            scrollView.frame = CGRect(
+                x: scrollView.frame.origin.x,
+                y: scrollView.frame.origin.y,
+                width: scrollView.contentSize.width,
+                height: scrollView.contentSize.height
+            )
+        }
+
         let exp = expectation(description: "verify view")
         let deadlineTime = DispatchTime.now() + .milliseconds(50)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {

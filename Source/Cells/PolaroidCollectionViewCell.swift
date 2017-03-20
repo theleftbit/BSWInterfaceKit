@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 //MARK: ViewModel
 
@@ -19,7 +18,7 @@ public struct PolaroidCellViewModel {
 @available(iOS 8.0, *)
 open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     
-    fileprivate var detailSubview: PolaroidCollectionCellBasicInfoView!
+    fileprivate let detailSubview = PolaroidCollectionCellBasicInfoView()
     
     fileprivate let cellImageView: UIImageView = {
         let view = UIImageView()
@@ -46,12 +45,9 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         cellImageView.image = nil
     }
     
-    fileprivate func setup() {
-        
-        detailSubview = PolaroidCollectionCellBasicInfoView()
-        
-        contentView.addSubview(cellImageView)
-        contentView.addSubview(detailSubview)
+    fileprivate func setup() {        
+        contentView.addAutolayoutSubview(cellImageView)
+        contentView.addAutolayoutSubview(detailSubview)
         
         setupConstraints()
         setupRoundedCorners()
@@ -64,22 +60,21 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     fileprivate var imageHeightConstraint: NSLayoutConstraint!
     
     fileprivate func setupConstraints() {
-        constrain(cellImageView, detailSubview, self.contentView) { cellImageView, detailSubview, contentView in
-            
-            //Subview Layout
-            cellImageView.top == contentView.top
-            cellImageView.leading == contentView.leading
-            cellImageView.trailing == contentView.trailing
-            cellImageView.bottom == detailSubview.top
-            detailSubview.leading == contentView.leading
-            detailSubview.trailing == contentView.trailing
-            detailSubview.bottom == contentView.bottom
-            
-            self.imageHeightConstraint = (cellImageView.height == 80)
-        }
-        
-        //TODO: Move to the constrain block when they fix Cartography
-        self.imageHeightConstraint.priority = 999
+        var constraints = [NSLayoutConstraint]()
+
+        imageHeightConstraint = cellImageView.heightAnchor.constraint(equalToConstant: 80)
+        imageHeightConstraint.priority = 999
+
+        constraints.append(imageHeightConstraint)
+        constraints.append(cellImageView.topAnchor.constraint(equalTo: contentView.topAnchor))
+        constraints.append(cellImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor))
+        constraints.append(cellImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor))
+        constraints.append(cellImageView.bottomAnchor.constraint(equalTo: detailSubview.bottomAnchor))
+        constraints.append(detailSubview.leadingAnchor.constraint(equalTo: contentView.leadingAnchor))
+        constraints.append(detailSubview.trailingAnchor.constraint(equalTo: contentView.trailingAnchor))
+        constraints.append(detailSubview.bottomAnchor.constraint(equalTo: contentView.bottomAnchor))
+
+        NSLayoutConstraint.activate(constraints)
     }
     
     fileprivate func setupRoundedCorners() {
@@ -154,10 +149,7 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
         setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
         
         addSubview(stackView)
-        constrain(stackView) { stackView in
-            stackView.edges == inset(stackView.superview!.edges, Stylesheet.margin(.medium)) 
-        }
-        
+        stackView.fillSuperview(withMargin: Stylesheet.margin(.medium))
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(detailLabel)
     }

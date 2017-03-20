@@ -25,10 +25,11 @@ open class LaunchScreenViewController: UIViewController {
             let spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
             view.addSubview(spinner)
             spinner.startAnimating()
-            constrain(spinner) { spinner in
-                spinner.bottom == spinner.superview!.bottom - 80
-                spinner.centerX == spinner.superview!.centerX
-            }
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                spinner.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
+                ])
         }
     }
     
@@ -72,9 +73,7 @@ class OnboardingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(contentView)
-        constrain(contentView) { contentView in
-            contentView.edges == contentView.superview!.edges
-        }
+        contentView.fillSuperview()
         
         //First, the background
         switch onboardingCustomization.background {
@@ -83,9 +82,7 @@ class OnboardingViewController: UIViewController {
         case .image(let image):
             let imageView = UIImageView(image: image)
             contentView.addSubview(imageView)
-            constrain(imageView) { imageView in
-                imageView.edges == imageView.superview!.edges
-            }
+            imageView.fillSuperview()
         }
         
         //Then, the stackViews

@@ -40,19 +40,21 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
     fileprivate let extraDetailsLabel = UILabel.unlimitedLinesLabel()
     fileprivate let separatorView: UIView = {
         let view = UIView()
-        constrain(view) { view in
-            view.height == Constants.SeparatorSize.height
-            view.width == Constants.SeparatorSize.width
-        }
+        NSLayoutConstraint.activate([
+            view.widthAnchor.constraint(equalToConstant: Constants.SeparatorSize.width),
+            view.heightAnchor.constraint(equalToConstant: Constants.SeparatorSize.height)
+            ])
         view.backgroundColor = UIColor.lightGray
         return view
     }()
     
     fileprivate var navBarBehaviour: NavBarTransparentBehavior?
 
-    open override func loadView() {
-        view = scrollableStackView
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(scrollableStackView)
         view.backgroundColor = UIColor.white
+        scrollableStackView.fillSuperview()
 
         //This is set to false in order to layout the image below the transparent navBar
         automaticallyAdjustsScrollViewInsets = false
@@ -63,10 +65,11 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
-        constrain(photoGallery, scrollableStackView) { photoGallery, scrollableStackView in
-            photoGallery.height == photoGallery.width * Constants.PhotoGalleryRatio
-            photoGallery.width == scrollableStackView.width
-        }
+
+        NSLayoutConstraint.activate([
+            photoGallery.heightAnchor.constraint(equalTo: photoGallery.widthAnchor, multiplier: Constants.PhotoGalleryRatio),
+            photoGallery.widthAnchor.constraint(equalTo: scrollableStackView.widthAnchor)
+            ])
         
         scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: Constants.LayoutMargins)
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: Constants.LayoutMargins)
@@ -111,7 +114,6 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
     //MARK:- Private
     
     open override func configureFor(viewModel: ClassicProfileViewModel) {
-        
         photoGallery.photos = viewModel.photos
         titleLabel.attributedText = viewModel.titleInfo
         detailsLabel.attributedText = viewModel.detailsInfo

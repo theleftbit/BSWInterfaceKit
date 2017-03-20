@@ -19,11 +19,8 @@ public class LoadingView: UIView {
     public init(loadingMessage: NSAttributedString? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle = .gray) {
         super.init(frame: .zero)
         self.addSubview(stackView)
-        constrain(stackView) { stackView in
-            stackView.centerX == stackView.superview!.centerX
-            stackView.centerY == stackView.superview!.centerY
-        }
-        
+        stackView.centerInSuperview()
+
         let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: activityIndicatorStyle)
         activityIndicator.startAnimating()
         stackView.addArrangedSubview(activityIndicator)
