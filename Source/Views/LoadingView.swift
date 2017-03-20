@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 public class LoadingView: UIView {
     fileprivate let stackView: UIStackView = {

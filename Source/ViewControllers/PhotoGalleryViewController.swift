@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import Cartography
 
 public protocol PhotoGalleryViewControllerDelegate: class {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt)
