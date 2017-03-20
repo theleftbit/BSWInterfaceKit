@@ -4,7 +4,6 @@
 
 import XCTest
 import FBSnapshotTestCase
-import Deferred
 @testable import BSWInterfaceKit
 
 class ClassicProfileViewControllerTests: BSWSnapshotTest {

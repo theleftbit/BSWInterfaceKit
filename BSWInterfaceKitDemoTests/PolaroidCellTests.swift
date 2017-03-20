@@ -4,7 +4,6 @@
 //
 
 import FBSnapshotTestCase
-import Deferred
 @testable import BSWInterfaceKit
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
