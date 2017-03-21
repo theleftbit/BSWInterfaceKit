@@ -43,7 +43,7 @@ open class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewM
         }
     }
 
-    public func configureFor(viewModel: ViewModel) {
+    open func configureFor(viewModel: ViewModel) {
         fatalError("Implement this on Subclasses")
     }
 }

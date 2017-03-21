@@ -126,7 +126,10 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
     
     fileprivate func addEmptyViewForCurrentState() {
         
-        guard let listPresenter = self.listPresenter else { return }
+        guard let listPresenter = self.listPresenter else {
+            print("I need a list presenter")
+            return
+        }
         
         self.emptyView?.removeFromSuperview()
         
