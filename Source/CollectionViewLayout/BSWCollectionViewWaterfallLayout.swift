@@ -369,7 +369,7 @@ class BSWCollectionViewWaterfallLayout : UICollectionViewLayout {
         return NSArray(array: attrs) as? [UICollectionViewLayoutAttributes]
     }
     
-    override func shouldInvalidateLayout (forBoundsChange newBounds : CGRect) -> Bool {
+    override func shouldInvalidateLayout(forBoundsChange newBounds : CGRect) -> Bool {
         return true
     }
 
