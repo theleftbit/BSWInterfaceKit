@@ -17,7 +17,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         isDeviceAgnostic = true
 
         // Disable downloading images from web to avoid flaky tests.
-        UIImageView.bsw_disableWebDownloads()
+        UIImageView.disableWebDownloads()
     }
 
     var currentWindow: UIWindow {

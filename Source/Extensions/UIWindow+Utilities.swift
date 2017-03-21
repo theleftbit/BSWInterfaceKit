@@ -6,10 +6,13 @@
 import UIKit
 
 public extension UIWindow {
+
+    @objc(bsw_visibleViewController)
     public var visibleViewController: UIViewController? {
         return UIWindow.getVisibleViewControllerFrom(self.rootViewController)
     }
-    
+
+    @objc(bsw_getVisibleViewControllerFrom:)
     public static func getVisibleViewControllerFrom(_ vc: UIViewController?) -> UIViewController? {
         if let nc = vc as? UINavigationController {
             return UIWindow.getVisibleViewControllerFrom(nc.visibleViewController)
@@ -23,9 +26,8 @@ public extension UIWindow {
             }
         }
     }
-}
 
-extension UIWindow {
+    @objc(bsw_showErrorMessage:error:)
     public func showErrorMessage(_ message: String, error: Error) {
         guard let rootViewController = self.visibleViewController else { return }
         rootViewController.showErrorMessage(message, error: error)

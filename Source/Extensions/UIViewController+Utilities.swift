@@ -11,7 +11,7 @@ import Cartography
 extension UIViewController {
 
     // MARK: - Loaders
-
+    @objc(bsw_showLoader)
     public func showLoader() {
         view.subviews.forEach { $0.alpha = 0.0 }
         let spinner = LoadingView()
@@ -20,6 +20,7 @@ extension UIViewController {
         spinner.centerInSuperview()
     }
 
+    @objc(bsw_hideLoader)
     public func hideLoader() {
         view.findSubviewWithTag(Constants.LoaderTag)?.removeFromSuperview()
         view.subviews.forEach { $0.alpha = 1.0 }
@@ -28,6 +29,7 @@ extension UIViewController {
 
     // MARK: - Alerts
 
+    @objc(bsw_showErrorMessage:error:)
     public func showErrorMessage(_ message: String, error: Error) {
 
         #if DEBUG
@@ -40,6 +42,7 @@ extension UIViewController {
         errorQueue.addOperation(operation)
     }
 
+    @objc(bsw_showTodoMessage)
     public func showTodoMessage() {
         let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
         errorQueue.addOperation(operation)
@@ -47,6 +50,7 @@ extension UIViewController {
 
   // MARK: - Bottom Action Button
 
+    @nonobjc
     public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
     
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
@@ -57,7 +61,7 @@ extension UIViewController {
                 delay: 0,
                 usingSpringWithDamping: 0.7,
                 initialSpringVelocity: 0.3,
-                options: UIViewAnimationOptions(),
+                options: [],
                 animations: {
                     changes()
                 },
@@ -98,7 +102,8 @@ extension UIViewController {
             }
         }
     }
-    
+
+    @nonobjc
     public func removeBottonActionButton() {
         view.removeSubviewWithTag(Constants.BottomActionTag)
     }

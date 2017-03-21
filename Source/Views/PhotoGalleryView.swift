@@ -117,7 +117,7 @@ extension PhotoGalleryView {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         imageView.addGestureRecognizer(tapGestureRecognizer)
         
-        imageView.bsw_setPhoto(photo)
+        imageView.setPhoto(photo)
 
         return imageView
     }

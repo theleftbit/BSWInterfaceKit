@@ -41,7 +41,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     override open func prepareForReuse() {
         super.prepareForReuse()
         cellImageView.backgroundColor = UIColor.clear
-        cellImageView.bsw_cancelImageLoadFromURL()
+        cellImageView.cancelImageLoadFromURL()
         cellImageView.image = nil
     }
     
@@ -96,7 +96,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         detailSubview.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
 
         //Set the image
-        cellImageView.bsw_setPhoto(viewModel.cellImage)
+        cellImageView.setPhoto(viewModel.cellImage)
         
         // Make sure that the image is not compressed when doing the final
         // layout by setting it's height to the wanted for a given height
