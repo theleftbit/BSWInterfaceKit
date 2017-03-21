@@ -1,9 +1,5 @@
 //
-//  BSWSnapshotTests.swift
-//  BSWInterfaceKit
-//
 //  Created by Pierluigi Cifani on 12/02/2017.
-//
 //
 
 import XCTest

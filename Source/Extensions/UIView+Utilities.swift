@@ -4,7 +4,6 @@
 //
 
 import BSWFoundation
-import Cartography
 
 extension UIView {
 
@@ -20,10 +19,15 @@ extension UIView {
     public func removeSubviewWithTag(_ tag: NSInteger) {
         findSubviewWithTag(tag)?.removeFromSuperview()
     }
-    
-    public func roundCorners() {
-        let cornerRadius = CGFloat(10.0)
-        layer.cornerRadius = cornerRadius
+
+    public func removeAllConstraints() {
+        let previousConstraints = constraints
+        NSLayoutConstraint.deactivate(previousConstraints)
+        removeConstraints(previousConstraints)
+    }
+
+    public func roundCorners(radius: CGFloat = 10) {
+        layer.cornerRadius = radius
         layer.masksToBounds = true
     }
     
@@ -47,9 +51,14 @@ extension UIView {
     }
     
     public func fillSuperview(withEdges edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
-        constrain(self) { view in
-            view.edges == inset(view.superview!.edges, edges.top, edges.left, edges.bottom, edges.right)
-        }
+        guard let superView = superview else { return }
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: edges.left),
+            trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -edges.right),
+            topAnchor.constraint(equalTo: superView.topAnchor, constant: edges.top),
+            bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -edges.bottom)
+            ])
     }
 
     public func fillSuperview(withMargin margin: CGFloat) {
@@ -58,9 +67,12 @@ extension UIView {
     }
 
     public func centerInSuperview() {
-        constrain(self) { view in
-            view.center == view.superview!.center
-        }
+        guard let superView = superview else { return }
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            centerXAnchor.constraint(equalTo: superView.centerXAnchor),
+            centerYAnchor.constraint(equalTo: superView.centerYAnchor)
+            ])
     }
 
     public class func instantiateFromNib<T: UIView>(_ viewType: T.Type) -> T? {
