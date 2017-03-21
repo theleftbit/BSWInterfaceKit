@@ -46,7 +46,7 @@ class AvatarView: UIView {
     }
     
     fileprivate func updateImage() {
-        imageView.bsw_setPhoto(photo)
+        imageView.setPhoto(photo)
     }
     
   // MARK: Layout

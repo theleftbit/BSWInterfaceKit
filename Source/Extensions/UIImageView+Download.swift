@@ -13,25 +13,30 @@ extension UIImageView {
 
     private static var webDownloadsEnabled = true
 
-    static public func bsw_disableWebDownloads() {
+    @objc(bsw_disableWebDownloads)
+    static public func disableWebDownloads() {
         webDownloadsEnabled = false
     }
 
-    static public func bsw_enableWebDownloads() {
+    @objc(bsw_enableWebDownloads)
+    static public func enableWebDownloads() {
         webDownloadsEnabled = false
     }
 
-    public func bsw_setImageFromURLString(_ url: String) {
+    @objc(bsw_setImageFromURLString:)
+    public func setImageFromURLString(_ url: String) {
         if let url = URL(string: url) {
-            bsw_setImageWithURL(url)
+            setImageWithURL(url)
         }
     }
 
-    public func bsw_cancelImageLoadFromURL() {
+    @objc(bsw_cancelImageLoadFromURL)
+    public func cancelImageLoadFromURL() {
         pin_cancelImageDownload()
     }
-    
-    public func bsw_setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
+
+    @nonobjc
+    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
         guard UIImageView.webDownloadsEnabled else { return }
         pin_setImage(from: url) { (downloadResult) in
 
@@ -47,14 +52,15 @@ extension UIImageView {
             completedBlock?(result)
         }
     }
-    
-    public func bsw_setPhoto(_ photo: Photo) {
+
+    @nonobjc
+    public func setPhoto(_ photo: Photo) {
         switch photo.kind {
         case .image(let image):
             self.image = image
         case .url(let url):
             backgroundColor = photo.averageColor
-            bsw_setImageWithURL(url) { result in
+            setImageWithURL(url) { result in
                 guard result.error == nil else { return }
                 self.image = result.value
                 self.backgroundColor = nil

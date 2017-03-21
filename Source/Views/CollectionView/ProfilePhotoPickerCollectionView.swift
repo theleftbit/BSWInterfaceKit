@@ -298,7 +298,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
             accesoryView.setImage(nil, for: .normal)
         case .filled(let photo):
             spinner.stopAnimating()
-            imageView.bsw_setPhoto(photo)
+            imageView.setPhoto(photo)
             accesoryView.setImage(UIImage.templateImage(.cancelRound), for: .normal)
         }
     }
