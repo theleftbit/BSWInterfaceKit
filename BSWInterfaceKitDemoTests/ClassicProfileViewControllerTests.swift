@@ -2,7 +2,6 @@
 //  Created by Pierluigi Cifani on 12/02/2017.
 //
 
-import XCTest
 @testable import BSWInterfaceKit
 
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
@@ -13,5 +12,4 @@ class ClassicProfileViewControllerTests: BSWSnapshotTest {
         let navController = UINavigationController(rootViewController: detailVC)
         waitABitAndVerify(viewController: navController)
     }
-    
 }

@@ -3,6 +3,7 @@
 //
 
 @testable import BSWInterfaceKit
+import XCTest
 
 class UIViewTests: BSWSnapshotTest {
 
