@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		50D4D83F404EAAEEDC6377B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 876CB44B6FD0A748932B75CC /* Foundation.framework */; };
+		67F833EB1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F833EA1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift */; };
 		72F0AADF6E81A3F0D9EC99DD /* Pods_Common_BSWInterfaceKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089FF9700D561CEA999D7CEB /* Pods_Common_BSWInterfaceKitDemo.framework */; };
 		B7425825432A9629D2494D43 /* Pods_BSWInterfaceKitDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BD8FDEA21CC6950FA03B8CE /* Pods_BSWInterfaceKitDemoTests.framework */; };
 		C82A93634D8C1483D2A3CC5C /* Pods_Common_BSWInterfaceKitPlayground.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB121209232B337A83D0E7BF /* Pods_Common_BSWInterfaceKitPlayground.framework */; };
@@ -35,6 +36,7 @@
 		089FF9700D561CEA999D7CEB /* Pods_Common_BSWInterfaceKitDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Common_BSWInterfaceKitDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16E13958ABB91142B93EC0DD /* Pods-Common-BSWInterfaceKitPlayground.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitPlayground.release.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitPlayground/Pods-Common-BSWInterfaceKitPlayground.release.xcconfig"; sourceTree = "<group>"; };
 		584BCD31C8DFF8A423DC1CBC /* Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitPlayground/Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig"; sourceTree = "<group>"; };
+		67F833EA1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonConfigurationSnapshotTests.swift; sourceTree = "<group>"; };
 		876CB44B6FD0A748932B75CC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		88F067BBD22E91A5A11D13CD /* Pods-Common-BSWInterfaceKitDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitDemo/Pods-Common-BSWInterfaceKitDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		9BD8FDEA21CC6950FA03B8CE /* Pods_BSWInterfaceKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +160,7 @@
 		EBB3CECB1E50C60B0063303C /* BSWInterfaceKitDemoTests */ = {
 			isa = PBXGroup;
 			children = (
+				67F833EA1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift */,
 				EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */,
 				EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */,
 				EBB3CECE1E50C60B0063303C /* Info.plist */,
@@ -436,6 +439,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */,
+				67F833EB1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift in Sources */,
 				EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
