@@ -12,11 +12,17 @@
 		72F0AADF6E81A3F0D9EC99DD /* Pods_Common_BSWInterfaceKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089FF9700D561CEA999D7CEB /* Pods_Common_BSWInterfaceKitDemo.framework */; };
 		B7425825432A9629D2494D43 /* Pods_BSWInterfaceKitDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BD8FDEA21CC6950FA03B8CE /* Pods_BSWInterfaceKitDemoTests.framework */; };
 		C82A93634D8C1483D2A3CC5C /* Pods_Common_BSWInterfaceKitPlayground.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB121209232B337A83D0E7BF /* Pods_Common_BSWInterfaceKitPlayground.framework */; };
+		EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */; };
+		EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */; };
+		EB0B24261E81B2BF005491F1 /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B24251E81B2BF005491F1 /* UIViewTests.swift */; };
+		EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */; };
 		EBB3CEB81E50C60B0063303C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CEB71E50C60B0063303C /* AppDelegate.swift */; };
-		EBB3CEBA1E50C60B0063303C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CEB91E50C60B0063303C /* ViewController.swift */; };
+		EBB3CEBA1E50C60B0063303C /* FeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CEB91E50C60B0063303C /* FeaturesViewController.swift */; };
 		EBB3CEBF1E50C60B0063303C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EBB3CEBE1E50C60B0063303C /* Assets.xcassets */; };
 		EBB3CEC21E50C60B0063303C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBB3CEC01E50C60B0063303C /* LaunchScreen.storyboard */; };
 		EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */; };
+		EBBB9FAD1E7BF0FE000F1232 /* StrawberryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */; };
+		EBBB9FAF1E7BF524000F1232 /* FruitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */; };
 		EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,16 +50,22 @@
 		D898CFB9CD31BED2463F8BD6 /* Pods_BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF76EAB8EBDD82E323AD7CEB /* Pods_Common_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Common_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5F363682ECCCD041FC95D1C /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolaroidCellTests.swift; sourceTree = "<group>"; };
+		EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
+		EB0B24251E81B2BF005491F1 /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
+		EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoPickerCollectionViewTests.swift; sourceTree = "<group>"; };
 		EBB3CEB01E50C59E0063303C /* BSWInterfaceKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = BSWInterfaceKit.podspec; sourceTree = "<group>"; };
 		EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BSWInterfaceKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBB3CEB71E50C60B0063303C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EBB3CEB91E50C60B0063303C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		EBB3CEB91E50C60B0063303C /* FeaturesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesViewController.swift; sourceTree = "<group>"; };
 		EBB3CEBE1E50C60B0063303C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EBB3CEC11E50C60B0063303C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EBB3CEC31E50C60B0063303C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EBB3CEC81E50C60B0063303C /* BSWInterfaceKitDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BSWInterfaceKitDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicProfileViewControllerTests.swift; sourceTree = "<group>"; };
 		EBB3CECE1E50C60B0063303C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrawberryViewController.swift; sourceTree = "<group>"; };
+		EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FruitViewController.swift; sourceTree = "<group>"; };
 		EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
 		ECAD9F0C9D88CCEA59E28B8D /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.release.xcconfig"; sourceTree = "<group>"; };
 		EE043E195E238D065AE621AF /* BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,7 +111,9 @@
 				E8668C1A6301F6D5C33A656D /* Frameworks */,
 				7B54BF0681DDCE081CC3A8C5 /* Pods */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		7B54BF0681DDCE081CC3A8C5 /* Pods */ = {
 			isa = PBXGroup;
@@ -145,11 +159,25 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EB067A171E8057F800A8AC91 /* Suite */ = {
+			isa = PBXGroup;
+			children = (
+				EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */,
+				EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */,
+				EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */,
+				EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */,
+				EB0B24251E81B2BF005491F1 /* UIViewTests.swift */,
+			);
+			name = Suite;
+			sourceTree = "<group>";
+		};
 		EBB3CEB61E50C60B0063303C /* BSWInterfaceKitDemo */ = {
 			isa = PBXGroup;
 			children = (
 				EBB3CEB71E50C60B0063303C /* AppDelegate.swift */,
-				EBB3CEB91E50C60B0063303C /* ViewController.swift */,
+				EBB3CEB91E50C60B0063303C /* FeaturesViewController.swift */,
+				EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */,
+				EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */,
 				EBB3CEBE1E50C60B0063303C /* Assets.xcassets */,
 				EBB3CEC01E50C60B0063303C /* LaunchScreen.storyboard */,
 				EBB3CEC31E50C60B0063303C /* Info.plist */,
@@ -162,6 +190,7 @@
 			children = (
 				67F833EA1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift */,
 				EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */,
+				EB067A171E8057F800A8AC91 /* Suite */,
 				EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */,
 				EBB3CECE1E50C60B0063303C /* Info.plist */,
 			);
@@ -429,7 +458,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EBB3CEBA1E50C60B0063303C /* ViewController.swift in Sources */,
+				EBBB9FAD1E7BF0FE000F1232 /* StrawberryViewController.swift in Sources */,
+				EBBB9FAF1E7BF524000F1232 /* FruitViewController.swift in Sources */,
+				EBB3CEBA1E50C60B0063303C /* FeaturesViewController.swift in Sources */,
 				EBB3CEB81E50C60B0063303C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,9 +469,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB0B24261E81B2BF005491F1 /* UIViewTests.swift in Sources */,
+				EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */,
 				EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */,
 				67F833EB1E83389800ABB159 /* ButtonConfigurationSnapshotTests.swift in Sources */,
 				EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */,
+				EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */,
+				EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

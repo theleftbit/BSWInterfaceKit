@@ -49,7 +49,7 @@ open class WaterfallCollectionView: UICollectionView {
         waterfallLayout.minimumInteritemSpacing = configuration.minimumInteritemSpacing
         waterfallLayout.sectionInset = configuration.sectionInset
         
-        super.init(frame: CGRect.zero, collectionViewLayout: waterfallLayout)
+        super.init(frame: .zero, collectionViewLayout: waterfallLayout)
         
         waterfallLayout.delegate = self
     }
@@ -75,6 +75,8 @@ extension WaterfallCollectionView: BSWCollectionViewDelegateWaterfallLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
         
         let width = waterfallLayout.itemWidthInSectionAtIndex((indexPath as NSIndexPath).section)
+        guard width > 0 else { return .zero }
+
         let height: CGFloat = {
             switch self.cellHeight {
             case .fixed(let height):

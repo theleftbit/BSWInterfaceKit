@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 public enum PhotoPickerViewModel {
     case empty
@@ -53,7 +52,7 @@ public protocol ProfilePhotoPickerDelegate: class {
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
 
-open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
+public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {
         static let Columns = 3
@@ -72,12 +71,12 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
             return photosDataSource.state.data ?? []
         }
     }
-    open weak var presentingViewController: UIViewController?
-    open weak var profilePhotoDelegate: ProfilePhotoPickerDelegate?
+    public weak var presentingViewController: UIViewController?
+    public weak var profilePhotoDelegate: ProfilePhotoPickerDelegate?
 
     public init(photos: [PhotoPickerViewModel] = []) {
 
-        super.init(frame: CGRect.zero, collectionViewLayout: BSWCollectionViewFlowLayout())
+        super.init(frame: .zero, collectionViewLayout: BSWCollectionViewFlowLayout())
         
         /// Prepare the FlowLayout
         flowLayout.scrollDirection = .vertical
@@ -123,13 +122,13 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
         fatalError("init(coder:) has not been implemented")
     }
     
-    open var flowLayout: BSWCollectionViewFlowLayout {
+    public var flowLayout: BSWCollectionViewFlowLayout {
         get {
             return collectionViewLayout as! BSWCollectionViewFlowLayout
         }
     }
     
-    open func updatePhotos(_ photos: [PhotoPickerViewModel]) {
+    public func updatePhotos(_ photos: [PhotoPickerViewModel]) {
         photosDataSource.updateState(.loaded(data: photos))
     }
     
@@ -149,11 +148,8 @@ open class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewD
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        guard self.frame.width != 0  else {
-            return CGSize.zero
-        }
-        guard self.frame.height != 0  else {
-            return CGSize.zero
+        guard self.frame.width != 0, self.frame.height != 0  else {
+            return .zero
         }
         
         return CGSize(
@@ -258,22 +254,23 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     }
     
     fileprivate func setup() {
-        contentView.addSubview(imageView)
-        contentView.addSubview(spinner)
-        imageView.addSubview(accesoryView)
+        contentView.addAutolayoutSubview(imageView)
+        contentView.addAutolayoutSubview(spinner)
+        imageView.addAutolayoutSubview(accesoryView)
         imageView.backgroundColor = .white
         imageView.roundCorners()
         imageView.isUserInteractionEnabled = true
         spinner.hidesWhenStopped = true
-        constrain(imageView, accesoryView, spinner) { imageView, accesoryView, spinner in
-            imageView.edges == inset(imageView.superview!.edges, Constants.CellPadding)
-            accesoryView.bottom == imageView.bottom - Constants.CellPadding
-            accesoryView.right == imageView.right - Constants.CellPadding
-            accesoryView.width == Constants.AccesorySize
-            accesoryView.height == Constants.AccesorySize
-            spinner.centerX == spinner.superview!.centerX
-            spinner.centerY == spinner.superview!.centerY
-        }
+
+        //Layout
+        imageView.fillSuperview(withMargin: Constants.CellPadding)
+        spinner.centerInSuperview()
+        NSLayoutConstraint.activate([
+            accesoryView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -Constants.CellPadding),
+            accesoryView.rightAnchor.constraint(equalTo: imageView.rightAnchor, constant: -Constants.CellPadding),
+            accesoryView.widthAnchor.constraint(equalToConstant: Constants.AccesorySize),
+            accesoryView.heightAnchor.constraint(equalToConstant: Constants.AccesorySize)
+            ])
     }
     
     fileprivate override func prepareForReuse() {
@@ -293,16 +290,16 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
             spinner.stopAnimating()
             imageView.image = nil
             imageView.backgroundColor = .lightGray
-            accesoryView.setImage(UIImage.templateImage(.PlusRound), for: UIControlState())
+            accesoryView.setImage(UIImage.templateImage(.plusRound), for: .normal)
         case .uploading(_, let image):
             spinner.startAnimating()
             imageView.image = image
             imageView.addBlurEffect()
-            accesoryView.setImage(nil, for: UIControlState())
+            accesoryView.setImage(nil, for: .normal)
         case .filled(let photo):
             spinner.stopAnimating()
-            imageView.bsw_setPhoto(photo)
-            accesoryView.setImage(UIImage.templateImage(.CancelRound), for: UIControlState())
+            imageView.setPhoto(photo)
+            accesoryView.setImage(UIImage.templateImage(.cancelRound), for: .normal)
         }
     }
     
