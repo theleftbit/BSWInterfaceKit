@@ -31,6 +31,7 @@ open class TextStyler {
     }
     
     open static let styler = TextStyler()
+    public init() {}
     open var preferredFontName: String?
     
     open func attributedString(_ string: String, color: UIColor = UIColor.black, forStyle style: Style = .body) -> NSAttributedString {
