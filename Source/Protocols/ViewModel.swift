@@ -9,7 +9,7 @@ import Deferred
 
 //MARK:- Protocols
 
-public protocol ViewModelConfigurable {
+public protocol ViewModelConfigurable: class {
     associatedtype VM
     func configureFor(viewModel: VM)
 }
@@ -25,13 +25,13 @@ public protocol AsyncViewModelPresenter: ViewModelConfigurable {
 
 //MARK:- Extensions
 
-extension ViewModelReusable where Self: UICollectionViewCell {
+extension ViewModelReusable {
     public static var reuseIdentifier: String {
         return NSStringFromClass(self).components(separatedBy: ".").last!
+
     }
-    
     public static var reuseType: ReuseType {
-        return .classReference(Self.self)
+        return .classReference(self)
     }
 }
 

@@ -23,14 +23,8 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
         self.reorderSupport = reorderSupport
         
         super.init()
-        
-        switch Cell.reuseType {
-        case .classReference(let classReference):
-            collectionView.register(classReference, forCellWithReuseIdentifier: Cell.reuseIdentifier)
-        case .nib(let nib):
-            collectionView.register(nib, forCellWithReuseIdentifier: Cell.reuseIdentifier)
-        }
 
+        collectionView.registerReusableCell(Cell.self)
         collectionView.dataSource = self
         collectionView.alwaysBounceVertical = true
         if let _ = self.reorderSupport {
@@ -95,15 +89,11 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
     }
     
     @objc public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cell.reuseIdentifier, for: indexPath) as? Cell else {
-            fatalError()
-        }
-        
+        let cell: Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
         if case .loaded(let models) = self.state {
             let model = models[indexPath.item]
             cell.configureFor(viewModel: model)
         }
-        
         return cell
     }
     
