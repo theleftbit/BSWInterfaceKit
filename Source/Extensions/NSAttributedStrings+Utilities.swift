@@ -30,7 +30,7 @@ extension Collection where Iterator.Element : NSAttributedString {
 }
 
 // concatenate attributed strings
-func + (left: NSAttributedString, right: NSAttributedString) -> NSAttributedString {
+public func + (left: NSAttributedString, right: NSAttributedString) -> NSAttributedString {
     let result = NSMutableAttributedString()
     result.append(left)
     result.append(right)
