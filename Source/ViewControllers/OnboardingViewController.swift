@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 open class LaunchScreenViewController: UIViewController {
     
@@ -49,8 +48,8 @@ class OnboardingViewController: UIViewController {
 
     weak var onboardingObserver: OnboardingObserver!
     var onboardingCustomization: OnboardingCustomization!
-    static let Spacing: CGFloat = 10
-    let contentView = UIView()
+    private static let Spacing: CGFloat = 10
+    private let contentView = UIView()
     
     let socialStackView: UIStackView = {
         let stackView = UIStackView()
@@ -72,7 +71,7 @@ class OnboardingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(contentView)
+        view.addAutolayoutSubview(contentView)
         contentView.fillSuperview()
         
         //First, the background
@@ -86,17 +85,19 @@ class OnboardingViewController: UIViewController {
         }
         
         //Then, the stackViews
-        contentView.addSubview(logoStackView)
-        contentView.addSubview(socialStackView)
-        constrain(logoStackView, socialStackView) { logoStackView, socialStackView in
-            logoStackView.topMargin == logoStackView.superview!.topMargin
-            logoStackView.leadingMargin == logoStackView.superview!.leadingMargin
-            logoStackView.trailingMargin == logoStackView.superview!.trailingMargin
-            socialStackView.bottomMargin == socialStackView.superview!.bottomMargin
-            socialStackView.leadingMargin == socialStackView.superview!.leadingMargin
-            socialStackView.trailingMargin == socialStackView.superview!.trailingMargin
-        }
-        
+        contentView.addAutolayoutSubview(logoStackView)
+        contentView.addAutolayoutSubview(socialStackView)
+
+        NSLayoutConstraint.activate([
+            logoStackView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            logoStackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            logoStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            socialStackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            socialStackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            socialStackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            socialStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
+            ])
+
         prepareLogoStackView()
         prepareSocialStackView()
     }
@@ -106,7 +107,7 @@ class OnboardingViewController: UIViewController {
         prepareMarginsForCurrentTraitCollection()
     }
 
-    override var preferredStatusBarStyle : UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return onboardingCustomization.statusBarStyle
     }
     

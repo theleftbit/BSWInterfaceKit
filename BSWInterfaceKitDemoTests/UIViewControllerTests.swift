@@ -1,9 +1,5 @@
 //
-//  UIViewControllerTests.swift
-//  BSWInterfaceKit
-//
 //  Created by Pierluigi Cifani on 11/04/2017.
-//
 //
 
 @testable import BSWInterfaceKit
