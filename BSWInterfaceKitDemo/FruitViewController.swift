@@ -38,7 +38,7 @@ class FruitViewController: UIViewController, ListStatePresenter {
     }
 
     func errorConfiguration(forError error: Error) -> ErrorListConfiguration {
-        let retryButton = ButtonConfiguration(title: NSAttributedString(string: "Retry")) { (_) in
+        let retryButton = ButtonConfiguration(buttonTitle: .text(NSAttributedString(string: "Retry"))) { (_) in
             print("Retry")
         }
         let listConfig = ActionableListConfiguration(title: NSAttributedString(string: "\(error)"), buttonConfiguration: retryButton)

@@ -278,12 +278,12 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         imageView.image = nil
         imageView.backgroundColor = .white
         imageView.removeBlurEffect()
-        accesoryView.removeTarget(self, action: #selector(onAccesoryTapped), for: .touchDown)
+        accesoryView.removeTarget(self, action: #selector(onAccesoryTapped), for: .touchUpInside)
     }
     
     func configureFor(viewModel: PhotoPickerViewModel) {
         
-        accesoryView.addTarget(self, action: #selector(onAccesoryTapped), for: .touchDown)
+        accesoryView.addTarget(self, action: #selector(onAccesoryTapped), for: .touchUpInside)
 
         switch viewModel {
         case .empty:
