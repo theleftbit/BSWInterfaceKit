@@ -32,4 +32,10 @@ class ButtonTests: BSWSnapshotTest {
         button.frame = CGRect(x: 0, y: 0, width: button.intrinsicContentSize.width, height: button.intrinsicContentSize.height)
         return button
     }
+    
+    func testImageButton() {
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), backgroundColor: .clear, actionHandler: {}))
+        button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
+        waitABitAndVerify(view: button)
+    }
 }
