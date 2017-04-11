@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 import BSWFoundation
 
 // MARK: PhotoGalleryViewDelegate protocol
@@ -22,6 +21,7 @@ final public class PhotoGalleryView: UIView {
     
     fileprivate let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
         pageControl.hidesForSinglePage = true
         pageControl.pageIndicatorTintColor = UIColor.white
         pageControl.pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.5)
@@ -74,6 +74,8 @@ final public class PhotoGalleryView: UIView {
 extension PhotoGalleryView {
     
     fileprivate func setup() {
+        translatesAutoresizingMaskIntoConstraints = false
+
         // ScrollableStackView view
         addSubview(scrollableStackView)
         scrollableStackView.isPagingEnabled = true
@@ -115,7 +117,7 @@ extension PhotoGalleryView {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         imageView.addGestureRecognizer(tapGestureRecognizer)
         
-        imageView.bsw_setPhoto(photo)
+        imageView.setPhoto(photo)
 
         return imageView
     }
@@ -130,19 +132,15 @@ extension PhotoGalleryView {
             return
         }
         delegate?.didTapPhotoAt(index: UInt(index), fromView: view)
-    }    
-}
+    }
 
-// MARK: Constraints
+    // MARK: Constraints
 
-extension PhotoGalleryView {
-    
     fileprivate func setupConstraints() {
         scrollableStackView.fillSuperview()
-
-        constrain(pageControl) { pageControl in
-            pageControl.centerX == pageControl.superview!.centerX
-            pageControl.bottom == pageControl.superview!.bottom - CGFloat(Stylesheet.margin(.small))
-        }
+        NSLayoutConstraint.activate([
+            pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
+            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -CGFloat(Stylesheet.margin(.small)))
+            ])
     }
 }

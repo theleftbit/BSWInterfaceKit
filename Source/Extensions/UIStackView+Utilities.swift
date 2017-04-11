@@ -6,7 +6,8 @@
 import UIKit
 
 extension UIStackView {
-    open func addArrangedSubview(_ subview: UIView, layoutMargins: UIEdgeInsets) {
+    @objc(bsw_addArrangedSubview:layoutMargins:)
+    public func addArrangedSubview(_ subview: UIView, layoutMargins: UIEdgeInsets) {
 
         subview.translatesAutoresizingMaskIntoConstraints = false
 
@@ -36,6 +37,7 @@ extension UIStackView {
         addArrangedSubview(dummyView)
     }
 
+    @objc(bsw_removeAllArrangedSubviews)
     public func removeAllArrangedSubviews() {
         arrangedSubviews.forEach {
             self.removeArrangedSubview($0)

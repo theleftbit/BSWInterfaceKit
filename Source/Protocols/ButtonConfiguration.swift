@@ -6,30 +6,35 @@
 import Foundation
 import ObjectiveC
 
+public enum ButtonTitle {
+    case text(NSAttributedString)
+    case image(UIImage)
+}
+
 public typealias ButtonActionHandler = (Void) -> Void
 
 public struct ButtonConfiguration {
-    public let title: NSAttributedString
+    public let buttonTitle: ButtonTitle
     public let backgroundColor: UIColor
     public let contentInset: UIEdgeInsets
     public let actionHandler: ButtonActionHandler
 
     public init(title: String,
                 titleColor: UIColor = .black,
-                backgroundColor: UIColor = .blue,
+                backgroundColor: UIColor = .clear,
                 contentInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5),
                 actionHandler: @escaping ButtonActionHandler) {
-        self.title = TextStyler.styler.attributedString(title, color: titleColor)
+        self.buttonTitle = .text(TextStyler.styler.attributedString(title, color: titleColor))
         self.backgroundColor = backgroundColor
         self.actionHandler = actionHandler
         self.contentInset = contentInset
     }
 
-    public init(title: NSAttributedString,
-                backgroundColor: UIColor = UIColor.blue,
+    public init(buttonTitle: ButtonTitle,
+                backgroundColor: UIColor = .clear,
                 contentInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5),
                 actionHandler: @escaping ButtonActionHandler) {
-        self.title = title
+        self.buttonTitle = buttonTitle
         self.backgroundColor = backgroundColor
         self.actionHandler = actionHandler
         self.contentInset = contentInset
@@ -55,11 +60,19 @@ extension UIButton {
     }
     
     public func setButtonConfiguration(_ buttonConfiguration: ButtonConfiguration) {
-        setAttributedTitle(buttonConfiguration.title, for: UIControlState())
+        
+        switch buttonConfiguration.buttonTitle {
+        case .text(let title):
+            setAttributedTitle(title, for: UIControlState())
+        case .image(let image):
+            setBackgroundImage(image, for: .normal)
+            contentMode = .scaleAspectFit
+        }
+        
         backgroundColor = buttonConfiguration.backgroundColor
         contentEdgeInsets = buttonConfiguration.contentInset
         objc_setAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper, ActionBlockWrapper(block: buttonConfiguration.actionHandler), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        addTarget(self, action: #selector(handleTap), for: .touchDown)
+        addTarget(self, action: #selector(handleTap), for: .touchUpInside)
     }
     
     func handleTap() {

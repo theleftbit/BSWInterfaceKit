@@ -34,7 +34,7 @@ extension PresentedVC: UIViewControllerTransitioningDelegate {
                                     source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         let properties = CardPresentation.AnimationProperties(
             cardHeight: 300,
-            animationDuration: 2,
+            animationDuration: 5,
             kind: .presentation
         )
 

@@ -4,24 +4,39 @@
 //
 
 import BSWFoundation
-import Cartography
 
 extension UIView {
-    
+
+    @objc(bsw_addAutolayoutSubview:)
+    public func addAutolayoutSubview(_ view: UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(view)
+    }
+
+    @objc(bsw_findSubviewWithTag:)
     public func findSubviewWithTag(_ tag: NSInteger) -> UIView? {
         return subviews.find(predicate: { return $0.tag == tag} )
     }
-    
+
+    @objc(bsw_removeSubviewWithTag:)
     public func removeSubviewWithTag(_ tag: NSInteger) {
         findSubviewWithTag(tag)?.removeFromSuperview()
     }
-    
-    public func roundCorners() {
-        let cornerRadius = CGFloat(10.0)
-        layer.cornerRadius = cornerRadius
+
+    @objc(bsw_removeAllConstraints)
+    public func removeAllConstraints() {
+        let previousConstraints = constraints
+        NSLayoutConstraint.deactivate(previousConstraints)
+        removeConstraints(previousConstraints)
+    }
+
+    @objc(bsw_roundCorners:)
+    public func roundCorners(radius: CGFloat = 10) {
+        layer.cornerRadius = radius
         layer.masksToBounds = true
     }
-    
+
+    @objc(bsw_getColorFromPoint:)
     public func getColorFromPoint(_ point: CGPoint) -> UIColor {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue).rawValue
@@ -40,25 +55,43 @@ extension UIView {
         let color = UIColor(red: red, green: green, blue: blue, alpha: alpha)
         return color
     }
-    
+
+    @objc(bsw_fillSuperviewWithEdges:)
     public func fillSuperview(withEdges edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
-        constrain(self) { view in
-            view.edges == inset(view.superview!.edges, edges.top, edges.left, edges.bottom, edges.right)
-        }
+        guard let superView = superview else { return }
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: edges.left),
+            trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -edges.right),
+            topAnchor.constraint(equalTo: superView.topAnchor, constant: edges.top),
+            bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -edges.bottom)
+            ])
     }
 
+    @objc(bsw_fillSuperviewWithMargin:)
+    public func fillSuperview(withMargin margin: CGFloat) {
+        let inset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
+        fillSuperview(withEdges: inset)
+    }
+
+    @objc(bsw_centerInSuperview)
     public func centerInSuperview() {
-        constrain(self) { view in
-            view.center == view.superview!.center
-        }
+        guard let superView = superview else { return }
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            centerXAnchor.constraint(equalTo: superView.centerXAnchor),
+            centerYAnchor.constraint(equalTo: superView.centerYAnchor)
+            ])
     }
 
+    @nonobjc
     public class func instantiateFromNib<T: UIView>(_ viewType: T.Type) -> T? {
         let className = NSStringFromClass(viewType).components(separatedBy: ".").last!
         let bundle = Bundle(for: self)
         return bundle.loadNibNamed(className, owner: nil, options: nil)?.first as? T
     }
-    
+
+    @objc(bsw_instantiateFromNib)
     public class func instantiateFromNib() -> Self? {
         return instantiateFromNib(self)
     }
