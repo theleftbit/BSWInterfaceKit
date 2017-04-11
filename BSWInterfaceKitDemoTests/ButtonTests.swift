@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 20/03/2017.
 //
 
+import XCTest
 @testable import BSWInterfaceKit
 
 class ButtonTests: BSWSnapshotTest {
@@ -34,8 +35,27 @@ class ButtonTests: BSWSnapshotTest {
     }
     
     func testImageButton() {
-        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), backgroundColor: .clear, actionHandler: {}))
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         waitABitAndVerify(view: button)
+    }
+    
+    func testTapButton() {
+        
+        let exp = expectation(description: "Expecting touches in button")
+        
+        var isActionHandled: Bool = false
+        
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), actionHandler: {
+            isActionHandled = true
+            exp.fulfill()
+        }))
+        button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
+        
+        button.sendActions(for: .touchUpInside)
+        
+        let _ = XCTWaiter().wait(for: [exp], timeout: 1)
+        
+        XCTAssert(isActionHandled)
     }
 }

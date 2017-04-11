@@ -72,7 +72,7 @@ extension UIButton {
         backgroundColor = buttonConfiguration.backgroundColor
         contentEdgeInsets = buttonConfiguration.contentInset
         objc_setAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper, ActionBlockWrapper(block: buttonConfiguration.actionHandler), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        addTarget(self, action: #selector(handleTap), for: .touchDown)
+        addTarget(self, action: #selector(handleTap), for: .touchUpInside)
     }
     
     func handleTap() {
