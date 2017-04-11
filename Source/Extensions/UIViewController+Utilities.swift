@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import Cartography
 
 // MARK: - Error and Loading
 
@@ -56,6 +55,12 @@ extension UIViewController {
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         
         func animateChanges(_ changes: @escaping () -> ()) {
+
+            guard NSClassFromString("XCTest") == nil else {
+                changes()
+                return
+            }
+
             UIView.animate(
                 withDuration: Constants.ButtonAnimationDuration,
                 delay: 0,
@@ -80,23 +85,23 @@ extension UIViewController {
             let button = UIButton()
             button.tag = Constants.BottomActionTag
             button.setButtonConfiguration(buttonConfig)
-            view.addSubview(button)
+            view.addAutolayoutSubview(button)
             
-            var bottomConstraint: NSLayoutConstraint?
-            
-            constrain(button) { button in
-                button.height >= Constants.ButtonHeight
-                bottomConstraint = (button.bottom == button.superview!.bottom)
-                button.leading == button.superview!.leading
-                button.trailing == button.superview!.trailing
-            }
+            let bottomConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+
+            NSLayoutConstraint.activate([
+                bottomConstraint,
+                button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.ButtonHeight),
+                button.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                button.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                ])
 
             view.layoutIfNeeded()
 
             //Now, let's animate how this is shown
-            bottomConstraint?.constant = button.bounds.height
+            bottomConstraint.constant = button.bounds.height
             view.layoutIfNeeded()
-            bottomConstraint?.constant = 0
+            bottomConstraint.constant = 0
             animateChanges {
                 self.view.layoutIfNeeded()
             }
