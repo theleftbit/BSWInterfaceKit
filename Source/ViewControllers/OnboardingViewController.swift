@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Cartography
 
 open class LaunchScreenViewController: UIViewController {
     
@@ -25,10 +24,11 @@ open class LaunchScreenViewController: UIViewController {
             let spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
             view.addSubview(spinner)
             spinner.startAnimating()
-            constrain(spinner) { spinner in
-                spinner.bottom == spinner.superview!.bottom - 80
-                spinner.centerX == spinner.superview!.centerX
-            }
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                spinner.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
+                ])
         }
     }
     
@@ -48,8 +48,8 @@ class OnboardingViewController: UIViewController {
 
     weak var onboardingObserver: OnboardingObserver!
     var onboardingCustomization: OnboardingCustomization!
-    static let Spacing: CGFloat = 10
-    let contentView = UIView()
+    private static let Spacing: CGFloat = 10
+    private let contentView = UIView()
     
     let socialStackView: UIStackView = {
         let stackView = UIStackView()
@@ -71,10 +71,8 @@ class OnboardingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(contentView)
-        constrain(contentView) { contentView in
-            contentView.edges == contentView.superview!.edges
-        }
+        view.addAutolayoutSubview(contentView)
+        contentView.fillSuperview()
         
         //First, the background
         switch onboardingCustomization.background {
@@ -83,23 +81,23 @@ class OnboardingViewController: UIViewController {
         case .image(let image):
             let imageView = UIImageView(image: image)
             contentView.addSubview(imageView)
-            constrain(imageView) { imageView in
-                imageView.edges == imageView.superview!.edges
-            }
+            imageView.fillSuperview()
         }
         
         //Then, the stackViews
-        contentView.addSubview(logoStackView)
-        contentView.addSubview(socialStackView)
-        constrain(logoStackView, socialStackView) { logoStackView, socialStackView in
-            logoStackView.topMargin == logoStackView.superview!.topMargin
-            logoStackView.leadingMargin == logoStackView.superview!.leadingMargin
-            logoStackView.trailingMargin == logoStackView.superview!.trailingMargin
-            socialStackView.bottomMargin == socialStackView.superview!.bottomMargin
-            socialStackView.leadingMargin == socialStackView.superview!.leadingMargin
-            socialStackView.trailingMargin == socialStackView.superview!.trailingMargin
-        }
-        
+        contentView.addAutolayoutSubview(logoStackView)
+        contentView.addAutolayoutSubview(socialStackView)
+
+        NSLayoutConstraint.activate([
+            logoStackView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            logoStackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            logoStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            socialStackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            socialStackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            socialStackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            socialStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
+            ])
+
         prepareLogoStackView()
         prepareSocialStackView()
     }
@@ -109,7 +107,7 @@ class OnboardingViewController: UIViewController {
         prepareMarginsForCurrentTraitCollection()
     }
 
-    override var preferredStatusBarStyle : UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return onboardingCustomization.statusBarStyle
     }
     
@@ -145,13 +143,14 @@ class OnboardingViewController: UIViewController {
         socialStackView.addArrangedSubview(privacyLabel)
         
         let facebookButton: UIButton = {
-            let button = LoginButton(
+            let config = ButtonConfiguration(
                 title: "Login with Facebook",
-                target: self,
-                selector: #selector(onLoginFacebook),
-                color: UIColor.blue
-            )
-            return button
+                titleColor: .white,
+                backgroundColor: .blue,
+                actionHandler: { (_) in
+                    self.onLoginFacebook()
+            })
+            return UIButton(buttonConfiguration: config)
         }()
         
         socialStackView.addArrangedSubview(facebookButton)

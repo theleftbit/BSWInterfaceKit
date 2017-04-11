@@ -42,7 +42,7 @@ extension UIColor {
             alpha: 1
         )
     }
-    
+
     public class func randomColor() -> UIColor {
         let randomRed:CGFloat = CGFloat(drand48())
         let randomGreen:CGFloat = CGFloat(drand48())

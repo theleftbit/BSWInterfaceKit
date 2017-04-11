@@ -12,7 +12,7 @@ open class ScrollableStackView: UIScrollView {
     public init(axis: UILayoutConstraintAxis = .vertical,
                 alignment: UIStackViewAlignment = .leading) {
         super.init(frame: CGRect.zero)
-        
+        translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis
         stackView.alignment = alignment
 

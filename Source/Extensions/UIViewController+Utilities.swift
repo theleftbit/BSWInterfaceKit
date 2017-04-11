@@ -4,12 +4,13 @@
 //
 
 import Foundation
-import Cartography
 
 // MARK: - Error and Loading
 
 extension UIViewController {
 
+    // MARK: - Loaders
+    @objc(bsw_showLoader)
     public func showLoader() {
         view.subviews.forEach { $0.alpha = 0.0 }
         let spinner = LoadingView()
@@ -18,13 +19,18 @@ extension UIViewController {
         spinner.centerInSuperview()
     }
 
+    @objc(bsw_hideLoader)
     public func hideLoader() {
         view.findSubviewWithTag(Constants.LoaderTag)?.removeFromSuperview()
         view.subviews.forEach { $0.alpha = 1.0 }
     }
 
+
+    // MARK: - Alerts
+
+    @objc(bsw_showErrorMessage:error:)
     public func showErrorMessage(_ message: String, error: Error) {
-        
+
         #if DEBUG
             let errorMessage = "\(message). \(error)"
         #else
@@ -35,27 +41,32 @@ extension UIViewController {
         errorQueue.addOperation(operation)
     }
 
+    @objc(bsw_showTodoMessage)
     public func showTodoMessage() {
         let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
         errorQueue.addOperation(operation)
     }
-}
 
-// MARK: - Bottom Action Button
+  // MARK: - Bottom Action Button
 
-extension UIViewController {
-
+    @nonobjc
     public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
     
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         
         func animateChanges(_ changes: @escaping () -> ()) {
+
+            guard NSClassFromString("XCTest") == nil else {
+                changes()
+                return
+            }
+
             UIView.animate(
                 withDuration: Constants.ButtonAnimationDuration,
                 delay: 0,
                 usingSpringWithDamping: 0.7,
                 initialSpringVelocity: 0.3,
-                options: UIViewAnimationOptions(),
+                options: [],
                 animations: {
                     changes()
                 },
@@ -74,29 +85,30 @@ extension UIViewController {
             let button = UIButton()
             button.tag = Constants.BottomActionTag
             button.setButtonConfiguration(buttonConfig)
-            view.addSubview(button)
+            view.addAutolayoutSubview(button)
             
-            var bottomConstraint: NSLayoutConstraint?
-            
-            constrain(button) { button in
-                button.height >= Constants.ButtonHeight
-                bottomConstraint = (button.bottom == button.superview!.bottom)
-                button.leading == button.superview!.leading
-                button.trailing == button.superview!.trailing
-            }
+            let bottomConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+
+            NSLayoutConstraint.activate([
+                bottomConstraint,
+                button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.ButtonHeight),
+                button.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                button.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                ])
 
             view.layoutIfNeeded()
 
             //Now, let's animate how this is shown
-            bottomConstraint?.constant = button.bounds.height
+            bottomConstraint.constant = button.bounds.height
             view.layoutIfNeeded()
-            bottomConstraint?.constant = 0
+            bottomConstraint.constant = 0
             animateChanges {
                 self.view.layoutIfNeeded()
             }
         }
     }
-    
+
+    @nonobjc
     public func removeBottonActionButton() {
         view.removeSubviewWithTag(Constants.BottomActionTag)
     }
@@ -112,79 +124,7 @@ private enum Constants {
 }
 
 private let errorQueue: OperationQueue = {
-    let operationQueue = OperationQueue()
-    operationQueue.maxConcurrentOperationCount = 1
-    return operationQueue
+  let operationQueue = OperationQueue()
+  operationQueue.maxConcurrentOperationCount = 1
+  return operationQueue
 }()
-
-private class PresentAlertOperation: Operation {
-    
-    let title: String
-    let message: String?
-    unowned let presentingViewController: UIViewController
-    init(title: String, message: String?, presentingViewController: UIViewController) {
-        self.title = title
-        self.message = message
-        self.presentingViewController = presentingViewController
-        super.init()
-    }
-    
-    override func main() {
-        
-        guard isCancelled == false else {
-            self.finishOperation()
-            return
-        }
-        
-        self.isExecuting = true
-        self.isFinished = false
-
-        OperationQueue.main.addOperation {
-        
-            guard let _ = self.presentingViewController.view.window else {
-                self.finishOperation()
-                return
-            }
-            
-            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: UIAlertControllerStyle.alert)
-            let action = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel) { _ in
-                self.finishOperation()
-            }
-            
-            alert.addAction(action)
-            self.presentingViewController.present(alert, animated: true, completion: nil)
-        }
-    }
-    
-    
-    //Don't look here, it's disgusting
-    var _finished = false
-    var _executing = false
-
-    override var isExecuting: Bool {
-        get {
-            return _executing
-        }
-        set {
-            willChangeValue(forKey: "isExecuting")
-            _executing = newValue
-            didChangeValue(forKey: "isExecuting")
-        }
-    }
-    
-    override var isFinished: Bool {
-        get {
-            return _finished
-        }
-        set {
-            willChangeValue(forKey: "isFinished")
-            _finished = newValue
-            didChangeValue(forKey: "isFinished")
-        }
-    }
-    
-    fileprivate func finishOperation() {
-        self.isExecuting = false
-        self.isFinished = true
-    }
-}

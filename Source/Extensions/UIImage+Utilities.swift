@@ -16,9 +16,9 @@ extension UIImage {
     }
 
     public enum Template: String {
-        case PlusRound = "PlusRound"
-        case CancelRound = "CancelRound"
-        case Close = "Close"
+        case plusRound = "PlusRound"
+        case cancelRound = "CancelRound"
+        case close = "Close"
     }
     
     public class func templateImage(_ template: Template) -> UIImage {

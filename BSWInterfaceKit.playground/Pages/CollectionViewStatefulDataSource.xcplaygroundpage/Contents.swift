@@ -46,6 +46,10 @@ let songs = [
 
 let vm = songs.map { PolaroidCellViewModel(song: $0) }
 
-dataSource.updateState(.loaded(data: vm))
+enum SomeError: Error {
+    case someError
+}
+
+dataSource.updateState(.failure(error: SomeError.someError))
 
 PlaygroundPage.current.liveView = collectionView
