@@ -6,11 +6,9 @@ PODS:
     - BNRDeferred (= 3.0.0)
     - Decodable (~> 0.5)
     - KeychainAccess (~> 3.0.1)
-  - BSWInterfaceKit (0.2.2):
+  - BSWInterfaceKit (0.3.0):
     - BSWFoundation (~> 1.0.1)
-    - Cartography (~> 1.0.1)
     - PINRemoteImage
-  - Cartography (1.0.1)
   - Decodable (0.5)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
@@ -40,8 +38,7 @@ SPEC CHECKSUMS:
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   BNRDeferred: 0757b256613622d3f3db21bd126ba63031ca3deb
   BSWFoundation: b6633919abf3549e3d43bb04e3263a0139621c9b
-  BSWInterfaceKit: 6c26d4296517c91f342667c7edf27d420571d7f6
-  Cartography: c1460e99395b824d9d75360b0382faeb0b33dcd7
+  BSWInterfaceKit: 038dc78d4b3bb362c752a489e9d64721e4aed9fb
   Decodable: 7c90acc68d357b71d0d6efc120faf9c53c644b7e
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
