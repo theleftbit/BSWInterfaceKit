@@ -25,15 +25,6 @@ class ButtonTests: BSWSnapshotTest {
         waitABitAndVerify(view: button)
     }
 
-    fileprivate static func buttonForRadioTests() -> UIButton {
-        let button = CheckboxButton()
-        button.backgroundColor = .white
-        button.setTitleColor(.black, for: .normal)
-        button.setTitle("Push Me", for: .normal)
-        button.frame = CGRect(x: 0, y: 0, width: button.intrinsicContentSize.width, height: button.intrinsicContentSize.height)
-        return button
-    }
-    
     func testImageButton() {
         let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
@@ -57,5 +48,16 @@ class ButtonTests: BSWSnapshotTest {
         let _ = XCTWaiter().wait(for: [exp], timeout: 1)
         
         XCTAssert(isActionHandled)
+    }
+
+    // MARK: Private
+
+    fileprivate static func buttonForRadioTests() -> UIButton {
+        let button = CheckboxButton()
+        button.backgroundColor = .white
+        button.setTitleColor(.black, for: .normal)
+        button.setTitle("Push Me", for: .normal)
+        button.frame = CGRect(x: 0, y: 0, width: button.intrinsicContentSize.width, height: button.intrinsicContentSize.height)
+        return button
     }
 }

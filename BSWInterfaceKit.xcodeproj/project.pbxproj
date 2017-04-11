@@ -14,6 +14,7 @@
 		EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */; };
 		EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */; };
 		EB0B24261E81B2BF005491F1 /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B24251E81B2BF005491F1 /* UIViewTests.swift */; };
+		EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */; };
 		EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */; };
 		EBB3CEB81E50C60B0063303C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CEB71E50C60B0063303C /* AppDelegate.swift */; };
 		EBB3CEBA1E50C60B0063303C /* FeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CEB91E50C60B0063303C /* FeaturesViewController.swift */; };
@@ -51,6 +52,7 @@
 		EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolaroidCellTests.swift; sourceTree = "<group>"; };
 		EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
 		EB0B24251E81B2BF005491F1 /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
+		EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerTests.swift; sourceTree = "<group>"; };
 		EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoPickerCollectionViewTests.swift; sourceTree = "<group>"; };
 		EBB3CEB01E50C59E0063303C /* BSWInterfaceKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = BSWInterfaceKit.podspec; sourceTree = "<group>"; };
 		EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BSWInterfaceKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -165,6 +167,7 @@
 				EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */,
 				EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */,
 				EB0B24251E81B2BF005491F1 /* UIViewTests.swift */,
+				EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */,
 			);
 			name = Suite;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */,
 				EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */,
 				EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */,
+				EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */,
 				EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */,
 				EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */,
 			);
