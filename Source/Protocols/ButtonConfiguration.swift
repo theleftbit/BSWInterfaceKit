@@ -67,6 +67,7 @@ extension UIButton {
         case .image(let image):
             setImage(image, for: .normal)
             imageView?.contentMode = .scaleAspectFit
+            imageEdgeInsets = UIEdgeInsets(top: -5, left: -5, bottom: -5, right: -5)
         }
         
         backgroundColor = buttonConfiguration.backgroundColor
