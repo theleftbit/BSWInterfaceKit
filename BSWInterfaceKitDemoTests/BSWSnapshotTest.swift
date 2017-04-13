@@ -41,6 +41,13 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         let exp = expectation(description: "No expectation")
         let _ = waiter.wait(for: [exp], timeout: 1000)
     }
+    
+    func debugView(_ view: UIView) {
+        let vc = UIViewController()
+        vc.view.backgroundColor = .white
+        vc.view.addSubview(view)
+        debugViewController(vc)
+    }
 
     /// Presents the VC using a fresh rootVC in the host's main window.
     /// - note: This method blocks the calling thread until the presentation is finished.
