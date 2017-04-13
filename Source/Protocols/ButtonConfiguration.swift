@@ -65,8 +65,8 @@ extension UIButton {
         case .text(let title):
             setAttributedTitle(title, for: UIControlState())
         case .image(let image):
-            setBackgroundImage(image, for: .normal)
-            contentMode = .scaleAspectFit
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
         }
         
         backgroundColor = buttonConfiguration.backgroundColor
