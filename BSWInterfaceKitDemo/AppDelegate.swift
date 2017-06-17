@@ -14,13 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = UINavigationController(rootViewController: FeaturesViewController())
+        if let _ = NSClassFromString("XCTest") {
+            window?.rootViewController = UIViewController()
+        }
+        else {
+            window?.rootViewController = UINavigationController(rootViewController: FeaturesViewController())
+        }
         window?.makeKeyAndVisible()
-
-
-
         return true
     }
 

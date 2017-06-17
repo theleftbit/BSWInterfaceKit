@@ -7,7 +7,7 @@ import PINRemoteImage
 import BSWFoundation
 import Deferred
 
-public typealias BSWImageCompletionBlock = (TaskResult<UIImage>) -> Void
+public typealias BSWImageCompletionBlock = (Task<UIImage>.Result) -> Void
 
 extension UIImageView {
 
@@ -40,7 +40,7 @@ extension UIImageView {
         guard UIImageView.webDownloadsEnabled else { return }
         pin_setImage(from: url) { (downloadResult) in
 
-            let result: TaskResult<UIImage>
+            let result: Task<UIImage>.Result
             if let image = downloadResult.image {
                 result = .success(image)
             } else if let error = downloadResult.error {
