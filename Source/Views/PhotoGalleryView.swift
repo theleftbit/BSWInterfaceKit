@@ -137,7 +137,7 @@ extension PhotoGalleryView {
     // MARK: Constraints
 
     fileprivate func setupConstraints() {
-        scrollableStackView.fillSuperview()
+        scrollableStackView.pinToSuperview()
         NSLayoutConstraint.activate([
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
             pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -CGFloat(Stylesheet.margin(.small)))

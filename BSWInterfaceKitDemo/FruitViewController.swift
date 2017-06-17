@@ -27,7 +27,7 @@ class FruitViewController: UIViewController, ListStatePresenter {
         super.viewDidLoad()
 
         view.addSubview(collectionView)
-        collectionView.fillSuperview()
+        collectionView.pinToSuperview()
         collectionView.backgroundColor = .white
         collectionView.alwaysBounceVertical = true
         dataSource.listPresenter = self
