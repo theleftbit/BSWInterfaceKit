@@ -33,7 +33,7 @@ extension UIImageView {
         self.blurEffectView = {
             let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
             self.addSubview(effectView)
-            effectView.fillSuperview()
+            effectView.pinToSuperview()
             return effectView
         }()
     }
