@@ -11,7 +11,7 @@ public enum ButtonTitle {
     case image(UIImage)
 }
 
-public typealias ButtonActionHandler = (Void) -> Void
+public typealias ButtonActionHandler = () -> ()
 
 public struct ButtonConfiguration {
     public let buttonTitle: ButtonTitle
