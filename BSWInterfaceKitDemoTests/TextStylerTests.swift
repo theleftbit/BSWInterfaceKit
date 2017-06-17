@@ -12,8 +12,6 @@ class TextStylerTests: BSWSnapshotTest {
         super.setUp()
         sut = TextStyler()
         sut.preferredFontName = "ChalkboardSE-Light"
-
-        recordMode = true
     }
 
     func testTitle() {
