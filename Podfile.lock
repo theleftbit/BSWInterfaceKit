@@ -32,15 +32,15 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   BSWInterfaceKit:
-    :path: ./BSWInterfaceKit.podspec
+    :path: "./BSWInterfaceKit.podspec"
 
 SPEC CHECKSUMS:
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   BNRDeferred: 0757b256613622d3f3db21bd126ba63031ca3deb
   BSWFoundation: b6633919abf3549e3d43bb04e3263a0139621c9b
-  BSWInterfaceKit: 038dc78d4b3bb362c752a489e9d64721e4aed9fb
+  BSWInterfaceKit: '038dc78d4b3bb362c752a489e9d64721e4aed9fb'
   Decodable: 7c90acc68d357b71d0d6efc120faf9c53c644b7e
-  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  FBSnapshotTestCase: '094f9f314decbabe373b87cc339bea235a63e07a'
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
@@ -48,4 +48,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 7af5893a9b1d132176c7b8627ff520cec8a97610
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.2.1
