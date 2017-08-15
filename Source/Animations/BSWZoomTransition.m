@@ -5,28 +5,21 @@
 
 #import "BSWZoomTransition.h"
 
-@interface UIView (ZolaZoomSnapshot)
+@interface UIView (BSWSnapshot)
 
 /**
- * The screenshot APIs introduced in iOS7 only work when the target
- * view is already part of the hierarchy. We're defaulting to the newer
- * API whenever possible (especially since it's faster), but we're falling
- * back to this category whenever we need to snapshot a view that's
- * offscreen. As a general rule for ZOZolaZoomTransition, all views when
- * presenting are already in the hierarchy and can use the newer API. The
- * opposite is true when dismissing, so we rely on this category.
  *
  * NOTE: The iOS simulator always uses this category over snapshotViewAfterScreenUpdates:
  * due to inconsistencies with the iOS10 simulators.
  *
  */
-- (UIImage *)zo_snapshot;
+- (UIImage *)bsw_snapshot;
 
 @end
 
-@implementation UIView (ZolaZoomSnapshot)
+@implementation UIView (BSWSnapshot)
 
-- (UIImage *)zo_snapshot {
+- (UIImage *)bsw_snapshot {
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, [UIScreen mainScreen].scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     [self.layer renderInContext:context];
@@ -108,7 +101,7 @@
     if (_type == BSWZoomTransitionTypePresenting) {
         // The "from" snapshot
 #if TARGET_IPHONE_SIMULATOR
-        UIView *fromControllerSnapshot = isShowingOpaqueBar ? [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO] : [[UIImageView alloc] initWithImage:[fromControllerView zo_snapshot]];
+        UIView *fromControllerSnapshot = isShowingOpaqueBar ? [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO] : [[UIImageView alloc] initWithImage:[fromControllerView bsw_snapshot]];
 #else
         UIView *fromControllerSnapshot = isShowingOpaqueBar ? [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO] : [fromControllerView snapshotViewAfterScreenUpdates:NO];
 #endif
@@ -121,7 +114,7 @@
         
         // The star of the show
 #if TARGET_IPHONE_SIMULATOR
-        UIView *targetSnapshot = [[UIImageView alloc] initWithImage:[startingView zo_snapshot]];
+        UIView *targetSnapshot = [[UIImageView alloc] initWithImage:[startingView bsw_snapshot]];
 #else
         UIView *targetSnapshot = [startingView snapshotViewAfterScreenUpdates:NO];
 #endif
@@ -172,7 +165,7 @@
         // Since the "to" controller isn't currently part of the view hierarchy, we need to use the
         // old snapshot API
         targetView.hidden = YES;
-        UIView *toControllerSnapshot = [[UIImageView alloc] initWithImage:[toControllerView zo_snapshot]];
+        UIView *toControllerSnapshot = [[UIImageView alloc] initWithImage:[toControllerView bsw_snapshot]];
 
         // Used to perform the fade, just like when presenting
         UIView *fadeView = [[UIView alloc] initWithFrame:containerView.bounds];
@@ -180,7 +173,7 @@
         fadeView.alpha = 1.0;
         
         // The star of the show again, this time with the old snapshot API
-        UIImageView *targetSnapshot = [[UIImageView alloc] initWithImage:[startingView zo_snapshot]];
+        UIImageView *targetSnapshot = [[UIImageView alloc] initWithImage:[startingView bsw_snapshot]];
         targetSnapshot.frame = startFrame;
         
 
