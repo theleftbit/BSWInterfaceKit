@@ -62,7 +62,7 @@
 #pragma mark - UIViewControllerAnimatedTransitioning Methods
 
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
-    
+
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 
     UIView *containerView = [transitionContext containerView];
@@ -71,8 +71,6 @@
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIView *fromControllerView = [transitionContext viewForKey:UITransitionContextFromViewKey];;
     UIView *toControllerView = [transitionContext viewForKey:UITransitionContextToViewKey];
-
-    BOOL isShowingOpaqueBar = toViewController.navigationController && !toViewController.navigationController.navigationBar.isTranslucent;
 
     // Setup a background view to prevent content from peeking through while our
     // animation is in progress
@@ -90,28 +88,44 @@
         [toControllerView layoutIfNeeded];
     }
 
+    // Ask the delegate for the view where the animation will begin
     UIView *startingView = [self.delegate zoomTransition:self startingViewFromViewController:fromViewController toViewController:toViewController];
-    // Ask the delegate for the target view's starting frame
-    CGRect startFrame = [startingView convertRect:startingView.bounds toView:(isShowingOpaqueBar ? keyWindow : fromControllerView)];
+    CGRect startFrame = [startingView convertRect:startingView.bounds toView:keyWindow];
 
-    // Ask the delegate for the target view's finishing frame
+    // Ask the delegate for the view where the animation will end
     UIView *targetView = [self.delegate zoomTransition:self targetViewFromViewController:fromViewController toViewController:toViewController];
-    CGRect targetFrame = [targetView convertRect:targetView.bounds toView:(isShowingOpaqueBar ? keyWindow : toControllerView)];
+    CGRect targetFrame = [targetView convertRect:targetView.bounds toView:keyWindow];
+
+    // Do the math to see how much the view has to grow
+    CGFloat scaleFactor;
+    switch (_type) {
+        case BSWZoomTransitionTypePresenting:
+            scaleFactor = targetFrame.size.width / startFrame.size.width;
+            break;
+
+        case BSWZoomTransitionTypeDismissing:
+            scaleFactor = startFrame.size.width / targetFrame.size.width;
+            break;
+    }
+    // Make sure that we're accounting for the translucency in the navBar
+    CGFloat contentOffsetY = fromControllerView.frame.origin.y;
+    CGFloat contentOffsetYScaled = contentOffsetY*scaleFactor;
 
     if (_type == BSWZoomTransitionTypePresenting) {
         // The "from" snapshot
 #if TARGET_IPHONE_SIMULATOR
-        UIView *fromControllerSnapshot = isShowingOpaqueBar ? [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO] : [[UIImageView alloc] initWithImage:[fromControllerView bsw_snapshot]];
+        UIView *fromControllerSnapshot = [[UIImageView alloc] initWithImage:[fromControllerView bsw_snapshot]];
 #else
-        UIView *fromControllerSnapshot = isShowingOpaqueBar ? [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO] : [fromControllerView snapshotViewAfterScreenUpdates:NO];
+        UIView *fromControllerSnapshot = [fromControllerView snapshotViewAfterScreenUpdates:NO];
 #endif
+        fromControllerSnapshot.frame = CGRectMake(0, contentOffsetY, fromControllerSnapshot.frame.size.width, fromControllerSnapshot.frame.size.height);
 
         // The fade view will sit between the "from" snapshot and the target snapshot.
         // This is what is used to create the fade effect.
         UIView *fadeView = [[UIView alloc] initWithFrame:containerView.bounds];
         fadeView.backgroundColor = _fadeColor;
         fadeView.alpha = 0.0;
-        
+
         // The star of the show
 #if TARGET_IPHONE_SIMULATOR
         UIView *targetSnapshot = [[UIImageView alloc] initWithImage:[startingView bsw_snapshot]];
@@ -119,18 +133,15 @@
         UIView *targetSnapshot = [startingView snapshotViewAfterScreenUpdates:NO];
 #endif
         targetSnapshot.frame = startFrame;
-        
+
         // Assemble the hierarchy in the container
         [containerView addSubview:fromControllerSnapshot];
         [containerView addSubview:fadeView];
         [containerView addSubview:targetSnapshot];
 
-        // Determine how much we need to scale
-        CGFloat scaleFactor = targetFrame.size.width / startFrame.size.width;
-        
         // Calculate the ending origin point for the "from" snapshot taking into account the scale transformation
-        CGPoint endPoint = CGPointMake((-startFrame.origin.x * scaleFactor) + targetFrame.origin.x, (-startFrame.origin.y * scaleFactor) + targetFrame.origin.y);
-        
+        CGPoint endPoint = CGPointMake((-startFrame.origin.x * scaleFactor) + targetFrame.origin.x, (-startFrame.origin.y * scaleFactor) + targetFrame.origin.y + contentOffsetYScaled);
+
         // Animate presentation
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                               delay:0.0
@@ -156,7 +167,7 @@
                              [fromControllerSnapshot removeFromSuperview];
                              [fadeView removeFromSuperview];
                              [targetSnapshot removeFromSuperview];
-                             
+
                              [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                              [transitionContext completeTransition:finished];
                          }];
@@ -164,27 +175,21 @@
     else {
         // Since the "to" controller isn't currently part of the view hierarchy, we need to use the
         // old snapshot API
-        targetView.hidden = YES;
         UIView *toControllerSnapshot = [[UIImageView alloc] initWithImage:[toControllerView bsw_snapshot]];
 
         // Used to perform the fade, just like when presenting
         UIView *fadeView = [[UIView alloc] initWithFrame:containerView.bounds];
         fadeView.backgroundColor = _fadeColor;
         fadeView.alpha = 1.0;
-        
+
         // The star of the show again, this time with the old snapshot API
         UIImageView *targetSnapshot = [[UIImageView alloc] initWithImage:[startingView bsw_snapshot]];
         targetSnapshot.frame = startFrame;
-        
 
-        // We're switching the values such that the scale factor returns the same result
-        // as when we were presenting
-        CGFloat scaleFactor = startFrame.size.width / targetFrame.size.width;
-        
         // This is also the same equation used when presenting and will result in the same point,
         // except this time it's the start point for the animation
-        CGPoint startPoint = CGPointMake((-targetFrame.origin.x * scaleFactor) + startFrame.origin.x, (-targetFrame.origin.y * scaleFactor) + startFrame.origin.y);
-        
+        CGPoint startPoint = CGPointMake((-targetFrame.origin.x * scaleFactor) + startFrame.origin.x, (-targetFrame.origin.y * scaleFactor) + startFrame.origin.y + contentOffsetYScaled);
+
         // Apply the transformation and set the origin before the animation begins
         toControllerSnapshot.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor);
         if (!isnan(startPoint.x) && !isnan(startPoint.y)) {
@@ -212,17 +217,16 @@
                              // Move the target snapshot into place
                              targetSnapshot.frame = targetFrame;
                          } completion:^(BOOL finished) {
-                             targetView.hidden = NO;
-
+                             
                              // Add "to" controller view
                              [containerView addSubview:toControllerView];
-
+                             
                              // Cleanup our animation views
                              [backgroundView removeFromSuperview];
                              [toControllerSnapshot removeFromSuperview];
                              [fadeView removeFromSuperview];
                              [targetSnapshot removeFromSuperview];
-
+                             
                              [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                              
                              [transitionContext completeTransition:finished];
