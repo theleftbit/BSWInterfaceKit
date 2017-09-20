@@ -39,8 +39,8 @@ final class TextStyler {
         let font = fontForStyle(style)
         
         let attributes = [
-            NSFontAttributeName: font,
-            NSForegroundColorAttributeName: color,
+            NSAttributedStringKey.font: font,
+            NSAttributedStringKey.foregroundColor: color,
         ]
         
         return NSMutableAttributedString(string: string, attributes: attributes)

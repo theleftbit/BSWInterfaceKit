@@ -41,8 +41,8 @@ class AvatarView: UIView {
         addSubview(imageView)
         imageView.pinToSuperview()
         updateImage()
-        setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
-        setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
+        setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
+        setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
     }
     
     fileprivate func updateImage() {

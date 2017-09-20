@@ -197,7 +197,7 @@ fileprivate class CardViewControllerBackgroundView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
     }
 
-    func handleSingleTap(_ sender: Any) {
+    @objc func handleSingleTap(_ sender: Any) {
         self.parentViewController?.dismiss(animated: true, completion: nil)
     }
 }

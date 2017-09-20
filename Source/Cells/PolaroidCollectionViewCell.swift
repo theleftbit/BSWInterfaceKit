@@ -63,7 +63,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         var constraints = [NSLayoutConstraint]()
 
         imageHeightConstraint = cellImageView.heightAnchor.constraint(equalToConstant: 80)
-        imageHeightConstraint.priority = 999
+        imageHeightConstraint.priority = UILayoutPriority(rawValue: 999)
 
         constraints.append(imageHeightConstraint)
         constraints.append(cellImageView.topAnchor.constraint(equalTo: contentView.topAnchor))
@@ -146,7 +146,7 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
     
     fileprivate func setup() {
         backgroundColor = UIColor.white
-        setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
+        setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
         
         addSubview(stackView)
         stackView.fillSuperview(withMargin: Stylesheet.margin(.medium))
@@ -175,8 +175,8 @@ extension PolaroidCollectionViewCell {
         let infoView = PolaroidCollectionViewCellHeightCalculator.BasicInfoView
         infoView.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
         let height = infoView.systemLayoutSizeFitting(CGSize(width: width, height: 0),
-                                                          withHorizontalFittingPriority: UILayoutPriorityRequired,
-                                                          verticalFittingPriority: UILayoutPriorityFittingSizeLevel
+                                                          withHorizontalFittingPriority: UILayoutPriority.required,
+                                                          verticalFittingPriority: UILayoutPriority.fittingSizeLevel
             ).height
         return height
     }

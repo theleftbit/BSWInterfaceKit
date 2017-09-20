@@ -62,7 +62,7 @@ open class PhotoGalleryViewController: UIViewController {
     
     //MARK:- IBActions
     
-    func onCloseButton() {
+    @objc func onCloseButton() {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }
 }

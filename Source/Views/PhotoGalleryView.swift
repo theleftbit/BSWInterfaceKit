@@ -124,7 +124,7 @@ extension PhotoGalleryView {
     
     // MARK: UI Action handlers
     
-    func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
         guard let view = tapGestureRecognizer.view else {
             return
         }

@@ -117,7 +117,6 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
     fileprivate func addEmptyViewForCurrentState() {
         
         guard let listPresenter = self.listPresenter else {
-            print("I need a list presenter")
             return
         }
         
@@ -167,7 +166,7 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
     
     //MARK: IBAction
     
-    func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
         guard let collectionView = self.collectionView else { return }
         
         switch(gesture.state) {

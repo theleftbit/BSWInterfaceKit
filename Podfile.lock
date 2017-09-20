@@ -1,20 +1,20 @@
 PODS:
-  - Alamofire (4.3.0)
-  - BNRDeferred (3.1.0)
-  - BSWFoundation (1.1.0):
-    - Alamofire (~> 4.3.0)
-    - BNRDeferred (= 3.1.0)
-    - KeychainAccess (~> 3.0.1)
-  - BSWInterfaceKit (0.3.0):
-    - BSWFoundation
-    - PINRemoteImage
+  - Alamofire (4.5.1)
+  - BNRDeferred (3.1.2)
+  - BSWFoundation (1.3.0):
+    - Alamofire (~> 4.5.1)
+    - BNRDeferred (= 3.1.2)
+    - KeychainAccess (~> 3.1.0)
+  - BSWInterfaceKit (0.4.0):
+    - BSWFoundation (~> 1.3.0)
+    - PINRemoteImage (~> 2.1.4)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - FLAnimatedImage (1.0.12)
-  - KeychainAccess (3.0.2)
+  - KeychainAccess (3.1.0)
   - PINCache (2.3)
   - PINRemoteImage (2.1.4):
     - PINRemoteImage/FLAnimatedImage (= 2.1.4)
@@ -25,33 +25,24 @@ PODS:
     - PINRemoteImage/Core
 
 DEPENDENCIES:
-  - BSWFoundation (from `https://github.com/BlurredSoftware/BSWFoundation.git`, branch `swift-3-2`)
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
   - FBSnapshotTestCase
 
 EXTERNAL SOURCES:
-  BSWFoundation:
-    :branch: swift-3-2
-    :git: https://github.com/BlurredSoftware/BSWFoundation.git
   BSWInterfaceKit:
-    :path: "./BSWInterfaceKit.podspec"
-
-CHECKOUT OPTIONS:
-  BSWFoundation:
-    :commit: 26d9827e11b98eadf352fe21d0fb88b5263ec744
-    :git: https://github.com/BlurredSoftware/BSWFoundation.git
+    :path: ./BSWInterfaceKit.podspec
 
 SPEC CHECKSUMS:
-  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
-  BNRDeferred: 8eb08a9694cad26906ca07096fb63a7d4afaf5db
-  BSWFoundation: 53cd1aa71ba69b06e77b0128b09dc608a49476aa
-  BSWInterfaceKit: c136707f8fd758e78761b4526ea143d66be8cf15
-  FBSnapshotTestCase: '094f9f314decbabe373b87cc339bea235a63e07a'
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  BNRDeferred: e3cdbffe7527482fb9908b79dd0a18d2b450fb10
+  BSWFoundation: d01453e6312d9984ce0ddc9e10ab0423213f0a30
+  BSWInterfaceKit: b1c5682f7ac070cfa615ac7aca252411c0859aa8
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  KeychainAccess: a986406022dfc7c634c691ad3bec670cc6a32002
+  KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: 332c1a241a6523ead6f1dab76a4c6fe3bfd05b34
+PODFILE CHECKSUM: 268d88cbfc646368677fedfaddbb7de6b080f92b
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.1
