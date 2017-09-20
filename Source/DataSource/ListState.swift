@@ -21,7 +21,7 @@ public enum ListState<T> {
 
     public var isLoading: Bool {
         switch self {
-        case .loading(_):
+        case .loading:
             return true
         default:
             return false

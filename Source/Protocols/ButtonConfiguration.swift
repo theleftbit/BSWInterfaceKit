@@ -75,7 +75,7 @@ extension UIButton {
         addTarget(self, action: #selector(handleTap), for: .touchUpInside)
     }
     
-    func handleTap() {
+    @objc func handleTap() {
         guard let wrapper = objc_getAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper) as? ActionBlockWrapper else { return }
         wrapper.block()
     }
@@ -94,7 +94,7 @@ extension UIBarButtonItem {
         self.action = #selector(handleTap)
     }
     
-    func handleTap() {
+    @objc func handleTap() {
         guard let wrapper = objc_getAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper) as? ActionBlockWrapper else { return }
         wrapper.block()
     }

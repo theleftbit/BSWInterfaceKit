@@ -147,8 +147,8 @@ class OnboardingViewController: UIViewController {
                 title: "Login with Facebook",
                 titleColor: .white,
                 backgroundColor: .blue,
-                actionHandler: { (_) in
-                    self.onLoginFacebook()
+                actionHandler: { [weak self] in
+                    self?.onLoginFacebook()
             })
             return UIButton(buttonConfiguration: config)
         }()

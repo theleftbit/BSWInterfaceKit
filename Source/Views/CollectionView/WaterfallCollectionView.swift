@@ -19,7 +19,7 @@ open class WaterfallCollectionView: UICollectionView {
         let minimumInteritemSpacing: CGFloat
         let sectionInset: UIEdgeInsets
         
-        static func defaultConfiguration() -> Configuration {
+        public static func defaultConfiguration() -> Configuration {
             return Configuration(
                 minimumColumnSpacing: 10,
                 minimumInteritemSpacing: 10,
