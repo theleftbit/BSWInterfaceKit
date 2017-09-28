@@ -5,7 +5,7 @@
 
 import UIKit
 
-final class TextStyler {
+open class TextStyler {
     
     public enum Style {
         case title
@@ -32,9 +32,9 @@ final class TextStyler {
     
     static let styler = TextStyler()
     public init() {}
-    final var preferredFontName: String?
+    open var preferredFontName: String?
     
-    final func attributedString(_ string: String, color: UIColor = UIColor.black, forStyle style: Style = .body) -> NSAttributedString {
+    open func attributedString(_ string: String, color: UIColor = UIColor.black, forStyle style: Style = .body) -> NSAttributedString {
         
         let font = fontForStyle(style)
         
@@ -46,7 +46,7 @@ final class TextStyler {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
-    final func fontForStyle(_ style: Style) -> UIFont {
+    open func fontForStyle(_ style: Style) -> UIFont {
     
         let uikitStyle = style.toUIKit()
         let systemFont = UIFont.preferredFont(forTextStyle: uikitStyle)
@@ -62,7 +62,5 @@ final class TextStyler {
         } else {
             return font
         }
-
-        return font
     }
 }
