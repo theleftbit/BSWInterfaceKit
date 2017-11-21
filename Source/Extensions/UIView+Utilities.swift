@@ -62,10 +62,10 @@ extension UIView {
         guard let superView = superview else { return }
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: margin.left),
-            safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -margin.right),
-            safeAreaLayoutGuide.topAnchor.constraint(equalTo: superView.topAnchor, constant: margin.top),
-            safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -margin.bottom)
+            safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.leadingAnchor, constant: margin.left),
+            safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.trailingAnchor, constant: -margin.right),
+            safeAreaLayoutGuide.topAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.topAnchor, constant: margin.top),
+            safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.bottomAnchor, constant: -margin.bottom)
             ])
     }
 
