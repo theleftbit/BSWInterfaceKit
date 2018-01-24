@@ -56,6 +56,10 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         scrollableStackView.pinToSuperview()
         //This is set to false in order to layout the image below the transparent navBar
         automaticallyAdjustsScrollViewInsets = false
+        if #available(iOS 11.0, *) {
+            scrollableStackView.contentInsetAdjustmentBehavior = .never
+        }
+
         if let tabBar = tabBarController?.tabBar {
             scrollableStackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBar.frame.height, right: 0)
         }
@@ -63,7 +67,6 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
-
         NSLayoutConstraint.activate([
             photoGallery.heightAnchor.constraint(equalTo: photoGallery.widthAnchor, multiplier: Constants.PhotoGalleryRatio),
             photoGallery.widthAnchor.constraint(equalTo: scrollableStackView.widthAnchor)
