@@ -30,7 +30,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
         title = "Feature Showcase"
         view.addSubview(featuresTableView)
-        featuresTableView.fillSuperview()
+        featuresTableView.pinToSuperview()
         featuresTableView.register(UITableViewCell.self, forCellReuseIdentifier: "ReuseID")
         featuresTableView.estimatedRowHeight = 44
         featuresTableView.rowHeight = UITableViewAutomaticDimension

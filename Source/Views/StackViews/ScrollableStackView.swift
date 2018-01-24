@@ -3,8 +3,9 @@
 //  Copyright © 2016 Blurred Software SL. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
+@objc(BSWScrollableStackView)
 open class ScrollableStackView: UIScrollView {
     
     fileprivate let stackView = UIStackView()
@@ -17,8 +18,7 @@ open class ScrollableStackView: UIScrollView {
         stackView.alignment = alignment
 
         addSubview(stackView)
-
-        stackView.fillSuperview()
+        stackView.pinToSuperview()
         
         switch axis {
         case .horizontal:

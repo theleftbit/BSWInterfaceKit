@@ -21,7 +21,7 @@ public enum ListState<T> {
 
     public var isLoading: Bool {
         switch self {
-        case .loading(_):
+        case .loading:
             return true
         default:
             return false
@@ -57,7 +57,7 @@ public enum ListState<T> {
 }
 
 extension ListState {
-    public func mapListState<T>(_ result: TaskResult<[T]>) -> ListState<T> {
+    public func mapListState<T>(_ result: Task<[T]>.Result) -> ListState<T> {
         switch result {
         case .success(let value):
             return .loaded(data: value)

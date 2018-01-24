@@ -124,7 +124,7 @@ extension PhotoGalleryView {
     
     // MARK: UI Action handlers
     
-    func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
         guard let view = tapGestureRecognizer.view else {
             return
         }
@@ -137,7 +137,7 @@ extension PhotoGalleryView {
     // MARK: Constraints
 
     fileprivate func setupConstraints() {
-        scrollableStackView.fillSuperview()
+        scrollableStackView.pinToSuperview()
         NSLayoutConstraint.activate([
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
             pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -CGFloat(Stylesheet.margin(.small)))

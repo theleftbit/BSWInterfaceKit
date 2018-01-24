@@ -56,10 +56,24 @@ extension UIView {
         return color
     }
 
-    @objc(bsw_fillSuperviewWithEdges:)
-    public func fillSuperview(withEdges edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
+    @available(iOS 11.0, *)
+    @objc(bsw_pinToSuperviewSafeLayoutEdges:)
+    public func pinToSuperviewSafeLayoutEdges(withMargin margin: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
         guard let superView = superview else { return }
         translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.leadingAnchor, constant: margin.left),
+            safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.trailingAnchor, constant: -margin.right),
+            safeAreaLayoutGuide.topAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.topAnchor, constant: margin.top),
+            safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.bottomAnchor, constant: -margin.bottom)
+            ])
+    }
+
+    @objc(bsw_pinToSuperviewWithEdges:)
+    public func pinToSuperview(withEdges edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
+        guard let superView = superview else { return }
+        translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
             leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: edges.left),
             trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -edges.right),
@@ -71,7 +85,7 @@ extension UIView {
     @objc(bsw_fillSuperviewWithMargin:)
     public func fillSuperview(withMargin margin: CGFloat) {
         let inset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
-        fillSuperview(withEdges: inset)
+        pinToSuperview(withEdges: inset)
     }
 
     @objc(bsw_centerInSuperview)

@@ -39,10 +39,10 @@ class AvatarView: UIView {
     fileprivate func setup() {
         layer.masksToBounds = true
         addSubview(imageView)
-        imageView.fillSuperview()
+        imageView.pinToSuperview()
         updateImage()
-        setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
-        setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
+        setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
+        setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
     }
     
     fileprivate func updateImage() {

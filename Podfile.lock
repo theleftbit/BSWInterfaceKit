@@ -1,22 +1,20 @@
 PODS:
-  - Alamofire (4.3.0)
-  - BNRDeferred (3.0.0)
-  - BSWFoundation (1.0.1):
-    - Alamofire (~> 4.3.0)
-    - BNRDeferred (= 3.0.0)
-    - Decodable (~> 0.5)
-    - KeychainAccess (~> 3.0.1)
-  - BSWInterfaceKit (0.3.0):
-    - BSWFoundation (~> 1.0.1)
-    - PINRemoteImage
-  - Decodable (0.5)
+  - Alamofire (4.5.1)
+  - BNRDeferred (3.1.2)
+  - BSWFoundation (1.3.0):
+    - Alamofire (~> 4.5.1)
+    - BNRDeferred (= 3.1.2)
+    - KeychainAccess (~> 3.1.0)
+  - BSWInterfaceKit (0.4.0):
+    - BSWFoundation (~> 1.3.0)
+    - PINRemoteImage (~> 2.1.4)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - FLAnimatedImage (1.0.12)
-  - KeychainAccess (3.0.1)
+  - KeychainAccess (3.1.0)
   - PINCache (2.3)
   - PINRemoteImage (2.1.4):
     - PINRemoteImage/FLAnimatedImage (= 2.1.4)
@@ -35,17 +33,16 @@ EXTERNAL SOURCES:
     :path: ./BSWInterfaceKit.podspec
 
 SPEC CHECKSUMS:
-  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
-  BNRDeferred: 0757b256613622d3f3db21bd126ba63031ca3deb
-  BSWFoundation: b6633919abf3549e3d43bb04e3263a0139621c9b
-  BSWInterfaceKit: 038dc78d4b3bb362c752a489e9d64721e4aed9fb
-  Decodable: 7c90acc68d357b71d0d6efc120faf9c53c644b7e
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  BNRDeferred: e3cdbffe7527482fb9908b79dd0a18d2b450fb10
+  BSWFoundation: d01453e6312d9984ce0ddc9e10ab0423213f0a30
+  BSWInterfaceKit: b1c5682f7ac070cfa615ac7aca252411c0859aa8
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
+  KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
 
-PODFILE CHECKSUM: 7af5893a9b1d132176c7b8627ff520cec8a97610
+PODFILE CHECKSUM: 712c252b5ac60f525f5e76b54c373e0811974d05
 
 COCOAPODS: 1.3.1
