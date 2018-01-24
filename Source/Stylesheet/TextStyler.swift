@@ -14,23 +14,23 @@ open class TextStyler {
         case body
         case footnote
         
-        fileprivate func toUIKit() -> String {
+        fileprivate func toUIKit() -> UIFontTextStyle {
             switch self {
             case .title:
-                return UIFontTextStyle.title1.rawValue
+                return UIFontTextStyle.title1
             case .headline:
-                return UIFontTextStyle.headline.rawValue
+                return UIFontTextStyle.headline
             case .subheadline:
-                return UIFontTextStyle.subheadline.rawValue
+                return UIFontTextStyle.subheadline
             case .body:
-                return UIFontTextStyle.body.rawValue
+                return UIFontTextStyle.body
             case .footnote:
-                return UIFontTextStyle.footnote.rawValue
+                return UIFontTextStyle.footnote
             }
         }
     }
     
-    open static let styler = TextStyler()
+    static let styler = TextStyler()
     public init() {}
     open var preferredFontName: String?
     
@@ -39,8 +39,8 @@ open class TextStyler {
         let font = fontForStyle(style)
         
         let attributes = [
-            NSFontAttributeName: font,
-            NSForegroundColorAttributeName: color,
+            NSAttributedStringKey.font: font,
+            NSAttributedStringKey.foregroundColor: color,
         ]
         
         return NSMutableAttributedString(string: string, attributes: attributes)
@@ -48,18 +48,19 @@ open class TextStyler {
     
     open func fontForStyle(_ style: Style) -> UIFont {
     
-        let font: UIFont = {
-            
-            let systemFont = UIFont.preferredFont(forTextStyle: UIFontTextStyle(rawValue: style.toUIKit()))
-            
-            guard let preferredFontName = preferredFontName,
-                let font = UIFont(name: preferredFontName, size: systemFont.pointSize) else {
-                    return systemFont
-            }
-            
-            return font
-        }()
+        let uikitStyle = style.toUIKit()
+        let systemFont = UIFont.preferredFont(forTextStyle: uikitStyle)
+        guard
+            let preferredFontName = preferredFontName,
+            let font = UIFont(name: preferredFontName, size: systemFont.pointSize) else {
+                return systemFont
+        }
 
-        return font
+        if #available(iOS 11.0, *) {
+            let metrics = UIFontMetrics(forTextStyle: uikitStyle)
+            return metrics.scaledFont(for: font)
+        } else {
+            return font
+        }
     }
 }

@@ -72,7 +72,7 @@ class OnboardingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addAutolayoutSubview(contentView)
-        contentView.fillSuperview()
+        contentView.pinToSuperview()
         
         //First, the background
         switch onboardingCustomization.background {
@@ -81,7 +81,7 @@ class OnboardingViewController: UIViewController {
         case .image(let image):
             let imageView = UIImageView(image: image)
             contentView.addSubview(imageView)
-            imageView.fillSuperview()
+            imageView.pinToSuperview()
         }
         
         //Then, the stackViews
@@ -147,8 +147,8 @@ class OnboardingViewController: UIViewController {
                 title: "Login with Facebook",
                 titleColor: .white,
                 backgroundColor: .blue,
-                actionHandler: { (_) in
-                    self.onLoginFacebook()
+                actionHandler: { [weak self] in
+                    self?.onLoginFacebook()
             })
             return UIButton(buttonConfiguration: config)
         }()

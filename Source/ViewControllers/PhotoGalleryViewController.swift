@@ -45,7 +45,7 @@ open class PhotoGalleryViewController: UIViewController {
 
         //Set up the Gallery
         view.addSubview(photosGallery)
-        photosGallery.fillSuperview()
+        photosGallery.pinToSuperview()
         
         //Add the close button
         let closeButton = UIButton(type: UIButtonType.custom)
@@ -62,7 +62,7 @@ open class PhotoGalleryViewController: UIViewController {
     
     //MARK:- IBActions
     
-    func onCloseButton() {
+    @objc func onCloseButton() {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }
 }

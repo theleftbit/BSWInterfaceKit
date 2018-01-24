@@ -12,7 +12,7 @@ struct StrawberryViewModel {
 
 class StrawberryInteractor {
     static func dataProvider() -> Task<StrawberryViewModel> {
-        let deferred = Deferred<TaskResult<StrawberryViewModel>>()
+        let deferred = Deferred<Task<StrawberryViewModel>.Result>()
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
             deferred.fill(with: .success(StrawberryViewModel()))
         }
