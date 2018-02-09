@@ -30,7 +30,7 @@ open class TextStyler {
         }
     }
     
-    static let styler = TextStyler()
+    public static let styler = TextStyler()
     public init() {}
     open var preferredFontName: String?
     
