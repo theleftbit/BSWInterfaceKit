@@ -4,7 +4,6 @@
 //
 
 import UIKit
-import Deferred
 
 public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
     
@@ -187,7 +186,8 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
     @available (iOS 10.0, *)
     @objc func handlePullToRefresh() {
         guard let pullToRefreshSupport = self.pullToRefreshSupport else { return }
-        pullToRefreshSupport.handler().upon(.main) { [weak self] (behavior) in
+        
+        pullToRefreshSupport.handler({ [weak self] behavior in
             guard let `self` = self else { return }
             self.collectionView.refreshControl?.endRefreshing()
             switch behavior {
@@ -205,7 +205,7 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
             case .noNewContent:
                 break
             }
-        }
+        })
     }
 
     @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
@@ -250,11 +250,11 @@ public struct CollectionViewPullToRefreshSupport<Model> {
         case insertOnTop([Model])
         case noNewContent
     }
-    public typealias Handler = () -> Future<Behavior>
+    public typealias Handler = (@escaping (Behavior) -> ()) -> ()
     public let tintColor: UIColor?
     public let handler: Handler
 
-    init(tintColor: UIColor? = nil, handler: @escaping Handler ) {
+    init(tintColor: UIColor? = nil, handler: @escaping Handler) {
         self.handler = handler
         self.tintColor = tintColor
     }
