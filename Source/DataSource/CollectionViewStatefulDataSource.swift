@@ -4,11 +4,12 @@
 //
 
 import UIKit
+import Deferred
 
 public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
     
     public fileprivate(set) var state: ListState<Cell.VM>
-    public weak var collectionView: UICollectionView?
+    public weak var collectionView: UICollectionView!
     public weak var listPresenter: ListStatePresenter?
     fileprivate var emptyView: UIView?
     public let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
@@ -29,13 +30,30 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
         collectionView.alwaysBounceVertical = true
         if let _ = self.reorderSupport {
             let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
-            self.collectionView?.addGestureRecognizer(longPressGesture)
+            self.collectionView.addGestureRecognizer(longPressGesture)
         }
     }
-    
+
+    public var pullToRefreshSupport: CollectionViewPullToRefreshSupport<Cell.VM>? {
+        didSet {
+            guard #available (iOS 10.0, *) else {
+                return
+            }
+            guard let pullToRefreshSupport = self.pullToRefreshSupport else {
+                self.collectionView.refreshControl = nil
+                return
+            }
+
+            let refreshControl = UIRefreshControl()
+            refreshControl.tintColor = pullToRefreshSupport.tintColor
+            refreshControl.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
+            self.collectionView.refreshControl = refreshControl
+        }
+    }
+
     public func updateState(_ state: ListState<Cell.VM>) {
         self.state = state
-        collectionView?.reloadData()
+        collectionView.reloadData()
     }
     
     public func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>]) {
@@ -57,7 +75,7 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
                 }
             }
             
-            collectionView?.performEditActions(actions)
+            collectionView.performEditActions(actions)
         }
     }
 
@@ -165,7 +183,31 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
     }
     
     //MARK: IBAction
-    
+
+    @available (iOS 10.0, *)
+    @objc func handlePullToRefresh() {
+        guard let pullToRefreshSupport = self.pullToRefreshSupport else { return }
+        pullToRefreshSupport.handler().upon(.main) { [weak self] (behavior) in
+            guard let `self` = self else { return }
+            self.collectionView.refreshControl?.endRefreshing()
+            switch behavior {
+            case .insertOnTop(let newModels):
+                self.state.addingData(newData: newModels)
+                self.collectionView.performBatchUpdates({
+                    let newIndexPaths = newModels.enumerated().map({ (idx, element) -> IndexPath in
+                        return IndexPath(item: idx, section: 0)
+                    })
+                    self.collectionView.insertItems(at: newIndexPaths)
+                }, completion: nil)
+            case .replace(let newModels):
+                self.state.replaceData(forNewData: newModels)
+                self.collectionView.reloadData()
+            case .noNewContent:
+                break
+            }
+        }
+    }
+
     @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
         guard let collectionView = self.collectionView else { return }
         
@@ -200,6 +242,22 @@ public struct CollectionViewReorderSupport<Model> {
     
     public let canMoveItemAtIndexPath: CanMoveItemHandler
     public let moveItemAtIndexPath: CommitMoveItemHandler
+}
+
+public struct CollectionViewPullToRefreshSupport<Model> {
+    public enum Behavior {
+        case replace([Model])
+        case insertOnTop([Model])
+        case noNewContent
+    }
+    public typealias Handler = () -> Future<Behavior>
+    public let tintColor: UIColor?
+    public let handler: Handler
+
+    init(tintColor: UIColor? = nil, handler: @escaping Handler ) {
+        self.handler = handler
+        self.tintColor = tintColor
+    }
 }
 
 extension UICollectionView {

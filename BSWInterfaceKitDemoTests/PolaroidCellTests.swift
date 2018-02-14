@@ -4,6 +4,7 @@
 //
 
 @testable import BSWInterfaceKit
+import Deferred
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
@@ -22,8 +23,20 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
             state: .loaded(data: PolaroidCollectionViewCellTests.mockData()),
             collectionView: collectionView
         )
+        dataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport(handler: {
+            let deferred = Deferred<CollectionViewPullToRefreshSupport<PolaroidCellViewModel>.Behavior>()
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
+                let vm1 = PolaroidCellViewModel(
+                    cellImage: Photo.emptyPhoto(),
+                    cellTitle: TextStyler.styler.attributedString("Francesco Totti", forStyle: .title),
+                    cellDetails: TextStyler.styler.attributedString("#10", forStyle: .body)
+                )
+                deferred.fill(with: .insertOnTop([vm1]))
+            })
+            return Future(deferred)
+        })
     }
-
+    
     func testLayout() {
         waitABitAndVerify(view: collectionView)
     }
