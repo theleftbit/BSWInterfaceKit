@@ -4,7 +4,6 @@
 //
 
 @testable import BSWInterfaceKit
-import Deferred
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
@@ -36,8 +35,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
     }
     
     func testLayout() {
-        debugView(collectionView)
-//        waitABitAndVerify(view: collectionView)
+        waitABitAndVerify(view: collectionView)
     }
 
     static func mockData() -> [PolaroidCellViewModel] {
