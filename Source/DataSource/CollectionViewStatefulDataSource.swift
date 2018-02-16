@@ -192,8 +192,8 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject,
             self.collectionView.refreshControl?.endRefreshing()
             switch behavior {
             case .insertOnTop(let newModels):
-                self.state.addingData(newData: newModels)
                 self.collectionView.performBatchUpdates({
+                    self.state.addingData(newData: newModels)
                     let newIndexPaths = newModels.enumerated().map({ (idx, element) -> IndexPath in
                         return IndexPath(item: idx, section: 0)
                     })
