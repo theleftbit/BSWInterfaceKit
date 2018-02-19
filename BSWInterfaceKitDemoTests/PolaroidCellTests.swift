@@ -22,8 +22,18 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
             state: .loaded(data: PolaroidCollectionViewCellTests.mockData()),
             collectionView: collectionView
         )
+        dataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport { completion in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
+                let vm1 = PolaroidCellViewModel(
+                    cellImage: Photo.emptyPhoto(),
+                    cellTitle: TextStyler.styler.attributedString("Francesco Totti", forStyle: .title),
+                    cellDetails: TextStyler.styler.attributedString("#10", forStyle: .body)
+                )
+                completion(CollectionViewPullToRefreshSupport<PolaroidCellViewModel>.Behavior.insertOnTop([vm1]))
+            })
+        }
     }
-
+    
     func testLayout() {
         waitABitAndVerify(view: collectionView)
     }
