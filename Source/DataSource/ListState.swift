@@ -54,6 +54,24 @@ public enum ListState<T> {
             return nil
         }
     }
+
+    mutating func replaceData(forNewData newData: [T]) {
+        switch self {
+        case .loaded:
+            self = .loaded(data: newData)
+        default:
+            break
+        }
+    }
+
+    mutating func addingData(newData: [T]) {
+        switch self {
+        case .loaded(let data):
+            self = .loaded(data: newData + data)
+        default:
+            break
+        }
+    }
 }
 
 extension ListState {
