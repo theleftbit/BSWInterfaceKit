@@ -41,7 +41,7 @@ class FacebookLoginViewController: UIViewController {
             }
 
             let controller = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            let action = UIAlertAction.init(title: "OK", style: .default, handler: nil)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
             controller.addAction(action)
 
             self.present(controller, animated: true, completion: nil)
