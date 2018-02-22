@@ -6,12 +6,16 @@ import UIKit
 import SafariServices
 import Deferred
 
+public protocol SocialAuthenticationCredentials {
+    var urlRequest: URL { get }
+}
+
 @available (iOS 11, *)
 public class SocialAuthenticationManager {
 
     static public let manager = SocialAuthenticationManager()
 
-    public func loginWithFacebook(credentials: FacebookCredentials) -> Task<String> {
+    public func loginWith(credentials: SocialAuthenticationCredentials) -> Task<String> {
         let deferred = Deferred<Task<String>.Result>()
         guard self.authSession == nil else {
             deferred.fill(with: .failure(Error(title: "Ongoing login")))
@@ -77,9 +81,9 @@ public class SocialAuthenticationManager {
 
 
 @available (iOS 11, *)
-fileprivate extension SocialAuthenticationManager.FacebookCredentials {
+extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationCredentials {
 
-    var urlRequest: URL {
+    public var urlRequest: URL {
 
         let redirectURI = "fb\(appID)://authorize/"
         guard UIApplication.shared.canOpenURL(URL(string: redirectURI)!) else {
