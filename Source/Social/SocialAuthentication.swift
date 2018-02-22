@@ -14,6 +14,7 @@ public protocol SocialAuthenticationCredentials {
 public class SocialAuthenticationManager {
 
     static public let manager = SocialAuthenticationManager()
+    private var authSession: SFAuthenticationSession?
 
     public func loginWith(credentials: SocialAuthenticationCredentials) -> Task<String> {
         let deferred = Deferred<Task<String>.Result>()
@@ -46,6 +47,10 @@ public class SocialAuthenticationManager {
         self.authSession = authSession
         return Task(deferred)
     }
+}
+
+@available (iOS 11, *)
+extension SocialAuthenticationManager {
 
     public struct FacebookCredentials {
         public let appID: String
@@ -75,10 +80,7 @@ public class SocialAuthenticationManager {
     public struct Error: Swift.Error {
         let title: String
     }
-
-    private var authSession: SFAuthenticationSession?
 }
-
 
 @available (iOS 11, *)
 extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationCredentials {
