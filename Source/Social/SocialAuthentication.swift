@@ -8,6 +8,7 @@ import Deferred
 
 public protocol SocialAuthenticationCredentials {
     var urlRequest: URL { get }
+    func extractTokenFrom(URLCallback: URL) -> String?
 }
 
 @available (iOS 11, *)
@@ -31,15 +32,12 @@ public class SocialAuthenticationManager {
             }
 
             guard let url = url,
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                let queryItems = components.queryItems,
-                let code = queryItems.first(where: { return $0.name == "code" }),
-                let codeValue = code.value else {
+                let token = credentials.extractTokenFrom(URLCallback: url) else {
                 deferred.fill(with: .failure(Error(title: "Unknown Response")))
                 return
             }
 
-            deferred.fill(with: .success(codeValue))
+            deferred.fill(with: .success(token))
         }
 
         authSession.start()
@@ -103,6 +101,16 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
 
         components.queryItems = [clientIDItem, displayItem, redirectURIItem]
         return components.url!
+    }
+
+    public func extractTokenFrom(URLCallback: URL) -> String? {
+        guard let components = URLComponents(url: URLCallback, resolvingAgainstBaseURL: false),
+            let queryItems = components.queryItems,
+            let code = queryItems.first(where: { return $0.name == "code" }),
+            let codeValue = code.value else {
+                return nil
+        }
+        return codeValue
     }
 }
 
