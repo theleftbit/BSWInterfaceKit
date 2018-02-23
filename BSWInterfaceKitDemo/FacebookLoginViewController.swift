@@ -24,9 +24,11 @@ class FacebookLoginViewController: UIViewController {
 
     private func loginWithFacebook() {
         guard #available(iOS 11, *) else { return }
-        let socialManager = SocialAuthenticationManager.manager
-        let credentials = SocialAuthenticationManager.FacebookCredentials(appID: FacebookAppID, scope: [.email, .publicProfile])
-        let task = socialManager.loginWith(credentials: credentials)
+        let credentials = SocialAuthenticationManager.FacebookCredentials(
+            appID: FacebookAppID,
+            scope: [.email, .publicProfile]
+        )
+        let task = SocialAuthenticationManager.manager.loginWith(credentials: credentials)
         task.upon(.main, execute: { [weak self] (result) in
             guard let `self` = self else { return }
             let title: String
