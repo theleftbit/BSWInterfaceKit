@@ -6,17 +6,15 @@ import UIKit
 import SafariServices
 import Deferred
 
-@available (iOS 11, *)
 public protocol SocialAuthenticationCredentials {
     var urlRequest: URL { get }
     func extractResponseFrom(URLCallback: URL) -> SocialAuthenticationManager.LoginResponse?
 }
 
-@available (iOS 11, *)
 public class SocialAuthenticationManager {
 
     static public let manager = SocialAuthenticationManager()
-    private var authSession: SFAuthenticationSession?
+    private var currentRequest: CurrentRequest?
 
     public struct LoginResponse {
         public let authToken: String
@@ -24,15 +22,73 @@ public class SocialAuthenticationManager {
         public let rejectedPermissions: Set<String>
     }
 
+    /**
+     Performs O-Auth login using the provided credentials. The framework
+     provides FB support, but you can extend it as you wish.
+
+     - parameter credentials: The credentials used to login
+
+     - returns: A Task with the response from the O-Auth service
+
+     - note: If you're targeting iOS 11+, then this is all you have to do, but
+     for iOS 9 and 10, you should also call `handleApplicationDidOpenURL` from
+     your app delegate.
+     */
     public func loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
+        if #available(iOS 11, *) {
+            return safariAuthSession_loginWith(credentials: credentials)
+        } else {
+            return safariViewController_loginWith(credentials: credentials)
+        }
+    }
+
+    public func handleApplicationDidOpenURL(_ URL: URL, options: [UIApplicationOpenURLOptionsKey : Any]) {
+        guard let sourceApplication = options[.sourceApplication] as? String,
+            sourceApplication == "com.apple.SafariViewService",
+            let currentRequest = self.currentRequest,
+            case .safariVC(let safariVC, let credentials, let deferred) = currentRequest else {
+                return
+        }
+
+        safariVC.dismiss(animated: true, completion: nil)
+        if let response = credentials.extractResponseFrom(URLCallback: URL) {
+            deferred.fill(with: .success(response))
+        } else {
+            deferred.fill(with: .failure(Error(title: "Unknown Response")))
+        }
+        self.currentRequest = nil
+    }
+
+    @available (iOS 9, *)
+    private func safariViewController_loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
         let deferred = Deferred<Task<LoginResponse>.Result>()
-        guard self.authSession == nil else {
+        guard let visibleVC = UIApplication.shared.keyWindow?.visibleViewController else {
+            deferred.fill(with: .failure(Error(title: "No visible VC")))
+            return Task(deferred)
+        }
+        guard var urlComponents = URLComponents(url: credentials.urlRequest, resolvingAgainstBaseURL: false) else {
+            deferred.fill(with: .failure(Error(title: "Malformed URL")))
+            return Task(deferred)
+        }
+        urlComponents.queryItems?.append(URLQueryItem(name: "sfvc", value: "1"))
+        let safariVC = SFSafariViewController(url: urlComponents.url!)
+        safariVC.modalPresentationStyle = .overFullScreen
+        visibleVC.present(safariVC, animated: false, completion: nil)
+
+        self.currentRequest = .safariVC(safariVC, credentials, deferred)
+        return Task(deferred)
+    }
+
+    @available (iOS 11, *)
+    private func safariAuthSession_loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
+        let deferred = Deferred<Task<LoginResponse>.Result>()
+        guard self.currentRequest == nil else {
             deferred.fill(with: .failure(Error(title: "Ongoing login")))
             return Task(deferred)
         }
 
         let authSession = SFAuthenticationSession(url: credentials.urlRequest, callbackURLScheme: nil) { (url, error) in
-            defer { self.authSession = nil }
+            defer { self.currentRequest = nil }
             guard error == nil else {
                 deferred.fill(with: .failure(error!))
                 return
@@ -49,12 +105,11 @@ public class SocialAuthenticationManager {
 
         authSession.start()
 
-        self.authSession = authSession
+        self.currentRequest = .authSession(authSession)
         return Task(deferred)
     }
 }
 
-@available (iOS 11, *)
 extension SocialAuthenticationManager {
 
     public struct FacebookCredentials {
@@ -132,12 +187,16 @@ extension SocialAuthenticationManager {
         }
     }
 
+    private enum CurrentRequest {
+        case authSession(NSObject)
+        case safariVC(UIViewController, SocialAuthenticationCredentials, Deferred<Task<LoginResponse>.Result>)
+    }
+
     public struct Error: Swift.Error {
         let title: String
     }
 }
 
-@available (iOS 11, *)
 extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationCredentials {
 
     public var urlRequest: URL {
