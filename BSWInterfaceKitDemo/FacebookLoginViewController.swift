@@ -25,7 +25,7 @@ class FacebookLoginViewController: UIViewController {
     private func loginWithFacebook() {
         guard #available(iOS 11, *) else { return }
         let socialManager = SocialAuthenticationManager.manager
-        let credentials = SocialAuthenticationManager.FacebookCredentials(appID: FacebookAppID)
+        let credentials = SocialAuthenticationManager.FacebookCredentials(appID: FacebookAppID, scope: [.email, .publicProfile])
         let task = socialManager.loginWith(credentials: credentials)
         task.upon(.main, execute: { [weak self] (result) in
             guard let `self` = self else { return }
@@ -35,9 +35,12 @@ class FacebookLoginViewController: UIViewController {
             case .failure(let error):
                 title = "Error"
                 message = error.localizedDescription
-            case .success(let token):
+            case .success(let loginResponse):
                 title = "Success"
-                message = "Login token is: \(token)"
+                message = """
+                Login token is: \(loginResponse.authToken),
+                approved scopes: \(SocialAuthenticationManager.FacebookCredentials.scopeFrom(strings: loginResponse.approvedPermissions))"
+                """
             }
 
             let controller = UIAlertController(title: title, message: message, preferredStyle: .alert)
