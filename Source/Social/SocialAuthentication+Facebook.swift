@@ -83,7 +83,7 @@ extension SocialAuthenticationManager {
 
 extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationCredentials {
 
-    public var urlRequest: URL {
+    public func createURLRequest(isSafariVC: Bool) -> URL {
 
         let redirectURI = "fb\(appID)://authorize/"
         guard UIApplication.shared.canOpenURL(URL(string: redirectURI)!) else {
@@ -99,6 +99,10 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
         if !self.scope.isEmpty {
             queryItems.append(URLQueryItem(name: "return_scopes", value: "true"))
             queryItems.append(URLQueryItem(name: "scope", value: SocialAuthenticationManager.FacebookCredentials.printableScope(self.scope).joined(separator: ",")))
+        }
+
+        if isSafariVC {
+            queryItems.append(URLQueryItem(name: "sfvc", value: "1"))
         }
 
         var components = URLComponents()

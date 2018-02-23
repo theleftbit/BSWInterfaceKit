@@ -7,7 +7,7 @@ import SafariServices
 import Deferred
 
 public protocol SocialAuthenticationCredentials {
-    var urlRequest: URL { get }
+    func createURLRequest(isSafariVC: Bool) -> URL
     func extractResponseFrom(URLCallback: URL) -> SocialAuthenticationManager.LoginResponse?
 }
 
@@ -66,12 +66,7 @@ public class SocialAuthenticationManager {
             deferred.fill(with: .failure(Error(title: "No visible VC")))
             return Task(deferred)
         }
-        guard var urlComponents = URLComponents(url: credentials.urlRequest, resolvingAgainstBaseURL: false) else {
-            deferred.fill(with: .failure(Error(title: "Malformed URL")))
-            return Task(deferred)
-        }
-        urlComponents.queryItems?.append(URLQueryItem(name: "sfvc", value: "1"))
-        let safariVC = SFSafariViewController(url: urlComponents.url!)
+        let safariVC = SFSafariViewController(url: credentials.createURLRequest(isSafariVC: true))
         safariVC.modalPresentationStyle = .overFullScreen
         visibleVC.present(safariVC, animated: false, completion: nil)
 
@@ -87,7 +82,7 @@ public class SocialAuthenticationManager {
             return Task(deferred)
         }
 
-        let authSession = SFAuthenticationSession(url: credentials.urlRequest, callbackURLScheme: nil) { (url, error) in
+        let authSession = SFAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
             defer { self.currentRequest = nil }
             guard error == nil else {
                 deferred.fill(with: .failure(error!))
