@@ -15,9 +15,10 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         case scrollableStackView = "ScrollableStackView"
         case asyncViewModelController = "AsyncViewModelController"
         case collectionViewDataSource = "CollectionViewDataSource"
+        case facebookLogin = "FacebookLogin"
 
         static var allFeatures: [Features] {
-            return [.scrollableStackView, .asyncViewModelController, .collectionViewDataSource]
+            return [.scrollableStackView, .asyncViewModelController, .collectionViewDataSource, .facebookLogin]
         }
     }
 
@@ -64,6 +65,9 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationController?.pushViewController(vc, animated: true)
         case .collectionViewDataSource:
             let vc = FruitViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case .facebookLogin:
+            let vc = FacebookLoginViewController()
             navigationController?.pushViewController(vc, animated: true)
         default:
             break
