@@ -93,7 +93,8 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
         var queryItems: [URLQueryItem] = [
             URLQueryItem(name: "client_id", value: appID),
             URLQueryItem(name: "display", value: "touch"),
-            URLQueryItem(name: "redirect_uri", value: redirectURI)
+            URLQueryItem(name: "redirect_uri", value: redirectURI),
+            URLQueryItem(name: "response_type", value: "token")
         ]
 
         if !self.scope.isEmpty {
@@ -114,10 +115,17 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
     }
 
     public func extractResponseFrom(URLCallback: URL) -> SocialAuthenticationManager.LoginResponse? {
-        guard let components = URLComponents(url: URLCallback, resolvingAgainstBaseURL: false),
+
+        var modifiedURL = URLCallback
+        if let range = modifiedURL.absoluteString.range(of: "authorize/#") {
+            let patchedString = modifiedURL.absoluteString.replacingCharacters(in: range, with: "authorize/?")
+            modifiedURL = URL(string: patchedString) ?? modifiedURL
+        }
+
+        guard let components = URLComponents(url: modifiedURL, resolvingAgainstBaseURL: false),
             let queryItems = components.queryItems,
-            let code = queryItems.first(where: { return $0.name == "code" }),
-            let codeValue = code.value else {
+            let token = queryItems.first(where: { return $0.name == "access_token" }),
+            let tokenValue = token.value else {
                 return nil
         }
 
@@ -132,7 +140,7 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
         let rejectedPermissions = rejectedPermissionsString?.components(separatedBy: ",") ?? []
 
         return SocialAuthenticationManager.LoginResponse(
-            authToken: codeValue,
+            authToken: tokenValue,
             approvedPermissions: Set(approvedPermissions),
             rejectedPermissions: Set(rejectedPermissions)
         )
