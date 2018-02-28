@@ -26,6 +26,7 @@
 		EBBB9FAD1E7BF0FE000F1232 /* StrawberryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */; };
 		EBBB9FAF1E7BF524000F1232 /* FruitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */; };
 		EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */; };
+		F54886DC203ED769005191D3 /* FacebookLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
 		ECAD9F0C9D88CCEA59E28B8D /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.release.xcconfig"; sourceTree = "<group>"; };
 		EE043E195E238D065AE621AF /* BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 				EBB3CEB91E50C60B0063303C /* FeaturesViewController.swift */,
 				EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */,
 				EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */,
+				F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */,
 				EBB3CEBE1E50C60B0063303C /* Assets.xcassets */,
 				EBB3CEC01E50C60B0063303C /* LaunchScreen.storyboard */,
 				EBB3CEC31E50C60B0063303C /* Info.plist */,
@@ -494,6 +497,7 @@
 			files = (
 				EBBB9FAD1E7BF0FE000F1232 /* StrawberryViewController.swift in Sources */,
 				EBBB9FAF1E7BF524000F1232 /* FruitViewController.swift in Sources */,
+				F54886DC203ED769005191D3 /* FacebookLoginViewController.swift in Sources */,
 				EBB3CEBA1E50C60B0063303C /* FeaturesViewController.swift in Sources */,
 				EBB3CEB81E50C60B0063303C /* AppDelegate.swift in Sources */,
 			);
@@ -672,7 +676,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = BSWInterfaceKitDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blursoftware.BSWInterfaceKitDemo;
@@ -704,7 +708,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = BSWInterfaceKitDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blursoftware.BSWInterfaceKitDemo;
