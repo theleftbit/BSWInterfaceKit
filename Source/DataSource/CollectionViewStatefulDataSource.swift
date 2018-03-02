@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class CollectionViewStatefulDataSource<Cell:ViewModelReusable>: NSObject, UICollectionViewDataSource where Cell:UICollectionViewCell {
+public class CollectionViewStatefulDataSource<Cell:ViewModelReusable & UICollectionViewCell>: NSObject, UICollectionViewDataSource {
     
     public fileprivate(set) var state: ListState<Cell.VM>
     public weak var collectionView: UICollectionView!
