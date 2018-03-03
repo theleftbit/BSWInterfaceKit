@@ -3,7 +3,7 @@
 //  Copyright © 2016 Blurred Software SL. All rights reserved.
 //
 
-import PINRemoteImage
+import SDWebImage
 import BSWFoundation
 import Deferred
 
@@ -32,18 +32,18 @@ extension UIImageView {
 
     @objc(bsw_cancelImageLoadFromURL)
     public func cancelImageLoadFromURL() {
-        pin_cancelImageDownload()
+        sd_cancelCurrentImageLoad()
     }
 
     @nonobjc
     public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
         guard UIImageView.webDownloadsEnabled else { return }
-        pin_setImage(from: url) { (downloadResult) in
+        sd_setImage(with: url) { (image, error, _, _) in
 
             let result: Task<UIImage>.Result
-            if let image = downloadResult.image {
+            if let image = image {
                 result = .success(image)
-            } else if let error = downloadResult.error {
+            } else if let error = error {
                 result = .failure(error)
             } else {
                 result = .failure(NSError(domain: "com.bswinterfacekit.uiimageview", code: 0, userInfo: nil))
