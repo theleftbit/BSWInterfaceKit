@@ -27,7 +27,7 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
 
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
-        static let LayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        static let LayoutMargins = UIEdgeInsets(uniform: 8)
         static let PhotoGalleryRatio = CGFloat(0.78)
     }
     
@@ -61,7 +61,7 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         }
 
         if let tabBar = tabBarController?.tabBar {
-            scrollableStackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBar.frame.height, right: 0)
+            scrollableStackView.contentInset = [.bottom: tabBar.frame.height]
         }
 
         //Add the photoGallery
