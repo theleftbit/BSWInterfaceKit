@@ -4,7 +4,6 @@ inhibit_all_warnings!
 
 abstract_target 'Common' do
   pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
-
   pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :branch => 'swift-4.1'
 
   target 'BSWInterfaceKitDemo' do
@@ -14,3 +13,12 @@ abstract_target 'Common' do
       end
   end
 end
+
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['CONFIGURATION_BUILD_DIR'] = '$PODS_CONFIGURATION_BUILD_DIR'
+        end
+    end
+end
+

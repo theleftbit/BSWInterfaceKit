@@ -16,7 +16,7 @@ public class CheckboxButton: UIButton {
         self.contentMode = .scaleAspectFit
         self.setImage(UIImage.interfaceKitImageNamed("ic_checkbox"), for: .normal)
         self.setImage(UIImage.interfaceKitImageNamed("ic_checkbox_selected"), for: .selected)
-        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: -Constants.ImageInset, bottom: 0, right: 0)
+        self.imageEdgeInsets = [.left: -Constants.ImageInset]
     }
     
     required public init?(coder aDecoder: NSCoder) {

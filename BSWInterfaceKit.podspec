@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation", "~> 1.3.0"
-  s.dependency "PINRemoteImage", "~> 2.1.4"
+  s.dependency "SDWebImage", "~> 4.3.2"
 end
