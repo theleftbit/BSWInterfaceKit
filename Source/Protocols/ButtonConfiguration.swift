@@ -22,7 +22,7 @@ public struct ButtonConfiguration {
     public init(title: String,
                 titleColor: UIColor = .black,
                 backgroundColor: UIColor = .clear,
-                contentInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5),
+                contentInset: UIEdgeInsets = UIEdgeInsets(uniform: 5),
                 actionHandler: @escaping ButtonActionHandler) {
         self.buttonTitle = .text(TextStyler.styler.attributedString(title, color: titleColor))
         self.backgroundColor = backgroundColor
@@ -32,7 +32,7 @@ public struct ButtonConfiguration {
 
     public init(buttonTitle: ButtonTitle,
                 backgroundColor: UIColor = .clear,
-                contentInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5),
+                contentInset: UIEdgeInsets = UIEdgeInsets(uniform: 5),
                 actionHandler: @escaping ButtonActionHandler) {
         self.buttonTitle = buttonTitle
         self.backgroundColor = backgroundColor
@@ -67,7 +67,7 @@ extension UIButton {
         case .image(let image):
             setImage(image, for: .normal)
             imageView?.contentMode = .scaleAspectFit
-            imageEdgeInsets = UIEdgeInsets(top: -5, left: -5, bottom: -5, right: -5)
+            imageEdgeInsets = UIEdgeInsets(uniform: -5)
         }
         
         backgroundColor = buttonConfiguration.backgroundColor

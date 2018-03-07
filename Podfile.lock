@@ -7,22 +7,16 @@ PODS:
     - KeychainAccess (~> 3.1.0)
   - BSWInterfaceKit (0.4.0):
     - BSWFoundation (~> 1.3.0)
-    - PINRemoteImage (~> 2.1.4)
+    - SDWebImage (~> 4.3.2)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - FLAnimatedImage (1.0.12)
   - KeychainAccess (3.1.0)
-  - PINCache (2.3)
-  - PINRemoteImage (2.1.4):
-    - PINRemoteImage/FLAnimatedImage (= 2.1.4)
-  - PINRemoteImage/Core (2.1.4):
-    - PINCache (>= 2.1)
-  - PINRemoteImage/FLAnimatedImage (2.1.4):
-    - FLAnimatedImage (>= 1.0)
-    - PINRemoteImage/Core
+  - SDWebImage (4.3.2):
+    - SDWebImage/Core (= 4.3.2)
+  - SDWebImage/Core (4.3.2)
 
 DEPENDENCIES:
   - BSWFoundation (from `https://github.com/BlurredSoftware/BSWFoundation.git`, branch `swift-4.1`)
@@ -45,13 +39,11 @@ SPEC CHECKSUMS:
   Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   BNRDeferred: 1076622f62f3f6e49a6194d9aab84c3ca0fc016d
   BSWFoundation: 2e60290ff588f3c22eb3824a6f0d0611493d4209
-  BSWInterfaceKit: e32ca2db60ba84ec1e2d4051683210a701cb4f8a
+  BSWInterfaceKit: e0110775cfc71d18d554cff9e0c8a83d6992a3f9
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
-  PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
-  PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
+  SDWebImage: 29bd3c0bc1f01e5eb59720847c64ad4c4ca1af5d
 
-PODFILE CHECKSUM: 0f9a83469a2b490eba73964ffdabb588376b9c54
+PODFILE CHECKSUM: 2e3cb77bf309c11ffb2ca3f3e903de7ef6eb1596
 
 COCOAPODS: 1.4.0

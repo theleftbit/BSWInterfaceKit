@@ -23,7 +23,7 @@ open class WaterfallCollectionView: UICollectionView {
             return Configuration(
                 minimumColumnSpacing: 10,
                 minimumInteritemSpacing: 10,
-                sectionInset: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+                sectionInset: UIEdgeInsets(uniform: 10)
             )
         }
     }

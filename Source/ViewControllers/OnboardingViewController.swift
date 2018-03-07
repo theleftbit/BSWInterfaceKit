@@ -122,11 +122,11 @@ class OnboardingViewController: UIViewController {
     fileprivate func prepareMarginsForCurrentTraitCollection() {
         switch self.traitCollection.verticalSizeClass {
         case .regular:
-            contentView.layoutMargins = UIEdgeInsetsMake(40, 8, 8, 8)
+            contentView.layoutMargins = [.top: 40, .left: 8, .bottom: 8, .right: 8]
         case .compact:
-            contentView.layoutMargins = UIEdgeInsetsMake(8, 8, 8, 8)
+            contentView.layoutMargins = UIEdgeInsets(uniform: 8)
         case .unspecified:
-            contentView.layoutMargins = UIEdgeInsetsMake(8, 8, 8, 8)
+            contentView.layoutMargins = UIEdgeInsets(uniform: 8)
         }
     }
     
