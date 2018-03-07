@@ -4,6 +4,16 @@
 
 import UIKit
 
+//: Suggested by [@al_skipp](https://twitter.com/al_skipp)
+extension UIEdgeInsets {
+    public init(uniform: CGFloat) {
+        top = uniform
+        left = uniform
+        bottom = uniform
+        right = uniform
+    }
+}
+
 //: Credit to [Adam Sharp](https://twitter.com/sharplet) & [Daniel Jalkut](https://twitter.com/danielpunkass)
 extension UIEdgeInsets: ExpressibleByDictionaryLiteral {
     public typealias Key = EdgeKey
