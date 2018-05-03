@@ -1,49 +1,50 @@
 PODS:
   - Alamofire (4.6.0)
   - BNRDeferred (3.3.0)
-  - BSWFoundation (1.3.2):
+  - BSWFoundation (1.4.0):
     - Alamofire (~> 4.6.0)
     - BNRDeferred (= 3.3.0)
     - KeychainAccess (~> 3.1.0)
   - BSWInterfaceKit (0.4.0):
-    - BSWFoundation (~> 1.3.0)
+    - BSWFoundation (~> 1.4.0)
     - SDWebImage (~> 4.3.2)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - KeychainAccess (3.1.0)
+  - KeychainAccess (3.1.1)
   - SDWebImage (4.3.2):
     - SDWebImage/Core (= 4.3.2)
   - SDWebImage/Core (4.3.2)
 
 DEPENDENCIES:
-  - BSWFoundation (from `https://github.com/BlurredSoftware/BSWFoundation.git`, branch `swift-4.1`)
+  - BSWFoundation (= 1.4.0)
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
   - FBSnapshotTestCase
 
-EXTERNAL SOURCES:
-  BSWFoundation:
-    :branch: swift-4.1
-    :git: https://github.com/BlurredSoftware/BSWFoundation.git
-  BSWInterfaceKit:
-    :path: ./BSWInterfaceKit.podspec
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - BNRDeferred
+    - BSWFoundation
+    - FBSnapshotTestCase
+    - KeychainAccess
+    - SDWebImage
 
-CHECKOUT OPTIONS:
-  BSWFoundation:
-    :commit: cc62397845ee4e72914ec52d2027c244a7f92d14
-    :git: https://github.com/BlurredSoftware/BSWFoundation.git
+EXTERNAL SOURCES:
+  BSWInterfaceKit:
+    :path: "./BSWInterfaceKit.podspec"
 
 SPEC CHECKSUMS:
   Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   BNRDeferred: 1076622f62f3f6e49a6194d9aab84c3ca0fc016d
-  BSWFoundation: 2e60290ff588f3c22eb3824a6f0d0611493d4209
-  BSWInterfaceKit: e0110775cfc71d18d554cff9e0c8a83d6992a3f9
+  BSWFoundation: f1c7dfd0cc03bdfdef8f28dd8d98ec5cbd6a9d8c
+  BSWInterfaceKit: a4af8af58dc43794ab90e1966ecd15930f501baa
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
+  KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   SDWebImage: 29bd3c0bc1f01e5eb59720847c64ad4c4ca1af5d
 
-PODFILE CHECKSUM: 2e3cb77bf309c11ffb2ca3f3e903de7ef6eb1596
+PODFILE CHECKSUM: 5d4851cf105320a44fceac85ae2288ab1c3a3e30
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0
