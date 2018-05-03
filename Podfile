@@ -4,7 +4,7 @@ inhibit_all_warnings!
 
 abstract_target 'Common' do
   pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
-  pod 'BSWFoundation', :git => 'https://github.com/BlurredSoftware/BSWFoundation.git', :branch => 'swift-4.1'
+  pod 'BSWFoundation', '1.4.0'
 
   target 'BSWInterfaceKitDemo' do
       target 'BSWInterfaceKitDemoTests' do

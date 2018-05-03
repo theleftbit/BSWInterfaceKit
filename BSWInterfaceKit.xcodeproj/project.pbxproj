@@ -71,7 +71,6 @@
 		EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FruitViewController.swift; sourceTree = "<group>"; };
 		EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
 		ECAD9F0C9D88CCEA59E28B8D /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.release.xcconfig"; sourceTree = "<group>"; };
-		EE043E195E238D065AE621AF /* BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -205,7 +204,6 @@
 				EBB3CEB21E50C60B0063303C /* Frameworks */,
 				EBB3CEB31E50C60B0063303C /* Resources */,
 				CEA434E0BAE8B33DBB84EEEB /* [CP] Embed Pods Frameworks */,
-				799F2C880118C411BDEB4E08 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -225,7 +223,6 @@
 				EBB3CEC51E50C60B0063303C /* Frameworks */,
 				EBB3CEC61E50C60B0063303C /* Resources */,
 				40041426D255998298F7E7F1 /* [CP] Embed Pods Frameworks */,
-				9ED9C678B9D2FBFA789B2234 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -334,21 +331,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		799F2C880118C411BDEB4E08 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Common-BSWInterfaceKitDemo/Pods-Common-BSWInterfaceKitDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		7AEB98E389FE4ECCEFB23D54 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -365,21 +347,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9ED9C678B9D2FBFA789B2234 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CEA434E0BAE8B33DBB84EEEB /* [CP] Embed Pods Frameworks */ = {
