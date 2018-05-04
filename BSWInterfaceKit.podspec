@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "BSWInterfaceKit"
-  s.version      = "0.4.0"
+  s.version      = "0.5.0"
   s.summary      = "A short description of BSWInterfaceKit."
   s.homepage     = "https://github.com/BlurredSoftware/BSWInterfaceKit"
   s.license      = "MIT"
