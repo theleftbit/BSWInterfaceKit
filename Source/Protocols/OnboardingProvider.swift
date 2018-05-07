@@ -1,6 +1,6 @@
 //
 //  Created by Pierluigi Cifani on 23/04/16.
-//  Copyright (c) 2016 Blurred Software SL. All rights reserved.
+//  Copyright (c) 2016 TheLeftBit SL. All rights reserved.
 //
 
 import UIKit
