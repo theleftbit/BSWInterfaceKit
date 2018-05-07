@@ -1,5 +1,5 @@
 //
-//  Copyright © 2017 Blurred Software SL. All rights reserved.
+//  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //  Created by Pierluigi Cifani.
 //
 
