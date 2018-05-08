@@ -1,5 +1,5 @@
 # BSWInterfaceKit 
-![](https://www.bitrise.io/app/e3b5c8f9ecaf381a/status.svg?token=vWVY5MfFfpOh7j-YIfJwGg&branch=develop)
+![](https://www.bitrise.io/app/b21341a167ad751b/status.svg?token=OaplA3zAmrxJMBh1iY_Rwg&branch=develop)
 
 This framework will allow you to build *better* iOS apps *faster* since it leverages battle tested classes for various common use cases in modern apps
 
