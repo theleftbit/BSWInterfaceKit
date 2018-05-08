@@ -3,9 +3,9 @@ Pod::Spec.new do |s|
   s.name         = "BSWInterfaceKit"
   s.version      = "0.5.0"
   s.summary      = "A short description of BSWInterfaceKit."
-  s.homepage     = "https://github.com/BlurredSoftware/BSWInterfaceKit"
+  s.homepage     = "https://github.com/TheLeftBit/BSWInterfaceKit"
   s.license      = "MIT"
-  s.author             = { "Pierluigi Cifani" => "pcifani@blurredsoftware.com" }
+  s.author             = { "Pierluigi Cifani" => "pcifani@theleftbit.com" }
   s.social_media_url   = "http://twitter.com/piercifani"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.swift_version = "4.1"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source       = { :git => "https://github.com/BlurredSoftware/BSWInterfaceKit.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/TheLeftBit/BSWInterfaceKit.git", :tag => "#{s.version}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "Source/**/*.{swift,m,h}"

@@ -3,7 +3,7 @@
 //  SwiftyGestureRecognition
 //
 //  Created by Adam Bell on 1/26/16.
-//  Copyright © 2016 Adam Bell. All rights reserved.
+//  Copyright © 2018 Adam Bell. All rights reserved.
 //
 
 import ObjectiveC
