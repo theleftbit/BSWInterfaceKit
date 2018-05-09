@@ -1,31 +1,27 @@
 PODS:
-  - Alamofire (4.6.0)
   - BNRDeferred (3.3.0)
-  - BSWFoundation (1.4.0):
-    - Alamofire (~> 4.6.0)
+  - BSWFoundation (2.0.0):
     - BNRDeferred (= 3.3.0)
     - KeychainAccess (~> 3.1.0)
-  - BSWInterfaceKit (0.4.0):
-    - BSWFoundation (~> 1.4.0)
-    - SDWebImage (~> 4.3.2)
+  - BSWInterfaceKit (0.5.0):
+    - BSWFoundation (~> 2.0)
+    - SDWebImage (~> 4.3.3)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - KeychainAccess (3.1.1)
-  - SDWebImage (4.3.2):
-    - SDWebImage/Core (= 4.3.2)
-  - SDWebImage/Core (4.3.2)
+  - SDWebImage (4.3.3):
+    - SDWebImage/Core (= 4.3.3)
+  - SDWebImage/Core (4.3.3)
 
 DEPENDENCIES:
-  - BSWFoundation (= 1.4.0)
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
   - FBSnapshotTestCase
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - Alamofire
     - BNRDeferred
     - BSWFoundation
     - FBSnapshotTestCase
@@ -37,14 +33,13 @@ EXTERNAL SOURCES:
     :path: "./BSWInterfaceKit.podspec"
 
 SPEC CHECKSUMS:
-  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   BNRDeferred: 1076622f62f3f6e49a6194d9aab84c3ca0fc016d
-  BSWFoundation: f1c7dfd0cc03bdfdef8f28dd8d98ec5cbd6a9d8c
-  BSWInterfaceKit: a4af8af58dc43794ab90e1966ecd15930f501baa
+  BSWFoundation: 90b04f7591850593c3e7e7d6c5ea9f0506c49c2e
+  BSWInterfaceKit: 77d05382a701f2e2c14ddef0678ef01f97b42ac8
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
-  SDWebImage: 29bd3c0bc1f01e5eb59720847c64ad4c4ca1af5d
+  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
 
-PODFILE CHECKSUM: 5d4851cf105320a44fceac85ae2288ab1c3a3e30
+PODFILE CHECKSUM: 7a3c9e4b9287557f09fd6f9a389bddddf680ea8d
 
 COCOAPODS: 1.5.0
