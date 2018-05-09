@@ -4,7 +4,6 @@ inhibit_all_warnings!
 
 abstract_target 'Common' do
   pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
-  pod 'BSWFoundation', '1.4.0'
 
   target 'BSWInterfaceKitDemo' do
       target 'BSWInterfaceKitDemoTests' do
