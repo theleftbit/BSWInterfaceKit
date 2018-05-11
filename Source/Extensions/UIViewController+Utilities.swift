@@ -49,8 +49,8 @@ extension UIViewController {
 
   // MARK: - Bottom Action Button
 
-    @nonobjc
-    public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
+    @nonobjc @discardableResult
+    public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) -> UIButton {
     
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         
@@ -78,6 +78,7 @@ extension UIViewController {
             animateChanges {
                 actionButton.setButtonConfiguration(buttonConfig)
             }
+            return actionButton
         } else {
             
             removeBottonActionButton()
@@ -105,6 +106,8 @@ extension UIViewController {
             animateChanges {
                 self.view.layoutIfNeeded()
             }
+
+            return button
         }
     }
 
