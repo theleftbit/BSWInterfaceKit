@@ -11,12 +11,15 @@ open class ScrollableStackView: UIScrollView {
     fileprivate let stackView = UIStackView()
     
     public init(axis: UILayoutConstraintAxis = .vertical,
-                alignment: UIStackViewAlignment = .leading) {
+                alignment: UIStackViewAlignment = .leading,
+                layoutMargins: UIEdgeInsets = .zero) {
         super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis
         stackView.alignment = alignment
-
+        stackView.layoutMargins = layoutMargins
+        stackView.isLayoutMarginsRelativeArrangement = true
+        
         addSubview(stackView)
         stackView.pinToSuperview()
         
