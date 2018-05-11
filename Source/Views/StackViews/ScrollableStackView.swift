@@ -9,7 +9,11 @@ import UIKit
 open class ScrollableStackView: UIScrollView {
     
     fileprivate let stackView = UIStackView()
-    
+    public var spacing: CGFloat! {
+        didSet {
+            stackView.spacing = spacing
+        }
+    }
     public init(axis: UILayoutConstraintAxis = .vertical,
                 alignment: UIStackViewAlignment = .leading,
                 layoutMargins: UIEdgeInsets = .zero) {
