@@ -15,11 +15,13 @@ open class ScrollableStackView: UIScrollView {
         }
     }
     public init(axis: UILayoutConstraintAxis = .vertical,
+                distribution: UIStackViewDistribution = .fill,
                 alignment: UIStackViewAlignment = .leading,
                 layoutMargins: UIEdgeInsets = .zero) {
         super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis
+        stackView.distribution = distribution
         stackView.alignment = alignment
         stackView.layoutMargins = layoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
