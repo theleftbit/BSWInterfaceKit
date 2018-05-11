@@ -83,9 +83,8 @@ extension UIViewController {
             
             removeBottonActionButton()
 
-            let button = UIButton()
+            let button = UIButton(buttonConfiguration: buttonConfig)
             button.tag = Constants.BottomActionTag
-            button.setButtonConfiguration(buttonConfig)
             view.addAutolayoutSubview(button)
             
             let bottomConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor)
