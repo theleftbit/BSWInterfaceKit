@@ -3,7 +3,7 @@
 //
 
 import XCTest
-@testable import BSWInterfaceKit
+import BSWInterfaceKit
 
 class ButtonTests: BSWSnapshotTest {
 
