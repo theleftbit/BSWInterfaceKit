@@ -37,7 +37,7 @@ public enum PhotoPickerViewModel {
         }
     }
 
-    static func createPhotoArray(_ photos: [Photo], uploadingPhotos: [(Progress, UIImage)] = [], maxPhotos: Int) -> [PhotoPickerViewModel] {
+    static public func createPhotoArray(_ photos: [Photo], uploadingPhotos: [(Progress, UIImage)] = [], maxPhotos: Int) -> [PhotoPickerViewModel] {
         let photosAsUploadPhotos = photos.map { return PhotoPickerViewModel.filled($0) }
         let uploadingPhotos = uploadingPhotos.map { return PhotoPickerViewModel.uploading($0.0, $0.1) }
         let missingPhotos = maxPhotos - photosAsUploadPhotos.count - uploadingPhotos.count

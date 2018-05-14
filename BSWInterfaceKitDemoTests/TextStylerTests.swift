@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 11/04/2017.
 //
 
-@testable import BSWInterfaceKit
+import BSWInterfaceKit
 import XCTest
 
 class TextStylerTests: BSWSnapshotTest {
