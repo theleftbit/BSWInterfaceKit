@@ -23,7 +23,6 @@ public protocol OnboardingObserver: class {
 }
 
 public protocol OnboardingProvider: class {
-    func rootViewController() -> UIViewController
     var onboardingCustomization: OnboardingCustomization { get set }
     weak var onboardingObserver: OnboardingObserver? { get set }
     
@@ -54,7 +53,7 @@ public struct OnboardingCustomization {
 }
 
 
-open class ClassicOnboardingProvider: OnboardingProvider {
+open class ClassicOnboardingViewController: LaunchScreenViewController, OnboardingProvider {
 
     weak open var onboardingObserver: OnboardingObserver? {
         didSet {
@@ -77,24 +76,24 @@ open class ClassicOnboardingProvider: OnboardingProvider {
     public init(onboardingObserver: OnboardingObserver? = nil, onboardingCustomization: OnboardingCustomization){
         self.onboardingObserver = onboardingObserver
         self.onboardingCustomization = onboardingCustomization
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
+    required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
     /**
      Creates the controller to start the onboarding process
      - note: Please set both the observer and the dataSource before calling this method
      - note: This method assumes you use a LaunchScreen.storyboard to launch your app. It'll crash otherwise
      - returns: The viewController you should set as Root of your app's window in order for the onboarding process to proceed
      */
-    open func rootViewController() -> UIViewController {
-        
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+
         //Hook up the onboardingVC to whatever we have
         onboardingVC.onboardingCustomization = onboardingCustomization
         onboardingVC.onboardingObserver = onboardingObserver
-
-        let rootVC = LaunchScreenViewController()
-        rootVC.controllerToPresentOnAppereance = onboardingVC
-        return rootVC
+        controllerToPresentOnAppereance = onboardingVC
     }
-    
 }
 
