@@ -32,7 +32,7 @@ public extension UICollectionViewCell {
         }
     }
 
-    @objc var isDeleting: Bool {
+    @objc open var isDeleting: Bool {
         get {
             return contentView.viewWithTag(Constants.DeleteButtonTag) != nil
         } set {
