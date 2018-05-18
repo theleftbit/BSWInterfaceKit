@@ -4,6 +4,7 @@
 //
 
 import BSWInterfaceKit
+@testable import BSWInterfaceKitDemo
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
@@ -39,37 +40,6 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
     }
 
     static func mockData() -> [PolaroidCollectionViewCell.VM] {
-
-        let vm1 = PolaroidCollectionViewCell.VM(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Gigi Buffon", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#1", forStyle: .body)
-        )
-
-        let vm2 = PolaroidCollectionViewCell.VM(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Gianluca Zambrotta", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#19", forStyle: .body)
-        )
-
-        let vm3 = PolaroidCollectionViewCell.VM(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Fabio Cannavaro", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#5", forStyle: .body)
-        )
-
-        let vm4 = PolaroidCollectionViewCell.VM(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Marco Materazzi", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#23", forStyle: .body)
-        )
-
-        let vm5 = PolaroidCollectionViewCell.VM(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Fabio Grosso", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#3", forStyle: .body)
-        )
-
-        return [vm1, vm2, vm3, vm4, vm5]
+        return FruitViewController.mockData()
     }
 }
