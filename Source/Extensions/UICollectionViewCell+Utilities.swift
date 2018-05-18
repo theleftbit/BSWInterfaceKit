@@ -14,7 +14,7 @@ public extension UICollectionViewCell {
         static var handlerHost = "handlerHost"
     }
 
-    var editingImage: UIImage? {
+    @objc var deleteButtonImage: UIImage? {
         get {
             guard let image = objc_getAssociatedObject(self, &AssociatedBlockHost.imageHost) as? UIImage else { return nil }
             return image
@@ -23,7 +23,7 @@ public extension UICollectionViewCell {
         }
     }
 
-    var onEdit: VoidHandler? {
+    @objc var onDelete: VoidHandler? {
         get {
             guard let handler = objc_getAssociatedObject(self, &AssociatedBlockHost.handlerHost) as? VoidHandler else { return nil }
             return handler
@@ -32,15 +32,16 @@ public extension UICollectionViewCell {
         }
     }
 
-    var isEditing: Bool {
+    @objc var isDeleting: Bool {
         get {
             return self.viewWithTag(Constants.DeleteButtonTag) != nil
         } set {
             if newValue {
                 startWiggling()
-                let buttonImage = self.editingImage ?? UIImage.templateImage(.cancelRound)
+                let buttonImage = self.deleteButtonImage ?? UIImage.templateImage(.cancelRound)
                 let removeButton = UIButton(type: .custom)
-                removeButton.addTarget(self, action: #selector(onEditButtonPressed), for: .touchDown)
+                removeButton.tag = Constants.DeleteButtonTag
+                removeButton.addTarget(self, action: #selector(onDeleteButtonPressed), for: .touchDown)
                 removeButton.setImage(buttonImage, for: .normal)
                 contentView.addAutolayoutSubview(removeButton)
                 NSLayoutConstraint.activate([
@@ -83,8 +84,8 @@ public extension UICollectionViewCell {
         contentView.layer.removeAllAnimations()
     }
 
-    @objc func onEditButtonPressed() {
-        self.onEdit?()
+    @objc func onDeleteButtonPressed() {
+        self.onDelete?()
     }
 
     private func randomInterval(_ interval: TimeInterval, variance: Double) -> TimeInterval {

@@ -50,14 +50,14 @@ class FruitViewController: UIViewController, ListStatePresenter {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         if editing {
-            navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .cancel, actionHandler: { [weak self] in
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, actionHandler: { [weak self] in
                 guard let `self` = self else { return }
                 self.setEditing(false, animated: true)
             })
 
             collectionView.visibleCells.forEach { cell in
-                cell.isEditing = true
-                cell.onEdit = { [weak cell, weak self] in
+                cell.isDeleting = true
+                cell.onDelete = { [weak cell, weak self] in
                     guard let `cell` = cell else { return }
                     guard let index = self?.collectionView.indexPath(for: cell) else { return }
                     self?.removeItemAtIndexPath(index)
@@ -66,14 +66,14 @@ class FruitViewController: UIViewController, ListStatePresenter {
 
         } else {
 
-            navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .edit, actionHandler: { [weak self] in
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, actionHandler: { [weak self] in
                 guard let `self` = self else { return }
                 self.setEditing(true, animated: true)
             })
 
             collectionView.visibleCells.forEach {
-                $0.isEditing = false
-                $0.onEdit = nil
+                $0.isDeleting = false
+                $0.onDelete = nil
             }
         }
     }
