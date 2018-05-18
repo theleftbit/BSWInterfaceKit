@@ -14,7 +14,7 @@ public extension UICollectionViewCell {
         static var handlerHost = "handlerHost"
     }
 
-    @objc var deleteButtonImage: UIImage? {
+    @objc open var deleteButtonImage: UIImage? {
         get {
             guard let image = objc_getAssociatedObject(self, &AssociatedBlockHost.imageHost) as? UIImage else { return nil }
             return image
@@ -23,7 +23,7 @@ public extension UICollectionViewCell {
         }
     }
 
-    @objc var onDelete: VoidHandler? {
+    @objc open var onDelete: VoidHandler? {
         get {
             guard let handler = objc_getAssociatedObject(self, &AssociatedBlockHost.handlerHost) as? VoidHandler else { return nil }
             return handler
