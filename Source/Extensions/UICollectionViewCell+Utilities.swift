@@ -34,7 +34,7 @@ public extension UICollectionViewCell {
 
     @objc var isDeleting: Bool {
         get {
-            return self.viewWithTag(Constants.DeleteButtonTag) != nil
+            return contentView.viewWithTag(Constants.DeleteButtonTag) != nil
         } set {
             if newValue {
                 startWiggling()
@@ -50,7 +50,7 @@ public extension UICollectionViewCell {
                     ])
             } else {
                 stopWiggling()
-                viewWithTag(Constants.DeleteButtonTag)?.removeFromSuperview()
+                contentView.viewWithTag(Constants.DeleteButtonTag)?.removeFromSuperview()
             }
         }
     }
