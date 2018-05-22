@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 12/02/2017.
 //
 
-@testable import BSWInterfaceKit
+import BSWInterfaceKit
 
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 

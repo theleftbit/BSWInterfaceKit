@@ -36,7 +36,20 @@ public struct Photo {
     }
     
     public static func emptyPhoto() -> Photo {
-        return Photo(kind: .empty, averageColor: UIColor.randomColor(), size: nil)
+        return Photo(kind: .empty, averageColor: RandomColorFactory.randomColor(), size: nil)
+    }
+}
+
+enum RandomColorFactory {
+
+    static var isOn: Bool = true
+
+    static func randomColor() -> UIColor {
+        guard isOn else {
+            return UIColor.init(r: 255, g: 149, b: 0)
+        }
+
+        return UIColor.randomColor()
     }
 }
 
