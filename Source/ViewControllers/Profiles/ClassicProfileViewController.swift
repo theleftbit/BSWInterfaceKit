@@ -57,6 +57,12 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         scrollableStackView.pinToSuperview()
         //This is set to false in order to layout the image below the transparent navBar
         if #available(iOS 11.0, *) {
+
+            let navBar = navigationController?.navigationBar.frame.maxY ?? 0
+            additionalSafeAreaInsets = [
+                .top: -navBar
+            ]
+
             view.insetsLayoutMarginsFromSafeArea = false
             scrollableStackView.contentInsetAdjustmentBehavior = .never
         } else {

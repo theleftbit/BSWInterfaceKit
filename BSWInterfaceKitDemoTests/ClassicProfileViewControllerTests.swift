@@ -6,7 +6,7 @@ import BSWInterfaceKit
 
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
-    func _testSampleLayout() {
+    func testSampleLayout() {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: detailVC)
