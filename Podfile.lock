@@ -6,11 +6,11 @@ PODS:
   - BSWInterfaceKit (1.0.0):
     - BSWFoundation (~> 2.0)
     - SDWebImage (~> 4.3.3)
-  - FBSnapshotTestCase (2.1.4):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
-  - FBSnapshotTestCase/Core (2.1.4)
-  - FBSnapshotTestCase/SwiftSupport (2.1.4):
-    - FBSnapshotTestCase/Core
+  - iOSSnapshotTestCase (3.0.0):
+    - iOSSnapshotTestCase/SwiftSupport (= 3.0.0)
+  - iOSSnapshotTestCase/Core (3.0.0)
+  - iOSSnapshotTestCase/SwiftSupport (3.0.0):
+    - iOSSnapshotTestCase/Core
   - KeychainAccess (3.1.1)
   - SDWebImage (4.3.3):
     - SDWebImage/Core (= 4.3.3)
@@ -18,13 +18,13 @@ PODS:
 
 DEPENDENCIES:
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
-  - FBSnapshotTestCase
+  - iOSSnapshotTestCase
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - BNRDeferred
     - BSWFoundation
-    - FBSnapshotTestCase
+    - iOSSnapshotTestCase
     - KeychainAccess
     - SDWebImage
 
@@ -36,10 +36,10 @@ SPEC CHECKSUMS:
   BNRDeferred: 1076622f62f3f6e49a6194d9aab84c3ca0fc016d
   BSWFoundation: 90b04f7591850593c3e7e7d6c5ea9f0506c49c2e
   BSWInterfaceKit: 7a11f8f2325885f9e4bc4a37a15ae04937944ab5
-  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  iOSSnapshotTestCase: 23984ffe05289728d646cbb6a7a10b4fb1c93440
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
 
-PODFILE CHECKSUM: 7a3c9e4b9287557f09fd6f9a389bddddf680ea8d
+PODFILE CHECKSUM: 0c295ff81a575280e3065c32836f23a890df2fde
 
 COCOAPODS: 1.5.2
