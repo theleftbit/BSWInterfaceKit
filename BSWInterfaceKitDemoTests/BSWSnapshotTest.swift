@@ -84,7 +84,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         let exp = expectation(description: "verify view")
         let deadlineTime = DispatchTime.now() + .milliseconds(50)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.FBSnapshotVerifyView(view)
+            self.FBSnapshotVerifyView(view, tolerance: 0.1)
             exp.fulfill()
         }
         let _ = waiter.wait(for: [exp], timeout: 1)
