@@ -4,7 +4,7 @@
 
 import XCTest
 import FBSnapshotTestCase
-import BSWInterfaceKit
+@testable import BSWInterfaceKit
 
 class BSWSnapshotTest: FBSnapshotTestCase {
 
@@ -18,6 +18,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
 
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
+        RandomColorFactory.isOn = false
     }
 
     var currentWindow: UIWindow {
