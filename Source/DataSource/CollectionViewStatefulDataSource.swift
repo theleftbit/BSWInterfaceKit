@@ -254,7 +254,7 @@ public struct CollectionViewPullToRefreshSupport<Model> {
     public let tintColor: UIColor?
     public let handler: Handler
 
-    init(tintColor: UIColor? = nil, handler: @escaping Handler) {
+    public init(tintColor: UIColor? = nil, handler: @escaping Handler) {
         self.handler = handler
         self.tintColor = tintColor
     }

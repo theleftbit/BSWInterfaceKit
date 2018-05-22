@@ -3,7 +3,8 @@
 //
 //
 
-@testable import BSWInterfaceKit
+import BSWInterfaceKit
+@testable import BSWInterfaceKitDemo
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
@@ -24,12 +25,12 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         )
         dataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport { completion in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
-                let vm1 = PolaroidCellViewModel(
+                let vm1 = PolaroidCollectionViewCell.VM(
                     cellImage: Photo.emptyPhoto(),
                     cellTitle: TextStyler.styler.attributedString("Francesco Totti", forStyle: .title),
                     cellDetails: TextStyler.styler.attributedString("#10", forStyle: .body)
                 )
-                completion(CollectionViewPullToRefreshSupport<PolaroidCellViewModel>.Behavior.insertOnTop([vm1]))
+                completion(CollectionViewPullToRefreshSupport<PolaroidCollectionViewCell.VM>.Behavior.insertOnTop([vm1]))
             })
         }
     }
@@ -38,38 +39,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         waitABitAndVerify(view: collectionView)
     }
 
-    static func mockData() -> [PolaroidCellViewModel] {
-
-        let vm1 = PolaroidCellViewModel(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Gigi Buffon", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#1", forStyle: .body)
-        )
-
-        let vm2 = PolaroidCellViewModel(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Gianluca Zambrotta", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#19", forStyle: .body)
-        )
-
-        let vm3 = PolaroidCellViewModel(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Fabio Cannavaro", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#5", forStyle: .body)
-        )
-
-        let vm4 = PolaroidCellViewModel(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Marco Materazzi", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#23", forStyle: .body)
-        )
-
-        let vm5 = PolaroidCellViewModel(
-            cellImage: Photo.emptyPhoto(),
-            cellTitle: TextStyler.styler.attributedString("Fabio Grosso", forStyle: .title),
-            cellDetails: TextStyler.styler.attributedString("#3", forStyle: .body)
-        )
-
-        return [vm1, vm2, vm3, vm4, vm5]
+    static func mockData() -> [PolaroidCollectionViewCell.VM] {
+        return FruitViewController.mockData()
     }
 }

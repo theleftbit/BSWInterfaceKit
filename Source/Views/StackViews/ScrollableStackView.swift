@@ -9,14 +9,23 @@ import UIKit
 open class ScrollableStackView: UIScrollView {
     
     fileprivate let stackView = UIStackView()
-    
+    public var spacing: CGFloat! {
+        didSet {
+            stackView.spacing = spacing
+        }
+    }
     public init(axis: UILayoutConstraintAxis = .vertical,
-                alignment: UIStackViewAlignment = .leading) {
+                distribution: UIStackViewDistribution = .fill,
+                alignment: UIStackViewAlignment = .leading,
+                layoutMargins: UIEdgeInsets = .zero) {
         super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis
+        stackView.distribution = distribution
         stackView.alignment = alignment
-
+        stackView.layoutMargins = layoutMargins
+        stackView.isLayoutMarginsRelativeArrangement = true
+        
         addSubview(stackView)
         stackView.pinToSuperview()
         

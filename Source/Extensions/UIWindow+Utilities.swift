@@ -4,8 +4,22 @@
 //
 
 import UIKit
+import BSWFoundation
 
 public extension UIWindow {
+
+    func transition(toRootViewController rootVC: UIViewController, completion: VoidHandler?) {
+        UIView.transition(
+            with: self,
+            duration: 0.45,
+            options: [.transitionCrossDissolve],
+            animations: {
+                self.rootViewController = rootVC
+        },
+            completion: { (_) in
+                completion?()
+        })
+    }
 
     @objc(bsw_visibleViewController)
     public var visibleViewController: UIViewController? {

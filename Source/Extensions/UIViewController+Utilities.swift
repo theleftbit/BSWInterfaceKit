@@ -49,8 +49,8 @@ extension UIViewController {
 
   // MARK: - Bottom Action Button
 
-    @nonobjc
-    public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) {
+    @nonobjc @discardableResult
+    public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) -> UIButton {
     
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         
@@ -78,13 +78,13 @@ extension UIViewController {
             animateChanges {
                 actionButton.setButtonConfiguration(buttonConfig)
             }
+            return actionButton
         } else {
             
             removeBottonActionButton()
 
-            let button = UIButton()
+            let button = UIButton(buttonConfiguration: buttonConfig)
             button.tag = Constants.BottomActionTag
-            button.setButtonConfiguration(buttonConfig)
             view.addAutolayoutSubview(button)
             
             let bottomConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -105,6 +105,8 @@ extension UIViewController {
             animateChanges {
                 self.view.layoutIfNeeded()
             }
+
+            return button
         }
     }
 
@@ -113,6 +115,22 @@ extension UIViewController {
         view.removeSubviewWithTag(Constants.BottomActionTag)
     }
 }
+
+extension UIViewController {
+    //Based on https://stackoverflow.com/a/28158013/1152289
+    @objc public func closeViewController(sender: Any?) {
+        guard let presentingVC = targetViewController(forAction: #selector(closeViewController(sender:)), sender: sender) else { return }
+        presentingVC.closeViewController(sender: sender)
+    }
+}
+
+extension UINavigationController {
+    @objc
+    override public func closeViewController(sender: Any?) {
+        self.popViewController(animated: true)
+    }
+}
+
 
 // MARK: Private
 

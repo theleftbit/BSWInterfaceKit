@@ -4,7 +4,7 @@
 
 import XCTest
 import FBSnapshotTestCase
-import BSWInterfaceKit
+@testable import BSWInterfaceKit
 
 class BSWSnapshotTest: FBSnapshotTestCase {
 
@@ -18,6 +18,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
 
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
+        RandomColorFactory.isOn = false
     }
 
     var currentWindow: UIWindow {
@@ -83,7 +84,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         let exp = expectation(description: "verify view")
         let deadlineTime = DispatchTime.now() + .milliseconds(50)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.FBSnapshotVerifyView(view)
+            self.FBSnapshotVerifyView(view, tolerance: 0.1)
             exp.fulfill()
         }
         let _ = waiter.wait(for: [exp], timeout: 1)

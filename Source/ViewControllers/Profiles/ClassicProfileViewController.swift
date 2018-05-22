@@ -51,13 +51,22 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+
         view.addSubview(scrollableStackView)
         view.backgroundColor = UIColor.white
         scrollableStackView.pinToSuperview()
         //This is set to false in order to layout the image below the transparent navBar
-        automaticallyAdjustsScrollViewInsets = false
         if #available(iOS 11.0, *) {
+
+            let navBar = navigationController?.navigationBar.frame.maxY ?? 0
+            additionalSafeAreaInsets = [
+                .top: -navBar
+            ]
+
+            view.insetsLayoutMarginsFromSafeArea = false
             scrollableStackView.contentInsetAdjustmentBehavior = .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
         }
 
         if let tabBar = tabBarController?.tabBar {
@@ -92,15 +101,6 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         if let navBar = self.navigationController?.navigationBar {
             navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
-        
-        //Add the rightBarButtonItem
-        switch editKind {
-        case .editable(let barButton):
-            navigationItem.rightBarButtonItem = barButton
-        default:
-            break
-        }
-
     }
     
     override open func viewWillDisappear(_ animated: Bool) {
