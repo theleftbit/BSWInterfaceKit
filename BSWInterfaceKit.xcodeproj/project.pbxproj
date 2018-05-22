@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		72F0AADF6E81A3F0D9EC99DD /* Pods_Common_BSWInterfaceKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089FF9700D561CEA999D7CEB /* Pods_Common_BSWInterfaceKitDemo.framework */; };
-		B7425825432A9629D2494D43 /* Pods_BSWInterfaceKitDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BD8FDEA21CC6950FA03B8CE /* Pods_BSWInterfaceKitDemoTests.framework */; };
+		75115028DBBD341CFB70F8B8 /* Pods_BSWInterfaceKitDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9781A2542680784B472999E /* Pods_BSWInterfaceKitDemoTests.framework */; };
+		9DE1C1FD3F03B74DF5AE296C /* Pods_BSWInterfaceKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31E89FF769F3404BC4EC2F2E /* Pods_BSWInterfaceKitDemo.framework */; };
 		EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */; };
 		EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */; };
 		EB0B24261E81B2BF005491F1 /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B24251E81B2BF005491F1 /* UIViewTests.swift */; };
@@ -39,17 +39,12 @@
 
 /* Begin PBXFileReference section */
 		053162F30068FA295473A9D8 /* BSWInterfaceKit.playground */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.playground; path = BSWInterfaceKit.playground; sourceTree = "<group>"; };
-		0753E2B40FC31F8E675998D1 /* Pods-Common-BSWInterfaceKitDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitDemo/Pods-Common-BSWInterfaceKitDemo.release.xcconfig"; sourceTree = "<group>"; };
-		089FF9700D561CEA999D7CEB /* Pods_Common_BSWInterfaceKitDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Common_BSWInterfaceKitDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		16E13958ABB91142B93EC0DD /* Pods-Common-BSWInterfaceKitPlayground.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitPlayground.release.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitPlayground/Pods-Common-BSWInterfaceKitPlayground.release.xcconfig"; sourceTree = "<group>"; };
-		584BCD31C8DFF8A423DC1CBC /* Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitPlayground/Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig"; sourceTree = "<group>"; };
+		05D2CCE9EC50FDB1F039867D /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		22BE3756D7FD5750FD847EF6 /* Pods-BSWInterfaceKitDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		31E89FF769F3404BC4EC2F2E /* Pods_BSWInterfaceKitDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		38863D8FF3DBF00755FEC550 /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.release.xcconfig"; sourceTree = "<group>"; };
 		876CB44B6FD0A748932B75CC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		88F067BBD22E91A5A11D13CD /* Pods-Common-BSWInterfaceKitDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Common-BSWInterfaceKitDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Common-BSWInterfaceKitDemo/Pods-Common-BSWInterfaceKitDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		9BD8FDEA21CC6950FA03B8CE /* Pods_BSWInterfaceKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB121209232B337A83D0E7BF /* Pods_Common_BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Common_BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D898CFB9CD31BED2463F8BD6 /* Pods_BSWInterfaceKitPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF76EAB8EBDD82E323AD7CEB /* Pods_Common_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Common_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E5F363682ECCCD041FC95D1C /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9F7FF3CE5CEED46194483C28 /* Pods-BSWInterfaceKitDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo.release.xcconfig"; sourceTree = "<group>"; };
 		EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolaroidCellTests.swift; sourceTree = "<group>"; };
 		EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
 		EB0B24251E81B2BF005491F1 /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
@@ -70,8 +65,8 @@
 		EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrawberryViewController.swift; sourceTree = "<group>"; };
 		EBBB9FAE1E7BF524000F1232 /* FruitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FruitViewController.swift; sourceTree = "<group>"; };
 		EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
-		ECAD9F0C9D88CCEA59E28B8D /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BSWInterfaceKitDemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests.release.xcconfig"; sourceTree = "<group>"; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
+		F9781A2542680784B472999E /* Pods_BSWInterfaceKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72F0AADF6E81A3F0D9EC99DD /* Pods_Common_BSWInterfaceKitDemo.framework in Frameworks */,
+				9DE1C1FD3F03B74DF5AE296C /* Pods_BSWInterfaceKitDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7425825432A9629D2494D43 /* Pods_BSWInterfaceKitDemoTests.framework in Frameworks */,
+				75115028DBBD341CFB70F8B8 /* Pods_BSWInterfaceKitDemoTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,21 +98,19 @@
 				EBB3CECB1E50C60B0063303C /* BSWInterfaceKitDemoTests */,
 				9F252AEF9DC385C64E668E8B /* Products */,
 				E8668C1A6301F6D5C33A656D /* Frameworks */,
-				7B54BF0681DDCE081CC3A8C5 /* Pods */,
+				874AC9A57FC9C2FD8F5E4CA3 /* Pods */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
 			tabWidth = 4;
 		};
-		7B54BF0681DDCE081CC3A8C5 /* Pods */ = {
+		874AC9A57FC9C2FD8F5E4CA3 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				16E13958ABB91142B93EC0DD /* Pods-Common-BSWInterfaceKitPlayground.release.xcconfig */,
-				584BCD31C8DFF8A423DC1CBC /* Pods-Common-BSWInterfaceKitPlayground.debug.xcconfig */,
-				88F067BBD22E91A5A11D13CD /* Pods-Common-BSWInterfaceKitDemo.debug.xcconfig */,
-				0753E2B40FC31F8E675998D1 /* Pods-Common-BSWInterfaceKitDemo.release.xcconfig */,
-				E5F363682ECCCD041FC95D1C /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */,
-				ECAD9F0C9D88CCEA59E28B8D /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */,
+				22BE3756D7FD5750FD847EF6 /* Pods-BSWInterfaceKitDemo.debug.xcconfig */,
+				9F7FF3CE5CEED46194483C28 /* Pods-BSWInterfaceKitDemo.release.xcconfig */,
+				05D2CCE9EC50FDB1F039867D /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */,
+				38863D8FF3DBF00755FEC550 /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -143,11 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				B6DC4EF26191BD13C50CD2E9 /* iOS */,
-				D898CFB9CD31BED2463F8BD6 /* Pods_BSWInterfaceKitPlayground.framework */,
-				BB121209232B337A83D0E7BF /* Pods_Common_BSWInterfaceKitPlayground.framework */,
-				DF76EAB8EBDD82E323AD7CEB /* Pods_Common_Tests.framework */,
-				089FF9700D561CEA999D7CEB /* Pods_Common_BSWInterfaceKitDemo.framework */,
-				9BD8FDEA21CC6950FA03B8CE /* Pods_BSWInterfaceKitDemoTests.framework */,
+				31E89FF769F3404BC4EC2F2E /* Pods_BSWInterfaceKitDemo.framework */,
+				F9781A2542680784B472999E /* Pods_BSWInterfaceKitDemoTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -199,11 +189,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBB3CECF1E50C60B0063303C /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemo" */;
 			buildPhases = (
-				666EF80A72E403B347578EE2 /* [CP] Check Pods Manifest.lock */,
+				66978024774B5130487A2DD5 /* [CP] Check Pods Manifest.lock */,
 				EBB3CEB11E50C60B0063303C /* Sources */,
 				EBB3CEB21E50C60B0063303C /* Frameworks */,
 				EBB3CEB31E50C60B0063303C /* Resources */,
-				CEA434E0BAE8B33DBB84EEEB /* [CP] Embed Pods Frameworks */,
+				F84BC29E6D1287A94A5703B9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -218,11 +208,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBB3CED21E50C60B0063303C /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemoTests" */;
 			buildPhases = (
-				7AEB98E389FE4ECCEFB23D54 /* [CP] Check Pods Manifest.lock */,
+				450F3148C77D28CE83CCCAC3 /* [CP] Check Pods Manifest.lock */,
 				EBB3CEC41E50C60B0063303C /* Sources */,
 				EBB3CEC51E50C60B0063303C /* Frameworks */,
 				EBB3CEC61E50C60B0063303C /* Resources */,
-				40041426D255998298F7E7F1 /* [CP] Embed Pods Frameworks */,
+				7C42CC5B381213039C5CC1B9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -295,43 +285,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		40041426D255998298F7E7F1 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FBSnapshotTestCase/FBSnapshotTestCase.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		666EF80A72E403B347578EE2 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Common-BSWInterfaceKitDemo-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7AEB98E389FE4ECCEFB23D54 /* [CP] Check Pods Manifest.lock */ = {
+		450F3148C77D28CE83CCCAC3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -349,13 +303,49 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CEA434E0BAE8B33DBB84EEEB /* [CP] Embed Pods Frameworks */ = {
+		66978024774B5130487A2DD5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Common-BSWInterfaceKitDemo/Pods-Common-BSWInterfaceKitDemo-frameworks.sh",
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BSWInterfaceKitDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7C42CC5B381213039C5CC1B9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/iOSSnapshotTestCase/FBSnapshotTestCase.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F84BC29E6D1287A94A5703B9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BNRDeferred/Deferred.framework",
 				"${BUILT_PRODUCTS_DIR}/BSWFoundation/BSWFoundation.framework",
 				"${BUILT_PRODUCTS_DIR}/BSWInterfaceKit/BSWInterfaceKit.framework",
@@ -372,7 +362,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Common-BSWInterfaceKitDemo/Pods-Common-BSWInterfaceKitDemo-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -524,7 +514,7 @@
 		};
 		EBB3CED01E50C60B0063303C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 88F067BBD22E91A5A11D13CD /* Pods-Common-BSWInterfaceKitDemo.debug.xcconfig */;
+			baseConfigurationReference = 22BE3756D7FD5750FD847EF6 /* Pods-BSWInterfaceKitDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -555,7 +545,7 @@
 		};
 		EBB3CED11E50C60B0063303C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0753E2B40FC31F8E675998D1 /* Pods-Common-BSWInterfaceKitDemo.release.xcconfig */;
+			baseConfigurationReference = 9F7FF3CE5CEED46194483C28 /* Pods-BSWInterfaceKitDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -586,7 +576,7 @@
 		};
 		EBB3CED31E50C60B0063303C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E5F363682ECCCD041FC95D1C /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */;
+			baseConfigurationReference = 05D2CCE9EC50FDB1F039867D /* Pods-BSWInterfaceKitDemoTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -617,7 +607,7 @@
 		};
 		EBB3CED41E50C60B0063303C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ECAD9F0C9D88CCEA59E28B8D /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */;
+			baseConfigurationReference = 38863D8FF3DBF00755FEC550 /* Pods-BSWInterfaceKitDemoTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
