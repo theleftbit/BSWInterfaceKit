@@ -3,7 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import SDWebImage
 
 public struct Photo {
     
@@ -50,6 +51,26 @@ enum RandomColorFactory {
         }
 
         return UIColor.randomColor()
+    }
+}
+
+extension Photo {
+    var estimatedSize: CGSize? {
+        guard size == nil else {
+            return size
+        }
+
+        switch self.kind {
+        case .empty:
+            return nil
+        case .image(let image):
+            return image.size
+        case .url(let url):
+            guard let image = SDWebImageManager.shared().imageCache?.imageFromCache(forKey: url.absoluteString) else {
+                return nil
+            }
+            return image.size
+        }
     }
 }
 
