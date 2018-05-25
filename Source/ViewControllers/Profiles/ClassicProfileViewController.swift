@@ -23,7 +23,7 @@ public enum ClassicProfileEditKind {
 
 open class ClassicProfileViewController: AsyncViewModelViewController<ClassicProfileViewModel> {
 
-    open let scrollableStackView: ScrollableStackView = ClassicProfileScrollableStackView()
+    open let scrollableStackView = ScrollableStackView()
 
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
@@ -52,14 +52,13 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
     open override func viewDidLoad() {
         super.viewDidLoad()
 
-        let containerView = UIView()
+        let containerView = HostView()
         view.addSubview(containerView)
         containerView.pinToSuperview()
 
         containerView.addSubview(scrollableStackView)
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = .white
         scrollableStackView.pinToSuperview()
-        //This is set to false in order to layout the image below the transparent navBar
 
         //Add the photoGallery
         photoGallery.delegate = self
@@ -139,7 +138,7 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
 
 //MARK:- ScrollView
 
-private class ClassicProfileScrollableStackView: ScrollableStackView {
+private class HostView: UIView {
     @available(iOS 11.0, *)
     override fileprivate var safeAreaInsets: UIEdgeInsets {
         let superSafeArea = super.safeAreaInsets
