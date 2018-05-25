@@ -32,14 +32,20 @@ final public class NavBarTransparentBehavior: NSObject {
     fileprivate static let heightOfNavBarAndStatusBar = 64
     fileprivate static let limitOffsetTransparentNavBar = 100
     
-    fileprivate weak var navBar: UINavigationBar?
+    fileprivate weak var navBar: UINavigationBar!
+    fileprivate var observation: NSKeyValueObservation!
 
     init(navBar: UINavigationBar, scrollView: UIScrollView) {
         self.navBar = navBar
         super.init()
-        scrollView.delegate = self
-        
+        observation = scrollView.observe(\.contentOffset) { [weak self] (scrollView, _) in
+            self?.updateNavBar(forScrollView: scrollView)
+        }
         updateNavBar(forScrollView: scrollView)
+    }
+
+    deinit {
+        observation.invalidate()
     }
     
     func setNavBar(toState state: NavBarState) {
@@ -53,7 +59,6 @@ final public class NavBarTransparentBehavior: NSObject {
     }
 
     fileprivate func updateNavBar(forScrollView scrollView: UIScrollView) {
-        guard let _ = navBar else { return }
         if scrollView.contentOffset.y < CGFloat(NavBarTransparentBehavior.limitOffsetTransparentNavBar) {
             setNavBar(toState: .transparent)
         }
@@ -93,7 +98,6 @@ final public class NavBarTransparentBehavior: NSObject {
 
 extension NavBarTransparentBehavior: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let _ = navBar else { return }
         updateNavBar(forScrollView: scrollView)
     }
 }
