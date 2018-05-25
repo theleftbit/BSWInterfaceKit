@@ -12,13 +12,13 @@ import BSWInterfaceKit
 class FeaturesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     enum Features: String {
-        case scrollableStackView = "ScrollableStackView"
+        case profileViewController = "ProfileViewController"
         case asyncViewModelController = "AsyncViewModelController"
         case collectionViewDataSource = "CollectionViewDataSource"
         case facebookLogin = "FacebookLogin"
 
         static var allFeatures: [Features] {
-            return [.scrollableStackView, .asyncViewModelController, .collectionViewDataSource, .facebookLogin]
+            return [.profileViewController, .asyncViewModelController, .collectionViewDataSource, .facebookLogin]
         }
     }
 
@@ -69,8 +69,10 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         case .facebookLogin:
             let vc = FacebookLoginViewController()
             navigationController?.pushViewController(vc, animated: true)
-        default:
-            break
+        case .profileViewController:
+            let viewModel = ClassicProfileViewModel.buffon()
+            let vc = ClassicProfileViewController(viewModel: viewModel)
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
 }
