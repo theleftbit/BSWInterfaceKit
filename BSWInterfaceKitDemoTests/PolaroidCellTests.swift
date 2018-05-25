@@ -7,18 +7,16 @@ import BSWInterfaceKit
 @testable import BSWInterfaceKitDemo
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
-
-    var collectionView: UICollectionView!
+    var collectionView: WaterfallCollectionView!
     var dataSource: CollectionViewStatefulDataSource<PolaroidCollectionViewCell>!
 
     override func setUp() {
         super.setUp()
         isDeviceAgnostic = false
-        collectionView = WaterfallCollectionView(cellSizing: .dynamic({ (indexPath, constrainedToWidth) -> CGFloat in
+        collectionView = WaterfallCollectionView(cellSizing: .dynamic({ [unowned self] (indexPath, constrainedToWidth) -> CGFloat in
             guard let model = self.dataSource.modelForIndexPath(indexPath) else { return 0 }
             return PolaroidCollectionViewCell.cellHeightForViewModel(model, constrainedToWidth: constrainedToWidth)
         }))
-        collectionView.frame = CGRect(x: 0, y: 0, width: 350, height: 500)
         dataSource = CollectionViewStatefulDataSource<PolaroidCollectionViewCell>(
             state: .loaded(data: PolaroidCollectionViewCellTests.mockData()),
             collectionView: collectionView
@@ -35,11 +33,40 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         }
     }
     
-    func testLayout() {
+    func testCompactLayout() {
+        let hostView = HostView(overridenTraitCollection: UITraitCollection(horizontalSizeClass: .compact), frame: CGRect(x: 0, y: 0, width: 350, height: 500))
+        hostView.addAutolayoutSubview(collectionView)
+        collectionView.pinToSuperview()
         waitABitAndVerify(view: collectionView)
     }
 
+    func testRegularLayout() {
+
+    }
+
     static func mockData() -> [PolaroidCollectionViewCell.VM] {
-        return FruitViewController.mockData()
+        return FruitViewController.mockData().map({
+            return PolaroidCollectionViewCell.VM(
+                cellImage: Photo.emptyPhoto(),
+                cellTitle: $0.cellTitle,
+                cellDetails: $0.cellDetails
+            )
+        })
+    }
+}
+
+class HostView: UIView {
+    init(overridenTraitCollection: UITraitCollection, frame: CGRect) {
+        self.overridenTraitCollection = overridenTraitCollection
+        super.init(frame: frame)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    var overridenTraitCollection: UITraitCollection!
+    override var traitCollection: UITraitCollection {
+        return overridenTraitCollection
     }
 }

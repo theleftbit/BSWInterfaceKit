@@ -31,9 +31,10 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         view.clipsToBounds = true
         return view
     }()
-    
-    fileprivate static let MaxImageHeightProportion = CGFloat(1.4)
-    
+    fileprivate let stackView = UIStackView()
+
+    fileprivate static let MaxImageHeightProportion = CGFloat(2)
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -50,10 +51,13 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         cellImageView.image = nil
     }
     
-    fileprivate func setup() {        
-        contentView.addAutolayoutSubview(cellImageView)
-        contentView.addAutolayoutSubview(detailSubview)
-        
+    fileprivate func setup() {
+        stackView.addArrangedSubview(cellImageView)
+        stackView.addArrangedSubview(detailSubview)
+        stackView.axis = .vertical
+        contentView.addAutolayoutSubview(stackView)
+        stackView.pinToSuperview()
+
         setupConstraints()
         setupRoundedCorners()
         
@@ -65,21 +69,9 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     fileprivate var imageHeightConstraint: NSLayoutConstraint!
     
     fileprivate func setupConstraints() {
-        var constraints = [NSLayoutConstraint]()
-
         imageHeightConstraint = cellImageView.heightAnchor.constraint(equalToConstant: 80)
-        imageHeightConstraint.priority = UILayoutPriority(rawValue: 999)
-
-        constraints.append(imageHeightConstraint)
-        constraints.append(cellImageView.topAnchor.constraint(equalTo: contentView.topAnchor))
-        constraints.append(cellImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor))
-        constraints.append(cellImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor))
-        constraints.append(cellImageView.bottomAnchor.constraint(equalTo: detailSubview.bottomAnchor))
-        constraints.append(detailSubview.leadingAnchor.constraint(equalTo: contentView.leadingAnchor))
-        constraints.append(detailSubview.trailingAnchor.constraint(equalTo: contentView.trailingAnchor))
-        constraints.append(detailSubview.bottomAnchor.constraint(equalTo: contentView.bottomAnchor))
-
-        NSLayoutConstraint.activate(constraints)
+        imageHeightConstraint.priority = .required
+        NSLayoutConstraint.activate([imageHeightConstraint])
     }
     
     fileprivate func setupRoundedCorners() {
@@ -171,7 +163,7 @@ extension PolaroidCollectionViewCell {
     
     fileprivate static func cellImageHeightForViewModel(_ viewModel: VM, constrainedToWidth width: CGFloat) -> CGFloat {
         let maxImageHeight = PolaroidCollectionViewCell.MaxImageHeightProportion * width
-        let imageSize = viewModel.cellImage.size ?? CGSize(width: width, height: width)
+        let imageSize = viewModel.cellImage.estimatedSize ?? CGSize(width: width, height: width)
         let imageHeight = min(maxImageHeight, width * CGFloat(imageSize.height) / CGFloat(imageSize.width))
         return imageHeight
     }
@@ -179,17 +171,17 @@ extension PolaroidCollectionViewCell {
     fileprivate static func cellInfoHeightForViewModel(_ viewModel: VM, constrainedToWidth width: CGFloat) -> CGFloat {
         let infoView = PolaroidCollectionViewCellHeightCalculator.BasicInfoView
         infoView.setTitle(viewModel.cellTitle, subtitle: viewModel.cellDetails)
-        let height = infoView.systemLayoutSizeFitting(CGSize(width: width, height: 0),
-                                                          withHorizontalFittingPriority: UILayoutPriority.required,
-                                                          verticalFittingPriority: UILayoutPriority.fittingSizeLevel
-            ).height
-        return height
+        let fittingSize = infoView.systemLayoutSizeFitting(
+            CGSize(width: width, height: 0),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+            )
+        return fittingSize.height
     }
     
     static public func cellHeightForViewModel(_ viewModel: VM, constrainedToWidth width: CGFloat) -> CGFloat {
-        let imageHeight = viewModel.cellImage.size == .none ? width : cellImageHeightForViewModel(viewModel, constrainedToWidth: width)
+        let imageHeight = cellImageHeightForViewModel(viewModel, constrainedToWidth: width)
         let infoHeight = cellInfoHeightForViewModel(viewModel, constrainedToWidth: width)
-        
         return imageHeight + infoHeight
     }
 }
