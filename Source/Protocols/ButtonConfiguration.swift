@@ -20,11 +20,12 @@ public struct ButtonConfiguration {
     public let actionHandler: ButtonActionHandler
 
     public init(title: String,
-                titleColor: UIColor = .black,
+                titleColor: UIColor? = nil,
                 backgroundColor: UIColor = .clear,
                 contentInset: UIEdgeInsets = UIEdgeInsets(uniform: 5),
                 actionHandler: @escaping ButtonActionHandler) {
-        self.buttonTitle = .text(TextStyler.styler.attributedString(title, color: titleColor))
+        let tintColor = titleColor ?? UIApplication.shared.keyWindow!.tintColor
+        self.buttonTitle = .text(TextStyler.styler.attributedString(title, color: tintColor))
         self.backgroundColor = backgroundColor
         self.actionHandler = actionHandler
         self.contentInset = contentInset
@@ -63,7 +64,7 @@ extension UIButton {
         
         switch buttonConfiguration.buttonTitle {
         case .text(let title):
-            setAttributedTitle(title, for: UIControlState())
+            setAttributedTitle(title, for: .normal)
         case .image(let image):
             setImage(image, for: .normal)
             imageView?.contentMode = .scaleAspectFit
