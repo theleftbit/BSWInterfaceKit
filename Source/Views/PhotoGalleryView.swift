@@ -68,6 +68,10 @@ final public class PhotoGalleryView: UIView {
         collectionView.scrollToItem(at: IndexPath(item: Int(index), section: 0), at: .centeredHorizontally, animated: animated)
     }
 
+    public func invalidateLayout() {
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.setNeedsLayout()
+    }
 
     fileprivate func setup() {
         translatesAutoresizingMaskIntoConstraints = false
