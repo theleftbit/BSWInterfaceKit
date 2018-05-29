@@ -9,7 +9,7 @@ enum FruitError: Error {
     case unknownError
 }
 
-class FruitViewController: UIViewController, ListStatePresenter {
+class AzzurriViewController: UIViewController, ListStatePresenter {
 
     var dataSource: CollectionViewStatefulDataSource<PolaroidCollectionViewCell>!
     var collectionView: UICollectionView!
@@ -30,7 +30,6 @@ class FruitViewController: UIViewController, ListStatePresenter {
             return PolaroidCollectionViewCell.cellHeightForViewModel(model, constrainedToWidth: constrainedToWidth)
         }))
         dataSource = CollectionViewStatefulDataSource<PolaroidCollectionViewCell>(
-            state: .loaded(data: FruitViewController.mockData()),
             collectionView: collectionView
         )
 
@@ -43,7 +42,7 @@ class FruitViewController: UIViewController, ListStatePresenter {
 
         dataSource.updateState(.loading)
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
-            self.dataSource.updateState(.loaded(data: FruitViewController.mockData()))
+            self.dataSource.updateState(.loaded(data: AzzurriViewController.mockData()))
         }
     }
 
