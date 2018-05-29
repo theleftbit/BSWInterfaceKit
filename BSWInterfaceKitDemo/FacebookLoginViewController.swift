@@ -12,7 +12,7 @@ class FacebookLoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        let buttonConfig = ButtonConfiguration(title: "Login With Facebook", titleColor: UIColor.blue) { [weak self] in
+        let buttonConfig = ButtonConfiguration(title: "Login With Facebook", titleColor: self.view.tintColor) { [weak self] in
             guard let `self` = self else { return }
             self.loginWithFacebook()
         }
