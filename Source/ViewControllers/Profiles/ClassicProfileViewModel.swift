@@ -51,8 +51,8 @@ extension ClassicProfileViewModel {
     public static func buffon() -> ClassicProfileViewModel {
         return ClassicProfileViewModel(
             photos: [
-                Photo(kind: Photo.Kind.url(URL(string: "http://ow.ly/ZHvD302NKEF")!)),
-                Photo(kind: Photo.Kind.url(URL(string: "http://ow.ly/1n7d302UNLr")!))
+                Photo(kind: Photo.Kind.url(URL(string: "https://i.imgur.com/Y9u82wp.jpg")!)),
+                Photo(kind: Photo.Kind.url(URL(string: "https://i.imgur.com/SdCC8XG.jpg")!))
             ],
             titleInfo: TextStyler.styler.attributedString("Gianluigi Buffon", forStyle: .title),
             detailsInfo: TextStyler.styler.attributedString("The best keeper of football history", forStyle: .body),
