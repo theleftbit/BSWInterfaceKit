@@ -71,6 +71,7 @@ final public class PhotoGalleryView: UIView {
     public func invalidateLayout() {
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.setNeedsLayout()
+        scrollToPhoto(atIndex: UInt(pageControl.currentPage))
     }
 
     fileprivate func setup() {
