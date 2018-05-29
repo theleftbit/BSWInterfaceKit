@@ -64,7 +64,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
             let vc = StrawberryViewController(dataProvider: StrawberryInteractor.dataProvider())
             navigationController?.pushViewController(vc, animated: true)
         case .collectionViewDataSource:
-            let vc = FruitViewController()
+            let vc = AzzurriViewController()
             navigationController?.pushViewController(vc, animated: true)
         case .facebookLogin:
             let vc = FacebookLoginViewController()
