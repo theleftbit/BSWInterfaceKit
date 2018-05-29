@@ -23,7 +23,7 @@ public enum ClassicProfileEditKind {
 
 open class ClassicProfileViewController: AsyncViewModelViewController<ClassicProfileViewModel> {
 
-    public let scrollableStackView = ScrollableStackView()
+    open let scrollableStackView = ScrollableStackView()
 
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
@@ -52,26 +52,13 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
     open override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(scrollableStackView)
-        view.backgroundColor = UIColor.white
+        let containerView = HostView()
+        view.addSubview(containerView)
+        containerView.pinToSuperview()
+
+        containerView.addSubview(scrollableStackView)
+        view.backgroundColor = .white
         scrollableStackView.pinToSuperview()
-        //This is set to false in order to layout the image below the transparent navBar
-        if #available(iOS 11.0, *) {
-
-            let navBar = navigationController?.navigationBar.frame.maxY ?? 0
-            additionalSafeAreaInsets = [
-                .top: -navBar
-            ]
-
-            view.insetsLayoutMarginsFromSafeArea = false
-            scrollableStackView.contentInsetAdjustmentBehavior = .never
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
-
-        if let tabBar = tabBarController?.tabBar {
-            scrollableStackView.contentInset = [.bottom: tabBar.frame.height]
-        }
 
         //Add the photoGallery
         photoGallery.delegate = self
@@ -85,7 +72,7 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: Constants.LayoutMargins)
         scrollableStackView.addArrangedSubview(separatorView, layoutMargins: Constants.LayoutMargins)
         scrollableStackView.addArrangedSubview(extraDetailsLabel, layoutMargins: Constants.LayoutMargins)
-        
+
         //Add the rightBarButtonItem
         switch editKind {
         case .editable(let barButton):
@@ -102,12 +89,12 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
             navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
         }
     }
-    
+
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navBarBehaviour?.setNavBar(toState: .regular)
     }
-    
+
     override open var preferredStatusBarStyle : UIStatusBarStyle {
         return .lightContent
     }
@@ -146,5 +133,15 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
         photoGallery.scrollToPhoto(atIndex: index)
         dismiss(animated: true, completion: nil)
+    }
+}
+
+//MARK:- ScrollView
+
+private class HostView: UIView {
+    @available(iOS 11.0, *)
+    override fileprivate var safeAreaInsets: UIEdgeInsets {
+        let superSafeArea = super.safeAreaInsets
+        return UIEdgeInsets(top: 0, left: superSafeArea.left, bottom: superSafeArea.bottom, right: superSafeArea.right)
     }
 }
