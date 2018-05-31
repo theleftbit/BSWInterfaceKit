@@ -38,6 +38,12 @@ open class PhotoGalleryViewController: UIViewController {
     open override var prefersStatusBarHidden : Bool {
         return true
     }
+
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (_) in
+            self.photosGallery.invalidateLayout()
+        }, completion: nil)
+    }
     
     override open func viewDidLoad() {
         super.viewDidLoad()
