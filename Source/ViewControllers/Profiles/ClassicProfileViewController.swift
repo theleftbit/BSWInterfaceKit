@@ -93,6 +93,7 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navBarBehaviour?.setNavBar(toState: .regular)
+        navBarBehaviour = nil
     }
 
     override open var preferredStatusBarStyle : UIStatusBarStyle {

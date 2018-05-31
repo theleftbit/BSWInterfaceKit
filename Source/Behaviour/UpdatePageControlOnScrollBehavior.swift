@@ -9,19 +9,26 @@ final public class UpdatePageControlOnScrollBehavior: NSObject {
     
     fileprivate weak var pageControl: UIPageControl?
     fileprivate let scrollingDirection: ScrollingDirection
-    
-    init(pageControl: UIPageControl, scrollingDirection: ScrollingDirection = .horizontal) {
+    fileprivate var observation: NSKeyValueObservation!
+
+    init(pageControl: UIPageControl, scrollingDirection: ScrollingDirection = .horizontal, scrollView: UIScrollView) {
         self.pageControl = pageControl
         self.scrollingDirection = scrollingDirection
         super.init()
+
+        observation = scrollView.observe(\.contentOffset) { [weak self] (scrollView, _) in
+            self?.scrollViewDidScroll(scrollView)
+        }
+    }
+
+    deinit {
+        observation.invalidate()
     }
     
     enum ScrollingDirection {
         case horizontal, vertical
     }
-}
 
-extension UpdatePageControlOnScrollBehavior: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let pageControl = pageControl else { return }
         

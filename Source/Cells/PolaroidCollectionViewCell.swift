@@ -7,7 +7,7 @@ import UIKit
 
 //MARK: Cells
 
-@available(iOS 8.0, *)
+@available(iOS 9.0, *)
 open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
     //MARK: ViewModel
@@ -154,7 +154,7 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
 
 //MARK: - Height calculation
 
-@available(iOS 8.0, *)
+@available(iOS 9.0, *)
 extension PolaroidCollectionViewCell {
     
     fileprivate struct PolaroidCollectionViewCellHeightCalculator {

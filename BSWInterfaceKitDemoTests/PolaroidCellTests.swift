@@ -45,7 +45,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
     }
 
     static func mockData() -> [PolaroidCollectionViewCell.VM] {
-        return FruitViewController.mockData().map({
+        return AzzurriViewController.mockData().map({
             return PolaroidCollectionViewCell.VM(
                 cellImage: Photo.emptyPhoto(),
                 cellTitle: $0.cellTitle,

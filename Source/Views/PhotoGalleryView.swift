@@ -17,11 +17,14 @@ public protocol PhotoGalleryViewDelegate: class {
 final public class PhotoGalleryView: UIView {
     
     fileprivate let imageContentMode: UIViewContentMode
-    fileprivate let scrollableStackView = ScrollableStackView(axis: .horizontal)
-    
+    fileprivate let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    fileprivate var collectionViewDataSource: CollectionViewStatefulDataSource<PhotoCollectionViewCell>!
+    fileprivate var collectionViewLayout: UICollectionViewFlowLayout {
+        return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+    }
+
     fileprivate let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
         pageControl.hidesForSinglePage = true
         pageControl.pageIndicatorTintColor = UIColor.white
         pageControl.pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.5)
@@ -30,7 +33,8 @@ final public class PhotoGalleryView: UIView {
     
     public var photos = [Photo]() {
         didSet {
-            layoutImageViews()
+            collectionViewDataSource.updateState(.loaded(data: photos))
+            pageControl.numberOfPages = photos.count
         }
     }
     
@@ -47,7 +51,7 @@ final public class PhotoGalleryView: UIView {
     public init(photos: [Photo], imageContentMode: UIViewContentMode = .scaleAspectFill) {
         self.photos = photos
         self.imageContentMode = imageContentMode
-        updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl)
+        updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
         super.init(frame: CGRect.zero)
         setup()
     }
@@ -61,86 +65,74 @@ final public class PhotoGalleryView: UIView {
     }    
 
     public func scrollToPhoto(atIndex index: UInt, animated: Bool = false) {
-        guard let imageView = scrollableStackView.viewAtIndex(Int(index)) else {
-            return
-        }
-        let offset = CGPoint(x: imageView.frame.minX, y: scrollableStackView.contentOffset.y)
-        scrollableStackView.setContentOffset(offset, animated: animated)
+        collectionView.scrollToItem(at: IndexPath(item: Int(index), section: 0), at: .centeredHorizontally, animated: animated)
     }
-}
 
-// MARK: Initial view setup
+    public func invalidateLayout() {
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.setNeedsLayout()
+        scrollToPhoto(atIndex: UInt(pageControl.currentPage))
+    }
 
-extension PhotoGalleryView {
-    
     fileprivate func setup() {
         translatesAutoresizingMaskIntoConstraints = false
 
-        // ScrollableStackView view
-        addSubview(scrollableStackView)
-        scrollableStackView.isPagingEnabled = true
-        scrollableStackView.showsHorizontalScrollIndicator = false
-        scrollableStackView.delegate = updatePageControlOnScrollBehavior
-        
+        // CollectionView
+        addSubview(collectionView)
+        collectionView.isPagingEnabled = true
+        collectionViewDataSource = CollectionViewStatefulDataSource(
+            state: .loaded(data: photos),
+            collectionView: collectionView
+        )
+        collectionView.dataSource = collectionViewDataSource
+        collectionView.delegate = self
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionViewLayout.scrollDirection = .horizontal
+
         // Page control
-        addSubview(pageControl)
-        
-        // Image views
-        layoutImageViews()
-        
+        addAutolayoutSubview(pageControl)
+        pageControl.numberOfPages = photos.count
+
         // Constraints
         setupConstraints()
-    }
-
-    fileprivate func layoutImageViews() {
-        
-        scrollableStackView.removeAllArrangedViews()
-        
-        photos.forEach { photo in
-            let imageView = createImageView(forPhoto: photo)
-            scrollableStackView.addArrangedSubview(imageView)
-
-            //Set the size of the imageView
-            imageView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
-            imageView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        }
-        
-        pageControl.numberOfPages = photos.count
-    }
-    
-    fileprivate func createImageView(forPhoto photo: Photo) -> UIImageView {
-        let imageView = UIImageView()
-        imageView.contentMode = imageContentMode
-        imageView.clipsToBounds = true
-        
-        imageView.isUserInteractionEnabled = true
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        imageView.addGestureRecognizer(tapGestureRecognizer)
-        
-        imageView.setPhoto(photo)
-
-        return imageView
-    }
-    
-    // MARK: UI Action handlers
-    
-    @objc func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
-        guard let view = tapGestureRecognizer.view else {
-            return
-        }
-        guard let index = scrollableStackView.indexOfView(view) else {
-            return
-        }
-        delegate?.didTapPhotoAt(index: UInt(index), fromView: view)
     }
 
     // MARK: Constraints
 
     fileprivate func setupConstraints() {
-        scrollableStackView.pinToSuperview()
+        collectionView.pinToSuperview()
+
+        let bottomConstraint: NSLayoutConstraint = {
+            if #available(iOS 11, *) {
+                return pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -CGFloat(Stylesheet.margin(.small)))
+            } else {
+                return pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -CGFloat(Stylesheet.margin(.small)))
+            }
+        }()
         NSLayoutConstraint.activate([
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -CGFloat(Stylesheet.margin(.small)))
+            bottomConstraint
             ])
+    }
+}
+
+// MARK: UICollectionViewDelegate
+
+extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
+
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let photoCell = cell as? PhotoCollectionViewCell else { return }
+        photoCell.cellImageView.contentMode = self.imageContentMode
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) else {
+            return
+        }
+        delegate?.didTapPhotoAt(index: UInt(indexPath.item), fromView: cell)
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return self.frame.size
     }
 }

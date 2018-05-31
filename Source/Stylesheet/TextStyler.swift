@@ -34,14 +34,15 @@ open class TextStyler {
     public init() {}
     open var preferredFontName: String?
     
-    open func attributedString(_ string: String, color: UIColor = UIColor.black, forStyle style: Style = .body) -> NSAttributedString {
+    open func attributedString(_ string: String, color: UIColor? = nil, forStyle style: Style = .body) -> NSAttributedString {
         
-        let font = fontForStyle(style)
-        
-        let attributes = [
-            NSAttributedStringKey.font: font,
-            NSAttributedStringKey.foregroundColor: color,
+        var attributes: [NSAttributedStringKey : Any] = [
+            .font: fontForStyle(style)
         ]
+
+        if let color = color {
+            attributes[.foregroundColor] = color
+        }
         
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
