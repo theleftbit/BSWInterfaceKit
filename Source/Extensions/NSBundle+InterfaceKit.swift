@@ -16,6 +16,10 @@ extension Bundle {
 }
 
 private struct InterfaceBundle {
-    fileprivate static let bundle = Bundle(for: InterfaceKit.self)
+    fileprivate static let bundle: Bundle = {
+        let podBundle = Bundle(for: InterfaceKit.self)
+        let url = podBundle.url(forResource: "BSWInterfaceKit", withExtension: "bundle")!
+        return Bundle(url: url)!
+    }()
     fileprivate class InterfaceKit: NSObject {}
 }
