@@ -48,65 +48,58 @@ extension UIViewController {
     }
 
   // MARK: - Bottom Action Button
-
-    @nonobjc @discardableResult
-    public func addBottomActionButton(_ buttonConfig: ButtonConfiguration) -> UIButton {
     
-        guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
-        
-        func animateChanges(_ changes: @escaping () -> ()) {
-
-            guard NSClassFromString("XCTest") == nil else {
-                changes()
-                return
-            }
-
-            UIView.animate(
-                withDuration: Constants.ButtonAnimationDuration,
-                delay: 0,
-                usingSpringWithDamping: 0.7,
-                initialSpringVelocity: 0.3,
-                options: [],
-                animations: {
-                    changes()
-                },
-                completion: nil
-            )
-        }
-        
+    @nonobjc @discardableResult
+    public func addBottomActionButton(buttonConfig: ButtonConfiguration, margin: UIEdgeInsets = .zero) -> UIButton {
         if let actionButton = view.findSubviewWithTag(Constants.BottomActionTag) as? UIButton {
-            animateChanges {
-                actionButton.setButtonConfiguration(buttonConfig)
-            }
+            actionButton.setButtonConfiguration(buttonConfig)
             return actionButton
         } else {
-            
-            removeBottonActionButton()
-
             let button = UIButton(buttonConfiguration: buttonConfig)
-            button.tag = Constants.BottomActionTag
-            view.addAutolayoutSubview(button)
-            
-            let bottomConstraint = button.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-
-            NSLayoutConstraint.activate([
-                bottomConstraint,
-                button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.ButtonHeight),
-                button.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                button.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-                ])
-
-            view.layoutIfNeeded()
-
-            //Now, let's animate how this is shown
-            bottomConstraint.constant = button.bounds.height
-            view.layoutIfNeeded()
-            bottomConstraint.constant = 0
-            animateChanges {
-                self.view.layoutIfNeeded()
-            }
-
+            addBottomActionButton(button: button, margin: margin)
             return button
+        }
+    }
+    
+    @nonobjc @discardableResult
+    public func addBottomActionButton(button: UIButton, margin: UIEdgeInsets = .zero) {
+        
+        guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
+        
+        removeBottonActionButton()
+        
+        view.addAutolayoutSubview(button)
+        
+        let bottomConstraint: NSLayoutConstraint
+        let bottomAnchor: NSLayoutYAxisAnchor
+
+        if margin.bottom == 0 {
+            bottomAnchor = self.view.bottomAnchor
+        } else {
+            if #available(iOS 11.0, *) {
+                bottomAnchor = self.view.safeAreaLayoutGuide.bottomAnchor
+            } else {
+                bottomAnchor = self.bottomLayoutGuide.topAnchor
+            }
+        }
+        
+        bottomConstraint = button.bottomAnchor.constraint(equalTo: bottomAnchor)
+
+        NSLayoutConstraint.activate([
+            bottomConstraint,
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.ButtonHeight),
+            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin.left),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -margin.right)
+            ])
+        
+        view.layoutIfNeeded()
+        
+        //Now, let's animate how this is shown
+        bottomConstraint.constant = button.bounds.height
+        view.layoutIfNeeded()
+        bottomConstraint.constant = -margin.bottom
+        animateChanges {
+            self.view.layoutIfNeeded()
         }
     }
 
@@ -146,3 +139,24 @@ private let errorQueue: OperationQueue = {
   operationQueue.maxConcurrentOperationCount = 1
   return operationQueue
 }()
+
+
+private func animateChanges(_ changes: @escaping () -> ()) {
+    
+    guard NSClassFromString("XCTest") == nil else {
+        changes()
+        return
+    }
+    
+    UIView.animate(
+        withDuration: Constants.ButtonAnimationDuration,
+        delay: 0,
+        usingSpringWithDamping: 0.7,
+        initialSpringVelocity: 0.3,
+        options: [],
+        animations: {
+            changes()
+    },
+        completion: nil
+    )
+}
