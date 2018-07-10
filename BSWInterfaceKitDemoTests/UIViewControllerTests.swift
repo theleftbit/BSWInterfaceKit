@@ -29,14 +29,4 @@ private class BottomActionVC: UIViewController {
         let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
         button = addBottomActionButton(buttonConfig: config, margin: margin)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        if #available(iOS 11.0, *), let button = self.button {
-            print(button.safeAreaInsets)
-            print(button.intrinsicContentSize)
-
-        }
-        
-    }
 }
