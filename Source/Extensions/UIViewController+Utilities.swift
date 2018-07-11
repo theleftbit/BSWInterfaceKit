@@ -61,7 +61,7 @@ extension UIViewController {
         }
     }
     
-    @nonobjc @discardableResult
+    @nonobjc
     public func addBottomActionButton(button: UIButton, margin: UIEdgeInsets = .zero) {
         
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }

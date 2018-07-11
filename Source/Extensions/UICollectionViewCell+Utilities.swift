@@ -2,7 +2,7 @@ import UIKit
 import ObjectiveC
 import BSWFoundation
 
-public extension UICollectionViewCell {
+open extension UICollectionViewCell {
 
     private enum Constants {
         static let DeleteButtonTag = 876
