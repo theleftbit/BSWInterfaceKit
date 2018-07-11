@@ -33,9 +33,20 @@ class TextStylerTests: BSWSnapshotTest {
     func testFootnote() {
         performTestFor(style: .footnote)
     }
+
+    func testBoldedString() {
+        sut.preferredFontName = nil
+        let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded()
+        performTestFor(string: string)
+    }
+
     private func performTestFor(style: TextStyler.Style) {
+        self.performTestFor(string: sut.attributedString("HelloWorld", color: .blue, forStyle: style))
+    }
+
+    private func performTestFor(string: NSAttributedString) {
         let label = UILabel()
-        label.attributedText = sut.attributedString("HelloWorld", color: .blue, forStyle: style)
+        label.attributedText = string
         label.frame = CGRect(origin: .zero, size: label.intrinsicContentSize)
         waitABitAndVerify(view: label)
     }
