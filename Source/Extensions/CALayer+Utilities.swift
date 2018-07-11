@@ -6,8 +6,8 @@ import UIKit
 
 public extension CALayer {
     
-    func addShadow(opacity: CGFloat = 0.5, shadowRadius: CGFloat = 10) {
-        self.shadowOffset = .zero
+    func addShadow(opacity: CGFloat = 0.5, shadowRadius: CGFloat = 10, offset: CGSize = .zero) {
+        self.shadowOffset = offset
         self.shadowOpacity = Float(opacity)
         self.shadowRadius = shadowRadius
         self.shadowColor = UIColor.black.cgColor
