@@ -17,15 +17,19 @@ open class TextStyler {
         fileprivate func toUIKit() -> UIFontTextStyle {
             switch self {
             case .title:
-                return UIFontTextStyle.title1
+                if #available(iOS 11.0, *) {
+                    return .largeTitle
+                } else {
+                    return .title1
+                }
             case .headline:
-                return UIFontTextStyle.headline
+                return .headline
             case .subheadline:
-                return UIFontTextStyle.subheadline
+                return .subheadline
             case .body:
-                return UIFontTextStyle.body
+                return .body
             case .footnote:
-                return UIFontTextStyle.footnote
+                return .footnote
             }
         }
     }
