@@ -15,6 +15,9 @@ open class TextStyler {
         case footnote
         
         fileprivate func toUIKit() -> UIFontTextStyle {
+            
+            // https://gist.github.com/zacwest/916d31da5d03405809c4
+                
             switch self {
             case .title:
                 if #available(iOS 11.0, *) {
@@ -23,7 +26,7 @@ open class TextStyler {
                     return .title1
                 }
             case .headline:
-                return .headline
+                return .title2
             case .subheadline:
                 return .subheadline
             case .body:
