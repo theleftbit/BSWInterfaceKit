@@ -15,7 +15,7 @@ class TextStylerTests: BSWSnapshotTest {
     }
 
     func testTitle() {
-        performTestFor(style: .title)
+        performTestFor(style: .title1)
     }
 
     func testHeadline() {
@@ -40,7 +40,7 @@ class TextStylerTests: BSWSnapshotTest {
         performTestFor(string: string)
     }
 
-    private func performTestFor(style: TextStyler.Style) {
+    private func performTestFor(style: UIFontTextStyle) {
         self.performTestFor(string: sut.attributedString("HelloWorld", color: .blue, forStyle: style))
     }
 
