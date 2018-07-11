@@ -7,41 +7,13 @@ import UIKit
 
 open class TextStyler {
     
-    public enum Style {
-        case title
-        case headline
-        case subheadline
-        case body
-        case footnote
-        
-        fileprivate func toUIKit() -> UIFontTextStyle {
-            
-            // https://gist.github.com/zacwest/916d31da5d03405809c4
-                
-            switch self {
-            case .title:
-                if #available(iOS 11.0, *) {
-                    return .largeTitle
-                } else {
-                    return .title1
-                }
-            case .headline:
-                return .title2
-            case .subheadline:
-                return .subheadline
-            case .body:
-                return .body
-            case .footnote:
-                return .footnote
-            }
-        }
-    }
+    // https://gist.github.com/zacwest/916d31da5d03405809c4
     
     public static let styler = TextStyler()
     public init() {}
     open var preferredFontName: String?
     
-    open func attributedString(_ string: String, color: UIColor? = nil, forStyle style: Style = .body) -> NSAttributedString {
+    open func attributedString(_ string: String, color: UIColor? = nil, forStyle style: UIFontTextStyle = .body) -> NSAttributedString {
         
         var attributes: [NSAttributedStringKey : Any] = [
             .font: fontForStyle(style)
@@ -54,10 +26,9 @@ open class TextStyler {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
-    open func fontForStyle(_ style: Style) -> UIFont {
+    open func fontForStyle(_ style: UIFontTextStyle) -> UIFont {
     
-        let uikitStyle = style.toUIKit()
-        let systemFont = UIFont.preferredFont(forTextStyle: uikitStyle)
+        let systemFont = UIFont.preferredFont(forTextStyle: style)
         guard
             let preferredFontName = preferredFontName,
             let font = UIFont(name: preferredFontName, size: systemFont.pointSize) else {
@@ -65,7 +36,7 @@ open class TextStyler {
         }
 
         if #available(iOS 11.0, *) {
-            let metrics = UIFontMetrics(forTextStyle: uikitStyle)
+            let metrics = UIFontMetrics(forTextStyle: style)
             return metrics.scaledFont(for: font)
         } else {
             return font
