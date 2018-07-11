@@ -24,7 +24,7 @@ public protocol OnboardingObserver: class {
 
 public protocol OnboardingProvider: class {
     var onboardingCustomization: OnboardingCustomization { get set }
-    weak var onboardingObserver: OnboardingObserver? { get set }
+    var onboardingObserver: OnboardingObserver? { get set }
     
     //What should this API look like if more social networks are allowed to login?
 }

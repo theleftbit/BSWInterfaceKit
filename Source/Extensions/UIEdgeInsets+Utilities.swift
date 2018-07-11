@@ -7,6 +7,7 @@ import UIKit
 //: Suggested by [@al_skipp](https://twitter.com/al_skipp)
 extension UIEdgeInsets {
     public init(uniform: CGFloat) {
+        self.init()
         top = uniform
         left = uniform
         bottom = uniform
