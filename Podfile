@@ -3,7 +3,6 @@ platform :ios, '10.0'
 
 target 'BSWInterfaceKitDemo' do
     pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'
-    pod 'BSWFoundation', :git => 'git@github.com:theleftbit/BSWFoundation.git', :tag => '2.0.2'
 
     target 'BSWInterfaceKitDemoTests' do
         inherit! :search_paths
