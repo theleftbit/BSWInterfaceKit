@@ -25,6 +25,7 @@
 		EBBB9FAF1E7BF524000F1232 /* AzzurriViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */; };
 		EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */; };
 		F54886DC203ED769005191D3 /* FacebookLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */; };
+		F56D522320F767130008D67C /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56D522220F767130008D67C /* AvatarViewTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AzzurriViewController.swift; sourceTree = "<group>"; };
 		EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
+		F56D522220F767130008D67C /* AvatarViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarViewTests.swift; sourceTree = "<group>"; };
 		F9781A2542680784B472999E /* Pods_BSWInterfaceKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -153,6 +155,7 @@
 				EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */,
 				EB3B035B1E9CE019009E6F80 /* OnboardingViewControllerTests.swift */,
 				EB55C3AD1EF534120029E735 /* TextStylerTests.swift */,
+				F56D522220F767130008D67C /* AvatarViewTests.swift */,
 			);
 			name = Suite;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */,
 				EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */,
 				EB3B035C1E9CE019009E6F80 /* OnboardingViewControllerTests.swift in Sources */,
+				F56D522320F767130008D67C /* AvatarViewTests.swift in Sources */,
 				EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */,
 				EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */,
 				EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */,

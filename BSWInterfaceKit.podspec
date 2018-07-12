@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "Source/**/*.{swift,m,h}"
-  s.resource_bundle = { "BSWInterfaceKit" => "Assets/**/*.{xcassets,storyboard,strings}" }
+  s.resources     = "Assets/**/*.{xcassets,storyboard,strings}"
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation", "~> 2.0.2"
