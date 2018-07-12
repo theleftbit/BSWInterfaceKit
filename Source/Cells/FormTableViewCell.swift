@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITableViewCell, ViewModelReusable {
+open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITableViewCell, ViewModelReusable {
     
     public struct VM {
         let inputVM : InputView.VM
@@ -31,7 +31,7 @@ public class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITab
         layout()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -64,13 +64,13 @@ public protocol TextInputViewDelegate: class {
     func didModifyText(text: String, textInputView: TextInputView)
 }
 
-public final class TextInputView: UIView, ViewModelConfigurable {
+open class TextInputView: UIView, ViewModelConfigurable {
     
     public struct VM {
         let text: String?
     }
     
-    private let textField = UITextField.autolayoutTextFieldWith(textStyle: .body, placeholderText: "")
+    public let textField = UITextField.autolayoutTextFieldWith(textStyle: .body, placeholderText: "")
     
     weak var delegate: TextInputViewDelegate?
     
@@ -89,7 +89,7 @@ public final class TextInputView: UIView, ViewModelConfigurable {
         layout()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
