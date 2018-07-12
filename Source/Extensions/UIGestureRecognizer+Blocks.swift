@@ -15,7 +15,7 @@ private class UIGestureRecognizerStateChangeBlockHost {
     
     weak var gestureRecognizer: UIGestureRecognizer?
     
-    var block: [UIGestureRecognizerState: UIGestureRecognizerStateChangeBlock] = [:]
+    var block: [UIGestureRecognizer.State: UIGestureRecognizerStateChangeBlock] = [:]
     
     init(gestureRecognizer: UIGestureRecognizer) {
         self.gestureRecognizer = gestureRecognizer

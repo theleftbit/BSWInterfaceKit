@@ -8,11 +8,13 @@ import XCTest
 class UIViewControllerTests: BSWSnapshotTest {
 
     func testAddBottomActionButton() {
+        guard UIDevice.current.model != "iPad" else { return }
         let vc = BottomActionVC()
         waitABitAndVerify(viewController: vc)
     }
 
     func testAddBottomActionButtonWithMargin() {
+        guard UIDevice.current.model != "iPad" else { return }
         let vc = BottomActionVC()
         vc.margin = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
         waitABitAndVerify(viewController: vc)

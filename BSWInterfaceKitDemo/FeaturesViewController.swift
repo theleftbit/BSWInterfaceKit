@@ -34,7 +34,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         featuresTableView.pinToSuperview()
         featuresTableView.register(UITableViewCell.self, forCellReuseIdentifier: "ReuseID")
         featuresTableView.estimatedRowHeight = 44
-        featuresTableView.rowHeight = UITableViewAutomaticDimension
+        featuresTableView.rowHeight = UITableView.automaticDimension
         featuresTableView.delegate = self
         featuresTableView.dataSource = self
     }

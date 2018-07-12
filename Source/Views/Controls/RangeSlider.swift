@@ -202,7 +202,7 @@ open class RangeSlider: UIControl {
     }
     
     open override var intrinsicContentSize : CGSize {
-        return CGSize(width: UIViewNoIntrinsicMetric, height: 30)
+        return CGSize(width: UIView.noIntrinsicMetric, height: 30)
     }
     
     func updateLayerFrames() {

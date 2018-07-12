@@ -10,6 +10,7 @@ class TextStylerTests: BSWSnapshotTest {
     var sut: TextStyler!
     override func setUp() {
         super.setUp()
+        isDeviceAgnostic = false
         sut = TextStyler()
         sut.preferredFontName = "ChalkboardSE-Light"
     }
@@ -40,7 +41,7 @@ class TextStylerTests: BSWSnapshotTest {
         performTestFor(string: string)
     }
 
-    private func performTestFor(style: UIFontTextStyle) {
+    private func performTestFor(style: UIFont.TextStyle) {
         self.performTestFor(string: sut.attributedString("HelloWorld", color: .blue, forStyle: style))
     }
 
