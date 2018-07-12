@@ -19,6 +19,7 @@ extension UIImage {
         case plusRound = "PlusRound"
         case cancelRound = "CancelRound"
         case close = "Close"
+        case camera = "ic_camera"
     }
     
     public class func templateImage(_ template: Template) -> UIImage {

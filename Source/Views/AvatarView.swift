@@ -5,28 +5,63 @@
 
 import UIKit
 
-class AvatarView: UIView {
+public class AvatarView: UIView {
     
-    fileprivate let imageView: UIImageView = {
+    public let size: Size
+    
+    public var photo: Photo {
+        didSet {
+            updateImage()
+        }
+    }
+
+    private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    fileprivate let size: Size
-    
-    var photo: Photo {
+    public var onTapOnAvatar: AvatarTouchHandler? {
         didSet {
-            updateImage()
+            if let tapRecognizer = self.tapRecognizer {
+                self.removeGestureRecognizer(tapRecognizer)
+                self.tapRecognizer = nil
+            }
+            cameraImageView.removeFromSuperview()
+
+            if let _ = onTapOnAvatar {
+                self.isUserInteractionEnabled = true
+                tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTap))
+                self.addGestureRecognizer(tapRecognizer!)
+                
+                cameraImageView.translatesAutoresizingMaskIntoConstraints = false
+                addAutolayoutSubview(cameraImageView)
+                cameraImageView.centerInSuperview()
+                NSLayoutConstraint.activate([
+                    cameraImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.25),
+                    cameraImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.25),
+                    ])
+            } else {
+                self.isUserInteractionEnabled = true
+            }
         }
     }
-    
+
+    private var tapRecognizer: UITapGestureRecognizer?
+    private let cameraImageView: UIImageView = {
+        let imageView = UIImageView()
+        let cameraImage = UIImage.templateImage(.camera)
+        imageView.image = cameraImage.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        imageView.tintColor = .white
+        return imageView
+    }()
+
     // MARK: Initialization
     
-    init(size: Size, photo: Photo) {
+    public init(size: Size, photo: Photo) {
         self.size = size
         self.photo = photo
-        super.init(frame: CGRect.zero)
+        super.init(frame: .zero)
         setup()
     }
     
@@ -38,11 +73,11 @@ class AvatarView: UIView {
     
     fileprivate func setup() {
         layer.masksToBounds = true
-        addSubview(imageView)
+        addAutolayoutSubview(imageView)
         imageView.pinToSuperview()
         updateImage()
-        setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
-        setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
+        setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
     fileprivate func updateImage() {
@@ -51,24 +86,29 @@ class AvatarView: UIView {
     
   // MARK: Layout
 
-    override var intrinsicContentSize : CGSize {
+    override public var intrinsicContentSize : CGSize {
         return CGSize(width: size.rawValue, height: size.rawValue)
     }
 
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = bounds.width / 2
     }
     
-    // MARK: Avatar size
+    // MARK: TapReco
     
-    enum Size: CGFloat {
-        case smallest = 18
-        case small = 25
-        case medium = 30
-        case big = 40
-        case bigger = 44
-        case biggest = 60
-        case huge = 80
+    @objc func onTap() {
+        onTapOnAvatar?(self)
     }
+    
+    // MARK: Types
+    
+    public enum Size: CGFloat {
+        case smallest = 44
+        case normal = 60
+        case big = 80
+        case huge = 140
+    }
+    
+    public typealias AvatarTouchHandler = (AvatarView) -> ()
 }

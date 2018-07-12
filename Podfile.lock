@@ -35,7 +35,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   BNRDeferred: 3936d5a6c2181731eb6528662881312f9aaed08e
   BSWFoundation: a1418b45004569004fe2e6cc1a332b1b4a91a24e
-  BSWInterfaceKit: fabe65e9c3e8733a3ae83e76985db83e552b2d07
+  BSWInterfaceKit: bd9ca9097ad9cac12bbd0e3ba422af3b7a9ae96a
   iOSSnapshotTestCase: 23984ffe05289728d646cbb6a7a10b4fb1c93440
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
