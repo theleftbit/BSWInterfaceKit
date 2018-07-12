@@ -72,7 +72,12 @@ open class TextInputView: UIView, ViewModelConfigurable {
     
     public let textField = UITextField.autolayoutTextFieldWith(textStyle: .body, placeholderText: "")
     
-    weak var delegate: TextInputViewDelegate?
+    public weak var delegate: TextInputViewDelegate?
+    
+    @objc dynamic public var font: UIFont? {
+        get { return textField.font }
+        set { textField.font = newValue }
+    }
     
     public var placeholder: String? {
         set {
