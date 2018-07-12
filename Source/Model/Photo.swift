@@ -54,22 +54,27 @@ enum RandomColorFactory {
     }
 }
 
-extension Photo {
+public extension Photo {
     var estimatedSize: CGSize? {
         guard size == nil else {
             return size
         }
 
+        return self.uiImage?.size
+    }
+    
+    var uiImage: UIImage? {
         switch self.kind {
         case .empty:
             return nil
         case .image(let image):
-            return image.size
+            return image
         case .url(let url):
-            guard let image = SDWebImageManager.shared().imageCache?.imageFromCache(forKey: url.absoluteString) else {
+            let imageManager = SDWebImageManager.shared() //This dependency should be removed
+            guard let image = imageManager.imageCache?.imageFromCache(forKey: url.absoluteString) else {
                 return nil
             }
-            return image.size
+            return image
         }
     }
 }
