@@ -1,5 +1,6 @@
-xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDemo -destination 'platform=iOS Simulator,name=iPhone SE'
-xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDemo -destination 'platform=iOS Simulator,name=iPhone X'
-xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDemo -destination 'platform=iOS Simulator,name=iPhone 7'
-xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDemo -destination 'platform=iOS Simulator,name=iPhone 7 Plus'
-xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDemo -destination 'platform=iOS Simulator,name=iPad (5th Generation)'
+xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDemo\
+-destination 'platform=iOS Simulator,name=iPhone SE' \
+-destination 'platform=iOS Simulator,name=iPhone X' \
+-destination 'platform=iOS Simulator,name=iPhone 7' \
+-destination 'platform=iOS Simulator,name=iPhone 7 Plus' \
+-destination 'platform=iOS Simulator,name=iPad (5th Generation)' \

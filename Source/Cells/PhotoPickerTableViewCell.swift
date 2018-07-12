@@ -7,7 +7,7 @@ open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFl
     
     let photosCollectionView = ProfilePhotoPickerCollectionView()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
     }

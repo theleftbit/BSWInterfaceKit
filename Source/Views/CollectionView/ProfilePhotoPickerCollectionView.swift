@@ -240,7 +240,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
     }()
 
     let accesoryView = UIButton(type: .custom)
-    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .white)
+    let spinner = UIActivityIndicatorView(style: .white)
     var cellDelegate: ProfilePhotoPickerCollectionViewCellDelegate?
     
     override init(frame: CGRect) {
