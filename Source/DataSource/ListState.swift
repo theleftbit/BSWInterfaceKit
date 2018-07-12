@@ -163,7 +163,7 @@ public enum LoadingListConfiguration {
     public struct DefaultLoadingViewConfiguration {
         let backgroundColor = UIColor.clear
         let message: NSAttributedString? = nil
-        let activityIndicatorStyle = UIActivityIndicatorViewStyle.gray
+        let activityIndicatorStyle = UIActivityIndicatorView.Style.gray
     }
     
     case `default`(DefaultLoadingViewConfiguration)

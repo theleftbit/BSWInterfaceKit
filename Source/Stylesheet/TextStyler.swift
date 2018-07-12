@@ -13,9 +13,9 @@ open class TextStyler {
     public init() {}
     open var preferredFontName: String?
     
-    open func attributedString(_ string: String, color: UIColor? = nil, forStyle style: UIFontTextStyle = .body) -> NSAttributedString {
+    open func attributedString(_ string: String, color: UIColor? = nil, forStyle style: UIFont.TextStyle = .body) -> NSAttributedString {
         
-        var attributes: [NSAttributedStringKey : Any] = [
+        var attributes: [NSAttributedString.Key : Any] = [
             .font: fontForStyle(style)
         ]
 
@@ -26,7 +26,7 @@ open class TextStyler {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
-    open func fontForStyle(_ style: UIFontTextStyle) -> UIFont {
+    open func fontForStyle(_ style: UIFont.TextStyle) -> UIFont {
     
         let systemFont = UIFont.preferredFont(forTextStyle: style)
         guard
