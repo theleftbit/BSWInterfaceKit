@@ -23,7 +23,7 @@ public enum ClassicProfileEditKind {
 
 open class ClassicProfileViewController: AsyncViewModelViewController<ClassicProfileViewModel> {
 
-    open let scrollableStackView = ScrollableStackView()
+    public let scrollableStackView = ScrollableStackView()
 
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
