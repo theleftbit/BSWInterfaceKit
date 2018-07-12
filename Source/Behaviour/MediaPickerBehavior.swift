@@ -15,7 +15,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         case photo
         case video
         
-        func toUIKit() -> UIImagePickerControllerCameraCaptureMode {
+        func toUIKit() -> UIImagePickerController.CameraCaptureMode {
             switch self {
             case .photo:
                 return .photo
@@ -38,7 +38,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         case photoAlbum
         case camera
         
-        func toUIKit() -> UIImagePickerControllerSourceType {
+        func toUIKit() -> UIImagePickerController.SourceType {
             switch self {
             case .camera:
                 return .camera
@@ -91,7 +91,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     
     // MARK: UIImagePickerControllerDelegate
     
-    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         defer {
             self.currentRequest = nil
@@ -101,7 +101,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         guard let currentRequest = self.currentRequest else { return }
         
         let validMedia: Bool = {
-            guard let mediaTypeString = info[UIImagePickerControllerMediaType] as? String else { return false }
+            guard let mediaTypeString = info[.mediaType] as? String else { return false }
             switch currentRequest.kind {
             case .video:
                 return mediaTypeString == kUTTypeMovie as String
@@ -115,12 +115,12 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
             return
         }
         
-        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+        guard let image = info[.originalImage] as? UIImage else {
             self.currentRequest?.handler(nil)
             return
         }
 
-        guard let data = UIImageJPEGRepresentation(image, 0.6) else {
+        guard let data = image.jpegData(compressionQuality: 0.6) else {
             self.currentRequest?.handler(nil)
             return
         }

@@ -21,7 +21,7 @@ open class LaunchScreenViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         if showSpinner {
-            let spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
             view.addSubview(spinner)
             spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false

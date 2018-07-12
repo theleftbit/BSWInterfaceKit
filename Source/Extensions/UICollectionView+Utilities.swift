@@ -28,9 +28,9 @@ extension UICollectionView {
         fileprivate func toUIKit() -> String {
             switch self {
             case .footer:
-                return UICollectionElementKindSectionFooter
+                return UICollectionView.elementKindSectionFooter
             case .header:
-                return UICollectionElementKindSectionHeader
+                return UICollectionView.elementKindSectionHeader
             }
         }
     }

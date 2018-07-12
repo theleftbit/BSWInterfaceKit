@@ -12,7 +12,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
 
     override func setUp() {
         super.setUp()
-
+        
         // Set snapshot device agnostic. It will append "iPhone" to the snapshot filename
         isDeviceAgnostic = true
 

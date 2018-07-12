@@ -33,8 +33,8 @@ class PresentAlertOperation: Operation {
                 return
             }
 
-            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: UIAlertControllerStyle.alert)
-            let action = UIAlertAction(title: BSWInterfaceKitStrings.dismiss.string, style: UIAlertActionStyle.cancel) { _ in
+            let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: .alert)
+            let action = UIAlertAction(title: BSWInterfaceKitStrings.dismiss.string, style: .cancel) { _ in
                 self.finishOperation()
             }
 

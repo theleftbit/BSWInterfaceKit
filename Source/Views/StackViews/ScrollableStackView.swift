@@ -10,8 +10,8 @@ open class ScrollableStackView: UIScrollView {
 
     fileprivate let stackView = UIStackView()
 
-    public init(axis: UILayoutConstraintAxis = .vertical,
-                alignment: UIStackViewAlignment = .leading) {
+    public init(axis: NSLayoutConstraint.Axis = .vertical,
+                alignment: UIStackView.Alignment = .leading) {
         super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis

@@ -78,8 +78,8 @@ final public class NavBarTransparentBehavior: NSObject {
     
     fileprivate static func animate(_ navBar: UINavigationBar) {
         let transition = CATransition()
-        transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        transition.type = kCATransitionFade
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        transition.type = CATransitionType.fade
         transition.duration = 0.3
         transition.isRemovedOnCompletion = true
         navBar.layer.add(transition, forKey: nil)
