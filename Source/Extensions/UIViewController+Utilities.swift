@@ -63,6 +63,15 @@ extension UIViewController {
     
     @nonobjc
     public func addBottomActionButton(button: UIButton, margin: UIEdgeInsets = .zero) {
+
+        /*
+         TODO: Add with swizzling a way to avoid this code in clients:
+         override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            navigationController?.setNavigationBarHidden(false, animated: true)
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableView.frame.size.height - continueButton.frame.minY, right: 0)
+         }
+         */
         
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         

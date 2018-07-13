@@ -57,7 +57,43 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
 
 // MARK: Standard input Views
 
-public class FormTextField: UITextField, ViewModelConfigurable {
+@available(iOS 10.0, *)
+open class FormTextField: UITextField, ViewModelConfigurable {
+    
+    public enum TextType {
+        case unknown
+        case name
+        case lastName
+        case email
+        case password
+    }
+    
+    public var textType: TextType = .unknown {
+        didSet {
+            switch textType {
+            case .name:
+                placeholder = "name-placeholder".localized
+                textContentType = .name
+                keyboardType = .default
+            case .lastName:
+                placeholder = "lastname-placeholder".localized
+                textContentType = .familyName
+                keyboardType = .default
+            case .email:
+                placeholder = "email-placeholder".localized
+                textContentType = .emailAddress
+                keyboardType = .emailAddress
+            case .password:
+                placeholder = "password-placeholder".localized
+                isSecureTextEntry = true
+                if #available(iOS 12.0, *) {
+                    textContentType = .newPassword
+                }
+            case .unknown:
+                break
+            }
+        }
+    }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,7 +104,7 @@ public class FormTextField: UITextField, ViewModelConfigurable {
         heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
