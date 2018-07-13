@@ -57,45 +57,55 @@ extension UIView {
     }
 
     @available(iOS 11.0, *)
+    @discardableResult
     @objc(bsw_pinToSuperviewSafeLayoutEdges:)
-    public func pinToSuperviewSafeLayoutEdges(withMargin margin: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
-        guard let superView = superview else { return }
+    public func pinToSuperviewSafeLayoutEdges(withMargin margin: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
+        guard let superView = superview else { return [] }
         translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        let constraints: [NSLayoutConstraint] = [
             safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.leadingAnchor, constant: margin.left),
             safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.trailingAnchor, constant: -margin.right),
             safeAreaLayoutGuide.topAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.topAnchor, constant: margin.top),
             safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.bottomAnchor, constant: -margin.bottom)
-            ])
+        ]
+        NSLayoutConstraint.activate(constraints)
+        return constraints
     }
 
+    @discardableResult
     @objc(bsw_pinToSuperviewWithEdges:)
-    public func pinToSuperview(withEdges edges: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)) {
-        guard let superView = superview else { return }
+    public func pinToSuperview(withEdges edges: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
+        guard let superView = superview else { return [] }
         translatesAutoresizingMaskIntoConstraints = false
 
-        NSLayoutConstraint.activate([
+        let constraints: [NSLayoutConstraint] = [
             leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: edges.left),
             trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -edges.right),
             topAnchor.constraint(equalTo: superView.topAnchor, constant: edges.top),
             bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -edges.bottom)
-            ])
+            ]
+        NSLayoutConstraint.activate(constraints)
+        return constraints
     }
 
+    @discardableResult
     @objc(bsw_fillSuperviewWithMargin:)
-    public func fillSuperview(withMargin margin: CGFloat) {
+    public func fillSuperview(withMargin margin: CGFloat)  -> [NSLayoutConstraint] {
         let inset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
-        pinToSuperview(withEdges: inset)
+        return pinToSuperview(withEdges: inset)
     }
 
+    @discardableResult
     @objc(bsw_centerInSuperview)
-    public func centerInSuperview() {
-        guard let superView = superview else { return }
+    public func centerInSuperview() -> [NSLayoutConstraint] {
+        guard let superView = superview else { return [] }
         translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        let constraints: [NSLayoutConstraint] = [
             centerXAnchor.constraint(equalTo: superView.centerXAnchor),
             centerYAnchor.constraint(equalTo: superView.centerYAnchor)
-            ])
+            ]
+        NSLayoutConstraint.activate(constraints)
+        return constraints
     }
 
     @nonobjc
