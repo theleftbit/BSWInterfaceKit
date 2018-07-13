@@ -9,7 +9,7 @@ extension UITextField {
     static func autolayoutTextFieldWith(textStyle style: UIFont.TextStyle, placeholderText: String) -> UITextField {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.font = UIFont.preferredFont(forTextStyle: style)
+        textField.font = TextStyler.styler.fontForStyle(style)
         textField.setContentHuggingPriority(.required, for: .vertical)
         textField.placeholder = placeholderText
         return textField
