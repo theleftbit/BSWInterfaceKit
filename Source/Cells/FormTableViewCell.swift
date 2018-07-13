@@ -8,8 +8,12 @@ import UIKit
 open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITableViewCell, ViewModelReusable {
     
     public struct VM {
-        let inputVM : InputView.VM
-        let warningMessage: NSAttributedString?
+        public let inputVM : InputView.VM
+        public let warningMessage: NSAttributedString?
+        public init(inputVM : InputView.VM, warningMessage: NSAttributedString?) {
+            self.inputVM = inputVM
+            self.warningMessage = warningMessage
+        }
     }
     
     public let formInputView: InputView
@@ -37,7 +41,7 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
     
     public func configureFor(viewModel vm: VM) {
         warningMessageLabel.attributedText = vm.warningMessage
-        warningMessageLabel.isHidden = (vm.warningMessage != nil)
+        warningMessageLabel.isHidden = (vm.warningMessage == nil)
         formInputView.configureFor(viewModel: vm.inputVM)
     }
     
@@ -68,7 +72,7 @@ public class FormTextField: UITextField, ViewModelConfigurable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configureFor(viewModel: String) {
+    public func configureFor(viewModel: String?) {
         self.text = viewModel
     }
 }
