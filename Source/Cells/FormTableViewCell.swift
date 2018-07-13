@@ -83,7 +83,7 @@ open class TextInputView: UIView, ViewModelConfigurable {
         }
     }
     
-    init() {
+    public init() {
         super.init(frame: .zero)
         setup()
         layout()
