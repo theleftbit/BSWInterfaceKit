@@ -53,29 +53,29 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
 
 // MARK: Standard input Views
 
-extension FormTableViewCell {
-    public class TextField: UITextField, ViewModelConfigurable {
-        
-        override public var intrinsicContentSize: CGSize {
-            let superSize = super.intrinsicContentSize
-            guard let minHeight = FormTableViewAppearance.TextFieldMinHeight else {
-                return super.intrinsicContentSize
-            }
-            
-            if superSize.height > minHeight {
-                return superSize
-            } else {
-                return CGSize(width: UIView.noIntrinsicMetric, height: minHeight)
-            }
+public class FormTextField: UITextField, ViewModelConfigurable {
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        guard let minHeight = FormTableViewAppearance.TextFieldMinHeight else {
+            return
         }
-        
-         public func configureFor(viewModel: String) {
-            self.text = viewModel
-        }
+
+        heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func configureFor(viewModel: String) {
+        self.text = viewModel
     }
 }
 
+// MARK: Appereance
+
 public enum FormTableViewAppearance {
-    static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-    static var TextFieldMinHeight: CGFloat?
+    public static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    public static var TextFieldMinHeight: CGFloat?
 }
