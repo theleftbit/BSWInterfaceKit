@@ -17,3 +17,11 @@
 "add-photo-title" = "¿De donde quieres subir la foto?";
 "photo-album" = "Carrete de Fotos";
 "camera" = "Camera";
+
+/**
+ *  FormTextField
+ */
+"name-placeholder" = "Nombre";
+"lastname-placeholder" = "Apellido";
+"email-placeholder" = "Email";
+"password-placeholder" = "Contraseña";
