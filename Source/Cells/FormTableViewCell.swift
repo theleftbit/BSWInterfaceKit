@@ -44,71 +44,38 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
     private func layout() {
         contentView.addAutolayoutSubview(stackView)
         stackView.pinToSuperview()
-        stackView.layoutMargins = Constants.Margins
+        stackView.layoutMargins = FormTableViewAppearance.CellLayoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.addArrangedSubview(formInputView)
         stackView.addArrangedSubview(warningMessageLabel)
     }
 }
 
-private enum Constants {
-    static let Margins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-}
-
-
 // MARK: Standard input Views
 
-import UIKit
-
-public protocol TextInputViewDelegate: class {
-    func didModifyText(text: String, textInputView: TextInputView)
-}
-
-open class TextInputView: UIView, ViewModelConfigurable {
-    
-    public struct VM {
-        let text: String?
-    }
-    
-    public let textField = UITextField.autolayoutTextFieldWith(textStyle: .body, placeholderText: "")
-    
-    public weak var delegate: TextInputViewDelegate?
+extension FormTableViewCell {
+    public class TextField: UITextField, ViewModelConfigurable {
         
-    public var placeholder: String? {
-        set {
-            textField.placeholder = newValue
+        override public var intrinsicContentSize: CGSize {
+            let superSize = super.intrinsicContentSize
+            guard let minHeight = FormTableViewAppearance.TextFieldMinHeight else {
+                return super.intrinsicContentSize
+            }
+            
+            if superSize.height > minHeight {
+                return superSize
+            } else {
+                return CGSize(width: UIView.noIntrinsicMetric, height: minHeight)
+            }
         }
-        get {
-            return textField.placeholder
+        
+         public func configureFor(viewModel: String) {
+            self.text = viewModel
         }
-    }
-    
-    public init() {
-        super.init(frame: .zero)
-        setup()
-        layout()
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setup() {
-        textField.delegate = self
-    }
-    
-    private func layout() {
-        addAutolayoutSubview(textField)
-        textField.pinToSuperview()
-    }
-    
-    public func configureFor(viewModel vm: TextInputView.VM) {
-        textField.text = vm.text
     }
 }
 
-extension TextInputView: UITextFieldDelegate {
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        self.delegate?.didModifyText(text: textField.text ?? "", textInputView: self)
-    }
+public enum FormTableViewAppearance {
+    static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    static var TextFieldMinHeight: CGFloat?
 }
