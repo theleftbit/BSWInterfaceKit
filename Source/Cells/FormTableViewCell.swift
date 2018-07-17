@@ -66,6 +66,14 @@ open class FormTextField: UITextField, ViewModelConfigurable {
         case lastName
         case email
         case password
+        case newPassword
+        
+        fileprivate var isPassword: Bool {
+            switch self {
+            case .newPassword, .password: return true
+            default: return false
+            }
+        }
     }
     
     public var textType: TextType = .unknown {
@@ -73,7 +81,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
             switch textType {
             case .name:
                 placeholder = "name-placeholder".localized
-                textContentType = .name
+                textContentType = .givenName
                 keyboardType = .default
             case .lastName:
                 placeholder = "lastname-placeholder".localized
@@ -85,13 +93,19 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 keyboardType = .emailAddress
             case .password:
                 placeholder = "password-placeholder".localized
-                isSecureTextEntry = true
+                if #available(iOS 11.0, *) {
+                    textContentType = .password
+                }
+            case .newPassword:
+                placeholder = "password-placeholder".localized
                 if #available(iOS 12.0, *) {
                     textContentType = .newPassword
                 }
             case .unknown:
                 break
             }
+            
+            isSecureTextEntry = textType.isPassword
         }
     }
     
