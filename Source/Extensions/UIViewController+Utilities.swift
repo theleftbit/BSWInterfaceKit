@@ -103,6 +103,12 @@ extension UIViewController {
         
         view.layoutIfNeeded()
         
+        //Let's add a content inset if required
+        if let scrollView = self.view.subviews.first as? UIScrollView {
+            let margin: CGFloat = 20
+            scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: scrollView.frame.size.height - button.frame.minY + margin, right: 0)
+        }
+
         //Now, let's animate how this is shown
         bottomConstraint.constant = button.bounds.height
         view.layoutIfNeeded()
