@@ -19,10 +19,16 @@ open class ErrorView: UIView {
     }()
     
     public init(errorMessage: NSAttributedString? = nil, buttonConfiguration: ButtonConfiguration) {
-        super.init(frame: CGRect.zero)
-        self.addSubview(stackView)
+        super.init(frame: .zero)
+        self.addAutolayoutSubview(stackView)
         stackView.centerInSuperview()
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: self.leadingAnchor, constant: 10),
+            stackView.trailingAnchor.constraint(greaterThanOrEqualTo: self.trailingAnchor, constant: -10)
+            ])
+        
         let label = UILabel()
+        label.numberOfLines = 0
         label.attributedText = errorMessage
         
         let button = UIButton(buttonConfiguration: buttonConfiguration)
