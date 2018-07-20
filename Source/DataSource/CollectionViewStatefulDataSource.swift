@@ -174,11 +174,15 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable & UICollect
         
         guard let emptyView = self.emptyView, let collectionView = self.collectionView else { return }
         
-        collectionView.addSubview(emptyView)
+        collectionView.addAutolayoutSubview(emptyView)
         
-        emptyView.translatesAutoresizingMaskIntoConstraints = false
-        emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
-        emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -20).isActive = true
+        let spacing: CGFloat = 20
+        NSLayoutConstraint.activate([
+            emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -spacing),
+            emptyView.leadingAnchor.constraint(greaterThanOrEqualTo: collectionView.leadingAnchor, constant: spacing),
+            emptyView.trailingAnchor.constraint(greaterThanOrEqualTo: collectionView.trailingAnchor, constant: -spacing)
+            ])
     }
     
     //MARK: IBAction
