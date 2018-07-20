@@ -26,7 +26,7 @@ open class ErrorView: UIView {
     public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
         super.init(frame: .zero)
         self.addAutolayoutSubview(stackView)
-        stackView.pinToSuperview()
+        stackView.centerInSuperview()
 
         if let image = image {
             let imageView = UIImageView(image: image)
