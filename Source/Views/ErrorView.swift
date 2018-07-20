@@ -29,6 +29,7 @@ open class ErrorView: UIView {
         
         let label = UILabel()
         label.numberOfLines = 0
+        label.textAlignment = .center
         label.attributedText = errorMessage
         
         let button = UIButton(buttonConfiguration: buttonConfiguration)
