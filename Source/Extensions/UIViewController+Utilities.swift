@@ -49,11 +49,11 @@ extension UIViewController {
 
   // MARK: - Bottom Action Button
     
-    @nonobjc @discardableResult
+    @nonobjc @discardableResult @available(iOS 11.0, *)
     public func addBottomActionButton(buttonConfig: ButtonConfiguration, margin: UIEdgeInsets = .zero) -> UIButton {
-        if let actionButton = view.findSubviewWithTag(Constants.BottomActionTag) as? UIButton {
-            actionButton.setButtonConfiguration(buttonConfig)
-            return actionButton
+        if let buttonContainer = self.buttonContainer {
+            buttonContainer.button.setButtonConfiguration(buttonConfig)
+            return buttonContainer.button
         } else {
             let button = UIButton(buttonConfiguration: buttonConfig)
             addBottomActionButton(button: button, margin: margin)
@@ -61,66 +61,48 @@ extension UIViewController {
         }
     }
     
-    @nonobjc
+    @available(iOS 11.0, *)
     public func addBottomActionButton(button: UIButton, margin: UIEdgeInsets = .zero) {
-
-        /*
-         TODO: Add with swizzling a way to avoid this code in clients:
-         override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            navigationController?.setNavigationBarHidden(false, animated: true)
-            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableView.frame.size.height - continueButton.frame.minY, right: 0)
-         }
-         */
         
         guard traitCollection.horizontalSizeClass == .compact else { fatalError() }
         
         removeBottonActionButton()
         
-        view.addAutolayoutSubview(button)
+        let buttonContainer = ButtonContainerViewController(button: button, margin: margin)
+        addChild(buttonContainer)
+        view.addAutolayoutSubview(buttonContainer.view)
         
-        let bottomConstraint: NSLayoutConstraint
-        let bottomAnchor: NSLayoutYAxisAnchor
-
-        if margin.bottom == 0 {
-            bottomAnchor = self.view.bottomAnchor
-        } else {
-            if #available(iOS 11.0, *) {
-                bottomAnchor = self.view.safeAreaLayoutGuide.bottomAnchor
-            } else {
-                bottomAnchor = self.bottomLayoutGuide.topAnchor
-            }
-        }
-        
-        bottomConstraint = button.bottomAnchor.constraint(equalTo: bottomAnchor)
-
+        let bottomConstraint = buttonContainer.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         NSLayoutConstraint.activate([
+            buttonContainer.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            buttonContainer.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomConstraint,
-            button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.ButtonHeight),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin.left),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -margin.right)
             ])
-        
+        buttonContainer.didMove(toParent: self)
         view.layoutIfNeeded()
+    
+        additionalSafeAreaInsets = UIEdgeInsets(dictionaryLiteral: (.bottom, buttonContainer.view.frame.height))
         
-        //Let's add a content inset if required
-        if let scrollView = self.view.subviews.first as? UIScrollView {
-            let margin: CGFloat = 20
-            scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: scrollView.frame.size.height - button.frame.minY + margin, right: 0)
-        }
-
         //Now, let's animate how this is shown
-        bottomConstraint.constant = button.bounds.height
+        bottomConstraint.constant = buttonContainer.view.bounds.height
         view.layoutIfNeeded()
-        bottomConstraint.constant = -margin.bottom
+        bottomConstraint.constant = 0
         animateChanges {
             self.view.layoutIfNeeded()
         }
     }
 
-    @nonobjc
+    @available(iOS 11.0, *)
     public func removeBottonActionButton() {
-        view.removeSubviewWithTag(Constants.BottomActionTag)
+        guard let buttonContainer = self.buttonContainer else { return }
+        buttonContainer.willMove(toParent: nil)
+        buttonContainer.view.removeFromSuperview()
+        buttonContainer.removeFromParent()
+    }
+    
+    @available(iOS 11.0, *)
+    private var buttonContainer: ButtonContainerViewController? {
+        return self.children.compactMap({ return $0 as? ButtonContainerViewController }).first
     }
 }
 
@@ -143,7 +125,6 @@ extension UINavigationController {
 // MARK: Private
 
 private enum Constants {
-    fileprivate static let BottomActionTag = 345678
     fileprivate static let ButtonAnimationDuration = 0.6
     fileprivate static let ButtonHeight = CGFloat(50)
     fileprivate static let LoaderTag = Int(888)
@@ -174,4 +155,30 @@ private func animateChanges(_ changes: @escaping () -> ()) {
     },
         completion: nil
     )
+}
+
+@available(iOS 11.0, *)
+private class ButtonContainerViewController: UIViewController {
+    
+    let button: UIButton
+    let margin: UIEdgeInsets
+    
+    init(button: UIButton, margin: UIEdgeInsets) {
+        self.button = button
+        self.margin = margin
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addAutolayoutSubview(button)
+        button.pinToSuperview(withEdges: margin)
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.ButtonHeight),
+            ])
+    }
 }

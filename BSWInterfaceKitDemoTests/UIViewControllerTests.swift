@@ -5,6 +5,7 @@
 import BSWInterfaceKit
 import XCTest
 
+@available(iOS 11.0, *)
 class UIViewControllerTests: BSWSnapshotTest {
 
     func testAddBottomActionButton() {
@@ -21,6 +22,7 @@ class UIViewControllerTests: BSWSnapshotTest {
     }
 }
 
+@available(iOS 11.0, *)
 private class BottomActionVC: UIViewController {
     
     var margin: UIEdgeInsets = .zero
