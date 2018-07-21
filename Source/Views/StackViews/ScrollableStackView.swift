@@ -15,7 +15,7 @@ open class ScrollableStackView: UIScrollView {
         super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis
-        stackView.alignment = alignment
+        self.alignment = alignment
 
         addSubview(stackView)
         stackView.pinToSuperview()
@@ -73,9 +73,24 @@ open class ScrollableStackView: UIScrollView {
     open var spacing: CGFloat {
         get {
             return stackView.spacing
-        }
-        set {
+        } set {
             stackView.spacing = newValue
+        }
+    }
+    
+    open var alignment: UIStackView.Alignment {
+        get {
+            return stackView.alignment
+        } set {
+            stackView.alignment = newValue
+        }
+    }
+
+    open var distribution: UIStackView.Distribution {
+        get {
+            return stackView.distribution
+        } set {
+            stackView.distribution = newValue
         }
     }
 }
