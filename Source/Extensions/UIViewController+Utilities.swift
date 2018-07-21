@@ -81,7 +81,7 @@ extension UIViewController {
         buttonContainer.didMove(toParent: self)
         view.layoutIfNeeded()
     
-        additionalSafeAreaInsets = UIEdgeInsets(dictionaryLiteral: (.bottom, buttonContainer.view.frame.height))
+        additionalSafeAreaInsets = UIEdgeInsets(dictionaryLiteral: (.bottom, buttonContainer.view.frame.height + margin.bottom))
         
         //Now, let's animate how this is shown
         bottomConstraint.constant = buttonContainer.view.bounds.height
