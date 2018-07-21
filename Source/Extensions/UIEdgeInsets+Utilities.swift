@@ -13,6 +13,10 @@ extension UIEdgeInsets {
         bottom = uniform
         right = uniform
     }
+    
+    public func adding(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> UIEdgeInsets {
+        return UIEdgeInsets(top: self.top + top, left: self.left + left, bottom: self.bottom + bottom, right: self.right + right)
+    }
 }
 
 //: Credit to [Adam Sharp](https://twitter.com/sharplet) & [Daniel Jalkut](https://twitter.com/danielpunkass)
