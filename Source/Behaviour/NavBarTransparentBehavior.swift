@@ -5,37 +5,18 @@
 
 import Foundation
 
-enum NavBarState {
+public enum NavBarState {
     case regular, transparent
-    
-    var backgroundImage: UIImage? {
-        switch self {
-        case .regular:
-            return nil
-        case .transparent:
-            return NavBarTransparentBehavior.transparentGradientImage()
-        }
-    }
-    
-    var shadowImage: UIImage? {
-        switch self {
-        case .regular:
-            return nil
-        case .transparent:
-            return UIImage()
-        }
-    }
 }
 
 final public class NavBarTransparentBehavior: NSObject {
     
-    fileprivate static let heightOfNavBarAndStatusBar = 64
     fileprivate static let limitOffsetTransparentNavBar = 100
     
     fileprivate weak var navBar: UINavigationBar!
     fileprivate var observation: NSKeyValueObservation!
 
-    init(navBar: UINavigationBar, scrollView: UIScrollView) {
+    public init(navBar: UINavigationBar, scrollView: UIScrollView) {
         self.navBar = navBar
         super.init()
         observation = scrollView.observe(\.contentOffset) { [weak self] (scrollView, _) in
@@ -48,13 +29,32 @@ final public class NavBarTransparentBehavior: NSObject {
         observation.invalidate()
     }
     
-    func setNavBar(toState state: NavBarState) {
+    public func setNavBar(toState state: NavBarState) {
         guard let navBar = navBar else { return }
         guard currentState(forNavBar: navBar) != state else { return }
         UIView.setAnimationsEnabled(false)
         NavBarTransparentBehavior.animate(navBar)
-        navBar.shadowImage = state.shadowImage
-        navBar.setBackgroundImage(state.backgroundImage, for: .default)
+        
+        let backgroundImage: UIImage? = {
+            switch state {
+            case .regular:
+                return nil
+            case .transparent:
+                return NavBarTransparentBehavior.transparentGradientImage(navBar: navBar)
+            }
+        }()
+        
+        let shadowImage: UIImage? = {
+            switch state {
+            case .regular:
+                return nil
+            case .transparent:
+                return UIImage()
+            }
+        }()
+
+        navBar.shadowImage = shadowImage
+        navBar.setBackgroundImage(backgroundImage, for: .default)
         UIView.setAnimationsEnabled(true)
     }
 
@@ -85,11 +85,11 @@ final public class NavBarTransparentBehavior: NSObject {
         navBar.layer.add(transition, forKey: nil)
     }
     
-    fileprivate static func transparentGradientImage() -> UIImage {
+    fileprivate static func transparentGradientImage(navBar: UINavigationBar) -> UIImage {
         let colorTop = UIColor(white: 0.1, alpha: 0.5)
         let colorBottom = UIColor(white: 0.1, alpha: 0.0)
         let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = CGRect(x: 0, y: 0, width: 1, height: heightOfNavBarAndStatusBar)
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: 1, height: navBar.frame.maxY)
         gradientLayer.colors = [colorTop, colorBottom].map {$0.cgColor}
         gradientLayer.locations = [0.0, 1.0]
         return UIImage.image(fromGradientLayer: gradientLayer)
