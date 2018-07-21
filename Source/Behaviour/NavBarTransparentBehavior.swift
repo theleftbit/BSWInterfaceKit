@@ -11,12 +11,17 @@ public enum NavBarState {
 
 final public class NavBarTransparentBehavior: NSObject {
     
-    fileprivate static let limitOffsetTransparentNavBar = 100
+    fileprivate static let LimitOffsetTransparentNavBar: CGFloat = 100
     
     fileprivate weak var navBar: UINavigationBar!
     fileprivate var observation: NSKeyValueObservation!
+    fileprivate var state: NavBarState?
+    fileprivate let defaultBackgroundImage: UIImage?
+    fileprivate let defaultShadowImage: UIImage?
 
     public init(navBar: UINavigationBar, scrollView: UIScrollView) {
+        self.defaultBackgroundImage = navBar.backgroundImage(for: .default)
+        self.defaultShadowImage = navBar.shadowImage
         self.navBar = navBar
         super.init()
         observation = scrollView.observe(\.contentOffset) { [weak self] (scrollView, _) in
@@ -31,14 +36,14 @@ final public class NavBarTransparentBehavior: NSObject {
     
     public func setNavBar(toState state: NavBarState) {
         guard let navBar = navBar else { return }
-        guard currentState(forNavBar: navBar) != state else { return }
+        guard state != self.state else { return }
         UIView.setAnimationsEnabled(false)
         NavBarTransparentBehavior.animate(navBar)
         
         let backgroundImage: UIImage? = {
             switch state {
             case .regular:
-                return nil
+                return self.defaultBackgroundImage
             case .transparent:
                 return NavBarTransparentBehavior.transparentGradientImage(navBar: navBar)
             }
@@ -47,7 +52,8 @@ final public class NavBarTransparentBehavior: NSObject {
         let shadowImage: UIImage? = {
             switch state {
             case .regular:
-                return nil
+                return self.defaultShadowImage
+                
             case .transparent:
                 return UIImage()
             }
@@ -55,24 +61,18 @@ final public class NavBarTransparentBehavior: NSObject {
 
         navBar.shadowImage = shadowImage
         navBar.setBackgroundImage(backgroundImage, for: .default)
+        navBar.isTranslucent = true
         UIView.setAnimationsEnabled(true)
+        
+        self.state = state
     }
 
     fileprivate func updateNavBar(forScrollView scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < CGFloat(NavBarTransparentBehavior.limitOffsetTransparentNavBar) {
+        if scrollView.contentOffset.y < NavBarTransparentBehavior.LimitOffsetTransparentNavBar {
             setNavBar(toState: .transparent)
         }
         else {
             setNavBar(toState: .regular)
-        }
-    }
-    
-    fileprivate func currentState(forNavBar navBar: UINavigationBar) -> NavBarState {
-        if navBar.backgroundImage(for: .default) != nil {
-            return .transparent
-        }
-        else {
-            return .regular
         }
     }
     
