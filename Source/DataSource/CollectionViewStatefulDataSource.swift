@@ -50,6 +50,23 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable & UICollect
         }
     }
 
+    public var supplementaryViewSupport: CollectionViewSupplementaryViewSupport? {
+        didSet {
+            defer {
+                collectionView.reloadData()
+            }
+            guard let supplementaryViewSupport = self.supplementaryViewSupport else {
+                return
+            }
+            
+            collectionView.register(
+                supplementaryViewSupport.supplementaryViewClass,
+                forSupplementaryViewOfKind: supplementaryViewSupport.kind.toUIKit(),
+                withReuseIdentifier: Constants.SupplementaryViewReuseID
+            )
+        }
+    }
+
     public func updateState(_ state: ListState<Cell.VM>) {
         self.state = state
         collectionView.reloadData()
@@ -129,6 +146,21 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable & UICollect
         }
     }
     
+    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let supplementaryViewSupport = self.supplementaryViewSupport else {
+            return UICollectionReusableView()
+        }
+        
+        let supplementaryView = collectionView.dequeueReusableSupplementaryView(
+            ofKind: supplementaryViewSupport.kind.toUIKit(),
+            withReuseIdentifier: Constants.SupplementaryViewReuseID,
+            for: indexPath
+        )
+        supplementaryViewSupport.configureHeader(supplementaryView)
+        supplementaryView.isHidden = (self.state.data == nil)
+        return supplementaryView
+    }
+    
     //MARK:- Private
     
     fileprivate func addEmptyViewForCurrentState() {
@@ -176,7 +208,7 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable & UICollect
         
         collectionView.addAutolayoutSubview(emptyView)
         
-        let spacing: CGFloat = 20
+        let spacing = Constants.Spacing
         NSLayoutConstraint.activate([
             emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
             emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -spacing),
@@ -264,6 +296,21 @@ public struct CollectionViewPullToRefreshSupport<Model> {
     }
 }
 
+public struct CollectionViewSupplementaryViewSupport {
+
+    public typealias ConfigureHeader = (UICollectionReusableView) -> ()
+
+    public let kind: UICollectionView.SupplementaryViewKind
+    public let configureHeader: ConfigureHeader
+    public let supplementaryViewClass: UICollectionReusableView.Type
+    
+    public init(supplementaryViewClass: UICollectionReusableView.Type, kind: UICollectionView.SupplementaryViewKind, configureHeader: @escaping ConfigureHeader) {
+        self.supplementaryViewClass = supplementaryViewClass
+        self.kind = kind
+        self.configureHeader = configureHeader
+    }
+}
+
 extension UICollectionView {
     fileprivate func performEditActions<T>(_ actions: [CollectionViewEditActionKind<T>]) {
         performBatchUpdates({ 
@@ -283,4 +330,9 @@ extension UICollectionView {
 
             }, completion: nil)
     }
+}
+
+private enum Constants {
+    static let SupplementaryViewReuseID = "SupplementaryViewReuseID"
+    static let Spacing: CGFloat = 20
 }
