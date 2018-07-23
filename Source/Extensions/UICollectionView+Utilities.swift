@@ -25,7 +25,7 @@ extension UICollectionView {
         case footer
         case header
 
-        fileprivate func toUIKit() -> String {
+        func toUIKit() -> String {
             switch self {
             case .footer:
                 return UICollectionView.elementKindSectionFooter
