@@ -86,6 +86,9 @@ final public class PhotoGalleryView: UIView {
         )
         collectionView.dataSource = collectionViewDataSource
         collectionView.delegate = self
+        if #available(iOS 10.0, *) {
+            collectionView.prefetchDataSource = self
+        }
         collectionView.showsHorizontalScrollIndicator = false
         collectionViewLayout.scrollDirection = .horizontal
 
@@ -134,5 +137,21 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return self.frame.size
+    }
+}
+
+extension PhotoGalleryView: UICollectionViewDataSourcePrefetching {
+    public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        let models: [URL] = indexPaths
+            .compactMap({ self.collectionViewDataSource.modelForIndexPath($0) })
+            .compactMap({
+                switch $0.kind {
+                case .url(let url):
+                    return url
+                default:
+                    return nil
+                }
+            })
+        UIImageView.prefetchImagesAtURL(models)
     }
 }
