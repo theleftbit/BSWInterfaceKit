@@ -76,8 +76,10 @@ public class AvatarView: UIView {
         addAutolayoutSubview(imageView)
         imageView.pinToSuperview()
         updateImage()
-        setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        setContentHuggingPriority(.defaultHigh, for: .vertical)
+        setContentHuggingPriority(.required, for: .horizontal)
+        setContentHuggingPriority(.required, for: .vertical)
+        setContentCompressionResistancePriority(.required, for: .horizontal)
+        setContentCompressionResistancePriority(.required, for: .vertical)
     }
     
     fileprivate func updateImage() {
