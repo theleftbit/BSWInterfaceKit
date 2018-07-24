@@ -69,5 +69,9 @@ extension UIImageView {
             backgroundColor = photo.averageColor
         }
     }
+    
+    public static func prefetchImagesAtURL(_ urls: [URL]) {
+        SDWebImagePrefetcher.shared().prefetchURLs(urls)
+    }
 }
 

@@ -58,7 +58,7 @@ open class WaterfallCollectionView: UICollectionView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    static open func preferredColumnCountForTraitCollection(_ traitCollection: UITraitCollection) -> Int {
+    static public func preferredColumnCountForTraitCollection(_ traitCollection: UITraitCollection) -> Int {
         switch traitCollection.horizontalSizeClass {
         case .compact:
             return 2

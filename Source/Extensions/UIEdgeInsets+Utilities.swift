@@ -7,10 +7,15 @@ import UIKit
 //: Suggested by [@al_skipp](https://twitter.com/al_skipp)
 extension UIEdgeInsets {
     public init(uniform: CGFloat) {
+        self.init()
         top = uniform
         left = uniform
         bottom = uniform
         right = uniform
+    }
+    
+    public func adding(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> UIEdgeInsets {
+        return UIEdgeInsets(top: self.top + top, left: self.left + left, bottom: self.bottom + bottom, right: self.right + right)
     }
 }
 

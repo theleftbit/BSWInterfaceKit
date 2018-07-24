@@ -50,3 +50,9 @@ extension BSWInterfaceKitStrings: CustomStringConvertible {
 internal func localizableString(_ key: BSWInterfaceKitStrings) -> String {
     return key.string
 }
+
+extension String {
+    var localized: String {
+        return NSLocalizedString(self, bundle: Bundle.interfaceKitBundle(), comment: "")
+    }
+}

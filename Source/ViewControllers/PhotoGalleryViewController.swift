@@ -54,7 +54,7 @@ open class PhotoGalleryViewController: UIViewController {
         photosGallery.pinToSuperview()
         
         //Add the close button
-        let closeButton = UIButton(type: UIButtonType.custom)
+        let closeButton = UIButton(type: UIButton.ButtonType.custom)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setImage(UIImage.templateImage(.close), for: .normal)
         closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchUpInside)

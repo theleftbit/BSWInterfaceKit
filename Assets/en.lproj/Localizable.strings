@@ -18,3 +18,11 @@
 "add-photo-title" = "Add Photo";
 "photo-album" = "Photo Album";
 "camera" = "Camera";
+
+/**
+ *  FormTextField
+ */
+"name-placeholder" = "Name";
+"lastname-placeholder" = "Lastname";
+"email-placeholder" = "Email";
+"password-placeholder" = "Password";

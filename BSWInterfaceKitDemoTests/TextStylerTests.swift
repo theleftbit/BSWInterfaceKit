@@ -10,12 +10,13 @@ class TextStylerTests: BSWSnapshotTest {
     var sut: TextStyler!
     override func setUp() {
         super.setUp()
+        isDeviceAgnostic = false
         sut = TextStyler()
         sut.preferredFontName = "ChalkboardSE-Light"
     }
 
     func testTitle() {
-        performTestFor(style: .title)
+        performTestFor(style: .title1)
     }
 
     func testHeadline() {
@@ -33,9 +34,20 @@ class TextStylerTests: BSWSnapshotTest {
     func testFootnote() {
         performTestFor(style: .footnote)
     }
-    private func performTestFor(style: TextStyler.Style) {
+
+    func testBoldedString() {
+        sut.preferredFontName = nil
+        let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded()
+        performTestFor(string: string)
+    }
+
+    private func performTestFor(style: UIFont.TextStyle) {
+        self.performTestFor(string: sut.attributedString("HelloWorld", color: .blue, forStyle: style))
+    }
+
+    private func performTestFor(string: NSAttributedString) {
         let label = UILabel()
-        label.attributedText = sut.attributedString("HelloWorld", color: .blue, forStyle: style)
+        label.attributedText = string
         label.frame = CGRect(origin: .zero, size: label.intrinsicContentSize)
         waitABitAndVerify(view: label)
     }

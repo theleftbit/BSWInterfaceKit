@@ -22,11 +22,12 @@ extension UIStackView {
             layoutGuide = dummyView.layoutMarginsGuide
         }
          */
-        subview.topAnchor.constraint(equalTo: layoutGuide.topAnchor).isActive = true
-        subview.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor).isActive = true
-        subview.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor).isActive = true
-        subview.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor).isActive = true
-
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: layoutGuide.topAnchor),
+            subview.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor),
+            subview.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
+            subview.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
+            ])
         addArrangedSubview(dummyView)
     }
 

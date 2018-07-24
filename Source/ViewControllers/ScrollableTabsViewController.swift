@@ -388,8 +388,8 @@ extension ScrollableTabsViewController {
         
         func addChildViewController(_ contentViewController: UIViewController, from parentViewController: UIViewController) {
             self.childViewController = contentViewController
-            parentViewController.addChildViewController(contentViewController)
-            contentViewController.didMove(toParentViewController: parentViewController)
+            parentViewController.addChild(contentViewController)
+            contentViewController.didMove(toParent: parentViewController)
             contentView.addSubview(contentViewController.view)
             setupConstraints()
         }
@@ -397,8 +397,8 @@ extension ScrollableTabsViewController {
         func removeChildViewController() {
             guard let contentViewController = childViewController else { return }
             contentViewController.view.removeFromSuperview()
-            contentViewController.willMove(toParentViewController: nil)
-            contentViewController.removeFromParentViewController()
+            contentViewController.willMove(toParent: nil)
+            contentViewController.removeFromParent()
         }
         
         func setupConstraints() {

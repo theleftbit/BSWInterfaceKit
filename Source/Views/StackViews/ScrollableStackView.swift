@@ -7,28 +7,19 @@ import UIKit
 
 @objc(BSWScrollableStackView)
 open class ScrollableStackView: UIScrollView {
-    
+
     fileprivate let stackView = UIStackView()
-    public var spacing: CGFloat! {
-        didSet {
-            stackView.spacing = spacing
-        }
-    }
-    public init(axis: UILayoutConstraintAxis = .vertical,
-                distribution: UIStackViewDistribution = .fill,
-                alignment: UIStackViewAlignment = .leading,
-                layoutMargins: UIEdgeInsets = .zero) {
+
+    public init(axis: NSLayoutConstraint.Axis = .vertical,
+                alignment: UIStackView.Alignment = .leading) {
         super.init(frame: CGRect.zero)
         translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = axis
-        stackView.distribution = distribution
-        stackView.alignment = alignment
-        stackView.layoutMargins = layoutMargins
-        stackView.isLayoutMarginsRelativeArrangement = true
-        
+        self.alignment = alignment
+
         addSubview(stackView)
         stackView.pinToSuperview()
-        
+
         switch axis {
         case .horizontal:
             stackView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
@@ -37,35 +28,69 @@ open class ScrollableStackView: UIScrollView {
             stackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
             alwaysBounceVertical = true
         }
-        
+
         clipsToBounds = true
     }
 
     open func addArrangedSubview(_ subview: UIView, layoutMargins: UIEdgeInsets) {
         stackView.addArrangedSubview(subview, layoutMargins: layoutMargins)
     }
-    
+
     open func addArrangedSubview(_ subview: UIView) {
         stackView.addArrangedSubview(subview)
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     open override class var requiresConstraintBasedLayout : Bool {
         return true
     }
-    
+
     open func viewAtIndex(_ index: Int) -> UIView? {
         return stackView.arrangedSubviews[safe: index]
     }
-    
+
     open func indexOfView(_ view: UIView) -> Int? {
         return stackView.arrangedSubviews.index(of: view)
     }
 
     open func removeAllArrangedViews() {
         stackView.removeAllArrangedSubviews()
+    }
+
+    override open var layoutMargins: UIEdgeInsets {
+        get {
+            return stackView.layoutMargins
+        }
+        set {
+            stackView.layoutMargins = newValue
+            stackView.isLayoutMarginsRelativeArrangement = true
+        }
+    }
+
+    open var spacing: CGFloat {
+        get {
+            return stackView.spacing
+        } set {
+            stackView.spacing = newValue
+        }
+    }
+    
+    open var alignment: UIStackView.Alignment {
+        get {
+            return stackView.alignment
+        } set {
+            stackView.alignment = newValue
+        }
+    }
+
+    open var distribution: UIStackView.Distribution {
+        get {
+            return stackView.distribution
+        } set {
+            stackView.distribution = newValue
+        }
     }
 }

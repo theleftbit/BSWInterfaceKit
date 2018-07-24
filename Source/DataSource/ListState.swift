@@ -104,10 +104,7 @@ public extension ListStatePresenter {
 
     var emptyConfiguration: EmptyListConfiguration {
         let defaultConfig = ActionableListConfiguration(
-            title: NSAttributedString(string: "No Results"),
-            message: nil,
-            image: nil,
-            buttonConfiguration: nil
+            title: TextStyler.styler.attributedString("No Results")
         )
         return EmptyListConfiguration.default(defaultConfig)
     }
@@ -128,33 +125,7 @@ public struct ActionableListConfiguration {
     }
     
     func viewRepresentation() -> UIView {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        
-        if let image = self.image {
-            let imageView = UIImageView(image: image)
-            stackView.addArrangedSubview(imageView)
-        }
-
-        stackView.addArrangedSubview({
-            let titleLabel = UILabel()
-            titleLabel.attributedText = self.title
-            return titleLabel
-        }())
-        
-        if let message = self.message {
-            let messageLabel = UILabel()
-            messageLabel.attributedText = message
-            stackView.addArrangedSubview(messageLabel)
-        }
-
-        if let buttonConfiguration = self.buttonConfiguration {
-            let button = UIButton(buttonConfiguration: buttonConfiguration)
-            stackView.addArrangedSubview(button)
-        }
-
-        return stackView
+        return ErrorView(listConfig: self)
     }
 }
 
@@ -163,7 +134,7 @@ public enum LoadingListConfiguration {
     public struct DefaultLoadingViewConfiguration {
         let backgroundColor = UIColor.clear
         let message: NSAttributedString? = nil
-        let activityIndicatorStyle = UIActivityIndicatorViewStyle.gray
+        let activityIndicatorStyle = UIActivityIndicatorView.Style.gray
     }
     
     case `default`(DefaultLoadingViewConfiguration)

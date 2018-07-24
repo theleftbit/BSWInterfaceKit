@@ -54,7 +54,7 @@ extension ClassicProfileViewModel {
                 Photo(kind: Photo.Kind.url(URL(string: "https://i.imgur.com/Y9u82wp.jpg")!)),
                 Photo(kind: Photo.Kind.url(URL(string: "https://i.imgur.com/SdCC8XG.jpg")!))
             ],
-            titleInfo: TextStyler.styler.attributedString("Gianluigi Buffon", forStyle: .title),
+            titleInfo: TextStyler.styler.attributedString("Gianluigi Buffon", forStyle: .title1),
             detailsInfo: TextStyler.styler.attributedString("The best keeper of football history", forStyle: .body),
             extraInfo: [
                 TextStyler.styler.attributedString("1 World Cup 2006", forStyle: .body),

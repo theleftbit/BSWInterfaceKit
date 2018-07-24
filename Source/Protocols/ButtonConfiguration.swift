@@ -89,7 +89,7 @@ extension UIBarButtonItem {
         static var ActionBlockWrapper = "ActionBlockWrapper"
     }
 
-    public convenience init(barButtonSystemItem systemItem: UIBarButtonSystemItem, actionHandler: @escaping ButtonActionHandler) {
+    public convenience init(barButtonSystemItem systemItem: UIBarButtonItem.SystemItem, actionHandler: @escaping ButtonActionHandler) {
         self.init(barButtonSystemItem:systemItem, target:nil, action: #selector(handleTap))
         objc_setAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper, ActionBlockWrapper(block: actionHandler), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         self.target = self

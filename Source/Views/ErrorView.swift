@@ -5,40 +5,48 @@
 
 import UIKit
 
-open class ErrorView: UIView {
+open class ErrorView: UIStackView {
     
-    var onButtonTap: ButtonActionHandler?
-    var shouldCollapse = false
+    private enum Constants {
+        static let Spacing: CGFloat = 10
+    }
     
-    fileprivate let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 10
-        return stackView
-    }()
+    public convenience init(listConfig: ActionableListConfiguration) {
+        self.init(title: listConfig.title, message: listConfig.message, image: listConfig.image, buttonConfiguration: listConfig.buttonConfiguration)
+    }
     
-    public init(errorMessage: NSAttributedString? = nil, buttonConfiguration: ButtonConfiguration) {
-        super.init(frame: CGRect.zero)
-        self.addSubview(stackView)
-        stackView.centerInSuperview()
-        let label = UILabel()
-        label.attributedText = errorMessage
+    public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
+        super.init(frame: .zero)
+        axis = .vertical
+        alignment = .center
+        spacing = Constants.Spacing
         
-        let button = UIButton(buttonConfiguration: buttonConfiguration)
-
-        stackView.addArrangedSubview(label)
-        stackView.addArrangedSubview(button)
+        if let image = image {
+            let imageView = UIImageView(image: image)
+            addArrangedSubview(imageView)
+        }
+        
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.attributedText = title
+        addArrangedSubview(label)
+        
+        if let message = message {
+            let label = UILabel()
+            label.numberOfLines = 0
+            label.textAlignment = .center
+            label.attributedText = message
+            addArrangedSubview(label)
+        }
+        
+        if let buttonConfiguration = buttonConfiguration {
+            let button = UIButton(buttonConfiguration: buttonConfiguration)
+            addArrangedSubview(button)
+        }
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    required public init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        if self.bounds.height < self.bounds.width && shouldCollapse {
-            stackView.axis = .horizontal
-        }
     }
 }
