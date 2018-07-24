@@ -111,8 +111,8 @@ fileprivate class CardPresentAnimationController: NSObject, UIViewControllerAnim
         let frame = containerView.frame
         let cardTopInset = frame.size.height - max(0.0, properties.cardHeight)
 
-        let initialFrame = UIEdgeInsetsInsetRect(frame, UIEdgeInsets(top: containerView.bounds.height, left:0.0, bottom:0.0, right:0.0))
-        let finalFrame = UIEdgeInsetsInsetRect(frame, UIEdgeInsets(top: cardTopInset, left: 0.0, bottom: 0.0, right: 0.0))
+        let initialFrame = frame.inset(by: UIEdgeInsets(top: containerView.bounds.height, left:0.0, bottom:0.0, right:0.0))
+        let finalFrame = frame.inset(by: UIEdgeInsets(top: cardTopInset, left: 0.0, bottom: 0.0, right: 0.0))
 
         toViewController.view.frame = initialFrame
         toViewController.view.alpha = 0.0
@@ -159,7 +159,7 @@ fileprivate class CardDismissAnimationController: NSObject, UIViewControllerAnim
         guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) else { return }
 
         let frame = containerView.frame
-        let finalFrame = UIEdgeInsetsInsetRect(frame, UIEdgeInsets(top: containerView.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
+        let finalFrame = frame.inset(by: UIEdgeInsets(top: containerView.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
 
         UIView.animate(withDuration: properties.animationDuration,
                        delay: 0.0,

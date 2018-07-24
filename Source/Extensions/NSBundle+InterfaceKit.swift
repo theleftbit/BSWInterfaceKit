@@ -9,17 +9,9 @@
 import Foundation
 
 extension Bundle {
-
     class func interfaceKitBundle() -> Bundle {
-        return InterfaceBundle.bundle
+        return Bundle.init(for: InterfaceKit.self)
     }
 }
 
-private struct InterfaceBundle {
-    fileprivate static let bundle: Bundle = {
-        let podBundle = Bundle(for: InterfaceKit.self)
-        let url = podBundle.url(forResource: "BSWInterfaceKit", withExtension: "bundle")!
-        return Bundle(url: url)!
-    }()
-    fileprivate class InterfaceKit: NSObject {}
-}
+fileprivate class InterfaceKit: NSObject {}

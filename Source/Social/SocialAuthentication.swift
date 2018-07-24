@@ -42,7 +42,7 @@ public class SocialAuthenticationManager {
         }
     }
 
-    public func handleApplicationDidOpenURL(_ URL: URL, options: [UIApplicationOpenURLOptionsKey : Any]) {
+    public func handleApplicationDidOpenURL(_ URL: URL, options: [UIApplication.OpenURLOptionsKey : Any]) {
         guard let sourceApplication = options[.sourceApplication] as? String,
             sourceApplication == "com.apple.SafariViewService",
             let currentRequest = self.currentRequest,

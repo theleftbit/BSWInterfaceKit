@@ -25,7 +25,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
                 let vm1 = PolaroidCollectionViewCell.VM(
                     cellImage: Photo.emptyPhoto(),
-                    cellTitle: TextStyler.styler.attributedString("Francesco Totti", forStyle: .title),
+                    cellTitle: TextStyler.styler.attributedString("Francesco Totti", forStyle: .title1),
                     cellDetails: TextStyler.styler.attributedString("#10", forStyle: .body)
                 )
                 completion(CollectionViewPullToRefreshSupport<PolaroidCollectionViewCell.VM>.Behavior.insertOnTop([vm1]))

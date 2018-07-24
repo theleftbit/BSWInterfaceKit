@@ -21,16 +21,29 @@ public enum ClassicProfileEditKind {
     }
 }
 
-open class ClassicProfileViewController: AsyncViewModelViewController<ClassicProfileViewModel> {
+open class ClassicProfileViewController: TransparentNavBarViewController, AsyncViewModelPresenter {
 
-    open let scrollableStackView = ScrollableStackView()
-
+    public init(dataProvider: Task<ClassicProfileViewModel>) {
+        self.dataProvider = dataProvider
+        super.init(nibName:nil, bundle:nil)
+    }
+    
+    public init(viewModel: ClassicProfileViewModel) {
+        self.dataProvider = Task(success: viewModel)
+        super.init(nibName:nil, bundle:nil)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     enum Constants {
         static let SeparatorSize = CGSize(width: 30, height: 1)
         static let LayoutMargins = UIEdgeInsets(uniform: 8)
         static let PhotoGalleryRatio = CGFloat(0.78)
     }
     
+    public var dataProvider: Task<ClassicProfileViewModel>!
     open var editKind: ClassicProfileEditKind = .nonEditable
     
     fileprivate let photoGallery = PhotoGalleryView()
@@ -47,19 +60,9 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         return view
     }()
     
-    fileprivate var navBarBehaviour: NavBarTransparentBehavior?
-
     open override func viewDidLoad() {
         super.viewDidLoad()
-
-        let containerView = HostView()
-        view.addSubview(containerView)
-        containerView.pinToSuperview()
-
-        containerView.addSubview(scrollableStackView)
-        view.backgroundColor = .white
-        scrollableStackView.pinToSuperview()
-
+        
         //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
@@ -80,29 +83,31 @@ open class ClassicProfileViewController: AsyncViewModelViewController<ClassicPro
         default:
             break
         }
+        
+        fetchData()
     }
     
-    override open func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        //This is the transparent navBar behaviour
-        if let navBar = self.navigationController?.navigationBar {
-            navBarBehaviour = NavBarTransparentBehavior(navBar: navBar, scrollView: scrollableStackView)
-        }
-    }
-
-    override open func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navBarBehaviour?.setNavBar(toState: .regular)
-        navBarBehaviour = nil
-    }
-
     override open var preferredStatusBarStyle : UIStatusBarStyle {
         return .lightContent
     }
     
     //MARK:- Private
     
-    open override func configureFor(viewModel: ClassicProfileViewModel) {
+    open func fetchData() {
+        showLoader()
+        dataProvider.upon(.main) { [weak self] result in
+            guard let strongSelf = self else { return }
+            strongSelf.hideLoader()
+            switch result {
+            case .failure(let error):
+                strongSelf.showErrorMessage("Error fetching data", error: error)
+            case .success(let viewModel):
+                strongSelf.configureFor(viewModel: viewModel)
+            }
+        }
+    }
+    
+    open func configureFor(viewModel: ClassicProfileViewModel) {
         photoGallery.photos = viewModel.photos
         titleLabel.attributedText = viewModel.titleInfo
         detailsLabel.attributedText = viewModel.detailsInfo
@@ -134,15 +139,5 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
         photoGallery.scrollToPhoto(atIndex: index)
         dismiss(animated: true, completion: nil)
-    }
-}
-
-//MARK:- ScrollView
-
-private class HostView: UIView {
-    @available(iOS 11.0, *)
-    override fileprivate var safeAreaInsets: UIEdgeInsets {
-        let superSafeArea = super.safeAreaInsets
-        return UIEdgeInsets(top: 0, left: superSafeArea.left, bottom: superSafeArea.bottom, right: superSafeArea.right)
     }
 }
