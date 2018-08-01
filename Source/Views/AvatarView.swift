@@ -5,6 +5,7 @@
 
 import UIKit
 
+@objc(BSWAvatarView)
 public class AvatarView: UIView {
     
     public let size: Size

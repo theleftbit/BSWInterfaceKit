@@ -8,6 +8,7 @@
 import UIKit
 import MapKit
 
+@objc(BSWMapView)
 public class MapView: UIImageView {
     public init() {
         super.init(image: UIImage.interfaceKitImageNamed("grid-placeholder"))

@@ -5,6 +5,7 @@
 
 import UIKit
 
+@objc(BSWCheckboxButton)
 public class CheckboxButton: UIButton {
 
     private enum Constants {
