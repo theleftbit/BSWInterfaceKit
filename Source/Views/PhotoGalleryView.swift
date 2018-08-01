@@ -14,6 +14,7 @@ public protocol PhotoGalleryViewDelegate: class {
 
 // MARK: - PhotoGalleryView
 
+@objc(BSWPhotoGalleryView)
 final public class PhotoGalleryView: UIView {
     
     fileprivate let imageContentMode: UIView.ContentMode
