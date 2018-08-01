@@ -3,7 +3,7 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 // MARK: - Error and Loading
 
@@ -106,6 +106,8 @@ extension UIViewController {
     }
 }
 
+// MARK: - Presenting and dismissing
+
 extension UIViewController {
     //Based on https://stackoverflow.com/a/28158013/1152289
     @objc public func closeViewController(sender: Any?) {
@@ -157,7 +159,7 @@ private func animateChanges(_ changes: @escaping () -> ()) {
     )
 }
 
-@available(iOS 11.0, *)
+@available(iOS 11.0, *) @objc(BSWButtonContainerViewController)
 private class ButtonContainerViewController: UIViewController {
     
     let button: UIButton

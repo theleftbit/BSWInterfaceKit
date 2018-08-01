@@ -176,6 +176,7 @@ fileprivate class CardDismissAnimationController: NSObject, UIViewControllerAnim
     }
 }
 
+@objc(BSWCardViewControllerBackgroundView)
 fileprivate class CardViewControllerBackgroundView: UIView {
     weak var parentViewController: UIViewController?
     weak var singleFingerTap: UITapGestureRecognizer?
