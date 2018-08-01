@@ -32,9 +32,9 @@ extension UIViewController {
     public func showErrorMessage(_ message: String, error: Error) {
 
         #if DEBUG
-            let errorMessage = "\(message). \(error)"
+        let errorMessage = "\(message) \n\n Error code: \(error)"
         #else
-            let errorMessage = message
+        let errorMessage = message
         #endif
         
         let operation = PresentAlertOperation(title: "Error", message: errorMessage, presentingViewController: self)
