@@ -115,7 +115,9 @@ open class FormTextField: UITextField, ViewModelConfigurable {
             return
         }
 
-        heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
+        let heighConstraint = heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight)
+        heighConstraint.priority = UILayoutPriority(rawValue: 999)
+        heighConstraint.isActive = true
     }
     
     required public init?(coder aDecoder: NSCoder) {
