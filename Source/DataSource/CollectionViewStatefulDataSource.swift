@@ -211,7 +211,7 @@ public class CollectionViewStatefulDataSource<Cell:ViewModelReusable & UICollect
         let spacing = Constants.Spacing
         NSLayoutConstraint.activate([
             emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
-            emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -spacing),
+            emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
             emptyView.leadingAnchor.constraint(greaterThanOrEqualTo: collectionView.leadingAnchor, constant: spacing),
             emptyView.trailingAnchor.constraint(greaterThanOrEqualTo: collectionView.trailingAnchor, constant: -spacing)
             ])
