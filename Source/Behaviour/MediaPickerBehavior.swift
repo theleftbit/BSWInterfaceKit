@@ -82,6 +82,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         
         imagePicker.allowsEditing = false
         imagePicker.sourceType = source.toUIKit()
+        imagePicker.cameraDevice = .front
         imagePicker.delegate = self
         switch kind {
         case .video:
@@ -99,7 +100,6 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         
         defer {
             self.currentRequest = nil
-            picker.dismiss(animated: true, completion: nil)
         }
         
         guard let currentRequest = self.currentRequest else { return }
@@ -143,7 +143,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     
     fileprivate func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         guard let videoURL = info[.mediaURL] as? URL else {
-            self.currentRequest?.handler(nil)
+            request.handler(nil)
             return
         }
         request.handler(videoURL)
@@ -169,29 +169,44 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         guard case .thumbnail(let size) = request.kind else {
             fatalError()
         }
-        guard let imageURL = info[.imageURL] as? URL else {
-                request.handler(nil)
-                return
-        }
-
-        let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil)!
-        let _ = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil)
-        let options: [NSString: Any] = [
-            kCGImageSourceThumbnailMaxPixelSize: size.width,
-            kCGImageSourceCreateThumbnailFromImageAlways: true
-        ]
         
-        guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else {
+        let _image: UIImage? = {
+            var imageSource: CGImageSource!
+            if let imageURL = info[.imageURL] as? URL {
+                imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil)
+            } else if let image = info[.originalImage] as? UIImage, let data = image.jpegData(compressionQuality: 1) {
+                imageSource = CGImageSourceCreateWithData(data as CFData, nil)
+            }
+            
+            if imageSource == nil {
+                return nil
+            }
+            
+            let _ = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil)
+            let options: [NSString: Any] = [
+                kCGImageSourceThumbnailMaxPixelSize: size.width,
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceCreateThumbnailWithTransform: true
+            ]
+            
+            guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else {
+                return nil
+            }
+            return UIImage(cgImage: scaledImage)
+        }()
+        
+        guard let image = _image else {
             request.handler(nil)
             return
         }
         
         do {
-            let url = try writeToCache(image: UIImage(cgImage: scaledImage), request: request)
+            let url = try writeToCache(image: image, request: request)
             request.handler(url)
         } catch {
             request.handler(nil)
         }
+
     }
     
     private func writeToCache(image: UIImage, request: Request) throws -> URL {
