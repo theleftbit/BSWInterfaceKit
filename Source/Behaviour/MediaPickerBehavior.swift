@@ -5,7 +5,7 @@
 
 import UIKit
 import MobileCoreServices
-import Photos
+import ImageIO
 
 public typealias MediaHandler = ((URL?) -> Void)
 
@@ -15,9 +15,12 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         case photo
         case video
         
+        @available(iOS 11, *)
+        case thumbnail(CGSize)
+
         func toUIKit() -> UIImagePickerController.CameraCaptureMode {
             switch self {
-            case .photo:
+            case .photo, .thumbnail:
                 return .photo
             case .video:
                 return .video
@@ -26,8 +29,8 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         
         func pathExtension() -> String {
             switch self {
-            case .photo:
-                return "png"
+            case .photo, .thumbnail:
+                return "jpeg"
             case .video:
                 return "mov"
             }
@@ -56,6 +59,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     fileprivate weak var presentingVC: UIViewController?
     fileprivate var currentRequest: Request?
     fileprivate let imagePicker = UIImagePickerController()
+    fileprivate let fileManager = FileManager.default
 
     public init(presentingVC: UIViewController) {
         self.presentingVC = presentingVC
@@ -82,7 +86,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         switch kind {
         case .video:
             imagePicker.mediaTypes = [kUTTypeMovie as String]
-        case .photo:
+        case .photo, .thumbnail:
             imagePicker.mediaTypes = [kUTTypeImage as String]
         }
         
@@ -105,7 +109,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
             switch currentRequest.kind {
             case .video:
                 return mediaTypeString == kUTTypeMovie as String
-            case .photo:
+            case .photo, .thumbnail:
                 return mediaTypeString == kUTTypeImage as String
             }
         }()
@@ -115,22 +119,15 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
             return
         }
         
-        guard let image = info[.originalImage] as? UIImage else {
-            self.currentRequest?.handler(nil)
-            return
-        }
-
-        guard let data = image.jpegData(compressionQuality: 0.6) else {
-            self.currentRequest?.handler(nil)
-            return
-        }
-        
-        do {
-            let finalURL = cachePathForMedia(currentRequest.kind)
-            try data.write(to: finalURL, options: [.atomic])
-            self.currentRequest?.handler(finalURL)
-        } catch {
-            self.currentRequest?.handler(nil)
+        switch currentRequest.kind {
+        case .video:
+            handleVideoRequest(info: info, request: currentRequest)
+        case .photo:
+            handlePhotoRequest(info: info, request: currentRequest)
+        case .thumbnail:
+            if #available(iOS 11.0, *) {
+                handleThumbnailRequest(info: info, request: currentRequest)
+            }
         }
     }
     
@@ -140,8 +137,80 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     }
     
     fileprivate func cachePathForMedia(_ kind: Kind) -> URL {
-        let fileManager = FileManager.default
         let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         return cachesDirectory.appendingPathComponent("\(UUID().uuidString).\(kind.pathExtension())")
+    }
+    
+    fileprivate func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
+        guard let videoURL = info[.mediaURL] as? URL else {
+            self.currentRequest?.handler(nil)
+            return
+        }
+        request.handler(videoURL)
+    }
+
+    fileprivate func handlePhotoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
+        
+        guard let image = info[.originalImage] as? UIImage else {
+            self.currentRequest?.handler(nil)
+            return
+        }
+        
+        do {
+            let finalURL = try writeToCache(image: image, request: request)
+            self.currentRequest?.handler(finalURL)
+        } catch {
+            self.currentRequest?.handler(nil)
+        }
+    }
+    
+    @available(iOS 11.0, *)
+    fileprivate func handleThumbnailRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
+        guard case .thumbnail(let size) = request.kind else {
+            fatalError()
+        }
+        guard let imageURL = info[.imageURL] as? URL else {
+                request.handler(nil)
+                return
+        }
+
+        let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil)!
+        let _ = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil)
+        let options: [NSString: Any] = [
+            kCGImageSourceThumbnailMaxPixelSize: size.width,
+            kCGImageSourceCreateThumbnailFromImageAlways: true
+        ]
+        
+        guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else {
+            request.handler(nil)
+            return
+        }
+        
+        do {
+            let url = try writeToCache(image: UIImage(cgImage: scaledImage), request: request)
+            request.handler(url)
+        } catch {
+            request.handler(nil)
+        }
+    }
+    
+    private func writeToCache(image: UIImage, request: Request) throws -> URL {
+        guard let data = image.jpegData(compressionQuality: 1) else {
+            throw Error.jpegCompressionFailed
+        }
+        
+        let finalURL = cachePathForMedia(request.kind)
+        do {
+            try data.write(to: finalURL, options: [.atomic])
+            return finalURL
+        }
+        catch {
+            throw Error.diskWriteFailed
+        }
+    }
+    
+    enum Error: Swift.Error {
+        case jpegCompressionFailed
+        case diskWriteFailed
     }
 }
