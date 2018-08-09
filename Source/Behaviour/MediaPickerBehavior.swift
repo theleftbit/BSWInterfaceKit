@@ -56,33 +56,29 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         let kind: Kind
     }
     
-    fileprivate weak var presentingVC: UIViewController?
     fileprivate var currentRequest: Request?
     fileprivate let imagePicker = UIImagePickerController()
     fileprivate let fileManager = FileManager.default
-
-    public init(presentingVC: UIViewController) {
-        self.presentingVC = presentingVC
-        super.init()
-    }
  
-    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) {
+    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) -> UIViewController? {
         
         guard self.currentRequest == nil else {
             handler(nil)
-            return
+            return nil
         }
         
         guard UIImagePickerController.isSourceTypeAvailable(source.toUIKit()) else {
             handler(nil)
-            return
+            return nil
         }
 
         self.currentRequest = Request(handler: handler, kind: kind)
         
         imagePicker.allowsEditing = false
         imagePicker.sourceType = source.toUIKit()
-        imagePicker.cameraDevice = .front
+        if source == .camera {
+            imagePicker.cameraDevice = .front
+        }
         imagePicker.delegate = self
         switch kind {
         case .video:
@@ -91,7 +87,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
             imagePicker.mediaTypes = [kUTTypeImage as String]
         }
         
-        presentingVC?.present(imagePicker, animated: true, completion: nil)
+        return imagePicker
     }
     
     // MARK: UIImagePickerControllerDelegate
