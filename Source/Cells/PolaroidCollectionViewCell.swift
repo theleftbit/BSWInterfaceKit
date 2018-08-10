@@ -12,11 +12,13 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
     //MARK: ViewModel
     public struct VM {
+        public let id: Int?
         public let cellImage: Photo
         public let cellTitle: NSAttributedString
         public let cellDetails: NSAttributedString
 
-        public init(cellImage: Photo, cellTitle: NSAttributedString, cellDetails: NSAttributedString) {
+        public init(id: Int? = nil, cellImage: Photo, cellTitle: NSAttributedString, cellDetails: NSAttributedString) {
+            self.id = id
             self.cellImage = cellImage
             self.cellTitle = cellTitle
             self.cellDetails = cellDetails
