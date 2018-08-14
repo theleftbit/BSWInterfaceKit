@@ -7,27 +7,18 @@ import UIKit
 
 public class ScrollableTabsViewController: UIViewController {
     
-    fileprivate enum Constants {
-        static let headerHeight: CGFloat = 40
+    enum Appereance {
+        static let headerHeight: CGFloat = 50
+        static var indicatorHeight: CGFloat = 2
+        static var tintColor: UIColor = .black
     }
     
-    public struct Configuration {
-        let height: CGFloat
-        let color: UIColor
-        let tabsCentered: Bool
-        public static let `default` = Configuration(height: 2, color: .black, tabsCentered: false)
-    }
-    
-    var barConfiguration: Configuration {
-        didSet {
-            self.headerDataSource.barConfiguration = barConfiguration
-        }
-    }
     var viewControllers: [UIViewController] {
         didSet {
-            //TODO!
+            fatalError("Not yet supported")
         }
     }
+    
     fileprivate var previousContentOffset = CGPoint(x: 0, y: 0)
     fileprivate var headerDataSource: HeaderDataSource!
     fileprivate var contentDataSource: ContentDataSource!
@@ -38,7 +29,6 @@ public class ScrollableTabsViewController: UIViewController {
         collectionView.backgroundColor = .white
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.bounces = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     fileprivate let contentCollectionView: UICollectionView = {
@@ -50,13 +40,11 @@ public class ScrollableTabsViewController: UIViewController {
         collectionView.allowsSelection = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.bounces = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
-    public init(viewControllers: [UIViewController], configuration: Configuration = .default) {
+    public init(viewControllers: [UIViewController]) {
         self.viewControllers = viewControllers
-        self.barConfiguration = configuration
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -66,28 +54,25 @@ public class ScrollableTabsViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        automaticallyAdjustsScrollViewInsets = false
-        
+        view.backgroundColor = .white
         headerDataSource = HeaderDataSource(collectionView: headerCollectionView, viewControllers: self.viewControllers, delegate: self)
         contentDataSource = ContentDataSource(collectionView: contentCollectionView, viewControllers: self.viewControllers, delegate: self, parentViewController: self)
-        headerDataSource.barConfiguration = self.barConfiguration
-        let container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(container)
-        container.addSubview(headerCollectionView)
-        container.addSubview(contentCollectionView)
-        container.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
-        container.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        container.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        container.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        headerCollectionView.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
-        headerCollectionView.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
-        headerCollectionView.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
-        headerCollectionView.heightAnchor.constraint(equalToConstant: Constants.headerHeight).isActive = true
-        contentCollectionView.topAnchor.constraint(equalTo: headerCollectionView.bottomAnchor).isActive = true
-        contentCollectionView.leadingAnchor.constraint(equalTo: headerCollectionView.leadingAnchor).isActive = true
-        contentCollectionView.trailingAnchor.constraint(equalTo: headerCollectionView.trailingAnchor).isActive = true
-        contentCollectionView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
+        view.addAutolayoutSubview(headerCollectionView)
+        view.addAutolayoutSubview(contentCollectionView)
+        
+        NSLayoutConstraint.activate([
+            headerCollectionView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
+            headerCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerCollectionView.heightAnchor.constraint(equalToConstant: Appereance.headerHeight),
+            contentCollectionView.topAnchor.constraint(equalTo: headerCollectionView.bottomAnchor),
+            contentCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
+        
+        self.reloadData()
+        selectTab(at: 0)
     }
     
     func reloadData() {
@@ -258,11 +243,6 @@ extension ScrollableTabsViewController {
         
         private unowned var collectionView: UICollectionView
         private unowned var delegate: ScrollableTabHeaderSelectionDelegate
-        var barConfiguration: ScrollableTabsViewController.Configuration = .default {
-            didSet {
-                collectionView.reloadData()
-            }
-        }
         
         internal init(collectionView: UICollectionView, viewControllers: [UIViewController], delegate: ScrollableTabHeaderSelectionDelegate) {
             self.collectionView = collectionView
@@ -271,7 +251,7 @@ extension ScrollableTabsViewController {
             super.init()
             
             guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { fatalError() }
-            flowLayout.estimatedItemSize = CGSize(width: 100, height: Constants.headerHeight)
+            flowLayout.estimatedItemSize = CGSize(width: 100, height: Appereance.headerHeight)
             collectionView.dataSource = self
             collectionView.delegate = self
             collectionView.register(ScrollableTabsViewController.HeaderViewCell.self, forCellWithReuseIdentifier: reuseID)
@@ -288,7 +268,6 @@ extension ScrollableTabsViewController {
                 fatalError()
             }
             cell.configure(for: viewControllers[indexPath.item].title!)
-            cell.configureBar(barConfiguration)
             return cell
         }
         
@@ -319,49 +298,33 @@ extension ScrollableTabsViewController {
 
 extension ScrollableTabsViewController {
     
+    @objc(BSWScrollableTabsViewControllerHeaderCell)
     fileprivate class HeaderViewCell: UICollectionViewCell {
         
         private let bottomBar = UIView()
-        
-        let titleLabel: UILabel = {
-            let label = UILabel()
-            label.font = UIFont.boldSystemFont(ofSize: 14)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            return label
-        }()
+        private let titleLabel = UILabel()
         
         public override init(frame: CGRect) {
             super.init(frame: frame)
             setup()
         }
         
-        required public init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+        required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
         
         open func setup() {
-            contentView.addSubview(bottomBar)
-            
             bottomBar.alpha = 0
-            bottomBar.backgroundColor = .black
-            bottomBar.translatesAutoresizingMaskIntoConstraints = false
-            bottomBar.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-            bottomBar.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-            bottomBar.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-            
-            contentView.addSubview(titleLabel)
-            
-            titleLabel.centerXAnchor
-                .constraint(equalTo: centerXAnchor)
-                .isActive = true
-            titleLabel.centerYAnchor
-                .constraint(equalTo: centerYAnchor)
-                .isActive = true
-        }
-        
-        func configureBar(_ barConfiguration: ScrollableTabsViewController.Configuration = .default) {
-            bottomBar.heightAnchor.constraint(equalToConstant: barConfiguration.height).isActive = true
-            bottomBar.backgroundColor = barConfiguration.color
+            bottomBar.backgroundColor = Appereance.tintColor
+
+            contentView.addAutolayoutSubview(bottomBar)
+            contentView.addAutolayoutSubview(titleLabel)
+            titleLabel.pinToSuperview(withEdges: UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10))
+            NSLayoutConstraint.activate([
+                contentView.heightAnchor.constraint(equalToConstant: Appereance.headerHeight),
+                bottomBar.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                bottomBar.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                bottomBar.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                bottomBar.heightAnchor.constraint(equalToConstant: Appereance.indicatorHeight),
+                ])
         }
         
         override open var isSelected: Bool {
@@ -378,10 +341,11 @@ extension ScrollableTabsViewController {
         }
         
         func configure(for title: String) {
-            titleLabel.text = title
+            titleLabel.attributedText = TextStyler.styler.attributedString(title, color: Appereance.tintColor, forStyle: .title3)
         }
     }
     
+    @objc(BSWScrollableTabsViewControllerContentCell)
     fileprivate class ContentViewCell: UICollectionViewCell {
         
         var childViewController: UIViewController?
@@ -403,11 +367,7 @@ extension ScrollableTabsViewController {
         
         func setupConstraints() {
             guard let view = childViewController?.view else { return }
-            view.translatesAutoresizingMaskIntoConstraints = false
-            view.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+            view.pinToSuperview()
         }
     }
 }
