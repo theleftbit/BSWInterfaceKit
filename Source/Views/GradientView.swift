@@ -34,24 +34,26 @@ open class GradientView: UIImageView {
 
 public enum GradientFactory {
     
-    public static func transparentGradient(size: CGSize) -> UIImage {
+    public static func transparentGradient(size: CGSize, isHorizontal: Bool = true) -> UIImage {
         let colorTop = UIColor(white: 0.1, alpha: 0.5)
         let colorBottom = UIColor(white: 0.1, alpha: 0.0)
-        return gradientFromColors(colors: [colorTop, colorBottom], size: size)
+        return gradientFromColors(colors: [colorTop, colorBottom], size: size, isHorizontal: isHorizontal)
     }
 
-    public static func gradientFromColors(colors: [UIColor], size: CGSize) -> UIImage {
-        let gradientLayer = gradientLayerFromColors(colors: colors, size: size)
+    public static func gradientFromColors(colors: [UIColor], size: CGSize, isHorizontal: Bool = true) -> UIImage {
+        let gradientLayer = gradientLayerFromColors(colors: colors, size: size, isHorizontal: isHorizontal)
         return UIImage.image(fromGradientLayer: gradientLayer)
     }
     
-    public static func gradientLayerFromColors(colors: [UIColor], size: CGSize) -> CAGradientLayer {
+    public static func gradientLayerFromColors(colors: [UIColor], size: CGSize, isHorizontal: Bool = true) -> CAGradientLayer {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         gradientLayer.colors = colors.map {$0.cgColor}
         gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        if isHorizontal {
+            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+            gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        }
         return gradientLayer
     }
 }

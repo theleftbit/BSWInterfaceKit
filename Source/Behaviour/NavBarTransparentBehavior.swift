@@ -48,7 +48,7 @@ final public class NavBarTransparentBehavior: NSObject {
             case .transparent:
                 if shouldShowShadow {
                     let size = CGSize(width: 1, height: navBar.frame.maxY)
-                    return GradientFactory.transparentGradient(size: size)
+                    return GradientFactory.transparentGradient(size: size, isHorizontal: false)
                 } else {
                     return UIImage()
                 }

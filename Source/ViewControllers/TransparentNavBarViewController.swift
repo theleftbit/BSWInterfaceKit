@@ -42,6 +42,7 @@ extension TransparentNavBarViewController {
     
     // This prevents UIKit to layout the
     // subviews below the navBar
+    @objc(BSWTransparentNavBarViewHost)
     private class HostView: UIView {
         @available(iOS 11.0, *)
         override fileprivate var safeAreaInsets: UIEdgeInsets {
