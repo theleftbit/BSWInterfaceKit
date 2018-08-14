@@ -24,6 +24,7 @@
 		EBBB9FAD1E7BF0FE000F1232 /* StrawberryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */; };
 		EBBB9FAF1E7BF524000F1232 /* AzzurriViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */; };
 		EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */; };
+		F53E036E2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */; };
 		F54886DC203ED769005191D3 /* FacebookLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */; };
 		F56D522320F767130008D67C /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56D522220F767130008D67C /* AvatarViewTests.swift */; };
 /* End PBXBuildFile section */
@@ -66,6 +67,7 @@
 		EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrawberryViewController.swift; sourceTree = "<group>"; };
 		EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AzzurriViewController.swift; sourceTree = "<group>"; };
 		EBD6D20C1E50E43800D4CBFA /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
+		F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableTabsViewControllerTests.swift; sourceTree = "<group>"; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
 		F56D522220F767130008D67C /* AvatarViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarViewTests.swift; sourceTree = "<group>"; };
 		F9781A2542680784B472999E /* Pods_BSWInterfaceKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +158,7 @@
 				EB3B035B1E9CE019009E6F80 /* OnboardingViewControllerTests.swift */,
 				EB55C3AD1EF534120029E735 /* TextStylerTests.swift */,
 				F56D522220F767130008D67C /* AvatarViewTests.swift */,
+				F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */,
 			);
 			name = Suite;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */,
 				EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */,
 				EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */,
+				F53E036E2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
