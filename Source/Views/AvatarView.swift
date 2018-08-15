@@ -52,7 +52,7 @@ public class AvatarView: UIView {
     private let cameraImageView: UIImageView = {
         let imageView = UIImageView()
         let cameraImage = UIImage.templateImage(.camera)
-        imageView.image = cameraImage.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        imageView.image = cameraImage.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = .white
         return imageView
     }()
