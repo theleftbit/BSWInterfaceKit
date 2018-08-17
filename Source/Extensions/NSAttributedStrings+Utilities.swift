@@ -38,11 +38,11 @@ public func + (left: NSAttributedString, right: NSAttributedString) -> NSAttribu
 }
 
 public extension NSAttributedString {
-    func bolded() -> NSAttributedString {
+    var bolded: NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
         let range = NSRange(location: 0, length: string.length)
         let font = string.attributes(at: 0, longestEffectiveRange: nil, in: range)[.font] as! UIFont
-        let boldFont = UIFont(descriptor: font.fontDescriptor.withSymbolicTraits(.traitBold)!, size: font.pointSize)
+        let boldFont = font.bolded
         string.removeAttribute(.font, range: range)
         string.addAttribute(.font, value: boldFont, range: range)
         return string
