@@ -67,7 +67,8 @@ open class FormTextField: UITextField, ViewModelConfigurable {
         case email
         case password
         case newPassword
-        
+        case telephone
+
         fileprivate var isPassword: Bool {
             switch self {
             case .newPassword, .password: return true
@@ -101,6 +102,10 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 if #available(iOS 12.0, *) {
                     textContentType = .newPassword
                 }
+            case .telephone:
+                placeholder = "telephone".localized
+                textContentType = .telephoneNumber
+                keyboardType = .phonePad
             case .unknown:
                 break
             }
@@ -109,23 +114,58 @@ open class FormTextField: UITextField, ViewModelConfigurable {
         }
     }
     
-    public override init(frame: CGRect) {
+    private let separatorLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 155.0 / 255.0, alpha: 1.0)
+        return view
+    }()
+    
+    private let separatorHeight: CGFloat = 2.0
+    private var containsError = false
+    
+    override init(frame: CGRect) {
         super.init(frame: frame)
-        guard let minHeight = FormTableViewAppearance.TextFieldMinHeight else {
-            return
-        }
-
-        let heighConstraint = heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight)
-        heighConstraint.priority = UILayoutPriority(rawValue: 999)
-        heighConstraint.isActive = true
+        setup()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configureFor(viewModel: String?) {
-        self.text = viewModel
+    private func setup() {
+        if let minHeight = FormTableViewAppearance.TextFieldMinHeight {
+            heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
+        }
+        addAutolayoutSubview(separatorLine)
+        NSLayoutConstraint.activate([
+            separatorLine.bottomAnchor.constraint(equalTo: bottomAnchor),
+            separatorLine.leadingAnchor.constraint(equalTo: leadingAnchor),
+            separatorLine.trailingAnchor.constraint(equalTo: trailingAnchor),
+            separatorLine.heightAnchor.constraint(equalToConstant: separatorHeight),
+            ])
+        self.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+    }
+    
+    @objc private func textDidChange() {
+        guard containsError == false else { return }
+        separatorLine.backgroundColor = (text == nil || text!.isEmpty) ? .gray : .black
+    }
+    
+    public struct VM {
+        public let text: String?
+        public let containsError: Bool
+        public init(text: String?, containsError: Bool) {
+            self.text = text
+            self.containsError = containsError
+        }
+    }
+    
+    public func configureFor(viewModel: VM) {
+        text = viewModel.text
+        containsError = viewModel.containsError
+        if viewModel.containsError {
+            separatorLine.backgroundColor = .red
+        }
     }
 }
 
