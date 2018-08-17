@@ -48,11 +48,16 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
     private func layout() {
         contentView.addAutolayoutSubview(stackView)
         stackView.pinToSuperview()
-        stackView.layoutMargins = FormTableViewAppearance.CellLayoutMargins
+        stackView.layoutMargins = FormTableViewCellAppearance.CellLayoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.addArrangedSubview(formInputView)
         stackView.addArrangedSubview(warningMessageLabel)
     }
+}
+
+
+public enum FormTableViewCellAppearance {
+    public static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
 }
 
 // MARK: Standard input Views
@@ -68,7 +73,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
         case password
         case newPassword
         case telephone
-
+        
         fileprivate var isPassword: Bool {
             switch self {
             case .newPassword, .password: return true
@@ -116,7 +121,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
     
     private let separatorLine: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(white: 155.0 / 255.0, alpha: 1.0)
+        view.backgroundColor = Appearance.EmptyColor
         return view
     }()
     
@@ -133,7 +138,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
     }
     
     private func setup() {
-        if let minHeight = FormTableViewAppearance.TextFieldMinHeight {
+        if let minHeight = Appearance.MinHeight {
             heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
         }
         addAutolayoutSubview(separatorLine)
@@ -148,7 +153,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
     
     @objc private func textDidChange() {
         guard containsError == false else { return }
-        separatorLine.backgroundColor = (text == nil || text!.isEmpty) ? .gray : .black
+        separatorLine.backgroundColor = (text == nil || text!.isEmpty) ? Appearance.EmptyColor : Appearance.CorrectColor
     }
     
     public struct VM {
@@ -158,20 +163,46 @@ open class FormTextField: UITextField, ViewModelConfigurable {
             self.text = text
             self.containsError = containsError
         }
+        
+        enum State {
+            case empty
+            case error
+            case filled
+        }
+        
+        var state: State {
+            guard !containsError else {
+                return .error
+            }
+            
+            guard let text = self.text, text.count > 0 else {
+                return .empty
+            }
+            
+            return .filled
+        }
     }
     
     public func configureFor(viewModel: VM) {
         text = viewModel.text
         containsError = viewModel.containsError
-        if viewModel.containsError {
-            separatorLine.backgroundColor = .red
+        switch viewModel.state {
+        case .empty:
+            separatorLine.backgroundColor = Appearance.EmptyColor
+        case .error:
+            separatorLine.backgroundColor = Appearance.ErrorColor
+        case .filled:
+            separatorLine.backgroundColor = Appearance.CorrectColor
         }
+    }
+    
+    public enum Appearance {
+        public static var MinHeight: CGFloat?
+        public static var EmptyColor = UIColor(white: 155.0 / 255.0, alpha: 1.0)
+        public static var ErrorColor = UIColor.red
+        public static var CorrectColor = UIColor.black
     }
 }
 
 // MARK: Appereance
 
-public enum FormTableViewAppearance {
-    public static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-    public static var TextFieldMinHeight: CGFloat?
-}
