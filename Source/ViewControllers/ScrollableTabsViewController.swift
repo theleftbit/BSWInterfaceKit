@@ -7,10 +7,11 @@ import UIKit
 
 public class ScrollableTabsViewController: UIViewController {
     
-    enum Appereance {
-        static let headerHeight: CGFloat = 50
-        static var indicatorHeight: CGFloat = 2
-        static var tintColor: UIColor = .black
+    public enum Appereance {
+        public static let headerHeight: CGFloat = 50
+        public static var indicatorHeight: CGFloat = 2
+        public static var tintColor: UIColor = .black
+        public static var backgroundColor: UIColor = .white
     }
     
     var viewControllers: [UIViewController] {
@@ -29,6 +30,7 @@ public class ScrollableTabsViewController: UIViewController {
         collectionView.backgroundColor = .white
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.bounces = false
+        collectionView.backgroundColor = Appereance.backgroundColor
         return collectionView
     }()
     fileprivate let contentCollectionView: UICollectionView = {
@@ -54,7 +56,7 @@ public class ScrollableTabsViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Appereance.backgroundColor
         headerDataSource = HeaderDataSource(collectionView: headerCollectionView, viewControllers: self.viewControllers, delegate: self)
         contentDataSource = ContentDataSource(collectionView: contentCollectionView, viewControllers: self.viewControllers, delegate: self, parentViewController: self)
         view.addAutolayoutSubview(headerCollectionView)
