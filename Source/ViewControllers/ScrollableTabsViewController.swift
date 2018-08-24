@@ -14,7 +14,7 @@ public class ScrollableTabsViewController: UIViewController {
         public static var backgroundColor: UIColor = .white
     }
     
-    var viewControllers: [UIViewController] {
+    public var viewControllers: [UIViewController] {
         didSet {
             fatalError("Not yet supported")
         }
