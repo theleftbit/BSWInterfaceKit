@@ -5,9 +5,10 @@
 
 import UIKit
 
+@objc(BSWScrollableTabsViewController)
 public class ScrollableTabsViewController: UIViewController {
     
-    public enum Appereance {
+    public enum Appearance {
         public static let headerHeight: CGFloat = 50
         public static var indicatorHeight: CGFloat = 2
         public static var tintColor: UIColor = .black
@@ -30,7 +31,7 @@ public class ScrollableTabsViewController: UIViewController {
         collectionView.backgroundColor = .white
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.bounces = false
-        collectionView.backgroundColor = Appereance.backgroundColor
+        collectionView.backgroundColor = Appearance.backgroundColor
         return collectionView
     }()
     fileprivate let contentCollectionView: UICollectionView = {
@@ -56,7 +57,7 @@ public class ScrollableTabsViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Appereance.backgroundColor
+        view.backgroundColor = Appearance.backgroundColor
         headerDataSource = HeaderDataSource(collectionView: headerCollectionView, viewControllers: self.viewControllers, delegate: self)
         contentDataSource = ContentDataSource(collectionView: contentCollectionView, viewControllers: self.viewControllers, delegate: self, parentViewController: self)
         view.addAutolayoutSubview(headerCollectionView)
@@ -66,7 +67,7 @@ public class ScrollableTabsViewController: UIViewController {
             headerCollectionView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
             headerCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerCollectionView.heightAnchor.constraint(equalToConstant: Appereance.headerHeight),
+            headerCollectionView.heightAnchor.constraint(equalToConstant: Appearance.headerHeight),
             contentCollectionView.topAnchor.constraint(equalTo: headerCollectionView.bottomAnchor),
             contentCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -253,7 +254,7 @@ extension ScrollableTabsViewController {
             super.init()
             
             guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { fatalError() }
-            flowLayout.estimatedItemSize = CGSize(width: 100, height: Appereance.headerHeight)
+            flowLayout.estimatedItemSize = CGSize(width: 100, height: Appearance.headerHeight)
             collectionView.dataSource = self
             collectionView.delegate = self
             collectionView.register(ScrollableTabsViewController.HeaderViewCell.self, forCellWithReuseIdentifier: reuseID)
@@ -315,17 +316,17 @@ extension ScrollableTabsViewController {
         
         open func setup() {
             bottomBar.alpha = 0
-            bottomBar.backgroundColor = Appereance.tintColor
+            bottomBar.backgroundColor = Appearance.tintColor
 
             contentView.addAutolayoutSubview(bottomBar)
             contentView.addAutolayoutSubview(titleLabel)
             titleLabel.pinToSuperview(withEdges: UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10))
             NSLayoutConstraint.activate([
-                contentView.heightAnchor.constraint(equalToConstant: Appereance.headerHeight),
+                contentView.heightAnchor.constraint(equalToConstant: Appearance.headerHeight),
                 bottomBar.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
                 bottomBar.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
                 bottomBar.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-                bottomBar.heightAnchor.constraint(equalToConstant: Appereance.indicatorHeight),
+                bottomBar.heightAnchor.constraint(equalToConstant: Appearance.indicatorHeight),
                 ])
         }
         
@@ -343,7 +344,7 @@ extension ScrollableTabsViewController {
         }
         
         func configure(for title: String) {
-            titleLabel.attributedText = TextStyler.styler.attributedString(title, color: Appereance.tintColor, forStyle: .title3)
+            titleLabel.attributedText = TextStyler.styler.attributedString(title, color: Appearance.tintColor, forStyle: .title3)
         }
     }
     

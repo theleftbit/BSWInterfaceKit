@@ -64,4 +64,18 @@ public extension NSAttributedString {
         let font = self.attributes(at: 0, longestEffectiveRange: nil, in: range)[.font] as! UIFont
         return modifyingFont(font.bolded)
     }
+    
+    func setAttachmentWidth(_ width: CGFloat) {
+        enumerateAttribute(.attachment, in: NSRange(location: 0, length: length), options: [], using: { (value, range, stop) in
+            guard let attachment = value as? NSTextAttachment else { return }
+            attachment.setImageWidth(width: width)
+        })
+    }
+}
+
+private extension NSTextAttachment {
+    func setImageWidth(width: CGFloat) {
+        let ratio = bounds.size.width / bounds.size.height
+        bounds = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: width, height: width / ratio)
+    }
 }
