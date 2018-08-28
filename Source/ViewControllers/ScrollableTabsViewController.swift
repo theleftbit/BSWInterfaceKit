@@ -11,7 +11,8 @@ public class ScrollableTabsViewController: UIViewController {
     public enum Appearance {
         public static let headerHeight: CGFloat = 50
         public static var indicatorHeight: CGFloat = 2
-        public static var tintColor: UIColor = .black
+        public static var tabsColor: UIColor = .black
+        public static var indicatorColor: UIColor = .black
         public static var backgroundColor: UIColor = .white
     }
     
@@ -316,7 +317,7 @@ extension ScrollableTabsViewController {
         
         open func setup() {
             bottomBar.alpha = 0
-            bottomBar.backgroundColor = Appearance.tintColor
+            bottomBar.backgroundColor = Appearance.indicatorColor
 
             contentView.addAutolayoutSubview(bottomBar)
             contentView.addAutolayoutSubview(titleLabel)
@@ -344,7 +345,7 @@ extension ScrollableTabsViewController {
         }
         
         func configure(for title: String) {
-            titleLabel.attributedText = TextStyler.styler.attributedString(title, color: Appearance.tintColor, forStyle: .title3)
+            titleLabel.attributedText = TextStyler.styler.attributedString(title, color: Appearance.tabsColor, forStyle: .title3)
         }
     }
     
