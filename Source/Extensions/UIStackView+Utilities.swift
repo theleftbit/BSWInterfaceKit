@@ -8,26 +8,7 @@ import UIKit
 extension UIStackView {
     @objc(bsw_addArrangedSubview:layoutMargins:)
     public func addArrangedSubview(_ subview: UIView, layoutMargins: UIEdgeInsets) {
-
-        let dummyView = StackSpacingView(layoutMargins: layoutMargins)
-        dummyView.addAutolayoutSubview(subview)
-
-        //If the subview will be used for text layout, use readableContentGuide instead
-        let layoutGuide: UILayoutGuide = dummyView.layoutMarginsGuide
-        // There seems to be some kind of issue with readableContentGuide in beta 1
-        /*
-        if subview.isKind(of: UILabel.self) || subview.isKind(of: UITextView.self) {
-            layoutGuide = dummyView.readableContentGuide
-        } else {
-            layoutGuide = dummyView.layoutMarginsGuide
-        }
-         */
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: layoutGuide.topAnchor),
-            subview.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor),
-            subview.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
-            subview.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
-            ])
+        let dummyView = StackSpacingView(subview: subview, layoutMargins: layoutMargins)
         addArrangedSubview(dummyView)
     }
 
@@ -41,14 +22,27 @@ extension UIStackView {
 
     @objc(BSWStackSpacingView)
     private class StackSpacingView: UIView {
-        init(layoutMargins: UIEdgeInsets) {
+        
+        var hiddenObserver: NSKeyValueObservation!
+        
+        init(subview: UIView, layoutMargins: UIEdgeInsets) {
             super.init(frame: .zero)
             translatesAutoresizingMaskIntoConstraints = false
-            if #available(iOS 11.0, *) {
-                self.directionalLayoutMargins = NSDirectionalEdgeInsets(top: layoutMargins.top, leading: layoutMargins.left, bottom: layoutMargins.bottom, trailing: layoutMargins.right)
-            } else {
-                self.layoutMargins = layoutMargins
-            }
+            self.layoutMargins = layoutMargins
+            addAutolayoutSubview(subview)
+            
+            //If the subview will be used for text layout, use readableContentGuide instead
+            let layoutGuide: UILayoutGuide = layoutMarginsGuide
+            NSLayoutConstraint.activate([
+                subview.topAnchor.constraint(equalTo: layoutGuide.topAnchor),
+                subview.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor),
+                subview.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
+                subview.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
+                ])
+            
+            hiddenObserver = subview.observe(\.isHidden, changeHandler: { [weak self] (view, _) in
+                self?.isHidden = view.isHidden
+                })
         }
 
         required init?(coder aDecoder: NSCoder) {
