@@ -50,4 +50,11 @@ extension UICollectionView {
         }
         return reusableView
     }
+
+    public func selectItemsAt(indexSet: IndexSet) {
+        indexSet.forEach {
+            self.selectItem(at: IndexPath(item: $0, section: 0), animated: true, scrollPosition: .left)
+        }
+    }
 }
+
