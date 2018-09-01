@@ -14,6 +14,7 @@ public protocol PhotoGalleryViewDelegate: class {
 
 // MARK: - PhotoGalleryView
 
+@objc(BSWPhotoGalleryView)
 final public class PhotoGalleryView: UIView {
     
     fileprivate let imageContentMode: UIView.ContentMode
@@ -90,7 +91,10 @@ final public class PhotoGalleryView: UIView {
             collectionView.prefetchDataSource = self
         }
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.alwaysBounceVertical = false
         collectionViewLayout.scrollDirection = .horizontal
+        collectionViewLayout.minimumInteritemSpacing = 0
+        collectionViewLayout.minimumLineSpacing = 0
 
         // Page control
         addAutolayoutSubview(pageControl)

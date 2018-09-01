@@ -30,8 +30,8 @@ public struct Photo {
         self.size = size
     }
 
-    public init(url: URL, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
-        self.kind = .url(url)
+    public init(url: URL?, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
+        self.kind = (url == nil) ? .empty : .url(url!)
         self.averageColor = averageColor
         self.size = size
     }

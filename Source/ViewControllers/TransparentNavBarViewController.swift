@@ -7,7 +7,8 @@ import UIKit
 
 open class TransparentNavBarViewController: UIViewController {
     
-    fileprivate var navBarBehaviour: NavBarTransparentBehavior?
+    open var shouldShowNavBarShadow: Bool = true
+    public var navBarBehaviour: NavBarTransparentBehavior?
     public let scrollableStackView = ScrollableStackView()
     
     override open func viewDidLoad() {
@@ -27,8 +28,7 @@ open class TransparentNavBarViewController: UIViewController {
         guard let navController = self.navigationController else {
             fatalError()
         }
-        navController.setNavigationBarHidden(false, animated: true)
-        navBarBehaviour = NavBarTransparentBehavior(navBar: navController.navigationBar, scrollView: scrollableStackView)
+        navBarBehaviour = NavBarTransparentBehavior(navBar: navController.navigationBar, scrollView: scrollableStackView, shouldShowShadow: shouldShowNavBarShadow)
     }
     
     override open func viewWillDisappear(_ animated: Bool) {
@@ -42,6 +42,7 @@ extension TransparentNavBarViewController {
     
     // This prevents UIKit to layout the
     // subviews below the navBar
+    @objc(BSWTransparentNavBarViewHost)
     private class HostView: UIView {
         @available(iOS 11.0, *)
         override fileprivate var safeAreaInsets: UIEdgeInsets {

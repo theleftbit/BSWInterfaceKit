@@ -63,7 +63,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     
     fileprivate var photosDataSource: CollectionViewStatefulDataSource<ProfilePhotoPickerCollectionViewCell>!
     fileprivate lazy var mediaPicker: MediaPickerBehavior = {
-        return MediaPickerBehavior(presentingVC: self.presentingViewController!)
+        return MediaPickerBehavior()
     }()
     
     fileprivate var photos: [PhotoPickerViewModel] {
@@ -131,6 +131,16 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     public func updatePhotos(_ photos: [PhotoPickerViewModel]) {
         photosDataSource.updateState(.loaded(data: photos))
     }
+
+    fileprivate func userRequestedProfilePictureUpload(fromSource source: MediaPickerBehavior.Source) {
+        guard let presentingVC = self.presentingViewController else {
+            return
+        }
+        guard let vc = self.mediaPicker.getMedia(source: source, handler: self.userAddedProfilePicture) else {
+            return
+        }
+        presentingVC.present(vc, animated: true, completion: nil)
+    }
     
     fileprivate func userAddedProfilePicture(_ url: URL?) {
         guard let url = url else { return }
@@ -176,11 +186,11 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
                 let alert = UIAlertController(title: localizableString(.addPhotoTitle), message: nil, preferredStyle: .actionSheet)
                 
                 let albumAction = UIAlertAction(title: localizableString(.photoAlbum), style: .default) { _ in
-                    self.mediaPicker.getMedia(source: .photoAlbum, handler: self.userAddedProfilePicture)
+                    self.userRequestedProfilePictureUpload(fromSource: .photoAlbum)
                 }
 
                 let cameraAction = UIAlertAction(title: localizableString(.camera), style: .default) { _ in
-                    self.mediaPicker.getMedia(source: .camera, handler: self.userAddedProfilePicture)
+                    self.userRequestedProfilePictureUpload(fromSource: .camera)
                 }
                 
                 let dismissAction = UIAlertAction(title: localizableString(.dismiss), style: .cancel) { _ in

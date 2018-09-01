@@ -37,7 +37,7 @@ class TextStylerTests: BSWSnapshotTest {
 
     func testBoldedString() {
         sut.preferredFontName = nil
-        let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded()
+        let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded
         performTestFor(string: string)
     }
 
