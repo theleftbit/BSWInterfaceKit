@@ -8,15 +8,18 @@ import UIKit
 //MARK: Cells
 
 @available(iOS 9.0, *)
+@objc(BSWPolaroidCollectionViewCell)
 open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
     //MARK: ViewModel
     public struct VM {
+        public let id: Int?
         public let cellImage: Photo
         public let cellTitle: NSAttributedString
         public let cellDetails: NSAttributedString
 
-        public init(cellImage: Photo, cellTitle: NSAttributedString, cellDetails: NSAttributedString) {
+        public init(id: Int? = nil, cellImage: Photo, cellTitle: NSAttributedString, cellDetails: NSAttributedString) {
+            self.id = id
             self.cellImage = cellImage
             self.cellTitle = cellTitle
             self.cellDetails = cellDetails
@@ -60,6 +63,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
         setupConstraints()
         setupRoundedCorners()
+        layer.addShadow(opacity: 0.1, shadowRadius: 4)
         
         contentView.layoutIfNeeded()
     }
@@ -76,15 +80,6 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     
     fileprivate func setupRoundedCorners() {
         contentView.roundCorners()
-    }
-    
-    fileprivate func setupShadow(_ opacity: CGFloat) {
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowOpacity = Float(opacity)
-        layer.shadowRadius = CGFloat(2)
-        layer.shouldRasterize = true
-        layer.rasterizationScale = UIScreen.main.scale
     }
     
     open func configureFor(viewModel: VM) {
@@ -104,6 +99,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
 //MARK: - Subviews
 
+@objc(BSWPolaroidCollectionCellBasicInfoView)
 private class PolaroidCollectionCellBasicInfoView: UIView {
     
     let titleLabel: UILabel = {
@@ -120,7 +116,6 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
 
     let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.spacing = Stylesheet.margin(.smallest)
@@ -145,7 +140,7 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
         backgroundColor = UIColor.white
         setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
         
-        addSubview(stackView)
+        addAutolayoutSubview(stackView)
         stackView.fillSuperview(withMargin: Stylesheet.margin(.medium))
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(detailLabel)

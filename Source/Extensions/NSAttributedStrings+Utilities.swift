@@ -38,13 +38,44 @@ public func + (left: NSAttributedString, right: NSAttributedString) -> NSAttribu
 }
 
 public extension NSAttributedString {
-    func bolded() -> NSAttributedString {
+    
+    convenience init?(html: String) {
+        guard let data = html.data(using: .utf16, allowLossyConversion: false) else {
+            return nil
+        }
+        
+        guard let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf16.rawValue], documentAttributes: nil) else {
+            return nil
+        }
+        
+        self.init(attributedString: attributedString)
+    }
+
+    func modifyingFont(_ newFont: UIFont) -> NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
         let range = NSRange(location: 0, length: string.length)
-        let font = string.attributes(at: 0, longestEffectiveRange: nil, in: range)[.font] as! UIFont
-        let boldFont = UIFont(descriptor: font.fontDescriptor.withSymbolicTraits(.traitBold)!, size: font.pointSize)
         string.removeAttribute(.font, range: range)
-        string.addAttribute(.font, value: boldFont, range: range)
+        string.addAttribute(.font, value: newFont, range: range)
         return string
+    }
+    
+    var bolded: NSAttributedString {
+        let range = NSRange(location: 0, length: self.length)
+        let font = self.attributes(at: 0, longestEffectiveRange: nil, in: range)[.font] as! UIFont
+        return modifyingFont(font.bolded)
+    }
+    
+    func setAttachmentWidth(_ width: CGFloat) {
+        enumerateAttribute(.attachment, in: NSRange(location: 0, length: length), options: [], using: { (value, range, stop) in
+            guard let attachment = value as? NSTextAttachment else { return }
+            attachment.setImageWidth(width: width)
+        })
+    }
+}
+
+private extension NSTextAttachment {
+    func setImageWidth(width: CGFloat) {
+        let ratio = bounds.size.width / bounds.size.height
+        bounds = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: width, height: width / ratio)
     }
 }

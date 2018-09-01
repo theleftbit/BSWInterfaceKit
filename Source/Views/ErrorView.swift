@@ -5,6 +5,7 @@
 
 import UIKit
 
+@objc(BSWErrorView)
 open class ErrorView: UIStackView {
     
     private enum Constants {

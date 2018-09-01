@@ -48,11 +48,16 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
     private func layout() {
         contentView.addAutolayoutSubview(stackView)
         stackView.pinToSuperview()
-        stackView.layoutMargins = FormTableViewAppearance.CellLayoutMargins
+        stackView.layoutMargins = FormTableViewCellAppearance.CellLayoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.addArrangedSubview(formInputView)
         stackView.addArrangedSubview(warningMessageLabel)
     }
+}
+
+
+public enum FormTableViewCellAppearance {
+    public static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
 }
 
 // MARK: Standard input Views
@@ -67,6 +72,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
         case email
         case password
         case newPassword
+        case telephone
         
         fileprivate var isPassword: Bool {
             switch self {
@@ -101,6 +107,10 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 if #available(iOS 12.0, *) {
                     textContentType = .newPassword
                 }
+            case .telephone:
+                placeholder = "telephone".localized
+                textContentType = .telephoneNumber
+                keyboardType = .phonePad
             case .unknown:
                 break
             }
@@ -109,27 +119,90 @@ open class FormTextField: UITextField, ViewModelConfigurable {
         }
     }
     
-    public override init(frame: CGRect) {
+    private let separatorLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = Appearance.EmptyColor
+        return view
+    }()
+    
+    private let separatorHeight: CGFloat = 2.0
+    private var containsError = false
+    
+    override init(frame: CGRect) {
         super.init(frame: frame)
-        guard let minHeight = FormTableViewAppearance.TextFieldMinHeight else {
-            return
-        }
-
-        heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
+        setup()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configureFor(viewModel: String?) {
-        self.text = viewModel
+    private func setup() {
+        if let minHeight = Appearance.MinHeight {
+            heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
+        }
+        addAutolayoutSubview(separatorLine)
+        NSLayoutConstraint.activate([
+            separatorLine.bottomAnchor.constraint(equalTo: bottomAnchor),
+            separatorLine.leadingAnchor.constraint(equalTo: leadingAnchor),
+            separatorLine.trailingAnchor.constraint(equalTo: trailingAnchor),
+            separatorLine.heightAnchor.constraint(equalToConstant: separatorHeight),
+            ])
+        self.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+    }
+    
+    @objc private func textDidChange() {
+        guard containsError == false else { return }
+        separatorLine.backgroundColor = (text == nil || text!.isEmpty) ? Appearance.EmptyColor : Appearance.CorrectColor
+    }
+    
+    public struct VM {
+        public let text: String?
+        public let containsError: Bool
+        public init(text: String?, containsError: Bool) {
+            self.text = text
+            self.containsError = containsError
+        }
+        
+        enum State {
+            case empty
+            case error
+            case filled
+        }
+        
+        var state: State {
+            guard !containsError else {
+                return .error
+            }
+            
+            guard let text = self.text, text.count > 0 else {
+                return .empty
+            }
+            
+            return .filled
+        }
+    }
+    
+    public func configureFor(viewModel: VM) {
+        text = viewModel.text
+        containsError = viewModel.containsError
+        switch viewModel.state {
+        case .empty:
+            separatorLine.backgroundColor = Appearance.EmptyColor
+        case .error:
+            separatorLine.backgroundColor = Appearance.ErrorColor
+        case .filled:
+            separatorLine.backgroundColor = Appearance.CorrectColor
+        }
+    }
+    
+    public enum Appearance {
+        public static var MinHeight: CGFloat?
+        public static var EmptyColor = UIColor(white: 155.0 / 255.0, alpha: 1.0)
+        public static var ErrorColor = UIColor.red
+        public static var CorrectColor = UIColor.black
     }
 }
 
 // MARK: Appereance
 
-public enum FormTableViewAppearance {
-    public static var CellLayoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-    public static var TextFieldMinHeight: CGFloat?
-}

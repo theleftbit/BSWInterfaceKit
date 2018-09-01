@@ -5,6 +5,7 @@
 
 import UIKit
 
+@objc(BSWLoadingView)
 public class LoadingView: UIView {
     fileprivate let stackView: UIStackView = {
         let stackView = UIStackView()

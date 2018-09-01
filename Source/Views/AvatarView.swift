@@ -5,6 +5,7 @@
 
 import UIKit
 
+@objc(BSWAvatarView)
 public class AvatarView: UIView {
     
     public let size: Size
@@ -17,7 +18,7 @@ public class AvatarView: UIView {
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -51,7 +52,7 @@ public class AvatarView: UIView {
     private let cameraImageView: UIImageView = {
         let imageView = UIImageView()
         let cameraImage = UIImage.templateImage(.camera)
-        imageView.image = cameraImage.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        imageView.image = cameraImage.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = .white
         return imageView
     }()
