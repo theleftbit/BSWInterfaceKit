@@ -5,7 +5,7 @@
 
 #import "BSWZoomTransition.h"
 
-@interface UIView (BSWSnapshot)
+@interface UIView (Snapshot)
 
 /**
  *
@@ -17,7 +17,7 @@
 
 @end
 
-@implementation UIView (BSWSnapshot)
+@implementation UIView (Snapshot)
 
 - (UIImage *)bsw_snapshot {
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, [UIScreen mainScreen].scale);
