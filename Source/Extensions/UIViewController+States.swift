@@ -75,6 +75,9 @@ extension UIViewController {
     }
 }
 
+public enum StateContainerAppereance {
+    public static var backgroundColor = UIColor.white
+}
 
 @objc(BSWStateContainerViewController)
 private class StateContainerViewController: UIViewController {
@@ -90,6 +93,7 @@ private class StateContainerViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = StateContainerAppereance.backgroundColor
         view.addAutolayoutSubview(stateView)
         stateView.centerInSuperview()
     }
