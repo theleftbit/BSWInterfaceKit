@@ -30,7 +30,7 @@ public struct Photo {
         self.size = size
     }
 
-    public init(url: URL?, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
+    public init(url: URL?, averageColor: UIColor = RandomColorFactory.randomColor(), size: CGSize? = nil) {
         self.kind = (url == nil) ? .empty : .url(url!)
         self.averageColor = averageColor
         self.size = size
@@ -41,16 +41,20 @@ public struct Photo {
     }
 }
 
-enum RandomColorFactory {
+public enum RandomColorFactory {
 
-    static var isOn: Bool = true
-
-    static func randomColor() -> UIColor {
+    public static var isOn: Bool = true
+    public static var defaultColor = UIColor.init(r: 255, g: 149, b: 0)
+    
+    public static func randomColor() -> UIColor {
         guard isOn else {
-            return UIColor.init(r: 255, g: 149, b: 0)
+            return defaultColor
         }
 
-        return UIColor.randomColor()
+        let randomRed:CGFloat = CGFloat(drand48())
+        let randomGreen:CGFloat = CGFloat(drand48())
+        let randomBlue:CGFloat = CGFloat(drand48())
+        return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
     }
 }
 
