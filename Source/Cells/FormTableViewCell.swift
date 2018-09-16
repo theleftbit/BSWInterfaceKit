@@ -97,6 +97,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 placeholder = "email-placeholder".localized
                 textContentType = .emailAddress
                 keyboardType = .emailAddress
+                autocapitalizationType = .none
             case .password:
                 placeholder = "password-placeholder".localized
                 if #available(iOS 11.0, *) {
