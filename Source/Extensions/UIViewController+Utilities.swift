@@ -6,6 +6,13 @@
 // MARK: - Presenting and dismissing
 
 extension UIViewController {
+
+    @objc(bsw_showTodoMessage)
+    public func showTodoMessage() {
+        let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
+        errorQueue.addOperation(operation)
+    }    
+
     //Based on https://stackoverflow.com/a/28158013/1152289
     @objc public func closeViewController(sender: Any?) {
         guard let presentingVC = targetViewController(forAction: #selector(closeViewController(sender:)), sender: sender) else { return }
