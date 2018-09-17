@@ -6,6 +6,8 @@
 import UIKit
 import MobileCoreServices
 import ImageIO
+import AVFoundation
+import Deferred
 
 public typealias MediaHandler = ((URL?) -> Void)
 
@@ -60,6 +62,18 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     fileprivate let imagePicker = UIImagePickerController()
     fileprivate let fileManager = FileManager.default
  
+    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum) -> (UIViewController?, Task<URL>) {
+        let deferred = Deferred<Task<URL>.Result>()
+        let vc = getMedia(kind, source: source) { (url) in
+            if let url = url {
+                deferred.fill(with: .success(url))
+            } else {
+                deferred.fill(with: .failure(Error.unknown))
+            }
+        }
+        return (vc, Task(deferred))
+    }
+    
     public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) -> UIViewController? {
         
         guard self.currentRequest == nil else {
@@ -88,6 +102,31 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         }
         
         return imagePicker
+    }
+    
+    public func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
+        let deferred = Deferred<Task<URL>.Result>()
+
+        let asset = AVAsset(url: videoURL)
+        let durationSeconds = CMTimeGetSeconds(asset.duration)
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        
+        let time = CMTimeMakeWithSeconds(durationSeconds/3.0, preferredTimescale: 600)
+        generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { (_, thumbnail, _, _, _) in
+            guard let thumbnail = thumbnail else {
+                return
+            }
+            let image = UIImage(cgImage: thumbnail)
+            do {
+                let finalURL = try self.writeToCache(image: image, kind: .photo)
+                deferred.fill(with: .success(finalURL))
+            } catch let error {
+                deferred.fill(with: .failure(error))
+            }
+        }
+        
+        return Task(deferred)
     }
     
     // MARK: UIImagePickerControllerDelegate
@@ -153,7 +192,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         }
         
         do {
-            let finalURL = try writeToCache(image: image, request: request)
+            let finalURL = try writeToCache(image: image, kind: request.kind)
             self.currentRequest?.handler(finalURL)
         } catch {
             self.currentRequest?.handler(nil)
@@ -197,7 +236,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         }
         
         do {
-            let url = try writeToCache(image: image, request: request)
+            let url = try writeToCache(image: image, kind: request.kind)
             request.handler(url)
         } catch {
             request.handler(nil)
@@ -205,12 +244,12 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
 
     }
     
-    private func writeToCache(image: UIImage, request: Request) throws -> URL {
+    private func writeToCache(image: UIImage, kind: Kind) throws -> URL {
         guard let data = image.jpegData(compressionQuality: 1) else {
             throw Error.jpegCompressionFailed
         }
         
-        let finalURL = cachePathForMedia(request.kind)
+        let finalURL = cachePathForMedia(kind)
         do {
             try data.write(to: finalURL, options: [.atomic])
             return finalURL
@@ -223,5 +262,6 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     enum Error: Swift.Error {
         case jpegCompressionFailed
         case diskWriteFailed
+        case unknown
     }
 }
