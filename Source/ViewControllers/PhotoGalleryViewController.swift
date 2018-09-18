@@ -66,6 +66,14 @@ open class PhotoGalleryViewController: UIViewController {
         photosGallery.scrollToPhoto(atIndex: currentPage)
     }
     
+    open override var shouldAutorotate: Bool {
+        return true
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .all
+    }
+    
     //MARK:- IBActions
     
     @objc func onCloseButton() {
