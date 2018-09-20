@@ -12,7 +12,6 @@ class TextStylerTests: BSWSnapshotTest {
         super.setUp()
         isDeviceAgnostic = false
         sut = TextStyler()
-        sut.preferredFontName = "ChalkboardSE-Light"
     }
 
     func testTitle() {
