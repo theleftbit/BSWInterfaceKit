@@ -3,4 +3,4 @@ xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKitDe
 -destination 'platform=iOS Simulator,name=iPhone X' \
 -destination 'platform=iOS Simulator,name=iPhone 7' \
 -destination 'platform=iOS Simulator,name=iPhone 7 Plus' \
--destination 'platform=iOS Simulator,name=iPad (6th Generation)' \
+-destination 'platform=iOS Simulator,name=iPad (5th Generation)' \
