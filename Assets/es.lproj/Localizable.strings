@@ -26,3 +26,7 @@
 "email-placeholder" = "Email";
 "password-placeholder" = "Contraseña";
 "telephone" = "Número de teléfono";
+
+//MapView
+"open-apple-maps" = "Abrir en Apple Maps";
+"open-google-maps" = "Abrir en Google Maps";

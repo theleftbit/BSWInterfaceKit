@@ -66,6 +66,7 @@ extension UIImageView {
                 self.backgroundColor = nil
             }
         case .empty:
+            image = nil
             backgroundColor = photo.averageColor
         }
     }
