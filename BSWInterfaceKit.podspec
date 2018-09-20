@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.platform     = :ios, "9.0"
-  s.swift_version = "4.1"
+  s.swift_version = "4.2"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source       = { :git => "https://github.com/TheLeftBit/BSWInterfaceKit.git", :tag => "#{s.version}" }

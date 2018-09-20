@@ -41,7 +41,7 @@ final public class PhotoGalleryView: UIView {
     
     fileprivate let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
-    weak var delegate: PhotoGalleryViewDelegate?
+    public weak var delegate: PhotoGalleryViewDelegate?
     
     public var currentPage: UInt {
         return UInt(pageControl.currentPage)
