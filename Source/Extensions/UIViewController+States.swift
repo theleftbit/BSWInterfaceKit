@@ -34,7 +34,7 @@ extension UIViewController {
     public func showErrorMessage(_ message: String, error: Error, retryButton: ButtonConfiguration? = nil) {
         
         #if DEBUG
-        let errorMessage = "\(message) \nError code: \(error)"
+        let errorMessage = "\(message) \nError code: \(error.localizedDescription)"
         #else
         let errorMessage = message
         #endif
@@ -77,6 +77,7 @@ extension UIViewController {
 
 public enum StateContainerAppereance {
     public static var backgroundColor = UIColor.white
+    public static var padding: CGFloat = 20
 }
 
 @objc(BSWStateContainerViewController)
@@ -96,5 +97,9 @@ private class StateContainerViewController: UIViewController {
         view.backgroundColor = StateContainerAppereance.backgroundColor
         view.addAutolayoutSubview(stateView)
         stateView.centerInSuperview()
+        NSLayoutConstraint.activate([
+                stateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: StateContainerAppereance.padding),
+                stateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -StateContainerAppereance.padding),
+            ])
     }
 }
