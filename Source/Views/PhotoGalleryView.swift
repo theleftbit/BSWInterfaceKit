@@ -19,7 +19,7 @@ final public class PhotoGalleryView: UIView {
     
     fileprivate let imageContentMode: UIView.ContentMode
     fileprivate let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    fileprivate var collectionViewDataSource: CollectionViewStatefulDataSource<PhotoCollectionViewCell>!
+    fileprivate var collectionViewDataSource: CollectionViewDataSource<PhotoCollectionViewCell>!
     fileprivate var collectionViewLayout: UICollectionViewFlowLayout {
         return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
     }
@@ -34,7 +34,7 @@ final public class PhotoGalleryView: UIView {
     
     public var photos = [Photo]() {
         didSet {
-            collectionViewDataSource.updateState(.loaded(data: photos))
+            collectionViewDataSource.updateData(photos)
             pageControl.numberOfPages = photos.count
         }
     }
@@ -81,8 +81,8 @@ final public class PhotoGalleryView: UIView {
         // CollectionView
         addSubview(collectionView)
         collectionView.isPagingEnabled = true
-        collectionViewDataSource = CollectionViewStatefulDataSource(
-            state: .loaded(data: photos),
+        collectionViewDataSource = CollectionViewDataSource(
+            data: photos,
             collectionView: collectionView
         )
         collectionView.dataSource = collectionViewDataSource
@@ -147,7 +147,7 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 extension PhotoGalleryView: UICollectionViewDataSourcePrefetching {
     public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         let models: [URL] = indexPaths
-            .compactMap({ self.collectionViewDataSource.modelForIndexPath($0) })
+            .compactMap({ self.collectionViewDataSource.data[safe: $0.item] })
             .compactMap({
                 switch $0.kind {
                 case .url(let url):

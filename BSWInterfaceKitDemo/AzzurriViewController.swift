@@ -9,9 +9,9 @@ enum FruitError: Error {
     case unknownError
 }
 
-class AzzurriViewController: UIViewController, ListStatePresenter {
+class AzzurriViewController: UIViewController {
 
-    var dataSource: CollectionViewStatefulDataSource<PolaroidCollectionViewCell>!
+    var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
     var collectionView: UICollectionView!
 
     init() {
@@ -26,10 +26,10 @@ class AzzurriViewController: UIViewController, ListStatePresenter {
         super.viewDidLoad()
 
         collectionView = WaterfallCollectionView(cellSizing: .dynamic({ (indexPath, constrainedToWidth) -> CGFloat in
-            guard let model = self.dataSource.modelForIndexPath(indexPath) else { return 0 }
+            guard let model = self.dataSource.data[safe: indexPath.item] else { return 0 }
             return PolaroidCollectionViewCell.cellHeightForViewModel(model, constrainedToWidth: constrainedToWidth)
         }))
-        dataSource = CollectionViewStatefulDataSource<PolaroidCollectionViewCell>(
+        dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
             collectionView: collectionView
         )
 
@@ -37,12 +37,19 @@ class AzzurriViewController: UIViewController, ListStatePresenter {
         collectionView.pinToSuperview()
         collectionView.backgroundColor = .groupTableViewBackground
         collectionView.alwaysBounceVertical = true
-        dataSource.listPresenter = self
+        
+        let retryButton = ButtonConfiguration(buttonTitle: .text(NSAttributedString(string: "Retry"))) {
+            print("Retry")
+        }
+        let emptyConfiguration = ErrorView.Configuration(title: NSAttributedString(string: "No more players"), buttonConfiguration: retryButton)
+        dataSource.emptyConfiguration = emptyConfiguration
+        
         setEditing(false, animated: true)
 
-        dataSource.updateState(.loading)
+        self.showLoader()
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
-            self.dataSource.updateState(.loaded(data: AzzurriViewController.mockData()))
+            self.hideLoader()
+            self.dataSource.updateData(AzzurriViewController.mockData())
         }
     }
 
@@ -79,15 +86,6 @@ class AzzurriViewController: UIViewController, ListStatePresenter {
 
     func removeItemAtIndexPath(_ indexPath: IndexPath) {
         dataSource.performEditActions([.remove(fromIndexPath: indexPath)])
-    }
-
-    func errorConfiguration(forError error: Error) -> ErrorListConfiguration {
-        let retryButton = ButtonConfiguration(buttonTitle: .text(NSAttributedString(string: "Retry"))) {
-            print("Retry")
-        }
-        let listConfig = ActionableListConfiguration(title: NSAttributedString(string: "\(error)"), buttonConfiguration: retryButton)
-
-        return ErrorListConfiguration.default(listConfig)
     }
 
     static func mockData() -> [PolaroidCollectionViewCell.VM] {

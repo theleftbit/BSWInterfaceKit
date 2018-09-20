@@ -7,13 +7,31 @@ import UIKit
 
 @objc(BSWErrorView)
 open class ErrorView: UIStackView {
-    
+
+    public struct Configuration {
+        public let title: NSAttributedString
+        public let message: NSAttributedString?
+        public let image: UIImage?
+        public let buttonConfiguration: ButtonConfiguration?
+        
+        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
+            self.title = title
+            self.message = message
+            self.image = image
+            self.buttonConfiguration = buttonConfiguration
+        }
+        
+        func viewRepresentation() -> UIView {
+            return ErrorView(config: self)
+        }
+    }
+
     private enum Constants {
         static let Spacing: CGFloat = 10
     }
     
-    public convenience init(listConfig: ActionableListConfiguration) {
-        self.init(title: listConfig.title, message: listConfig.message, image: listConfig.image, buttonConfiguration: listConfig.buttonConfiguration)
+    public convenience init(config: Configuration) {
+        self.init(title: config.title, message: config.message, image: config.image, buttonConfiguration: config.buttonConfiguration)
     }
     
     public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
