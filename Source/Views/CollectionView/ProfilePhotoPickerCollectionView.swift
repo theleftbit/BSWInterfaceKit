@@ -61,14 +61,14 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         static var PhotoPickerRatio: CGFloat { return (CGFloat(Rows) / CGFloat(Columns)) }
     }
     
-    fileprivate var photosDataSource: CollectionViewStatefulDataSource<ProfilePhotoPickerCollectionViewCell>!
+    fileprivate var photosDataSource: CollectionViewDataSource<ProfilePhotoPickerCollectionViewCell>!
     fileprivate lazy var mediaPicker: MediaPickerBehavior = {
         return MediaPickerBehavior()
     }()
     
     fileprivate var photos: [PhotoPickerViewModel] {
         get {
-            return photosDataSource.state.data ?? []
+            return photosDataSource.data
         }
     }
     public weak var presentingViewController: UIViewController?
@@ -103,8 +103,8 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         )
         
         /// Prepare the collectionViewDataSource
-        photosDataSource = CollectionViewStatefulDataSource(
-            state: .loaded(data: photos),
+        photosDataSource = CollectionViewDataSource(
+            data: photos,
             collectionView: self,
             reorderSupport: reorderSupport
         )
@@ -129,7 +129,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     }
     
     public func updatePhotos(_ photos: [PhotoPickerViewModel]) {
-        photosDataSource.updateState(.loaded(data: photos))
+        photosDataSource.updateData(photos)
     }
 
     fileprivate func userRequestedProfilePictureUpload(fromSource source: MediaPickerBehavior.Source) {
@@ -143,8 +143,8 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     }
     
     fileprivate func userAddedProfilePicture(_ url: URL?) {
+        let photos = self.photosDataSource.data
         guard let url = url else { return }
-        guard let photos = self.photosDataSource.state.data else { return }
         guard let index = photos.index(where: { return $0.isEmpty() }) else { return }
         profilePhotoDelegate?.userAddedProfilePicture(url) {
             guard let tuple = $0 else { return }
@@ -177,7 +177,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
 
     fileprivate func didTapOnProfilePhotoCell(_ cell: ProfilePhotoPickerCollectionViewCell) {
         guard let index = indexPath(for: cell) else { return }
-        guard let photo = photosDataSource.state.data?[safe: index.item] else { return }
+        guard let photo = photosDataSource.data[safe: index.item] else { return }
         guard let presentingVC = presentingViewController else { return }
         
         let _alertController: UIAlertController? = {

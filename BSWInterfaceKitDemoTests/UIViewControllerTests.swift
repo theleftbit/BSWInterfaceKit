@@ -20,6 +20,43 @@ class UIViewControllerTests: BSWSnapshotTest {
         vc.margin = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
         waitABitAndVerify(viewController: vc)
     }
+
+    func testErrorView() {
+        let vc = TestViewController()
+        struct SomeError: Swift.Error {}
+        let buttonConfig = ButtonConfiguration(title: "Retry", titleColor: .blue) {
+            
+        }
+        vc.showErrorMessage("Something Failed", error: SomeError(), retryButton: buttonConfig)
+        waitABitAndVerify(viewController: vc)
+    }
+    
+    func testLoadingView() {
+        let vc = TestViewController()
+        let loadingView: UIView = {
+            // This is a dummy black box to aid snapshot tests
+            // because since UIActivityControllers move,
+            // they're hard to unit test
+            let view = UIView()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                view.widthAnchor.constraint(equalToConstant: 20),
+                view.heightAnchor.constraint(equalToConstant: 20),
+                ])
+            view.backgroundColor = .black
+            return view
+        }()
+        vc.showLoadingView(loadingView)
+        waitABitAndVerify(viewController: vc)
+    }
+}
+
+@available(iOS 11.0, *)
+private class TestViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+    }
 }
 
 @available(iOS 11.0, *)
