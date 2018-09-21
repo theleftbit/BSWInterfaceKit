@@ -41,9 +41,9 @@ public extension UIWindow {
         }
     }
 
-    @objc(bsw_showErrorMessage:error:)
-    public func showErrorMessage(_ message: String, error: Error) {
+    @objc(bsw_showErrorAlert:error:)
+    public func showErrorAlert(_ message: String, error: Error) {
         guard let rootViewController = self.visibleViewController else { return }
-        rootViewController.showErrorMessage(message, error: error)
+        rootViewController.showErrorAlert(message, error: error)
     }
 }
