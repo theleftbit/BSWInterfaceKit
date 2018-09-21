@@ -7,8 +7,21 @@
 
 extension UIViewController {
 
+    @objc(bsw_showErrorAlert:error:)
+    public func showErrorAlert(_ message: String, error: Error) {
+        
+        #if DEBUG
+        let errorMessage = "\(message) \n\n Error code: \(error.localizedDescription)"
+        #else
+        let errorMessage = message
+        #endif
+        
+        let operation = PresentAlertOperation(title: "Error", message: errorMessage, presentingViewController: self)
+        errorQueue.addOperation(operation)
+    }
+    
     @objc(bsw_showTodoMessage)
-    public func showTodoMessage() {
+    public func showTodoAlert() {
         let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
         errorQueue.addOperation(operation)
     }    
