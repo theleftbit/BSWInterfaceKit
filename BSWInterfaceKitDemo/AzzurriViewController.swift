@@ -26,6 +26,7 @@ class AzzurriViewController: UIViewController {
         super.viewDidLoad()
 
         let columnLayout = ColumnFlowLayout()
+        columnLayout.factoryCellDataSource = self
         columnLayout.minColumnWidth = 120
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: columnLayout)
         dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
@@ -50,6 +51,7 @@ class AzzurriViewController: UIViewController {
             self.hideLoader()
             self.dataSource.updateData(AzzurriViewController.mockData())
         }
+
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -127,5 +129,17 @@ class AzzurriViewController: UIViewController {
         )
 
         return [vm1, vm2, vm3, vm4, vm5]
+    }
+}
+
+
+extension AzzurriViewController: ColumnFlowLayoutFactoryDataSource {
+    func factoryCellForItem(atIndexPath indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = PolaroidCollectionViewCell()
+        guard let vm = dataSource.data[safe: indexPath.item] else {
+            return cell
+        }
+        cell.configureFor(viewModel: vm)
+        return cell
     }
 }
