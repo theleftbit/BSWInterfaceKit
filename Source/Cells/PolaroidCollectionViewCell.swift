@@ -36,7 +36,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     }()
     fileprivate let stackView = UIStackView()
 
-    fileprivate static let MaxImageHeightProportion = CGFloat(2)
+    public static let MaxImageHeightProportion = CGFloat(2)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,7 +92,8 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         //Set the image
         cellImageView.setPhoto(viewModel.cellImage)
         if let imageSize = viewModel.cellImage.size {
-            setupImageConstraint(multiplier: imageSize.height/imageSize.width)
+            let ratio = min(imageSize.height/imageSize.width, PolaroidCollectionViewCell.MaxImageHeightProportion)
+            setupImageConstraint(multiplier: ratio)
         } else {
             setupImageConstraint()
         }
@@ -102,7 +103,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 //MARK: - Subviews
 
 @objc(BSWPolaroidCollectionCellBasicInfoView)
-private class PolaroidCollectionCellBasicInfoView: UIView {
+public class PolaroidCollectionCellBasicInfoView: UIView {
     
     let titleLabel: UILabel = {
         let label = UILabel()
