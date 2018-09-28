@@ -7,16 +7,15 @@ import BSWInterfaceKit
 @testable import BSWInterfaceKitDemo
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
-    var collectionView: WaterfallCollectionView!
+    var collectionView: UICollectionView!
     var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
 
     override func setUp() {
         super.setUp()
         isDeviceAgnostic = false
-        collectionView = WaterfallCollectionView(cellSizing: .dynamic({ [unowned self] (indexPath, constrainedToWidth) -> CGFloat in
-            guard let model = self.dataSource.data[safe: indexPath.item] else { return 0 }
-            return PolaroidCollectionViewCell.cellHeightForViewModel(model, constrainedToWidth: constrainedToWidth)
-        }))
+        let columnLayout = ColumnFlowLayout()
+        columnLayout.minColumnWidth = 120
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: columnLayout)
         dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
             data: PolaroidCollectionViewCellTests.mockData(),
             collectionView: collectionView
