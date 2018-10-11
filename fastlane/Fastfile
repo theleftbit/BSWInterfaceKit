@@ -1,0 +1,15 @@
+default_platform(:ios)
+
+cocoapods(try_repo_update_on_error: true)
+setup_travis
+
+platform :ios do
+  desc "Execute unit tests"
+  lane :unit_tests do
+    run_tests(
+      workspace: "BSWInterfaceKit.xcworkspace", 
+      scheme: "BSWInterfaceKitDemo",
+      devices: ["iPhone 7"],
+      )
+  end
+end
