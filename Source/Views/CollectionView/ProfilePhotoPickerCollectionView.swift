@@ -76,7 +76,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
 
     public init(photos: [PhotoPickerViewModel] = []) {
 
-        super.init(frame: .zero, collectionViewLayout: BSWCollectionViewFlowLayout())
+        super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         /// Prepare the FlowLayout
         flowLayout.scrollDirection = .vertical
@@ -122,9 +122,9 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         fatalError("init(coder:) has not been implemented")
     }
     
-    public var flowLayout: BSWCollectionViewFlowLayout {
+    public var flowLayout: UICollectionViewFlowLayout {
         get {
-            return collectionViewLayout as! BSWCollectionViewFlowLayout
+            return collectionViewLayout as! UICollectionViewFlowLayout
         }
     }
     
