@@ -7,31 +7,27 @@ import UIKit
 
 
 // MARK: - Error and Loading
-
+@nonobjc
 extension UIViewController {
     
     // MARK: - Loaders
-    @objc(bsw_showLoadingView:)
-    public func showLoadingView(_ loadingView: UIView) {
-        self.addStateView(loadingView)
+    public func showLoadingView(_ loadingView: UIView, stateViewFrame: CGRect? = nil) {
+        self.addStateView(loadingView, stateViewFrame: stateViewFrame)
     }
     
-    @objc(bsw_showLoader)
-    public func showLoader() {
-        self.showLoadingView(LoadingView())
+    public func showLoader(stateViewFrame: CGRect? = nil) {
+        self.showLoadingView(LoadingView(), stateViewFrame: stateViewFrame)
     }
     
-    @objc(bsw_hideLoader)
-    public func hideLoader() {
+    public func hideLoader(stateViewFrame: CGRect? = nil) {
         self.removeStateView()
     }
     
-    @objc(bsw_showErrorView:)
-    public func showErrorView(_ errorView: UIView) {
-        self.addStateView(errorView)
+    public func showErrorView(_ errorView: UIView, stateViewFrame: CGRect? = nil) {
+        self.addStateView(errorView, stateViewFrame: stateViewFrame)
     }
     
-    public func showErrorMessage(_ message: String, error: Error, retryButton: ButtonConfiguration? = nil) {
+    public func showErrorMessage(_ message: String, error: Error, retryButton: ButtonConfiguration? = nil, stateViewFrame: CGRect? = nil) {
         
         #if DEBUG
         let errorMessage = "\(message) \nError code: \(error.localizedDescription)"
@@ -53,12 +49,16 @@ extension UIViewController {
         self.removeStateView()
     }
     
-    private func addStateView(_ stateView: UIView) {
+    private func addStateView(_ stateView: UIView, stateViewFrame: CGRect?) {
         removeStateView()
         let stateVC = StateContainerViewController(stateView: stateView)
         addChild(stateVC)
-        view.addAutolayoutSubview(stateVC.view)
-        stateVC.view.pinToSuperview()
+        view.addSubview(stateVC.view)
+        if let _stateViewFrame = stateViewFrame {
+            stateVC.view.frame = _stateViewFrame
+        } else {
+            stateVC.view.pinToSuperview()
+        }
         stateVC.didMove(toParent: self)
     }
     
