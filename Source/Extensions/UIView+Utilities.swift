@@ -73,6 +73,23 @@ extension UIView {
     }
 
     @discardableResult
+    @objc(bsw_pinToSuperviewLayoutMargins)
+    public func pinToSuperviewLayoutMargins() -> [NSLayoutConstraint] {
+        guard let superView = superview else { return [] }
+        translatesAutoresizingMaskIntoConstraints = false
+
+        let guide = self.layoutMarginsGuide
+        let constraints: [NSLayoutConstraint] = [
+            leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            trailingAnchor.constraint(equalTo: superView.trailingAnchor),
+            topAnchor.constraint(equalTo: guide.topAnchor),
+            bottomAnchor.constraint(equalTo: guide.bottomAnchor)
+        ]
+        NSLayoutConstraint.activate(constraints)
+        return constraints
+    }
+    
+    @discardableResult
     @objc(bsw_pinToSuperviewWithEdges:)
     public func pinToSuperview(withEdges edges: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
         guard let superView = superview else { return [] }
