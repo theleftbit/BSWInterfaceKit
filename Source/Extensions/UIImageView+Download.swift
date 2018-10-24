@@ -20,7 +20,7 @@ extension UIImageView {
 
     @objc(bsw_enableWebDownloads)
     static public func enableWebDownloads() {
-        webDownloadsEnabled = false
+        webDownloadsEnabled = true
     }
 
     @objc(bsw_setImageFromURLString:)
