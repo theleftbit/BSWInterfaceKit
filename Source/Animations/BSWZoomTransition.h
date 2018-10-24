@@ -5,6 +5,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol BSWZoomTransitionDelegate;
 
 typedef NS_ENUM(NSInteger, BSWZoomTransitionType) {
@@ -28,8 +30,10 @@ typedef NS_ENUM(NSInteger, BSWZoomTransitionType) {
 
 @required
 
-- (UIView *)zoomTransition:(BSWZoomTransition *)zoomTransition startingViewFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController;
+- (nullable UIView *)zoomTransition:(BSWZoomTransition *)zoomTransition startingViewFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController;
 
-- (UIView *)zoomTransition:(BSWZoomTransition *)zoomTransition targetViewFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController;
+- (nullable UIView *)zoomTransition:(BSWZoomTransition *)zoomTransition targetViewFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController;
 
 @end
+
+NS_ASSUME_NONNULL_END
