@@ -31,6 +31,14 @@ class ButtonTests: BSWSnapshotTest {
         waitABitAndVerify(view: button)
     }
     
+    func testImageTitleButton() {
+        let image: UIImage = #imageLiteral(resourceName: "women")
+        let title = NSAttributedString(string: "Click Me")
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, image), actionHandler: {}))
+        button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
+        waitABitAndVerify(view: button)
+    }
+    
     func testTapButton() {
         
         let exp = expectation(description: "Expecting touches in button")

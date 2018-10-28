@@ -32,7 +32,7 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C29AB2437562FF05C42E6F150004122D"
+            BlueprintIdentifier = "5AB37BA26941D170C642918F0067F576"
             BuildableName = "BSWInterfaceKit.framework"
             BlueprintName = "BSWInterfaceKit"
             ReferencedContainer = "container:Pods/Pods.xcodeproj">
