@@ -4,15 +4,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <BSWInterfaceKit/BSWZoomTransitionType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol BSWZoomTransitionDelegate;
-
-typedef NS_ENUM(NSInteger, BSWZoomTransitionType) {
-    BSWZoomTransitionTypePresenting,
-    BSWZoomTransitionTypeDismissing
-};
 
 @interface BSWZoomTransition : NSObject <UIViewControllerAnimatedTransitioning>
 
