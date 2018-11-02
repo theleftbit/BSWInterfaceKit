@@ -85,77 +85,93 @@
     imageView.frame = clipView.bounds;
     [clipView addSubview:imageView];
     
+    BOOL shouldAnimateCornerRadius = NO;
+    switch (_type) {
+        case BSWZoomTransitionTypePresenting:
+        {
+            if (startingView.layer.cornerRadius > 0) {
+                shouldAnimateCornerRadius = YES;
+                [clipView.layer setCornerRadius:startingView.layer.cornerRadius];
+            }
+        }
+        break;
+        
+        case BSWZoomTransitionTypeDismissing:
+        {
+            if (targetView.layer.cornerRadius > 0) {
+                shouldAnimateCornerRadius = YES;
+                [clipView.layer setCornerRadius:targetView.layer.cornerRadius];
+            }
+        }
+        break;
+    }
+
     // The fade view will sit between the "from" snapshot and the target snapshot.
     // This is what is used to create the fade effect.
-    UIView *fadeView = [[UIView alloc] initWithFrame:containerView.bounds];
-    fadeView.backgroundColor = _fadeColor;
-    
+    UIView *fadeView;
+    CGFloat fadeViewTargetAlpha;
+    switch (_type) {
+        case BSWZoomTransitionTypePresenting:
+        {
+            fadeView = [fromControllerView snapshotViewAfterScreenUpdates:YES];
+            fadeView.backgroundColor = _fadeColor;
+            fadeView.alpha = 1.0;
+            fadeViewTargetAlpha = 0.0;
+        }
+        break;
+        
+        case BSWZoomTransitionTypeDismissing:
+        {
+            fadeView = [toControllerView snapshotViewAfterScreenUpdates:YES];
+            fadeView.alpha = 0.0;
+            fadeViewTargetAlpha = 1.0;
+        }
+        break;
+    }
+
     // Assemble the hierarchy in the container
     [containerView addSubview:fadeView];
     [containerView addSubview:clipView];
 
-    if (_type == BSWZoomTransitionTypePresenting) {
-
-        fadeView.alpha = 0.0;
-
-        // Animate presentation
-        [UIView animateWithDuration:[self transitionDuration:transitionContext]
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             // Transform and move the "from" snapshot
-                             clipView.frame = targetFrame;
+    // Animate presentation
+    [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         // Transform and move the "from" snapshot
+                         clipView.frame = targetFrame;
+                         if (self.type == BSWZoomTransitionTypePresenting) {
                              imageView.bounds = [self finalRectForImageSize:imageView.image.size constrainedToContentRect:targetFrame contentMode:targetView.contentMode];
-                             
                              imageView.center = clipView.center;
-                             // Fade
-                             fadeView.alpha = 1.0;
-                         } completion:^(BOOL finished) {
-                             // Add "to" controller view
-                             [containerView addSubview:toControllerView];
-
-                             // Cleanup our animation views
-                             [backgroundView removeFromSuperview];
-                             [clipView removeFromSuperview];
-                             [fadeView removeFromSuperview];
-
-                             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-                             [transitionContext completeTransition:finished];
-                         }];
-    }
-    else {
-
-
-        // Animate dismissal
-        [UIView animateWithDuration:[self transitionDuration:transitionContext]
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             // Transform and move the "from" snapshot
-                             clipView.frame = targetFrame;
-                             imageView.bounds = [self finalRectForImageSize:targetView.image.size constrainedToContentRect:targetFrame contentMode:targetView.contentMode];
-                             NSLog(@"%@", NSStringFromCGRect(imageView.bounds));
-                             imageView.center = clipView.center;
-
-                             // Fade
-                             fadeView.alpha = 1.0;
-
-                         } completion:^(BOOL finished) {
-                             
-                             // Add "to" controller view
-                             [containerView addSubview:toControllerView];
-                             
-                             // Cleanup our animation views
-                             [backgroundView removeFromSuperview];
-                             [imageView removeFromSuperview];
-                             [fadeView removeFromSuperview];
-                             [clipView removeFromSuperview];
-                             
-                             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-                             
-                             [transitionContext completeTransition:finished];
-                         }];
-    }
+                         } else {
+                             imageView.frame = CGRectMake(0, 0, targetFrame.size.width, targetFrame.size.height);
+                         }
+                         
+                         // Fade
+                         fadeView.alpha = fadeViewTargetAlpha;
+                         
+                         if (shouldAnimateCornerRadius) {
+                             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
+                             animation.duration = [self transitionDuration:transitionContext];
+                             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+                             animation.toValue = @(targetView.layer.cornerRadius);
+                             animation.fillMode = kCAFillModeForwards;
+                             animation.removedOnCompletion = NO;
+                             [clipView.layer addAnimation:animation forKey:@"setCornerRadius:"];
+                         }
+                         
+                     } completion:^(BOOL finished) {
+                         // Add "to" controller view
+                         [containerView addSubview:toControllerView];
+                         
+                         // Cleanup our animation views
+                         [backgroundView removeFromSuperview];
+                         [clipView removeFromSuperview];
+                         [fadeView removeFromSuperview];
+                         
+                         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                         [transitionContext completeTransition:finished];
+                     }];
 }
 
 - (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext {
