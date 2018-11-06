@@ -38,7 +38,7 @@ open class ErrorView: UIStackView {
     }
     
     public enum Appereance {
-        static public let Spacing: CGFloat = 10
+        static public var Spacing: CGFloat = 10
     }
 
     public convenience init(config: Configuration) {
