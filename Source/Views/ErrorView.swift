@@ -25,11 +25,11 @@ open class ErrorView: UIStackView {
             return ErrorView(config: self)
         }
     }
-
-    private enum Constants {
+    
+    public enum Appereance {
         static let Spacing: CGFloat = 10
     }
-    
+
     public convenience init(config: Configuration) {
         self.init(title: config.title, message: config.message, image: config.image, buttonConfiguration: config.buttonConfiguration)
     }
@@ -38,7 +38,7 @@ open class ErrorView: UIStackView {
         super.init(frame: .zero)
         axis = .vertical
         alignment = .center
-        spacing = Constants.Spacing
+        spacing = Appereance.Spacing
         
         if let image = image {
             let imageView = UIImageView(image: image)
