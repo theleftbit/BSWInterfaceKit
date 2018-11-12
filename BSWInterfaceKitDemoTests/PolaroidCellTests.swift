@@ -39,7 +39,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         waitABitAndVerify(view: collectionView)
     }
 
-    func testRegularLayout() {
+    func _testRegularLayout() {
 
     }
 
