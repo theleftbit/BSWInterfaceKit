@@ -17,6 +17,7 @@ public protocol ColumnFlowLayoutFactoryDataSource: class {
     func factoryCellForItem(atIndexPath: IndexPath) -> UICollectionViewCell
 }
 
+@available(iOS 11.0, *)
 open class ColumnFlowLayout: UICollectionViewLayout {
     
     @available(iOS, deprecated:12.0, message:"Not neccesary anymore")
@@ -78,8 +79,10 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             return offsets
         }()
         
-        // This is were we'll store the Y for each column
-        var yOffset = [CGFloat](repeating: 0, count: numberOfColumns)
+        // This is were we'll store the Y for each column: since layoutMargins
+        // automatically include safeAreas, we're removing safeArea to use absolute values
+        let yStartOffset = cv.layoutMargins.top - cv.safeAreaInsets.top
+        var yOffset = [CGFloat](repeating: yStartOffset, count: numberOfColumns)
         
         //Now we calculate the UICollectionViewLayoutAttributes for each cell
         var currentColumn: Int = 0
@@ -100,7 +103,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             // Automatically calculate the height of the cell using Autolayout
             let height = ColumnFlowLayout.cellHeight(cell: cell, availableWidth: cellWidth)
             let frame = CGRect(x: xOffset[currentColumn], y: yOffset[currentColumn], width: cellWidth, height: height)
-            let insetFrame = frame.offsetBy(dx: 0, dy: itemSpacing)
+            let isFirstCellInColumn = (yOffset[currentColumn] == yStartOffset)
+            let insetFrame = frame.offsetBy(dx: 0, dy: isFirstCellInColumn ? 0 : itemSpacing)
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
             attributes.frame = insetFrame
             cache.append(attributes)
@@ -111,6 +115,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             yOffset[currentColumn] = insetFrame.maxY
             currentColumn = currentColumn < (numberOfColumns - 1) ? (currentColumn + 1) : 0
         }
+        
+        contentHeight += cv.layoutMargins.bottom
     }
     
     override open var collectionViewContentSize: CGSize {

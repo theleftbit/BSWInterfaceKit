@@ -6,6 +6,7 @@
 import BSWInterfaceKit
 @testable import BSWInterfaceKitDemo
 
+@available(iOS 11.0, *)
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
     var collectionView: UICollectionView!
     var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
@@ -39,7 +40,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         waitABitAndVerify(view: collectionView)
     }
 
-    func testRegularLayout() {
+    func _testRegularLayout() {
 
     }
 
