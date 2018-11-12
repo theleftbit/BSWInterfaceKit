@@ -79,7 +79,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         }()
         
         // This is were we'll store the Y for each column
-        var yOffset = [CGFloat](repeating: 0, count: numberOfColumns)
+        var yOffset = [CGFloat](repeating: cv.layoutMargins.top, count: numberOfColumns)
         
         //Now we calculate the UICollectionViewLayoutAttributes for each cell
         var currentColumn: Int = 0
@@ -111,6 +111,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             yOffset[currentColumn] = insetFrame.maxY
             currentColumn = currentColumn < (numberOfColumns - 1) ? (currentColumn + 1) : 0
         }
+        
+        contentHeight += cv.layoutMargins.bottom
     }
     
     override open var collectionViewContentSize: CGSize {
