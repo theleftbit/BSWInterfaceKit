@@ -27,6 +27,7 @@
 		F53E036E2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */; };
 		F54886DC203ED769005191D3 /* FacebookLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */; };
 		F56D522320F767130008D67C /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56D522220F767130008D67C /* AvatarViewTests.swift */; };
+		F5BC58882199CBCB00493461 /* ColumnFlowLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BC58872199CBCB00493461 /* ColumnFlowLayoutTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableTabsViewControllerTests.swift; sourceTree = "<group>"; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
 		F56D522220F767130008D67C /* AvatarViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarViewTests.swift; sourceTree = "<group>"; };
+		F5BC58872199CBCB00493461 /* ColumnFlowLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnFlowLayoutTests.swift; sourceTree = "<group>"; };
 		F9781A2542680784B472999E /* Pods_BSWInterfaceKitDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BSWInterfaceKitDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -159,6 +161,7 @@
 				EB55C3AD1EF534120029E735 /* TextStylerTests.swift */,
 				F56D522220F767130008D67C /* AvatarViewTests.swift */,
 				F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */,
+				F5BC58872199CBCB00493461 /* ColumnFlowLayoutTests.swift */,
 			);
 			name = Suite;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 				EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */,
 				EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */,
 				EB067A161E8057E000A8AC91 /* PolaroidCellTests.swift in Sources */,
+				F5BC58882199CBCB00493461 /* ColumnFlowLayoutTests.swift in Sources */,
 				EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */,
 				F53E036E2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift in Sources */,
 			);

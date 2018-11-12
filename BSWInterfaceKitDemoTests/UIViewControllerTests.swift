@@ -23,11 +23,10 @@ class UIViewControllerTests: BSWSnapshotTest {
 
     func testErrorView() {
         let vc = TestViewController()
-        struct SomeError: Swift.Error {}
         let buttonConfig = ButtonConfiguration(title: "Retry", titleColor: .blue) {
             
         }
-        vc.showErrorMessage("Something Failed", error: SomeError(), retryButton: buttonConfig)
+        vc.showErrorMessage("Something Failed", error: "Some Error", retryButton: buttonConfig)
         waitABitAndVerify(viewController: vc)
     }
     
@@ -44,7 +43,10 @@ class UIViewControllerTests: BSWSnapshotTest {
                 view.heightAnchor.constraint(equalToConstant: 20),
                 ])
             view.backgroundColor = .black
-            return view
+            let containerView = UIView()
+            containerView.addSubview(view)
+            view.centerInSuperview()
+            return containerView
         }()
         vc.showLoadingView(loadingView)
         waitABitAndVerify(viewController: vc)
@@ -70,4 +72,7 @@ private class BottomActionVC: UIViewController {
         let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
         button = addBottomActionButton(buttonConfig: config, margin: margin)
     }
+}
+
+ extension String: LocalizedError {
 }
