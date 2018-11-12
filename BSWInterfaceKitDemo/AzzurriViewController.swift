@@ -9,6 +9,7 @@ enum FruitError: Error {
     case unknownError
 }
 
+@available(iOS 11.0, *)
 class AzzurriViewController: UIViewController {
 
     var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
@@ -133,6 +134,7 @@ class AzzurriViewController: UIViewController {
 }
 
 
+@available(iOS 11.0, *)
 extension AzzurriViewController: ColumnFlowLayoutFactoryDataSource {
     func factoryCellForItem(atIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         let cell = PolaroidCollectionViewCell()
