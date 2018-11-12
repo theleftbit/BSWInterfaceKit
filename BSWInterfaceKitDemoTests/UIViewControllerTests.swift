@@ -43,7 +43,10 @@ class UIViewControllerTests: BSWSnapshotTest {
                 view.heightAnchor.constraint(equalToConstant: 20),
                 ])
             view.backgroundColor = .black
-            return view
+            let containerView = UIView()
+            containerView.addSubview(view)
+            view.centerInSuperview()
+            return containerView
         }()
         vc.showLoadingView(loadingView)
         waitABitAndVerify(viewController: vc)
