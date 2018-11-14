@@ -10,11 +10,17 @@ extension UIViewController {
     @objc(bsw_showErrorAlert:error:)
     public func showErrorAlert(_ message: String, error: Error) {
         
-        #if DEBUG
-        let errorMessage = "\(message) \n\n Error code: \(error.localizedDescription)"
-        #else
-        let errorMessage = message
-        #endif
+        let errorMessage: String = {
+            #if DEBUG
+            if let localizedError = error as? LocalizedError, let description = localizedError.errorDescription {
+                return "\(message): \(description) \n\n Error code: \(error)"
+            } else {
+                return "\(message) \n\n Error code: \(error.localizedDescription)"
+            }
+            #else
+            return message
+            #endif
+        }()
         
         let operation = PresentAlertOperation(title: "Error", message: errorMessage, presentingViewController: self)
         errorQueue.addOperation(operation)
