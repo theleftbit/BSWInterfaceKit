@@ -5,16 +5,14 @@ PODS:
     - KeychainAccess (~> 3.1.0)
   - BSWInterfaceKit (1.0.0):
     - BSWFoundation (~> 2.2.0)
-    - SDWebImage (~> 4.4.2)
+    - Nuke (~> 7.5.1)
   - iOSSnapshotTestCase (4.0.0):
     - iOSSnapshotTestCase/SwiftSupport (= 4.0.0)
   - iOSSnapshotTestCase/Core (4.0.0)
   - iOSSnapshotTestCase/SwiftSupport (4.0.0):
     - iOSSnapshotTestCase/Core
   - KeychainAccess (3.1.2)
-  - SDWebImage (4.4.2):
-    - SDWebImage/Core (= 4.4.2)
-  - SDWebImage/Core (4.4.2)
+  - Nuke (7.5.1)
 
 DEPENDENCIES:
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
@@ -26,7 +24,7 @@ SPEC REPOS:
     - BSWFoundation
     - iOSSnapshotTestCase
     - KeychainAccess
-    - SDWebImage
+    - Nuke
 
 EXTERNAL SOURCES:
   BSWInterfaceKit:
@@ -35,10 +33,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   BNRDeferred: 85f3a78f73f9af049a398aabe282435b89f9f3c3
   BSWFoundation: 26ea87aedc712551e589bd687fc4d9fab0c41a2b
-  BSWInterfaceKit: 2af483ecddd9c3f7a5fd4e292cb2eaec951f2e2e
+  BSWInterfaceKit: 64110ce81a33d7b8d855c1700669af671e2333e9
   iOSSnapshotTestCase: 711379b19f69a22c131527df862352c877c2773c
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
-  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  Nuke: 3814db501e55f17951451839c726ffd91641e9a5
 
 PODFILE CHECKSUM: 212f6452e44bf44eaefb539ec80cf836b3be6665
 
