@@ -4,7 +4,7 @@
 //
 
 import UIKit
-import SDWebImage
+import Nuke
 
 public struct Photo {
     
@@ -74,11 +74,11 @@ public extension Photo {
         case .image(let image):
             return image
         case .url(let url):
-            let imageManager = SDWebImageManager.shared() //This dependency should be removed
-            guard let image = imageManager.imageCache?.imageFromCache(forKey: url.absoluteString) else {
+            let imageCache = Nuke.ImageCache.shared //This dependency should be removed
+            guard let request = imageCache.cachedResponse(for: ImageRequest(url: url)) else {
                 return nil
             }
-            return image
+            return request.image
         }
     }
 }
