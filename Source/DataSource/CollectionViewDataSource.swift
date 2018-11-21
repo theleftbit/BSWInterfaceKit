@@ -7,12 +7,12 @@ import UIKit
 
 public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewCell>: NSObject, UICollectionViewDataSource {
     
-    public fileprivate(set) var data: [Cell.VM]
+    public private(set) var data: [Cell.VM]
     public weak var collectionView: UICollectionView!
     public var emptyConfiguration: ErrorView.Configuration?
-    fileprivate var emptyView: UIView?
     public let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
-    
+    private var emptyView: UIView?
+
     public init(data: [Cell.VM] = [],
                 collectionView: UICollectionView,
                 emptyConfiguration: ErrorView.Configuration? = nil,
@@ -26,7 +26,6 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
 
         collectionView.registerReusableCell(Cell.self)
         collectionView.dataSource = self
-        collectionView.alwaysBounceVertical = true
         if let _ = self.reorderSupport {
             let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
             self.collectionView.addGestureRecognizer(longPressGesture)
@@ -138,7 +137,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     
     //MARK:- Private
     
-    fileprivate func addEmptyView() {
+    private func addEmptyView() {
         
         guard let emptyConfiguration = self.emptyConfiguration else {
             return
@@ -261,8 +260,8 @@ public struct CollectionViewSupplementaryViewSupport {
     }
 }
 
-extension UICollectionView {
-    fileprivate func performEditActions<T>(_ actions: [CollectionViewEditActionKind<T>]) {
+private extension UICollectionView {
+     func performEditActions<T>(_ actions: [CollectionViewEditActionKind<T>]) {
         performBatchUpdates({ 
             
             actions.forEach {
