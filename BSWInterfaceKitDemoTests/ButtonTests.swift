@@ -11,7 +11,7 @@ class ButtonTests: BSWSnapshotTest {
 
     override func setUp() {
         super.setUp()
-        isDeviceAgnostic = false
+        agnosticOptions = [.none]
     }
 
     func testRadioButton() {
