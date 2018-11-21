@@ -12,9 +12,9 @@ class BSWSnapshotTest: FBSnapshotTestCase {
 
     override func setUp() {
         super.setUp()
-        
+            
         // Set snapshot device agnostic. It will append "iPhone" to the snapshot filename
-        isDeviceAgnostic = true
+        agnosticOptions = [.device, .OS, .screenSize]
 
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
@@ -72,7 +72,7 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         view.setNeedsLayout()
         view.layoutIfNeeded()
 
-        if let scrollView = view as? UIScrollView, !isDeviceAgnostic {
+        if let scrollView = view as? UIScrollView, agnosticOptions == [.none] {
             scrollView.frame = CGRect(
                 x: scrollView.frame.origin.x,
                 y: scrollView.frame.origin.y,
