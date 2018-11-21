@@ -10,7 +10,7 @@ class ProfilePhotoPickerCollectionViewTests: BSWSnapshotTest {
 
     override func setUp() {
         super.setUp()
-        isDeviceAgnostic = false
+        agnosticOptions = [.none]
 
         let photosVM = PhotoPickerViewModel.createPhotoArray([Photo.emptyPhoto(), Photo.emptyPhoto()], maxPhotos: 6)
         photoPicker = ProfilePhotoPickerCollectionView(photos: photosVM)

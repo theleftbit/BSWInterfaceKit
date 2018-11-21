@@ -4,13 +4,14 @@
 
 import BSWInterfaceKit
 import XCTest
+
 /*
 class TextStylerTests: BSWSnapshotTest {
 
     var sut: TextStyler!
     override func setUp() {
         super.setUp()
-        isDeviceAgnostic = false
+        agnosticOptions = [.none]
         sut = TextStyler()
         sut.preferredFontName = "ChalkboardSE-Light"
     }

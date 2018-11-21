@@ -13,7 +13,6 @@
 		EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */; };
 		EB0B24261E81B2BF005491F1 /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B24251E81B2BF005491F1 /* UIViewTests.swift */; };
 		EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */; };
-		EB3B035C1E9CE019009E6F80 /* OnboardingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3B035B1E9CE019009E6F80 /* OnboardingViewControllerTests.swift */; };
 		EB55C3AE1EF534120029E735 /* TextStylerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB55C3AD1EF534120029E735 /* TextStylerTests.swift */; };
 		EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */; };
 		EBB3CEB81E50C60B0063303C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB3CEB71E50C60B0063303C /* AppDelegate.swift */; };
@@ -52,7 +51,6 @@
 		EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
 		EB0B24251E81B2BF005491F1 /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
 		EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerTests.swift; sourceTree = "<group>"; };
-		EB3B035B1E9CE019009E6F80 /* OnboardingViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewControllerTests.swift; sourceTree = "<group>"; };
 		EB55C3AD1EF534120029E735 /* TextStylerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStylerTests.swift; sourceTree = "<group>"; };
 		EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoPickerCollectionViewTests.swift; sourceTree = "<group>"; };
 		EBB3CEB01E50C59E0063303C /* BSWInterfaceKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = BSWInterfaceKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -151,17 +149,16 @@
 		EB067A171E8057F800A8AC91 /* Suite */ = {
 			isa = PBXGroup;
 			children = (
-				EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */,
-				EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */,
-				EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */,
-				EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */,
-				EB0B24251E81B2BF005491F1 /* UIViewTests.swift */,
-				EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */,
-				EB3B035B1E9CE019009E6F80 /* OnboardingViewControllerTests.swift */,
-				EB55C3AD1EF534120029E735 /* TextStylerTests.swift */,
 				F56D522220F767130008D67C /* AvatarViewTests.swift */,
-				F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */,
+				EB067A1B1E806A8300A8AC91 /* ButtonTests.swift */,
+				EBB3CECC1E50C60B0063303C /* ClassicProfileViewControllerTests.swift */,
 				F5BC58872199CBCB00493461 /* ColumnFlowLayoutTests.swift */,
+				EB067A151E8057E000A8AC91 /* PolaroidCellTests.swift */,
+				EB81EADD1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift */,
+				F53E036D2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift */,
+				EB55C3AD1EF534120029E735 /* TextStylerTests.swift */,
+				EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */,
+				EB0B24251E81B2BF005491F1 /* UIViewTests.swift */,
 			);
 			name = Suite;
 			sourceTree = "<group>";
@@ -399,7 +396,6 @@
 				EB55C3AE1EF534120029E735 /* TextStylerTests.swift in Sources */,
 				EB81EADE1E81BE7C008A0852 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */,
 				EBD6D20D1E50E43800D4CBFA /* BSWSnapshotTest.swift in Sources */,
-				EB3B035C1E9CE019009E6F80 /* OnboardingViewControllerTests.swift in Sources */,
 				F56D522320F767130008D67C /* AvatarViewTests.swift in Sources */,
 				EBB3CECD1E50C60B0063303C /* ClassicProfileViewControllerTests.swift in Sources */,
 				EB3B035A1E9CD9AD009E6F80 /* UIViewControllerTests.swift in Sources */,

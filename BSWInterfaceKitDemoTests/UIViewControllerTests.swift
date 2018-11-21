@@ -8,6 +8,15 @@ import XCTest
 @available(iOS 11.0, *)
 class UIViewControllerTests: BSWSnapshotTest {
 
+    func testChildViewController() {
+        let parentVC = UIViewController()
+        let childVC = UIViewController()
+        parentVC.containViewController(childVC)
+        XCTAssert(parentVC.children.contains(childVC))
+        parentVC.removeContainedViewController(childVC)
+        XCTAssert(!parentVC.children.contains(childVC))
+    }
+    
     func testAddBottomActionButton() {
         guard UIDevice.current.model != "iPad" else { return }
         let vc = BottomActionVC()
