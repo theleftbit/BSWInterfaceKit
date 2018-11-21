@@ -6,13 +6,17 @@ import XCTest
 import FBSnapshotTestCase
 @testable import BSWInterfaceKit
 
+extension String: LocalizedError {
+
+}
+
 class BSWSnapshotTest: FBSnapshotTestCase {
 
     let waiter = XCTWaiter()
 
     override func setUp() {
         super.setUp()
-            
+        
         // Set snapshot device agnostic. It will append "iPhone" to the snapshot filename
         agnosticOptions = [.device, .OS, .screenSize]
 
