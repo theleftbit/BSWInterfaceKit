@@ -123,7 +123,7 @@ public class PolaroidCollectionCellBasicInfoView: UIView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.spacing = Stylesheet.margin(.smallest)
+        stackView.spacing = 2
         return stackView
     }()
 
@@ -145,7 +145,7 @@ public class PolaroidCollectionCellBasicInfoView: UIView {
         backgroundColor = .white
         addAutolayoutSubview(stackView)
         stackView.pinToSuperview()
-        stackView.layoutMargins = UIEdgeInsets(uniform: Stylesheet.margin(.medium))
+        stackView.layoutMargins = UIEdgeInsets(uniform: 8)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(detailLabel)
