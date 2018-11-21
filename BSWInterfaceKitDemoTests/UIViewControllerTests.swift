@@ -19,17 +19,31 @@ class UIViewControllerTests: BSWSnapshotTest {
     
     func testAddBottomActionButton() {
         guard UIDevice.current.model != "iPad" else { return }
-        let vc = BottomActionVC()
+        let buttonHeight: CGFloat = 50
+        let vc = bottomViewController(buttonHeight: buttonHeight)
         waitABitAndVerify(viewController: vc)
+        XCTAssertNotNil(vc.button)
+        XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == buttonHeight)
     }
 
     func testAddBottomActionButtonWithMargin() {
         guard UIDevice.current.model != "iPad" else { return }
-        let vc = BottomActionVC()
-        vc.margin = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
+        let buttonHeight: CGFloat = 50
+        let padding: CGFloat = 20
+        let vc = bottomViewController(margins: UIEdgeInsets(top: 0, left: padding, bottom: padding, right: padding), buttonHeight: buttonHeight)
         waitABitAndVerify(viewController: vc)
+        XCTAssertNotNil(vc.button)
+        XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == (buttonHeight + padding))
     }
 
+    func testAddBottomController() {
+        guard UIDevice.current.model != "iPad" else { return }
+        let vc = bottomViewControllerContainer()
+        waitABitAndVerify(viewController: vc)
+        XCTAssertNotNil(vc.bottomController)
+        XCTAssert(vc.containedViewController.bottomContainerViewController == vc)
+    }
+    
     func testErrorView() {
         let vc = TestViewController()
         let buttonConfig = ButtonConfiguration(title: "Retry", titleColor: .blue) {
@@ -71,17 +85,63 @@ private class TestViewController: UIViewController {
 }
 
 @available(iOS 11.0, *)
-private class BottomActionVC: UIViewController {
-    
-    var margin: UIEdgeInsets = .zero
-    var button: UIButton!
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
-        button = addBottomActionButton(buttonConfig: config, margin: margin)
+func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) -> BottomContainerViewController {
+    class BottomActionVC: UIViewController {
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = .white
+        }
     }
+
+    let containedViewController = BottomActionVC()
+    let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
+    let button = UIButton(buttonConfiguration: config)
+    button.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+    return BottomContainerViewController(containedViewController: containedViewController, button: button, margins: margins)
 }
 
- extension String: LocalizedError {
+
+@available(iOS 11.0, *)
+func bottomViewControllerContainer() -> BottomContainerViewController {
+    @objc(BSWInterfaceKitTestsTopVC)
+    class TopVC: UIViewController {
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = .white
+        }
+    }
+    
+    @objc(BSWInterfaceKitTestsBottomVC)
+    class BottomVC: UIViewController {
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = .darkGray
+            let stackView = UIStackView()
+            stackView.axis = .horizontal
+            stackView.distribution = .equalSpacing
+            stackView.alignment = .center
+            stackView.layoutMargins = UIEdgeInsets(top: 10, left: 30, bottom: 10, right: 30)
+            stackView.isLayoutMarginsRelativeArrangement = true
+            stackView.addArrangedSubview({
+                let config = ButtonConfiguration(title: "❤️", contentInset: .zero) { }
+                return UIButton(buttonConfiguration: config)
+            }())
+            stackView.addArrangedSubview({
+                let config = ButtonConfiguration(title: "🇪🇸", contentInset: .zero) { }
+                return UIButton(buttonConfiguration: config)
+                }())
+            stackView.addArrangedSubview({
+                let config = ButtonConfiguration(title: "🚀", contentInset: .zero) { }
+                return UIButton(buttonConfiguration: config)
+                }())
+            view.addAutolayoutSubview(stackView)
+            stackView.pinToSuperview()
+        }
+    }
+    return BottomContainerViewController(
+        containedViewController: TopVC(),
+        bottomViewController: BottomVC()
+    )
 }
+
+
