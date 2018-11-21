@@ -39,6 +39,25 @@ extension UIViewController {
     }
 }
 
+//MARK: - Child VC
+
+extension UIViewController {
+    
+    public func containViewController(_ vc: UIViewController) {
+        addChild(vc)
+        view.addAutolayoutSubview(vc.view)
+        vc.view.pinToSuperview()
+        vc.willMove(toParent: self)
+    }
+    
+    public func removeContainedViewController(_ vc: UIViewController) {
+        vc.willMove(toParent: nil)
+        vc.view.removeFromSuperview()
+        vc.removeFromParent()
+    }
+    
+}
+
 extension UINavigationController {
     @objc
     override public func closeViewController(sender: Any?) {

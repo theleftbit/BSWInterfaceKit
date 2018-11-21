@@ -4,7 +4,7 @@
 
 import BSWInterfaceKit
 import XCTest
-/*
+
 class TextStylerTests: BSWSnapshotTest {
 
     var sut: TextStyler!
@@ -52,4 +52,3 @@ class TextStylerTests: BSWSnapshotTest {
         waitABitAndVerify(view: label)
     }
 }
-*/

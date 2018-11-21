@@ -60,7 +60,7 @@ open class PhotoGalleryViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchUpInside)
         view.addSubview(closeButton)
         closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor).isActive = true
-        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: Stylesheet.margin(.big)).isActive = true
+        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 12).isActive = true
         
         view.layoutIfNeeded()
         photosGallery.scrollToPhoto(atIndex: currentPage)
