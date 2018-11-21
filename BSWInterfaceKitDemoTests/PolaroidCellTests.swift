@@ -13,7 +13,7 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
     override func setUp() {
         super.setUp()
-        isDeviceAgnostic = false
+        agnosticOptions = [.none]
         let columnLayout = ColumnFlowLayout()
         columnLayout.minColumnWidth = 120
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: columnLayout)
