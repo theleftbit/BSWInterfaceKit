@@ -4,7 +4,7 @@
 //
 
 @available(iOS 11.0, *) @objc(BSWRootViewController)
-final class RootViewController: ContainerViewController {}
+final public class RootViewController: ContainerViewController {}
 
 @available(iOS 11.0, *) @objc(BSWContainerViewController)
 public class ContainerViewController: UIViewController {
