@@ -104,7 +104,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     @objc public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
         let model = data[indexPath.item]
-        cell.configureFor(viewModel: model)
+        cell.configureFor(viewModel: model, traitCollection: collectionView.traitCollection)
         return cell
     }
     

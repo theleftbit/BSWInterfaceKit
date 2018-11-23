@@ -141,7 +141,7 @@ extension AzzurriViewController: ColumnFlowLayoutFactoryDataSource {
         guard let vm = dataSource.data[safe: indexPath.item] else {
             return cell
         }
-        cell.configureFor(viewModel: vm)
+        cell.configureFor(viewModel: vm, traitCollection: self.traitCollection)
         return cell
     }
 }

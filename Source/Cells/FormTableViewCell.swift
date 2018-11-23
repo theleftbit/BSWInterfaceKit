@@ -39,12 +39,16 @@ open class FormTableViewCell<InputView: ViewModelConfigurable & UIView>: UITable
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configureFor(viewModel vm: VM) {
-        warningMessageLabel.attributedText = vm.warningMessage
-        warningMessageLabel.isHidden = (vm.warningMessage == nil)
-        formInputView.configureFor(viewModel: vm.inputVM)
+    public func configureFor(viewModel: FormTableViewCell<InputView>.VM, traitCollection: UITraitCollection) {
+        configureFor(viewModel: viewModel)
+        formInputView.configureFor(viewModel: viewModel.inputVM, traitCollection: traitCollection)
     }
     
+    public func configureFor(viewModel: FormTableViewCell<InputView>.VM) {
+        warningMessageLabel.attributedText = viewModel.warningMessage
+        warningMessageLabel.isHidden = (viewModel.warningMessage == nil)
+    }
+
     private func layout() {
         contentView.addAutolayoutSubview(stackView)
         stackView.pinToSuperview()

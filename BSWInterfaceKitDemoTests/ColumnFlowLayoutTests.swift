@@ -38,6 +38,8 @@ private class ViewController: UIViewController {
         return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
     }
     
+    var dataSource: CollectionViewDataSource<PostCollectionViewCell>!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -51,32 +53,11 @@ private class ViewController: UIViewController {
         
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
-        collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.pinToSuperview()
-        collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: "PostCollectionViewCell")
         collectionView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        dataSource = .init(data: mockData, collectionView: collectionView)
     }
 }
-
-
-@available(iOS 11, *)
-extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return mockData.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostCollectionViewCell", for: indexPath) as! PostCollectionViewCell
-        cell.configureFor(viewModel: self.mockData[indexPath.item])
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print("willDisplay: \(cell)")
-    }
-}
-
 
 @available(iOS 11, *)
 extension ViewController {
@@ -127,7 +108,7 @@ extension ViewController {
 
 import UIKit
 
-private class PostCollectionViewCell: UICollectionViewCell {
+private class PostCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     
     private let imageView = UIImageView()
     

@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class PhotoCollectionViewCell: UICollectionViewCell, ViewModelReusable {
+public class PhotoCollectionViewCell: UICollectionViewCell, ViewModelReusable {    
 
     public let cellImageView: UIImageView = {
         let view = UIImageView()

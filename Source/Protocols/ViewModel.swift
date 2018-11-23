@@ -12,11 +12,18 @@ import Deferred
 public protocol ViewModelConfigurable: class {
     associatedtype VM
     func configureFor(viewModel: VM)
+    func configureFor(viewModel: VM, traitCollection: UITraitCollection)
 }
 
 public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }
+}
+
+public extension ViewModelConfigurable {
+    func configureFor(viewModel: VM, traitCollection: UITraitCollection) {
+        configureFor(viewModel: viewModel)
+    }
 }
 
 public protocol AsyncViewModelPresenter: ViewModelConfigurable {
