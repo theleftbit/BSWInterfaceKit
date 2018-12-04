@@ -26,17 +26,21 @@ open class TextStyler {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
-    open func fontForStyle(_ style: UIFont.TextStyle) -> UIFont {
+    open func fontForStyle(_ style: UIFont.TextStyle, maxFontSize: CGFloat? = nil) -> UIFont {
     
         let systemFont = UIFont.preferredFont(forTextStyle: style)
         guard
             let preferredFontName = preferredFontName,
             let font = UIFont(name: preferredFontName, size: systemFont.pointSize) else {
-                return systemFont
+                let fontSize = min(maxFontSize ?? systemFont.pointSize, systemFont.pointSize)
+                return systemFont.withSize(fontSize)
         }
 
         if #available(iOS 11.0, *) {
             let metrics = UIFontMetrics(forTextStyle: style)
+            if let maxFontSize = maxFontSize {
+                return metrics.scaledFont(for: font, maximumPointSize: maxFontSize)
+            }
             return metrics.scaledFont(for: font)
         } else {
             return font
