@@ -22,7 +22,7 @@ extension UIViewController {
             #endif
         }()
         
-        let operation = PresentAlertOperation(title: "Error", message: errorMessage, presentingViewController: self)
+        let operation = PresentAlertOperation(title: "error".localized, message: errorMessage, presentingViewController: self)
         errorQueue.addOperation(operation)
     }
     
