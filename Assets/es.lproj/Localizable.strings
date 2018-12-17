@@ -9,6 +9,7 @@
 "dismiss" = "Cancelar";
 "yes" = "Si";
 "no" = "No";
+"error" = "Error";
 
 /**
  *  ProfilePhotoCollectionView
