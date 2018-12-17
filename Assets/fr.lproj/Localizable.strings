@@ -6,10 +6,10 @@
 /**
  *  Generic
  */
-"dismiss" = "Dismiss";
-"yes" = "Yes";
-"no" = "No";
-"error" = "Error";
+"dismiss" = "Annuler";
+"yes" = "Oui";
+"no" = "Non";
+"error" = "Erreur";
 
 /**
  *  ProfilePhotoCollectionView
