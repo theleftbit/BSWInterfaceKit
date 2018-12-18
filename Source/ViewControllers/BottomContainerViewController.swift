@@ -6,7 +6,7 @@
 import UIKit
 
 @available(iOS 11.0, *) @objc(BSWBottomContainerViewController)
-public class BottomContainerViewController: UIViewController {
+open class BottomContainerViewController: UIViewController {
     
     public let containedViewController: UIViewController
     public var button: UIButton? {
@@ -41,11 +41,11 @@ public class BottomContainerViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         addChild(containedViewController)
@@ -73,19 +73,18 @@ public class BottomContainerViewController: UIViewController {
         buttonContainer.didMove(toParent: self)
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame
         let inset = safeAreaFrame.origin.y + safeAreaFrame.size.height - buttonContainer.view.frame.minY
         containedViewController.additionalSafeAreaInsets = UIEdgeInsets(dictionaryLiteral: (.bottom, inset))
     }
     
-    public override var preferredStatusBarStyle: UIStatusBarStyle {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
         return containedViewController.preferredStatusBarStyle
     }
     
-    
-    public override func targetViewController(forAction action: Selector, sender: Any?) -> UIViewController? {
+    open override func targetViewController(forAction action: Selector, sender: Any?) -> UIViewController? {
         if let splitVC = splitViewController {
             return splitVC
         } else if let navVC = navigationController {
