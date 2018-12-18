@@ -84,6 +84,17 @@ public class BottomContainerViewController: UIViewController {
         return containedViewController.preferredStatusBarStyle
     }
     
+    
+    public override func targetViewController(forAction action: Selector, sender: Any?) -> UIViewController? {
+        if let splitVC = splitViewController {
+            return splitVC
+        } else if let navVC = navigationController {
+            return navVC
+        } else {
+            return containedViewController
+        }
+    }
+    
     @objc(TLBButtonContainerViewController)
     private class ButtonContainerViewController: UIViewController {
         
