@@ -6,25 +6,21 @@ PODS:
   - BSWInterfaceKit (1.0.0):
     - BSWFoundation (~> 2.2.0)
     - Nuke (~> 7.5.1)
-  - iOSSnapshotTestCase (4.0.0):
-    - iOSSnapshotTestCase/SwiftSupport (= 4.0.0)
-  - iOSSnapshotTestCase/Core (4.0.0)
-  - iOSSnapshotTestCase/SwiftSupport (4.0.0):
-    - iOSSnapshotTestCase/Core
   - KeychainAccess (3.1.2)
   - Nuke (7.5.1)
+  - SnapshotTesting (1.1.0)
 
 DEPENDENCIES:
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
-  - iOSSnapshotTestCase
+  - SnapshotTesting (~> 1.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - BNRDeferred
     - BSWFoundation
-    - iOSSnapshotTestCase
     - KeychainAccess
     - Nuke
+    - SnapshotTesting
 
 EXTERNAL SOURCES:
   BSWInterfaceKit:
@@ -34,10 +30,10 @@ SPEC CHECKSUMS:
   BNRDeferred: 85f3a78f73f9af049a398aabe282435b89f9f3c3
   BSWFoundation: 26ea87aedc712551e589bd687fc4d9fab0c41a2b
   BSWInterfaceKit: 64110ce81a33d7b8d855c1700669af671e2333e9
-  iOSSnapshotTestCase: 711379b19f69a22c131527df862352c877c2773c
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
   Nuke: 3814db501e55f17951451839c726ffd91641e9a5
+  SnapshotTesting: 8ed6a4dceee63f59a60e1bc86f9adbba54eb9287
 
-PODFILE CHECKSUM: 212f6452e44bf44eaefb539ec80cf836b3be6665
+PODFILE CHECKSUM: 5bc898bc13f365ff89a010ca532b5349715b65ef
 
 COCOAPODS: 1.5.3
