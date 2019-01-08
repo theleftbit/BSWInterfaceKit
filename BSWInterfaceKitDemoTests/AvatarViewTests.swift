@@ -9,12 +9,7 @@ import BSWInterfaceKit
 import XCTest
 
 class AvatarViewTests: BSWSnapshotTest {
-    
-    override func setUp() {
-        super.setUp()
-        agnosticOptions = [.none]
-    }
-    
+        
     func testLayoutHuge() {
         verifyAvatarForSize(.huge)
     }
@@ -29,12 +24,12 @@ class AvatarViewTests: BSWSnapshotTest {
             
         }
         avatarView.frame = CGRect(origin: .zero, size: avatarView.intrinsicContentSize)
-        waitABitAndVerify(view: avatarView)
+        verify(view: avatarView)
     }
 
-    private func verifyAvatarForSize(_ size: AvatarView.Size) {
+    private func verifyAvatarForSize(_ size: AvatarView.Size, file: StaticString = #file, testName: String = #function) {
         let avatarView = AvatarView(size: size, photo: Photo.emptyPhoto())
         avatarView.frame = CGRect(origin: .zero, size: avatarView.intrinsicContentSize)
-        waitABitAndVerify(view: avatarView)
+        verify(view: avatarView, file: file, testName: testName)
     }
 }
