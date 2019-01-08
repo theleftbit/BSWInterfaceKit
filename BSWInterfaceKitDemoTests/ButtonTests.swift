@@ -9,26 +9,21 @@ class ButtonTests: BSWSnapshotTest {
 
     open var button: UIButton!
 
-    override func setUp() {
-        super.setUp()
-        agnosticOptions = [.none]
-    }
-
     func testRadioButton() {
         let button = ButtonTests.buttonForRadioTests()
-        waitABitAndVerify(view: button)
+        verify(view: button)
     }
 
     func testEnabledRadioButton() {
         let button = ButtonTests.buttonForRadioTests()
         button.isSelected = true
-        waitABitAndVerify(view: button)
+        verify(view: button)
     }
 
     func testImageButton() {
         let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
-        waitABitAndVerify(view: button)
+        verify(view: button)
     }
     
     func testImageTitleButton() {
@@ -36,7 +31,7 @@ class ButtonTests: BSWSnapshotTest {
         let title = NSAttributedString(string: "Click Me")
         let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, image), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
-        waitABitAndVerify(view: button)
+        verify(view: button)
     }
     
     func testTapButton() {

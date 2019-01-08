@@ -3,22 +3,21 @@
 //
 
 import XCTest
-import FBSnapshotTestCase
-@testable import BSWInterfaceKit
+import SnapshotTesting
+import BSWInterfaceKit
 
 extension String: LocalizedError {
 
 }
 
-class BSWSnapshotTest: FBSnapshotTestCase {
+class BSWSnapshotTest: XCTestCase {
 
     let waiter = XCTWaiter()
 
+    var recordMode = false
+    
     override func setUp() {
         super.setUp()
-        
-        // Set snapshot device agnostic. It will append "iPhone" to the snapshot filename
-        agnosticOptions = [.device, .OS, .screenSize]
 
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
@@ -66,17 +65,26 @@ class BSWSnapshotTest: FBSnapshotTestCase {
         let _ = waiter.wait(for: [exp], timeout: 10)
     }
 
-    func waitABitAndVerify(viewController: UIViewController) {
+    func waitABitAndVerify(viewController: UIViewController, file: StaticString = #file, testName: String = #function) {
         rootViewController = viewController
-        waitABitAndVerify(view: viewController.view)
+        
+        let exp = expectation(description: "verify view")
+        let deadlineTime = DispatchTime.now() + .milliseconds(50)
+        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+            let screenSize = UIScreen.main.bounds
+            let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
+            assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+            exp.fulfill()
+        }
+        let _ = waiter.wait(for: [exp], timeout: 1)
     }
 
-    func waitABitAndVerify(view: UIView) {
+    func verify(view: UIView, file: StaticString = #file, testName: String = #function) {
 
         view.setNeedsLayout()
         view.layoutIfNeeded()
 
-        if let scrollView = view as? UIScrollView, agnosticOptions == [.none] {
+        if let scrollView = view as? UIScrollView {
             scrollView.frame = CGRect(
                 x: scrollView.frame.origin.x,
                 y: scrollView.frame.origin.y,
@@ -85,12 +93,28 @@ class BSWSnapshotTest: FBSnapshotTestCase {
             )
         }
 
-        let exp = expectation(description: "verify view")
-        let deadlineTime = DispatchTime.now() + .milliseconds(50)
-        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.FBSnapshotVerifyView(view, tolerance: 0.1)
-            exp.fulfill()
+        let currentSimulatorScale = Int(UIScreen.main.scale)
+        assertSnapshot(matching: view, as: .image, named: "\(currentSimulatorScale)x", record: self.recordMode, file: file, testName: testName)
+    }
+}
+
+private extension UIScreen {
+    var currentDevice: ViewImageConfig {
+        switch self.bounds.size {
+        case CGSize(width: 320, height: 568):
+            return .iPhoneSe
+        case CGSize(width: 375, height: 667):
+            return .iPhone8
+        case CGSize(width: 414, height: 736):
+            return .iPhone8Plus
+        case CGSize(width: 375, height: 812):
+            return .iPhoneX
+        case CGSize(width: 414, height: 896):
+            return .iPhoneXsMax
+        case CGSize(width: 768, height: 1024):
+            return .iPadMini(.portrait)
+        default:
+            return .iPhoneX
         }
-        let _ = waiter.wait(for: [exp], timeout: 1)
     }
 }

@@ -9,7 +9,7 @@ platform :ios do
     run_tests(
       workspace: "BSWInterfaceKit.xcworkspace", 
       scheme: "BSWInterfaceKitDemo",
-      devices: ["iPhone 7"],
+      devices: ["iPhone X"],
       )
   end
 end

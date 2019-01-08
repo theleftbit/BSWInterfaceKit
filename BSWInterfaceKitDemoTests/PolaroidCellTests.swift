@@ -13,10 +13,9 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
     override func setUp() {
         super.setUp()
-        agnosticOptions = [.none]
         let columnLayout = ColumnFlowLayout()
         columnLayout.minColumnWidth = 120
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: columnLayout)
+        collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 350, height: 500), collectionViewLayout: columnLayout)
         dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
             data: PolaroidCollectionViewCellTests.mockData(),
             collectionView: collectionView
@@ -33,15 +32,8 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         }
     }
     
-    func testCompactLayout() {
-        let hostView = HostView(overridenTraitCollection: UITraitCollection(horizontalSizeClass: .compact), frame: CGRect(x: 0, y: 0, width: 350, height: 500))
-        hostView.addAutolayoutSubview(collectionView)
-        collectionView.pinToSuperview()
-        waitABitAndVerify(view: collectionView)
-    }
-
-    func _testRegularLayout() {
-
+    func testLayout() {
+        verify(view: collectionView)
     }
 
     static func mockData() -> [PolaroidCollectionViewCell.VM] {
