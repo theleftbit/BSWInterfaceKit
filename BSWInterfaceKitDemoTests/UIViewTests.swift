@@ -12,7 +12,6 @@ class UIViewTests: BSWSnapshotTest {
 
     override func setUp() {
         super.setUp()
-        agnosticOptions = [.none]
 
         hostView = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         hostView.backgroundColor = .white
@@ -30,15 +29,15 @@ class UIViewTests: BSWSnapshotTest {
         hostView.removeAllConstraints()
         childView.removeAllConstraints()
         childView.fillSuperview(withMargin: 5)
-        waitABitAndVerify(view: hostView)
+        verify(view: hostView)
     }
 
     func testCenterInSuperview() {
-        waitABitAndVerify(view: hostView)
+        verify(view: hostView)
     }
 
     func testRoundedCorners() {
         childView.roundCorners()
-        waitABitAndVerify(view: hostView)
+        verify(view: hostView)
     }
 }

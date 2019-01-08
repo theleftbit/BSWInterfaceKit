@@ -37,7 +37,6 @@ class UIViewControllerTests: BSWSnapshotTest {
     }
 
     func testAddBottomController() {
-        guard UIDevice.current.model != "iPad" else { return }
         let vc = bottomViewControllerContainer()
         waitABitAndVerify(viewController: vc)
         XCTAssertNotNil(vc.bottomController)

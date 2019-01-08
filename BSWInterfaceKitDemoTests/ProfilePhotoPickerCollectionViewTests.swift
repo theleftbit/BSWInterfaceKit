@@ -10,7 +10,6 @@ class ProfilePhotoPickerCollectionViewTests: BSWSnapshotTest {
 
     override func setUp() {
         super.setUp()
-        agnosticOptions = [.none]
 
         let photosVM = PhotoPickerViewModel.createPhotoArray([Photo.emptyPhoto(), Photo.emptyPhoto()], maxPhotos: 6)
         photoPicker = ProfilePhotoPickerCollectionView(photos: photosVM)
@@ -18,6 +17,6 @@ class ProfilePhotoPickerCollectionViewTests: BSWSnapshotTest {
     }
 
     func testLayout() {
-        waitABitAndVerify(view: photoPicker)
+        verify(view: photoPicker)
     }
 }
