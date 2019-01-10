@@ -1,7 +1,7 @@
 default_platform(:ios)
 
 cocoapods(try_repo_update_on_error: true)
-setup_travis
+setup_jenkins
 
 platform :ios do
   desc "Execute unit tests"
