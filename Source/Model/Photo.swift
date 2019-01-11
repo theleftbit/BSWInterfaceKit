@@ -81,6 +81,17 @@ public extension Photo {
             return request.image
         }
     }
+
+    var url: URL? {
+        switch self.kind {
+        case .empty:
+            return nil
+        case .image:
+            return nil
+        case .url(let url):
+            return url
+        }
+    }
 }
 
 extension Photo {
