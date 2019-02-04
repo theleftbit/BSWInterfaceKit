@@ -100,9 +100,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 autocapitalizationType = .none
             case .password:
                 placeholder = "password-placeholder".localized
-                if #available(iOS 11.0, *) {
-                    textContentType = .password
-                }
+                textContentType = .password
             case .newPassword:
                 placeholder = "password-placeholder".localized
                 if #available(iOS 12.0, *) {

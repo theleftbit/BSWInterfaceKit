@@ -69,7 +69,7 @@ public class ScrollableTabsViewController: UIViewController {
         view.addAutolayoutSubview(contentCollectionView)
         
         NSLayoutConstraint.activate([
-            headerCollectionView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
+            headerCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             headerCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             headerCollectionView.heightAnchor.constraint(equalToConstant: Appearance.headerHeight),
