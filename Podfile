@@ -1,5 +1,5 @@
+platform :ios, '11.0'
 use_frameworks!
-platform :ios, '10.0'
 
 target 'BSWInterfaceKitDemo' do
     pod 'BSWInterfaceKit', :path => './BSWInterfaceKit.podspec'

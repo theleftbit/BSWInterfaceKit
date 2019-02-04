@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.social_media_url   = "http://twitter.com/piercifani"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.platform     = :ios, "9.0"
+  s.platform     = :ios, "11.0"
   s.swift_version = "4.2"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "Source/**/*.{swift,m,h}"
-  s.resources     = "Assets/**/*.{xcassets,storyboard,strings}"
+  s.resource_bundle = { "BSWInterfaceKit" => "Assets/**/*.{xcassets,storyboard,strings}" }
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation", "~> 2.2.0"
