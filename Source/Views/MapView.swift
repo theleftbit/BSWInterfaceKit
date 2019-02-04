@@ -100,7 +100,7 @@ public class MapView: UIImageView {
             let googleMapsAction = UIAlertAction(title: "open-google-maps".localized, style: .default) { action -> Void in
                 let finalURL = URL(string:
                     "comgooglemaps://?saddr=&daddr=\(latitude),\(longitude)")!
-                UIApplication.shared.openURL(finalURL)
+                UIApplication.shared.open(finalURL, options: [:], completionHandler: nil)
             }
             actionSheetController.addAction(googleMapsAction)
         }
