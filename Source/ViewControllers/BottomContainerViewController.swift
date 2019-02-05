@@ -94,7 +94,7 @@ open class BottomContainerViewController: UIViewController {
         }
     }
     
-    @objc(TLBButtonContainerViewController)
+    @objc(BSWButtonContainerViewController)
     private class ButtonContainerViewController: UIViewController {
         
         let button: UIButton
