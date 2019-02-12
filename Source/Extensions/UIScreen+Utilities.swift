@@ -9,4 +9,7 @@ public extension UIScreen {
     var isSmallScreen: Bool {
         return self.bounds.width == 320
     }
+    var isTallScreen: Bool {
+        return self.bounds.height >= 800
+    }
 }
