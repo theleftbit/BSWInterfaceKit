@@ -5,6 +5,7 @@
 import UIKit
 
 extension UICollectionView {
+    
     public func registerReusableCell<T: UICollectionViewCell>(_: T.Type) where T: ViewModelReusable {
         switch T.reuseType {
         case .classReference(let className):
@@ -55,6 +56,10 @@ extension UICollectionView {
         indexSet.forEach {
             self.selectItem(at: IndexPath(item: $0, section: 0), animated: true, scrollPosition: .left)
         }
+    }
+    
+    public var selectedIndexPath: IndexPath? {
+        return indexPathsForSelectedItems?.first
     }
 }
 
