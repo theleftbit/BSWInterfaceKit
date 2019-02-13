@@ -319,7 +319,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BNRDeferred/Deferred.framework",
 				"${BUILT_PRODUCTS_DIR}/BSWFoundation/BSWFoundation.framework",
 				"${BUILT_PRODUCTS_DIR}/BSWInterfaceKit/BSWInterfaceKit.framework",
@@ -338,7 +338,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BSWInterfaceKitDemo/Pods-BSWInterfaceKitDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		66978024774B5130487A2DD5 /* [CP] Check Pods Manifest.lock */ = {
@@ -367,7 +367,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/SnapshotTesting/SnapshotTesting.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -378,7 +378,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BSWInterfaceKitDemoTests/Pods-BSWInterfaceKitDemoTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
