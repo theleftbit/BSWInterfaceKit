@@ -34,6 +34,12 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         }
     }
     
+    open var showsHeader: Bool = false {
+        didSet {
+            invalidateLayout()
+        }
+    }
+
     private var cache = [UICollectionViewLayoutAttributes]()
     private var contentHeight: CGFloat = 0
     private var availableWidth: CGFloat {
@@ -56,9 +62,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     
     override open func prepare() {
         super.prepare()
-        guard let cv = collectionView else { return }
+        guard let cv = collectionView, let dataSource = cv.dataSource else { return }
         guard cache.isEmpty else { return }
-        
         // Figure out how many columns we can fit
         let maxNumColumns = Int(availableWidth / minColumnWidth)
         let columnWidth = (availableWidth / CGFloat(maxNumColumns)).rounded(.down)
@@ -81,19 +86,42 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         
         // This is were we'll store the Y for each column: since layoutMargins
         // automatically include safeAreas, we're removing safeArea to use absolute values
-        let yStartOffset = cv.layoutMargins.top - cv.safeAreaInsets.top
-        var yOffset = [CGFloat](repeating: yStartOffset, count: numberOfColumns)
+        let numberOfItems = cv.numberOfItems(inSection: 0)
+        guard numberOfItems > 0 else {
+            return
+        }
         
+        var headerOffset: CGFloat = 0
+        let headerIndexPath = IndexPath(item: 0, section: 0)
+        let _header: UICollectionReusableView? = {
+            guard showsHeader else {
+                return nil
+            }
+            return dataSource.collectionView?(cv, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: headerIndexPath)
+        }()
+        
+        if let header = _header {
+            let headerWidth = cv.frame.width
+            let height = ColumnFlowLayout.reusableViewHeight(view: header, availableWidth: headerWidth)
+            let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, with: headerIndexPath)
+            attributes.frame = CGRect(x: 0, y: 0, width: headerWidth, height: height)
+            cache.append(attributes)
+            headerOffset = attributes.frame.maxY
+        }
+        
+        let yStartOffset = headerOffset > 0 ? headerOffset : (cv.layoutMargins.top - cv.safeAreaInsets.top)
+        var yOffset = [CGFloat](repeating: yStartOffset, count: numberOfColumns)
+
         //Now we calculate the UICollectionViewLayoutAttributes for each cell
         var currentColumn: Int = 0
-        for item in 0 ..< cv.numberOfItems(inSection: 0) {
+        for item in 0 ..< numberOfItems {
             
             let indexPath = IndexPath(item: item, section: 0)
             
             // Check ColumnFlowLayoutFactoryDataSource for reference
             let _cell: UICollectionViewCell? = {
                 if #available(iOS 12, *) {
-                    return cv.dataSource?.collectionView(cv, cellForItemAt: indexPath)
+                    return dataSource.collectionView(cv, cellForItemAt: indexPath)
                 } else {
                     return self.factoryCellDataSource.factoryCellForItem(atIndexPath: indexPath)
                 }
@@ -130,7 +158,16 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         return cache[safe: indexPath.item]
     }
-    
+
+    static func reusableViewHeight(view: UICollectionReusableView, availableWidth: CGFloat) -> CGFloat {
+        let estimatedSize = view.systemLayoutSizeFitting(
+            CGSize(width: availableWidth, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        return estimatedSize.height
+    }
+
     static func cellHeight(cell: UICollectionViewCell, availableWidth: CGFloat) -> CGFloat {
         let estimatedSize = cell.contentView.systemLayoutSizeFitting(
             CGSize(width: availableWidth, height: UIView.layoutFittingCompressedSize.height),

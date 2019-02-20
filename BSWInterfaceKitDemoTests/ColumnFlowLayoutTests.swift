@@ -15,6 +15,12 @@ class ColumnFlowLayoutTests: BSWSnapshotTest {
         let vc = ViewController()
         waitABitAndVerify(viewController: vc)
     }
+
+    func testLayoutWithHeader() {
+        let vc = ViewController()
+        vc.showsHeader = true
+        waitABitAndVerify(viewController: vc)
+    }
 }
 
 //
@@ -27,6 +33,15 @@ import UIKit
 @available(iOS 11, *)
 private class ViewController: UIViewController {
     
+    var showsHeader: Bool {
+        set {
+            let layout = collectionView.collectionViewLayout as! ColumnFlowLayout
+            layout.showsHeader = newValue
+        } get {
+            let layout = collectionView.collectionViewLayout as! ColumnFlowLayout
+            return layout.showsHeader
+        }
+    }
     let collectionView: UICollectionView = {
         return UICollectionView(
             frame: .zero,
@@ -55,6 +70,7 @@ private class ViewController: UIViewController {
         collectionView.delegate = self
         collectionView.pinToSuperview()
         collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: "PostCollectionViewCell")
+        collectionView.register(Header.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         collectionView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
 }
@@ -71,9 +87,13 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         cell.configureFor(viewModel: self.mockData[indexPath.item])
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print("willDisplay: \(cell)")
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard showsHeader else {
+            return UICollectionReusableView()
+        }
+        
+        return collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header", for: indexPath)
     }
 }
 
@@ -204,5 +224,28 @@ private class PostCollectionViewCell: UICollectionViewCell {
         descriptionLabel.attributedText = TextStyler.styler.attributedString(viewModel.description, color: .gray, forStyle: .footnote)
         authorName.attributedText = TextStyler.styler.attributedString(viewModel.authorName, color: .gray, forStyle: .footnote)
         authorAvatar.setPhoto(viewModel.authorAvatar)
+    }
+}
+
+private class Header: UICollectionReusableView {
+    
+    private let label = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        label.textAlignment = .center
+        addAutolayoutSubview(label)
+        layoutMargins = UIEdgeInsets(uniform: 20)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            label.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            label.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            label.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
+            ])
+        label.attributedText = TextStyler.styler.attributedString("This is a Header", color: UIColor.black, forStyle: .headline)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
