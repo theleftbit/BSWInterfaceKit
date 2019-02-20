@@ -27,7 +27,9 @@ class AzzurriViewController: UIViewController {
         super.viewDidLoad()
 
         let columnLayout = ColumnFlowLayout()
-        columnLayout.factoryCellDataSource = self
+        columnLayout.cellFactory = { [unowned self] in
+            return self.factoryCellForItem(atIndexPath: $0)
+        }
         columnLayout.minColumnWidth = 120
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: columnLayout)
         dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
@@ -135,7 +137,7 @@ class AzzurriViewController: UIViewController {
 
 
 @available(iOS 11.0, *)
-extension AzzurriViewController: ColumnFlowLayoutFactoryDataSource {
+extension AzzurriViewController {
     func factoryCellForItem(atIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         let cell = PolaroidCollectionViewCell()
         guard let vm = dataSource.data[safe: indexPath.item] else {
