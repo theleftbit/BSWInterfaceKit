@@ -5,24 +5,29 @@
 
 import UIKit
 
-// This protocol is to work around a bug on iOS 11 and lower
-// were dequeing a cell will invalidate the collectionView's
-// layout, causing a Stack Overflow when called during `prepare`.
-// If you must support older OS versions, please return a
-// cell created without dequeing and configured for the given
-// indexPath to workaround this issue. For iOS 12 and higher,
-// these methods won't be called and will rely on cell dequeing.
-// Reference: https://i.imgur.com/eNdUbmn.jpg
-public protocol ColumnFlowLayoutFactoryDataSource: class {
-    func factoryCellForItem(atIndexPath: IndexPath) -> UICollectionViewCell
-}
 
 @available(iOS 11.0, *)
 open class ColumnFlowLayout: UICollectionViewLayout {
     
+    // These are used to work around a bug on iOS 11 and lower
+    // were dequeing a cell will invalidate the collectionView's
+    // layout, causing a Stack Overflow when called during `prepare`.
+    // If you must support older OS versions, please return a
+    // cell created without dequeing and configured for the given
+    // indexPath to workaround this issue. For iOS 12 and higher,
+    // these methods won't be called and will rely on cell dequeing.
+    // Reference: https://i.imgur.com/eNdUbmn.jpg
+    public typealias CellFactory = (IndexPath) -> UICollectionViewCell
+    public typealias HeaderFactory = (IndexPath) -> UICollectionReusableView?
+
     @available(iOS, deprecated:12.0, message:"Not neccesary anymore")
-    open weak var factoryCellDataSource: ColumnFlowLayoutFactoryDataSource!
-    
+    open var cellFactory: CellFactory!
+
+    @available(iOS, deprecated:12.0, message:"Not neccesary anymore")
+    open var headerFactory: HeaderFactory = { _ in
+        return nil
+    }
+
     open var minColumnWidth = CGFloat(200) {
         didSet {
             invalidateLayout()
@@ -97,7 +102,11 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             guard showsHeader else {
                 return nil
             }
-            return dataSource.collectionView?(cv, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: headerIndexPath)
+            if #available(iOS 12, *) {
+                return dataSource.collectionView?(cv, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: headerIndexPath)
+            } else {
+                return self.headerFactory(headerIndexPath)
+            }
         }()
         
         if let header = _header {
@@ -123,7 +132,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
                 if #available(iOS 12, *) {
                     return dataSource.collectionView(cv, cellForItemAt: indexPath)
                 } else {
-                    return self.factoryCellDataSource.factoryCellForItem(atIndexPath: indexPath)
+                    return self.cellFactory(indexPath)
                 }
             }()
             guard let cell = _cell else { fatalError() }
