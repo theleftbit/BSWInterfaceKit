@@ -4,6 +4,8 @@
 
 import UIKit
 
+// https://medium.com/swifty-tim/views-with-rounded-corners-and-shadows-c3adc0085182
+
 public extension CALayer {
     
     func addShadow(opacity: CGFloat = 0.5, shadowRadius: CGFloat = 10, offset: CGSize = .zero) {
