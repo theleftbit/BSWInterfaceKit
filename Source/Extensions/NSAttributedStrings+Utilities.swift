@@ -78,9 +78,9 @@ public extension NSAttributedString {
         return mutableCopy
     }
     
-    func settingLineSpacing(_ lineSpacing: CGFloat) -> NSAttributedString {
+    func settingLineSpacing(_ lineSpacing: CGFloat, clipTail: Bool = false) -> NSAttributedString {
         let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
-        mutableCopy.setLineSpacing(lineSpacing)
+        mutableCopy.setLineSpacing(lineSpacing, clipTail: clipTail)
         return mutableCopy
     }
 
@@ -98,10 +98,12 @@ public extension NSMutableAttributedString {
         self.addAttributes([.kern: kern], range: NSRange(location: 0, length: self.length))
     }
     
-    func setLineSpacing(_ lineSpacing: CGFloat) {
+    func setLineSpacing(_ lineSpacing: CGFloat, clipTail: Bool = false) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = lineSpacing
-        paragraphStyle.lineBreakMode = .byTruncatingTail
+        if clipTail {
+            paragraphStyle.lineBreakMode = .byTruncatingTail
+        }
         self.addAttributes([.paragraphStyle: paragraphStyle], range: NSRange(location: 0, length: self.length))
     }
 }
