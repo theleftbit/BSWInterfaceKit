@@ -101,6 +101,7 @@ public extension NSMutableAttributedString {
     func setLineSpacing(_ lineSpacing: CGFloat) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = lineSpacing
+        paragraphStyle.lineBreakMode = .byTruncatingTail
         self.addAttributes([.paragraphStyle: paragraphStyle], range: NSRange(location: 0, length: self.length))
     }
 }
