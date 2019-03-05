@@ -84,6 +84,18 @@ open class BottomContainerViewController: UIViewController {
         return containedViewController.preferredStatusBarStyle
     }
     
+    open override var navigationItem: UINavigationItem {
+        return containedViewController.navigationItem
+    }
+    
+    open override var title: String? {
+        get {
+            return containedViewController.title
+        } set {
+            containedViewController.title = newValue
+        }
+    }
+    
     open override func targetViewController(forAction action: Selector, sender: Any?) -> UIViewController? {
         if let splitVC = splitViewController {
             return splitVC
