@@ -51,7 +51,7 @@ extension UIViewController {
     
     private func addStateView(_ stateView: UIView, stateViewFrame: CGRect?) {
         removeStateView()
-        let stateVC = StateContainerViewController(stateView: stateView)
+        let stateVC = StateContainerViewController(stateView: stateView, backgroundColor: self.view.backgroundColor ?? .clear)
         addChild(stateVC)
         view.addSubview(stateVC.view)
         if let _stateViewFrame = stateViewFrame {
@@ -76,7 +76,6 @@ extension UIViewController {
 }
 
 public enum StateContainerAppereance {
-    public static var backgroundColor = UIColor.white
     public static var padding: CGFloat = 20
 }
 
@@ -84,9 +83,10 @@ public enum StateContainerAppereance {
 private class StateContainerViewController: UIViewController {
     
     let stateView: UIView
-    
-    init(stateView: UIView) {
+    let backgroundColor: UIColor
+    init(stateView: UIView, backgroundColor: UIColor) {
         self.stateView = stateView
+        self.backgroundColor = backgroundColor
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -94,7 +94,7 @@ private class StateContainerViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = StateContainerAppereance.backgroundColor
+        view.backgroundColor = self.backgroundColor
         view.addAutolayoutSubview(stateView)
         stateView.centerInSuperview()
         NSLayoutConstraint.activate([
