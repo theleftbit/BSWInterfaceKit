@@ -25,7 +25,8 @@ class AzzurriViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = .groupTableViewBackground
+        
         let columnLayout = ColumnFlowLayout()
         columnLayout.cellFactory = { [unowned self] in
             return self.factoryCellForItem(atIndexPath: $0)
