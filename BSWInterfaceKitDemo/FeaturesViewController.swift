@@ -11,15 +11,12 @@ import BSWInterfaceKit
 
 class FeaturesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    enum Features: String {
+    enum Features: String, CaseIterable {
         case profileViewController = "ProfileViewController"
         case asyncViewModelController = "AsyncViewModelController"
         case collectionViewDataSource = "CollectionViewDataSource"
         case facebookLogin = "FacebookLogin"
-
-        static var allFeatures: [Features] {
-            return [.profileViewController, .asyncViewModelController, .collectionViewDataSource, .facebookLogin]
-        }
+        case alertOperations = "AlertOperations"
     }
 
     let featuresTableView : UITableView = {
@@ -43,12 +40,12 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: UITableViewDataSource
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Features.allFeatures.count
+        return Features.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReuseID") else { fatalError() }
-        let feature = Features.allFeatures[indexPath.row]
+        let feature = Features.allCases[indexPath.row]
         cell.textLabel?.text = feature.rawValue
         return cell
     }
@@ -58,24 +55,23 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let feature = Features.allFeatures[indexPath.row]
-        switch feature {
-        case .asyncViewModelController:
-            let vc = StrawberryViewController(dataProvider: StrawberryInteractor.dataProvider())
-            navigationController?.pushViewController(vc, animated: true)
-        case .collectionViewDataSource:
-            if #available(iOS 11.0, *) {
-                let vc = AzzurriViewController()
-                navigationController?.pushViewController(vc, animated: true)
+        let feature = Features.allCases[indexPath.row]
+        let vc: UIViewController = {
+            switch feature {
+            case .alertOperations:
+                return AlertOperationViewController()
+            case .asyncViewModelController:
+                return StrawberryViewController(dataProvider: StrawberryInteractor.dataProvider())
+            case .collectionViewDataSource:
+                return AzzurriViewController()
+            case .facebookLogin:
+                return FacebookLoginViewController()
+            case .profileViewController:
+                let viewModel = ClassicProfileViewModel.buffon()
+                return ClassicProfileViewController(viewModel: viewModel)
             }
-        case .facebookLogin:
-            let vc = FacebookLoginViewController()
-            navigationController?.pushViewController(vc, animated: true)
-        case .profileViewController:
-            let viewModel = ClassicProfileViewModel.buffon()
-            let vc = ClassicProfileViewController(viewModel: viewModel)
-            navigationController?.pushViewController(vc, animated: true)
-        }
+        }()
+        show(vc, sender: self)
     }
 }
 

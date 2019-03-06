@@ -69,7 +69,9 @@ extension UINavigationController {
 // MARK: Private
 
 private let errorQueue: OperationQueue = {
-  let operationQueue = OperationQueue()
-  operationQueue.maxConcurrentOperationCount = 1
-  return operationQueue
+    let operationQueue = OperationQueue()
+    operationQueue.qualityOfService = .userInteractive
+    operationQueue.maxConcurrentOperationCount = 1
+    operationQueue.name = "com.bswinterfacekit.errorpresenting"
+    return operationQueue
 }()

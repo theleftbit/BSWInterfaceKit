@@ -8,11 +8,18 @@ class PresentAlertOperation: Operation {
 
     let title: String
     let message: String?
-    unowned let presentingViewController: UIViewController
+    weak var presentingViewController: UIViewController?
     init(title: String, message: String?, presentingViewController: UIViewController) {
         self.title = title
         self.message = message
-        self.presentingViewController = presentingViewController
+        self.presentingViewController = {
+            //Find the parent in the hierarchy
+            var parentVC: UIViewController! = presentingViewController
+            while parentVC.parent != nil {
+                parentVC = parentVC.parent
+            }
+            return parentVC
+        }()
         super.init()
     }
 
@@ -27,8 +34,8 @@ class PresentAlertOperation: Operation {
         self.isFinished = false
 
         OperationQueue.main.addOperation {
-
-            guard let _ = self.presentingViewController.view.window else {
+            
+            guard let presentingViewController = self.presentingViewController, let _ = presentingViewController.view.window else {
                 self.finishOperation()
                 return
             }
@@ -39,7 +46,7 @@ class PresentAlertOperation: Operation {
             }
 
             alert.addAction(action)
-            self.presentingViewController.present(alert, animated: true, completion: nil)
+            presentingViewController.present(alert, animated: true, completion: nil)
         }
     }
 
@@ -70,7 +77,7 @@ class PresentAlertOperation: Operation {
         }
     }
 
-    fileprivate func finishOperation() {
+    private func finishOperation() {
         self.isExecuting = false
         self.isFinished = true
     }
