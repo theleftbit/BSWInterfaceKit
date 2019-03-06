@@ -23,13 +23,13 @@ extension UIViewController {
         }()
         
         let operation = PresentAlertOperation(title: "error".localized, message: errorMessage, presentingViewController: self)
-        errorQueue.addOperation(operation)
+        alertQueue.addOperation(operation)
     }
     
     @objc(bsw_showTodoMessage)
     public func showTodoAlert() {
-        let operation = PresentAlertOperation(title: "ToDo", message: nil, presentingViewController: self)
-        errorQueue.addOperation(operation)
+        let operation = PresentAlertOperation(title: "To-Do", message: nil, presentingViewController: self)
+        alertQueue.addOperation(operation)
     }    
 
     //Based on https://stackoverflow.com/a/28158013/1152289
@@ -68,10 +68,10 @@ extension UINavigationController {
 
 // MARK: Private
 
-private let errorQueue: OperationQueue = {
+private let alertQueue: OperationQueue = {
     let operationQueue = OperationQueue()
     operationQueue.qualityOfService = .userInteractive
     operationQueue.maxConcurrentOperationCount = 1
-    operationQueue.name = "com.bswinterfacekit.errorpresenting"
+    operationQueue.name = "com.bswinterfacekit.alertpresenting"
     return operationQueue
 }()
