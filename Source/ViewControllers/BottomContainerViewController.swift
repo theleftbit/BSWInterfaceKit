@@ -1,6 +1,6 @@
 //
 //  Created by Pierluigi Cifani on 01/10/2018.
-//  Copyright © 2018 Typeform SL. All rights reserved.
+//  Copyright © 2018 TheLeftBit. All rights reserved.
 //
 
 import UIKit
