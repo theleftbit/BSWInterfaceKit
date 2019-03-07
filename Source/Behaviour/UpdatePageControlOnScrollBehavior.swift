@@ -7,9 +7,9 @@ import UIKit
 
 final public class UpdatePageControlOnScrollBehavior: NSObject {
     
-    fileprivate weak var pageControl: UIPageControl?
-    fileprivate let scrollingDirection: ScrollingDirection
-    fileprivate var observation: NSKeyValueObservation!
+    private weak var pageControl: UIPageControl?
+    private let scrollingDirection: ScrollingDirection
+    private var observation: NSKeyValueObservation!
 
     public init(pageControl: UIPageControl, scrollingDirection: ScrollingDirection = .horizontal, scrollView: UIScrollView) {
         self.pageControl = pageControl

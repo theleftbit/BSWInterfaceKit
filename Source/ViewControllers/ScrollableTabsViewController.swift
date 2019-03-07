@@ -26,10 +26,10 @@ public class ScrollableTabsViewController: UIViewController {
         return headerCollectionView.indexPathsForSelectedItems?.first?.item ?? 0
     }
     
-    fileprivate var previousContentOffset = CGPoint(x: 0, y: 0)
-    fileprivate var headerDataSource: HeaderDataSource!
-    fileprivate var contentDataSource: ContentDataSource!
-    fileprivate let headerCollectionView: UICollectionView = {
+    private var previousContentOffset = CGPoint(x: 0, y: 0)
+    private var headerDataSource: HeaderDataSource!
+    private var contentDataSource: ContentDataSource!
+    private let headerCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -39,7 +39,7 @@ public class ScrollableTabsViewController: UIViewController {
         collectionView.backgroundColor = Appearance.backgroundColor
         return collectionView
     }()
-    fileprivate let contentCollectionView: UICollectionView = {
+    private let contentCollectionView: UICollectionView = {
         let contentCollectionLayout = UICollectionViewFlowLayout()
         contentCollectionLayout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: contentCollectionLayout)
@@ -169,7 +169,7 @@ private protocol ScrollableTabHeaderSelectionDelegate: class {
 
 extension ScrollableTabsViewController {
     
-    fileprivate class ContentDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    private class ContentDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
         
         let reuseID = "ScrollableTabsContentViewCellReuseID"
         
@@ -253,7 +253,7 @@ extension ScrollableTabsViewController {
         }
     }
     
-    fileprivate class HeaderDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    private class HeaderDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
         
         private let reuseID = "HeaderCellReuseID"
         private var viewControllers: [UIViewController]
@@ -316,7 +316,7 @@ extension ScrollableTabsViewController {
 extension ScrollableTabsViewController {
     
     @objc(BSWScrollableTabsViewControllerHeaderCell)
-    fileprivate class HeaderViewCell: UICollectionViewCell {
+    private class HeaderViewCell: UICollectionViewCell {
         
         private let bottomBar = UIView()
         private let titleLabel = UILabel()
@@ -363,7 +363,7 @@ extension ScrollableTabsViewController {
     }
     
     @objc(BSWScrollableTabsViewControllerContentCell)
-    fileprivate class ContentViewCell: UICollectionViewCell {
+    private class ContentViewCell: UICollectionViewCell {
         
         var childViewController: UIViewController?
         
@@ -372,7 +372,7 @@ extension ScrollableTabsViewController {
             parentViewController.addChild(contentViewController)
             contentViewController.didMove(toParent: parentViewController)
             contentView.addSubview(contentViewController.view)
-            setupConstraints()
+            contentViewController.view.pinToSuperview()
         }
         
         func removeChildViewController() {
@@ -380,11 +380,6 @@ extension ScrollableTabsViewController {
             contentViewController.view.removeFromSuperview()
             contentViewController.willMove(toParent: nil)
             contentViewController.removeFromParent()
-        }
-        
-        func setupConstraints() {
-            guard let view = childViewController?.view else { return }
-            view.pinToSuperview()
         }
     }
 }

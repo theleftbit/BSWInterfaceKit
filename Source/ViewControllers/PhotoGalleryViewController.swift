@@ -9,14 +9,14 @@ public protocol PhotoGalleryViewControllerDelegate: class {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt)
 }
 
-open class PhotoGalleryViewController: UIViewController {
+public final class PhotoGalleryViewController: UIViewController {
     
-    fileprivate let photosGallery: PhotoGalleryView
-    open var allowShare: Bool
-    open weak var presentFromView: UIView?
-    open weak var delegate: PhotoGalleryViewControllerDelegate?
-    open var currentPage: UInt = 0
-    open var photos: [Photo] {
+    private let photosGallery: PhotoGalleryView
+    public var allowShare: Bool
+    public weak var presentFromView: UIView?
+    public weak var delegate: PhotoGalleryViewControllerDelegate?
+    public var currentPage: UInt = 0
+    public var photos: [Photo] {
         return photosGallery.photos
     }
 
@@ -35,17 +35,17 @@ open class PhotoGalleryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override var prefersStatusBarHidden : Bool {
+    public override var prefersStatusBarHidden : Bool {
         return true
     }
 
-    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { (_) in
             self.photosGallery.invalidateLayout()
         }, completion: nil)
     }
     
-    override open func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black
 
@@ -66,11 +66,11 @@ open class PhotoGalleryViewController: UIViewController {
         photosGallery.scrollToPhoto(atIndex: currentPage)
     }
     
-    open override var shouldAutorotate: Bool {
+    public override var shouldAutorotate: Bool {
         return true
     }
     
-    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
     }
     

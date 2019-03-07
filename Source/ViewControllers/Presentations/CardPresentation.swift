@@ -68,7 +68,7 @@ public enum CardPresentation {
     }
 }
 
-fileprivate class CardPresentAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+private class CardPresentAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     let properties: CardPresentation.AnimationProperties
 
@@ -130,7 +130,7 @@ fileprivate class CardPresentAnimationController: NSObject, UIViewControllerAnim
     }
 }
 
-fileprivate class CardDismissAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+private class CardDismissAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     let properties: CardPresentation.AnimationProperties
 
@@ -172,6 +172,6 @@ fileprivate class CardDismissAnimationController: NSObject, UIViewControllerAnim
     }
 }
 
-fileprivate enum Constants {
+private enum Constants {
     static let BackgroundViewTag = 78
 }
