@@ -17,14 +17,14 @@ public protocol PhotoGalleryViewDelegate: class {
 @objc(BSWPhotoGalleryView)
 final public class PhotoGalleryView: UIView {
     
-    fileprivate let imageContentMode: UIView.ContentMode
-    fileprivate let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    fileprivate var collectionViewDataSource: CollectionViewDataSource<PhotoCollectionViewCell>!
-    fileprivate var collectionViewLayout: UICollectionViewFlowLayout {
+    private let imageContentMode: UIView.ContentMode
+    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private var collectionViewDataSource: CollectionViewDataSource<PhotoCollectionViewCell>!
+    private var collectionViewLayout: UICollectionViewFlowLayout {
         return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
     }
 
-    fileprivate let pageControl: UIPageControl = {
+    private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.hidesForSinglePage = true
         pageControl.pageIndicatorTintColor = UIColor.white
@@ -39,7 +39,7 @@ final public class PhotoGalleryView: UIView {
         }
     }
     
-    fileprivate let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
+    private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     public weak var delegate: PhotoGalleryViewDelegate?
     
@@ -75,7 +75,7 @@ final public class PhotoGalleryView: UIView {
         scrollToPhoto(atIndex: UInt(pageControl.currentPage))
     }
 
-    fileprivate func setup() {
+    private func setup() {
         translatesAutoresizingMaskIntoConstraints = false
 
         // CollectionView
@@ -106,7 +106,7 @@ final public class PhotoGalleryView: UIView {
 
     // MARK: Constraints
 
-    fileprivate func setupConstraints() {
+    private func setupConstraints() {
         collectionView.pinToSuperview()
 
         let bottomConstraint: NSLayoutConstraint = {

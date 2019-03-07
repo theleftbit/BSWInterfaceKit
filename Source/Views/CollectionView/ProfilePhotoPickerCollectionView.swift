@@ -61,12 +61,12 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         static var PhotoPickerRatio: CGFloat { return (CGFloat(Rows) / CGFloat(Columns)) }
     }
     
-    fileprivate var photosDataSource: CollectionViewDataSource<ProfilePhotoPickerCollectionViewCell>!
-    fileprivate lazy var mediaPicker: MediaPickerBehavior = {
+    private var photosDataSource: CollectionViewDataSource<ProfilePhotoPickerCollectionViewCell>!
+    private lazy var mediaPicker: MediaPickerBehavior = {
         return MediaPickerBehavior()
     }()
     
-    fileprivate var photos: [PhotoPickerViewModel] {
+    private var photos: [PhotoPickerViewModel] {
         get {
             return photosDataSource.data
         }
@@ -132,7 +132,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         photosDataSource.updateData(photos)
     }
 
-    fileprivate func userRequestedProfilePictureUpload(fromSource source: MediaPickerBehavior.Source) {
+    private func userRequestedProfilePictureUpload(fromSource source: MediaPickerBehavior.Source) {
         guard let presentingVC = self.presentingViewController else {
             return
         }
@@ -142,7 +142,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         presentingVC.present(vc, animated: true, completion: nil)
     }
     
-    fileprivate func userAddedProfilePicture(_ url: URL?) {
+    private func userAddedProfilePicture(_ url: URL?) {
         let photos = self.photosDataSource.data
         guard let url = url else { return }
         guard let index = photos.index(where: { return $0.isEmpty() }) else { return }
@@ -263,7 +263,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         setup()
     }
     
-    fileprivate func setup() {
+    private func setup() {
         contentView.addAutolayoutSubview(imageView)
         contentView.addAutolayoutSubview(spinner)
         imageView.addAutolayoutSubview(accesoryView)
@@ -283,7 +283,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
             ])
     }
     
-    fileprivate override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
         imageView.backgroundColor = .white

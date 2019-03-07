@@ -72,7 +72,7 @@ public class AvatarView: UIView {
     
     // MARK: View setup
     
-    fileprivate func setup() {
+    private func setup() {
         layer.masksToBounds = true
         addAutolayoutSubview(imageView)
         imageView.pinToSuperview()
@@ -83,7 +83,7 @@ public class AvatarView: UIView {
         setContentCompressionResistancePriority(.required, for: .vertical)
     }
     
-    fileprivate func updateImage() {
+    private func updateImage() {
         imageView.setPhoto(photo)
     }
     

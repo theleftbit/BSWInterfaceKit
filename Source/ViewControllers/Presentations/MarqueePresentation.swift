@@ -55,7 +55,7 @@ public enum MarqueePresentation {
     }
 }
 
-fileprivate class MarqueePresentationController: NSObject, UIViewControllerAnimatedTransitioning {
+private class MarqueePresentationController: NSObject, UIViewControllerAnimatedTransitioning {
     
     let properties: MarqueePresentation.AnimationProperties
     
@@ -139,7 +139,7 @@ fileprivate class MarqueePresentationController: NSObject, UIViewControllerAnima
     }
 }
 
-fileprivate class MarqueeDismissController: NSObject, UIViewControllerAnimatedTransitioning {
+private class MarqueeDismissController: NSObject, UIViewControllerAnimatedTransitioning {
     
     let properties: MarqueePresentation.AnimationProperties
     
@@ -178,6 +178,6 @@ fileprivate class MarqueeDismissController: NSObject, UIViewControllerAnimatedTr
     }
 }
 
-fileprivate enum Constants {
+private enum Constants {
     static let BackgroundViewTag = 79
 }

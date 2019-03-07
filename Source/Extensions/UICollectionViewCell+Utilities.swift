@@ -9,7 +9,7 @@ public extension UICollectionViewCell {
         static let Spacing: CGFloat = 7
     }
 
-    fileprivate struct AssociatedBlockHost {
+    private struct AssociatedBlockHost {
         static var imageHost = "imageHost"
         static var handlerHost = "handlerHost"
     }
