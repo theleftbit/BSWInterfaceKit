@@ -8,7 +8,7 @@ import UIKit
 @objc(BSWScrollableStackView)
 open class ScrollableStackView: UIScrollView {
 
-    fileprivate let stackView = UIStackView()
+    private let stackView = UIStackView()
 
     public init(axis: NSLayoutConstraint.Axis = .vertical,
                 alignment: UIStackView.Alignment = .leading) {

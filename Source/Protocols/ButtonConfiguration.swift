@@ -52,7 +52,7 @@ private class ActionBlockWrapper : NSObject {
 
 extension UIButton {
     
-    fileprivate struct AssociatedObjects {
+    private struct AssociatedObjects {
         static var ActionBlockWrapper = "ActionBlockWrapper"
     }
     
@@ -91,7 +91,7 @@ extension UIButton {
 
 extension UIBarButtonItem {
 
-    fileprivate struct AssociatedObjects {
+    private struct AssociatedObjects {
         static var ActionBlockWrapper = "ActionBlockWrapper"
     }
 

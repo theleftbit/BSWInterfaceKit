@@ -26,15 +26,15 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         }
     }
 
-    fileprivate let detailSubview = PolaroidCollectionCellBasicInfoView()
+    private let detailSubview = PolaroidCollectionCellBasicInfoView()
     
-    fileprivate let cellImageView: UIImageView = {
+    private let cellImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
         return view
     }()
-    fileprivate let stackView = UIStackView()
+    private let stackView = UIStackView()
 
     public static let MaxImageHeightProportion = CGFloat(2)
 
@@ -47,7 +47,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate func setup() {
+    private func setup() {
         stackView.addArrangedSubview(cellImageView)
         stackView.addArrangedSubview(detailSubview)
         stackView.axis = .vertical
@@ -70,9 +70,9 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
     /// This is a placeholder constraint to make sure that when doing the final
     /// layout for the wanted viewModel, the image height is not compressed
-    fileprivate var imageHeightConstraint: NSLayoutConstraint!
+    private var imageHeightConstraint: NSLayoutConstraint!
     
-    fileprivate func setupImageConstraint(multiplier: CGFloat = 1) {
+    private func setupImageConstraint(multiplier: CGFloat = 1) {
         if let imageHeightConstraint = self.imageHeightConstraint {
             cellImageView.removeConstraint(imageHeightConstraint)
         }
@@ -80,7 +80,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
         NSLayoutConstraint.activate([imageHeightConstraint])
     }
     
-    fileprivate func setupRoundedCorners() {
+    private func setupRoundedCorners() {
         contentView.roundCorners()
     }
     
@@ -141,7 +141,7 @@ public class PolaroidCollectionCellBasicInfoView: UIView {
         detailLabel.attributedText = subtitle
     }
     
-    fileprivate func setup() {
+    private func setup() {
         backgroundColor = .white
         addAutolayoutSubview(stackView)
         stackView.pinToSuperview()
