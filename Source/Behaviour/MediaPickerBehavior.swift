@@ -53,14 +53,14 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         }
     }
 
-    fileprivate struct Request {
+    private struct Request {
         let handler: MediaHandler
         let kind: Kind
     }
     
-    fileprivate var currentRequest: Request?
-    fileprivate let imagePicker = UIImagePickerController()
-    fileprivate let fileManager = FileManager.default
+    private var currentRequest: Request?
+    private let imagePicker = UIImagePickerController()
+    private let fileManager = FileManager.default
  
     public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum) -> (UIViewController?, Task<URL>) {
         let deferred = Deferred<Task<URL>.Result>()
@@ -171,12 +171,12 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         currentRequest = nil
     }
     
-    fileprivate func cachePathForMedia(_ kind: Kind) -> URL {
+    private func cachePathForMedia(_ kind: Kind) -> URL {
         let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         return cachesDirectory.appendingPathComponent("\(UUID().uuidString).\(kind.pathExtension())")
     }
     
-    fileprivate func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
+    private func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         guard let videoURL = info[.mediaURL] as? URL else {
             request.handler(nil)
             return
@@ -184,7 +184,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         request.handler(videoURL)
     }
 
-    fileprivate func handlePhotoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
+    private func handlePhotoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         
         guard let image = info[.originalImage] as? UIImage else {
             self.currentRequest?.handler(nil)
@@ -200,7 +200,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     }
     
     @available(iOS 11.0, *)
-    fileprivate func handleThumbnailRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
+    private func handleThumbnailRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         guard case .thumbnail(let size) = request.kind else {
             fatalError()
         }

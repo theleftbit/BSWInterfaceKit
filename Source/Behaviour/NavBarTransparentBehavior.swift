@@ -11,13 +11,13 @@ public enum NavBarState {
 
 final public class NavBarTransparentBehavior: NSObject {
     
-    fileprivate static let LimitOffsetTransparentNavBar: CGFloat = 100
+    private static let LimitOffsetTransparentNavBar: CGFloat = 100
     
-    fileprivate weak var navBar: UINavigationBar!
-    fileprivate var observation: NSKeyValueObservation!
-    fileprivate var state: NavBarState!
-    fileprivate let defaultBackgroundImage: UIImage?
-    fileprivate let defaultShadowImage: UIImage?
+    private weak var navBar: UINavigationBar!
+    private var observation: NSKeyValueObservation!
+    private var state: NavBarState!
+    private let defaultBackgroundImage: UIImage?
+    private let defaultShadowImage: UIImage?
     let shouldShowShadow: Bool
     
     public init(navBar: UINavigationBar, scrollView: UIScrollView, shouldShowShadow: Bool) {
@@ -73,7 +73,7 @@ final public class NavBarTransparentBehavior: NSObject {
         self.state = state
     }
 
-    fileprivate func updateNavBar(forScrollView scrollView: UIScrollView) {
+    private func updateNavBar(forScrollView scrollView: UIScrollView) {
         if scrollView.contentOffset.y < NavBarTransparentBehavior.LimitOffsetTransparentNavBar {
             setNavBar(toState: .transparent)
         }
@@ -82,7 +82,7 @@ final public class NavBarTransparentBehavior: NSObject {
         }
     }
     
-    fileprivate static func animate(_ navBar: UINavigationBar) {
+    private static func animate(_ navBar: UINavigationBar) {
         let transition = CATransition()
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
         transition.type = CATransitionType.fade

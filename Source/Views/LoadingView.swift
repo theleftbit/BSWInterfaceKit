@@ -7,7 +7,7 @@ import UIKit
 
 @objc(BSWLoadingView)
 public class LoadingView: UIView {
-    fileprivate let stackView: UIStackView = {
+    private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical

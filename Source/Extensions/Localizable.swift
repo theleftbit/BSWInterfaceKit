@@ -41,7 +41,7 @@ extension BSWInterfaceKitStrings: CustomStringConvertible {
         }
     }
     
-    fileprivate static func tr(_ key: String, _ args: CVarArg...) -> String {
+    private static func tr(_ key: String, _ args: CVarArg...) -> String {
         let format = NSLocalizedString(key, bundle: Bundle.interfaceKitBundle(), comment: "")
         return String(format: format, locale: Locale.current, arguments: args)
     }

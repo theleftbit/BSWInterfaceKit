@@ -17,7 +17,7 @@ open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFl
         setup()
     }
     
-    fileprivate func setup() {
+    private func setup() {
         contentView.addSubview(photosCollectionView)
         photosCollectionView.pinToSuperview()
         photosCollectionView.heightAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: ProfilePhotoPickerCollectionView.Constants.PhotoPickerRatio).isActive = true

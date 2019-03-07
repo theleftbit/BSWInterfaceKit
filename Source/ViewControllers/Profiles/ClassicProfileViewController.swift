@@ -46,11 +46,11 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
     public var dataProvider: Task<ClassicProfileViewModel>!
     open var editKind: ClassicProfileEditKind = .nonEditable
     
-    fileprivate let photoGallery = PhotoGalleryView()
-    fileprivate let titleLabel = UILabel.unlimitedLinesLabel()
-    fileprivate let detailsLabel = UILabel.unlimitedLinesLabel()
-    fileprivate let extraDetailsLabel = UILabel.unlimitedLinesLabel()
-    fileprivate let separatorView: UIView = {
+    private let photoGallery = PhotoGalleryView()
+    private let titleLabel = UILabel.unlimitedLinesLabel()
+    private let detailsLabel = UILabel.unlimitedLinesLabel()
+    private let extraDetailsLabel = UILabel.unlimitedLinesLabel()
+    private let separatorView: UIView = {
         let view = UIView()
         NSLayoutConstraint.activate([
             view.widthAnchor.constraint(equalToConstant: Constants.SeparatorSize.width),
