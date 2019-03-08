@@ -3,6 +3,7 @@
 //
 
 import BSWInterfaceKit
+import BSWFoundation
 import XCTest
 
 @available(iOS 11.0, *)
@@ -43,6 +44,21 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(vc.containedViewController.bottomContainerViewController == vc)
     }
     
+    func testAddBottomActionButtonIntrinsicSizeCalculable() {
+        
+        let buttonHeight: CGFloat = 60
+        let simulatedContentSize = CGSize(width: 320, height: 500)
+        
+        let button = UIButton()
+        button.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+        let vc = BottomContainerViewController(
+            containedViewController: ContentVC(size: simulatedContentSize),
+            button: button
+        )
+        let constrainedHeight = vc.heightConstrainedTo(width: simulatedContentSize.width)
+        XCTAssert(constrainedHeight == simulatedContentSize.height + buttonHeight)
+    }
+    
     func testErrorView() {
         let vc = TestViewController()
         let buttonConfig = ButtonConfiguration(title: "Retry", titleColor: .blue) {
@@ -75,6 +91,8 @@ class UIViewControllerTests: BSWSnapshotTest {
     }
 }
 
+//MARK: Mock VCs
+
 @available(iOS 11.0, *)
 private class TestViewController: UIViewController {
     override func viewDidLoad() {
@@ -85,14 +103,7 @@ private class TestViewController: UIViewController {
 
 @available(iOS 11.0, *)
 func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) -> BottomContainerViewController {
-    class BottomActionVC: UIViewController {
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            view.backgroundColor = .white
-        }
-    }
-
-    let containedViewController = BottomActionVC()
+    let containedViewController = TestViewController()
     let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
     let button = UIButton(buttonConfiguration: config)
     button.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
@@ -143,4 +154,18 @@ func bottomViewControllerContainer() -> BottomContainerViewController {
     )
 }
 
+private class ContentVC: UIViewController {
+    let size: CGSize
+    
+    init(size: CGSize) {
+        self.size = size
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    override func loadView() {
+        view = UIView()
+        view.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+        view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+    }
+}
 
