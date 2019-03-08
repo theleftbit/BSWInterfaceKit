@@ -43,6 +43,14 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(vc.containedViewController.bottomContainerViewController == vc)
     }
     
+    func testAddBottomActionButtonIntrinsicSizeCalculable() {
+        let buttonHeight: CGFloat = 60
+        let vc = bottomViewController(buttonHeight: buttonHeight)
+        XCTAssertNotNil(vc.button)
+        let constrainedHeight = vc.heightConstrainedTo(width: vc.view.frame.width)
+        XCTAssert(constrainedHeight > 0)
+    }
+    
     func testErrorView() {
         let vc = TestViewController()
         let buttonConfig = ButtonConfiguration(title: "Retry", titleColor: .blue) {
