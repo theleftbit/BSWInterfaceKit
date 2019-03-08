@@ -45,8 +45,8 @@ open class BottomContainerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func viewDidLoad() {
-        super.viewDidLoad()
+    open override func loadView() {
+        view = UIView()
         
         addChild(containedViewController)
         view.addAutolayoutSubview(containedViewController.view)
@@ -129,6 +129,24 @@ open class BottomContainerViewController: UIViewController {
         }
     }
 }
+
+extension BottomContainerViewController: IntrinsicSizeCalculable {
+    
+    public func heightConstrainedTo(width: CGFloat) -> CGFloat {
+        self.loadViewIfNeeded()
+        let children = [self.containedViewController, self.buttonContainer!]
+        return children.reduce(0) { value, childVC -> CGFloat in
+            if let childVC = childVC as? IntrinsicSizeCalculable {
+                return value + childVC.heightConstrainedTo(width: width)
+            }
+            return value + childVC.view.systemLayoutSizeFitting(
+                CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel).height
+        }
+    }
+}
+
 
 @available(iOS 11.0, *)
 public extension UIViewController {
