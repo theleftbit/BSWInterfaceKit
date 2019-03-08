@@ -130,6 +130,22 @@ open class BottomContainerViewController: UIViewController {
     }
 }
 
+extension BottomContainerViewController: IntrinsicSizeCalculable {
+    
+    public func heightConstrainedTo(width: CGFloat) -> CGFloat {
+        return self.children.reduce(0) { value, childVC -> CGFloat in
+            if let childVC = childVC as? IntrinsicSizeCalculable {
+                return value + childVC.heightConstrainedTo(width: width)
+            }
+            return value + childVC.view.systemLayoutSizeFitting(
+                CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel).height
+        }
+    }
+}
+
+
 @available(iOS 11.0, *)
 public extension UIViewController {
     var bottomContainerViewController: BottomContainerViewController? {
