@@ -4,23 +4,17 @@ import BSWFoundation
 
 public extension UICollectionViewCell {
 
-    private enum Constants {
-        static let DeleteButtonTag = 876
-        static let Spacing: CGFloat = 7
+    public enum WiggleAppearance {
+        public static var Spacing: CGFloat = 7
+        public static var DeleteButtonImage: UIImage?
+        public static var WiggleDuration: TimeInterval = 0.1
+        public static var BounceDuration: TimeInterval = 0.12
+
+        fileprivate static let DeleteButtonTag = 876
     }
 
-    private struct AssociatedBlockHost {
-        static var imageHost = "imageHost"
+    private enum AssociatedBlockHost {
         static var handlerHost = "handlerHost"
-    }
-
-    @objc var deleteButtonImage: UIImage? {
-        get {
-            guard let image = objc_getAssociatedObject(self, &AssociatedBlockHost.imageHost) as? UIImage else { return nil }
-            return image
-        } set {
-            objc_setAssociatedObject(self, &AssociatedBlockHost.imageHost, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        }
     }
 
     @objc var onDelete: VoidHandler? {
@@ -34,23 +28,23 @@ public extension UICollectionViewCell {
 
     @objc var isDeleting: Bool {
         get {
-            return contentView.viewWithTag(Constants.DeleteButtonTag) != nil
+            return contentView.viewWithTag(WiggleAppearance.DeleteButtonTag) != nil
         } set {
             if newValue {
                 startWiggling()
-                let buttonImage = self.deleteButtonImage ?? UIImage.templateImage(.cancelRound)
+                let buttonImage = WiggleAppearance.DeleteButtonImage ?? UIImage.templateImage(.cancelRound)
                 let removeButton = UIButton(type: .custom)
-                removeButton.tag = Constants.DeleteButtonTag
+                removeButton.tag = WiggleAppearance.DeleteButtonTag
                 removeButton.addTarget(self, action: #selector(onDeleteButtonPressed), for: .touchDown)
                 removeButton.setImage(buttonImage, for: .normal)
                 contentView.addAutolayoutSubview(removeButton)
                 NSLayoutConstraint.activate([
-                    removeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.Spacing),
-                    removeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.Spacing)
+                    removeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: WiggleAppearance.Spacing),
+                    removeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: WiggleAppearance.Spacing)
                     ])
             } else {
                 stopWiggling()
-                contentView.viewWithTag(Constants.DeleteButtonTag)?.removeFromSuperview()
+                contentView.viewWithTag(WiggleAppearance.DeleteButtonTag)?.removeFromSuperview()
             }
         }
     }
@@ -59,24 +53,25 @@ public extension UICollectionViewCell {
         guard contentView.layer.animation(forKey: "wiggle") == nil else { return }
         guard contentView.layer.animation(forKey: "bounce") == nil else { return }
 
-        let angle = 0.04
-
-        let wiggle = CAKeyframeAnimation(keyPath: "transform.rotation.z")
-        wiggle.values = [-angle, angle]
-
-        wiggle.autoreverses = true
-        wiggle.duration = randomInterval(0.1, variance: 0.005)
-        wiggle.repeatCount = Float.infinity
-
+        let wiggle: CAKeyframeAnimation = {
+            let angle: Double = 0.04
+            let animation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+            animation.values = [-angle, angle]
+            animation.autoreverses = true
+            animation.duration = randomInterval(WiggleAppearance.WiggleDuration, variance: 0.005)
+            animation.repeatCount = Float.infinity
+            return animation
+        }()
         contentView.layer.add(wiggle, forKey: "wiggle")
 
-        let bounce = CAKeyframeAnimation(keyPath: "transform.translation.y")
-        bounce.values = [0.5, 0.0]
-
-        bounce.autoreverses = true
-        bounce.duration = randomInterval(0.12, variance: 0.025)
-        bounce.repeatCount = Float.infinity
-
+        let bounce: CAKeyframeAnimation = {
+            let animation = CAKeyframeAnimation(keyPath: "transform.translation.y")
+            animation.values = [0.5, 0.0]
+            animation.autoreverses = true
+            animation.duration = randomInterval(WiggleAppearance.BounceDuration, variance: 0.025)
+            animation.repeatCount = Float.infinity
+            return animation
+        }()
         contentView.layer.add(bounce, forKey: "bounce")
     }
 
@@ -87,8 +82,8 @@ public extension UICollectionViewCell {
     @objc func onDeleteButtonPressed() {
         self.onDelete?()
     }
+}
 
-    private func randomInterval(_ interval: TimeInterval, variance: Double) -> TimeInterval {
-        return interval + variance * Double((Double(arc4random_uniform(1000)) - 500.0) / 500.0)
-    }
+private func randomInterval(_ interval: TimeInterval, variance: Double) -> TimeInterval {
+    return interval + variance * Double((Double(arc4random_uniform(1000)) - 500.0) / 500.0)
 }
