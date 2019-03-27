@@ -74,8 +74,8 @@ class AzzurriViewController: UIViewController {
             })
 
             collectionView.visibleCells.forEach { cell in
-                cell.isDeleting = true
-                cell.onDelete = { [weak cell, weak self] in
+                cell.bsw_isDeleting = true
+                cell.bsw_onDelete = { [weak cell, weak self] in
                     guard let `cell` = cell else { return }
                     guard let index = self?.collectionView.indexPath(for: cell) else { return }
                     self?.removeItemAtIndexPath(index)
@@ -90,8 +90,8 @@ class AzzurriViewController: UIViewController {
             })
 
             collectionView.visibleCells.forEach {
-                $0.isDeleting = false
-                $0.onDelete = nil
+                $0.bsw_isDeleting = false
+                $0.bsw_onDelete = nil
             }
         }
     }

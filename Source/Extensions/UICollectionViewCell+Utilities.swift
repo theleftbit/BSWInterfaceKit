@@ -17,7 +17,7 @@ public extension UICollectionViewCell {
         static var handlerHost = "handlerHost"
     }
 
-    @objc var onDelete: VoidHandler? {
+    @objc var bsw_onDelete: VoidHandler? {
         get {
             guard let handler = objc_getAssociatedObject(self, &AssociatedBlockHost.handlerHost) as? VoidHandler else { return nil }
             return handler
@@ -26,7 +26,7 @@ public extension UICollectionViewCell {
         }
     }
 
-    @objc var isDeleting: Bool {
+    @objc var bsw_isDeleting: Bool {
         get {
             return contentView.viewWithTag(WiggleAppearance.DeleteButtonTag) != nil
         } set {
@@ -80,7 +80,7 @@ public extension UICollectionViewCell {
     }
 
     @objc func onDeleteButtonPressed() {
-        self.onDelete?()
+        self.bsw_onDelete?()
     }
 }
 
