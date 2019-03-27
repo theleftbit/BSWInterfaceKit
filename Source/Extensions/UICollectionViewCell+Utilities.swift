@@ -5,9 +5,48 @@ import BSWFoundation
 public extension UICollectionViewCell {
 
     public enum WiggleAppearance {
+        public static var Spacing: CGFloat = 7
         public static var DeleteButtonImage: UIImage?
         public static var WiggleDuration: TimeInterval = 0.1
         public static var BounceDuration: TimeInterval = 0.12
+
+        fileprivate static let DeleteButtonTag = 876
+    }
+
+    private enum AssociatedBlockHost {
+        static var handlerHost = "handlerHost"
+    }
+
+    @objc var onDelete: VoidHandler? {
+        get {
+            guard let handler = objc_getAssociatedObject(self, &AssociatedBlockHost.handlerHost) as? VoidHandler else { return nil }
+            return handler
+        } set {
+            objc_setAssociatedObject(self, &AssociatedBlockHost.handlerHost, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+
+    @objc var isDeleting: Bool {
+        get {
+            return contentView.viewWithTag(WiggleAppearance.DeleteButtonTag) != nil
+        } set {
+            if newValue {
+                startWiggling()
+                let buttonImage = WiggleAppearance.DeleteButtonImage ?? UIImage.templateImage(.cancelRound)
+                let removeButton = UIButton(type: .custom)
+                removeButton.tag = WiggleAppearance.DeleteButtonTag
+                removeButton.addTarget(self, action: #selector(onDeleteButtonPressed), for: .touchDown)
+                removeButton.setImage(buttonImage, for: .normal)
+                contentView.addAutolayoutSubview(removeButton)
+                NSLayoutConstraint.activate([
+                    removeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: WiggleAppearance.Spacing),
+                    removeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: WiggleAppearance.Spacing)
+                    ])
+            } else {
+                stopWiggling()
+                contentView.viewWithTag(WiggleAppearance.DeleteButtonTag)?.removeFromSuperview()
+            }
+        }
     }
 
     func startWiggling() {
@@ -38,6 +77,10 @@ public extension UICollectionViewCell {
 
     func stopWiggling() {
         contentView.layer.removeAllAnimations()
+    }
+
+    @objc func onDeleteButtonPressed() {
+        self.onDelete?()
     }
 }
 
