@@ -6,11 +6,15 @@
 import UIKit
 import SafariServices
 
-
 extension UIViewController {
 
     // MARK: - Presenting Alerts
-
+    @objc(bsw_showAlertWithMessage:)
+    public func showAlert(_ message: String) {
+        let operation = PresentAlertOperation(title: nil, message: message, presentingViewController: self)
+        alertQueue.addOperation(operation)
+    }
+    
     @objc(bsw_showErrorAlert:error:)
     public func showErrorAlert(_ message: String, error: Error) {
         
