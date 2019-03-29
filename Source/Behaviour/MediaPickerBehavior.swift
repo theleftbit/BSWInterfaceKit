@@ -8,6 +8,7 @@ import MobileCoreServices
 import ImageIO
 import AVFoundation
 import Deferred
+import Photos
 
 public typealias MediaHandler = ((URL?) -> Void)
 
@@ -177,11 +178,22 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     }
     
     private func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
-        guard let videoURL = info[.mediaURL] as? URL else {
+        if let videoURL = info[.mediaURL] as? URL {
+            request.handler(videoURL)
+        } else if let asset = info[.phAsset] as? PHAsset {
+            let options = PHVideoRequestOptions()
+            options.version = .original
+            PHImageManager.default().requestAVAsset(forVideo: asset, options: options, resultHandler: {(asset, _, _) -> Void in
+                if let urlAsset = asset as? AVURLAsset {
+                    request.handler(urlAsset.url)
+                } else {
+                    request.handler(nil)
+                }
+            })
+
+        } else {
             request.handler(nil)
-            return
         }
-        request.handler(videoURL)
     }
 
     private func handlePhotoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
