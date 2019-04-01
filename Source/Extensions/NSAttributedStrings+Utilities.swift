@@ -77,10 +77,22 @@ public extension NSAttributedString {
         mutableCopy.setKern(kern)
         return mutableCopy
     }
-    
-    func settingLineSpacing(_ lineSpacing: CGFloat, clipTail: Bool = false) -> NSAttributedString {
+
+    func settingParagraphStyle(_ style: NSParagraphStyle) -> NSAttributedString {
         let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
-        mutableCopy.setLineSpacing(lineSpacing, clipTail: clipTail)
+        mutableCopy.setParagraphStyle(style)
+        return mutableCopy
+    }
+
+    func settingLineSpacing(_ lineSpacing: CGFloat) -> NSAttributedString {
+        let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
+        mutableCopy.setLineSpacing(lineSpacing)
+        return mutableCopy
+    }
+
+    func settingLineHeight(_ lineHeight: CGFloat) -> NSAttributedString {
+        let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
+        mutableCopy.setLineHeight(lineHeight)
         return mutableCopy
     }
 
@@ -98,12 +110,21 @@ public extension NSMutableAttributedString {
         self.addAttributes([.kern: kern], range: NSRange(location: 0, length: self.length))
     }
     
-    func setLineSpacing(_ lineSpacing: CGFloat, clipTail: Bool = false) {
+    func setParagraphStyle(_ style: NSParagraphStyle) {
+        let mutableStyle = style.mutableCopy() as! NSMutableParagraphStyle
+        mutableStyle.lineBreakMode = .byTruncatingTail //We always want this
+        self.addAttributes([.paragraphStyle: mutableStyle], range: NSRange(location: 0, length: self.length))
+    }
+    
+    func setLineSpacing(_ lineSpacing: CGFloat) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = lineSpacing
-        if clipTail {
-            paragraphStyle.lineBreakMode = .byTruncatingTail
-        }
-        self.addAttributes([.paragraphStyle: paragraphStyle], range: NSRange(location: 0, length: self.length))
+        setParagraphStyle(paragraphStyle)
+    }
+
+    func setLineHeight(_ lineHeight: CGFloat) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.minimumLineHeight = lineHeight
+        setParagraphStyle(paragraphStyle)
     }
 }
