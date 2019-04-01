@@ -109,12 +109,14 @@ public class PolaroidCollectionCellBasicInfoView: UIView {
         let label = UILabel()
         label.numberOfLines = 2
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
     
     let detailLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
+        label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }()
