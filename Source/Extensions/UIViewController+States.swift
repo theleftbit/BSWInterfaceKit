@@ -101,7 +101,12 @@ public enum StateContainerAppereance {
     public struct TransitionConfiguration {
         public let duration: TimeInterval
         public let curve: UIView.AnimationCurve
-        
+
+        public init(duration: TimeInterval, curve: UIView.AnimationCurve) {
+            self.duration = duration
+            self.curve = curve
+        }
+
         public static func simple() -> TransitionConfiguration {
             return .init(duration: 0.3, curve: .easeInOut)
         }
