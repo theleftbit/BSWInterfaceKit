@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func themeApp() {
         UIImageView.fadeImageDuration = 0.33
+        StateContainerAppereance.transitionConfiguration = .simple()
     }
 }
 
