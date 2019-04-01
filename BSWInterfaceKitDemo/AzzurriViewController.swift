@@ -22,9 +22,9 @@ class AzzurriViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    override func loadView() {
+        view = UIView()
         view.backgroundColor = .groupTableViewBackground
         
         let columnLayout = ColumnFlowLayout()
@@ -42,21 +42,23 @@ class AzzurriViewController: UIViewController {
         collectionView.backgroundColor = .groupTableViewBackground
         collectionView.alwaysBounceVertical = true
         
-        let retryButton = ButtonConfiguration(buttonTitle: .text(NSAttributedString(string: "Retry"))) {
-            print("Retry")
-        }
-        let emptyConfiguration = ErrorView.Configuration(title: NSAttributedString(string: "No more players"), buttonConfiguration: retryButton)
-        dataSource.emptyConfiguration = emptyConfiguration
-        
-        setEditing(false, animated: true)
-
-        self.showLoader()
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
-            self.hideLoader()
-            self.dataSource.updateData(AzzurriViewController.mockData())
-        }
-
+        dataSource.emptyConfiguration = {
+            let retryButton = ButtonConfiguration(buttonTitle: .text(NSAttributedString(string: "Retry"))) {
+                print("Retry")
+            }
+            return ErrorView.Configuration(title: NSAttributedString(string: "No more players"), buttonConfiguration: retryButton)
+        }()
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, actionHandler: { [weak self] in
+            guard let `self` = self else { return }
+            self.fetchData(animated: true)
+        })
+        fetchData(animated: false)
+    }
+    
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -96,6 +98,14 @@ class AzzurriViewController: UIViewController {
         }
     }
 
+    func fetchData(animated: Bool) {
+        self.showLoader(animated: animated)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .milliseconds(1000)) {
+            self.hideLoader()
+            self.dataSource.updateData(AzzurriViewController.mockData())
+        }
+    }
+    
     func removeItemAtIndexPath(_ indexPath: IndexPath) {
         dataSource.performEditActions([.remove(fromIndexPath: indexPath)])
     }
