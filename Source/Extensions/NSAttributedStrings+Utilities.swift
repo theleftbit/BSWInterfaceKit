@@ -111,20 +111,20 @@ public extension NSMutableAttributedString {
     }
     
     func setParagraphStyle(_ style: NSParagraphStyle) {
-        let mutableStyle = style.mutableCopy() as! NSMutableParagraphStyle
-        mutableStyle.lineBreakMode = .byTruncatingTail //We always want this
-        self.addAttributes([.paragraphStyle: mutableStyle], range: NSRange(location: 0, length: self.length))
+        self.addAttributes([.paragraphStyle: style], range: NSRange(location: 0, length: self.length))
     }
     
     func setLineSpacing(_ lineSpacing: CGFloat) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = lineSpacing
+        paragraphStyle.lineBreakMode = .byTruncatingTail //We always want this
         setParagraphStyle(paragraphStyle)
     }
 
     func setLineHeight(_ lineHeight: CGFloat) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.minimumLineHeight = lineHeight
+        paragraphStyle.lineBreakMode = .byTruncatingTail //We always want this
         setParagraphStyle(paragraphStyle)
     }
 }
