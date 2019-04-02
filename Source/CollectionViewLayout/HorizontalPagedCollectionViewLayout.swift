@@ -33,6 +33,7 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         assert(cv.isPagingEnabled == false)
         let availableSize = cv.frame.inset(by: sectionInset)
         itemSize = CGSize(width: availableSize.width - minimumLineSpacing, height: availableSize.height)
+        cv.decelerationRate = .fast
     }
     
     override public func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
