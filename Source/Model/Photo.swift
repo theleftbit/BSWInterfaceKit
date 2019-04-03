@@ -6,9 +6,9 @@
 import UIKit
 import Nuke
 
-public struct Photo {
+public struct Photo: Equatable {
     
-    public enum Kind {
+    public enum Kind: Equatable {
         case url(Foundation.URL)
         case image(UIImage)
         case empty
