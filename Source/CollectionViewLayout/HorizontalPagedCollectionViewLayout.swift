@@ -6,6 +6,11 @@ import UIKit
 
 public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
     
+    public enum ItemSizing {
+        case usingLineSpacing
+        case usingAvailableWidth(margin: CGFloat)
+    }
+    
     override public var scrollDirection: UICollectionView.ScrollDirection {
         didSet {
             assert(scrollDirection == .horizontal)
@@ -19,8 +24,10 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
     }
 
     public var velocityFactor: CGFloat = 0.1
+    public let itemSizing: ItemSizing
     
-    override public init() {
+    public init(itemSizing: ItemSizing = .usingLineSpacing) {
+        self.itemSizing = itemSizing
         super.init()
         scrollDirection = .horizontal
     }
@@ -32,7 +39,14 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         guard let cv = self.collectionView else { return }
         assert(cv.isPagingEnabled == false)
         let availableSize = cv.frame.inset(by: sectionInset)
-        itemSize = CGSize(width: availableSize.width - minimumLineSpacing, height: availableSize.height)
+        itemSize = {
+            switch self.itemSizing {
+            case .usingLineSpacing:
+                return CGSize(width: availableSize.width - minimumLineSpacing, height: availableSize.height)
+            case .usingAvailableWidth(let margin):
+                return CGSize(width: availableSize.width - margin, height: availableSize.height)
+            }
+        }()
         cv.decelerationRate = .fast
     }
     
