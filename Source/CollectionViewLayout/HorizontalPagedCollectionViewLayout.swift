@@ -76,14 +76,18 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         // Check how many pages the user flicked, if <= 1 then flickedPages should return 0.
         let flickedPages = (abs(round(flickVelocity)) <= 1) ? 0 : round(flickVelocity)
         
-        // Calculate newHorizontalOffset.
-        let targetPage = (currentPage + flickedPages)
-        guard targetPage > 0 else {
+        // Book keeping to make sure we don't go out of bounds.
+        let targetPage = Int(currentPage + flickedPages)
+        let pageCount = Int(cv.contentSize.width/pageWidth)
+        guard targetPage >= 0, targetPage < pageCount else {
             return proposedContentOffset
         }
         
-        onWillScrollToPage(Int(targetPage))
-        let newHorizontalOffset = (targetPage * pageWidth) - cv.contentInset.left
+        // Notify that we're switching pages
+        onWillScrollToPage(targetPage)
+        
+        // Calculate newHorizontalOffset.
+        let newHorizontalOffset = (CGFloat(targetPage) * pageWidth) - cv.contentInset.left
         return CGPoint(x: newHorizontalOffset, y: proposedContentOffset.y)
     }
 }
