@@ -23,6 +23,8 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         }
     }
 
+    public var onWillScrollToPage: (Int) -> Void = { _ in }
+    
     public var velocityFactor: CGFloat = 0.1
     public let itemSizing: ItemSizing
     
@@ -75,8 +77,10 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         let flickedPages = (abs(round(flickVelocity)) <= 1) ? 0 : round(flickVelocity)
         
         // Calculate newHorizontalOffset.
-        let newHorizontalOffset = ((currentPage + flickedPages) * pageWidth) - cv.contentInset.left
+        let targetPage = (currentPage + flickedPages)
+        onWillScrollToPage(Int(targetPage))
         
+        let newHorizontalOffset = (targetPage * pageWidth) - cv.contentInset.left
         return CGPoint(x: newHorizontalOffset, y: proposedContentOffset.y)
     }
 }
