@@ -78,8 +78,11 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         
         // Calculate newHorizontalOffset.
         let targetPage = (currentPage + flickedPages)
-        onWillScrollToPage(Int(targetPage))
+        guard targetPage > 0 else {
+            return proposedContentOffset
+        }
         
+        onWillScrollToPage(Int(targetPage))
         let newHorizontalOffset = (targetPage * pageWidth) - cv.contentInset.left
         return CGPoint(x: newHorizontalOffset, y: proposedContentOffset.y)
     }
