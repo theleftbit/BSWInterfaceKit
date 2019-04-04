@@ -34,6 +34,10 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
     
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
+    private var pageWidth: CGFloat {
+        return self.itemSize.width + self.minimumLineSpacing
+    }
+    
     override public func prepare() {
         super.prepare()
         guard let cv = self.collectionView else { return }
@@ -50,11 +54,13 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         cv.decelerationRate = .fast
     }
     
+    public func targetContentOffset(forItemAtIndexPath indexPath: IndexPath) -> CGPoint {
+        assert(indexPath.section == 0, "We're not ready for this yet")
+        return CGPoint(x: CGFloat(indexPath.item)*pageWidth, y: 0)
+    }
+
     override public func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         guard let cv = self.collectionView else { return proposedContentOffset }
-        
-        // Page width used for estimating and calculating paging.
-        let pageWidth = self.itemSize.width + self.minimumLineSpacing
         
         // Make an estimation of the current page position.
         let approximatePage = cv.contentOffset.x/pageWidth
