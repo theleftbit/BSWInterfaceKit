@@ -8,7 +8,12 @@ import BSWInterfaceKit
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
     
     func testLayout() {
-        let vc = ViewController()
+        let vc = ViewController(layout: HorizontalPagedCollectionViewLayout())
+        waitABitAndVerify(viewController: vc)
+    }
+
+    func testAvailableWidthLayout() {
+        let vc = ViewController(layout: HorizontalPagedCollectionViewLayout(itemSizing: .usingAvailableWidth(margin: 60)))
         waitABitAndVerify(viewController: vc)
     }
 }
@@ -16,6 +21,16 @@ class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
 private class ViewController: UIViewController {
     
     var dataSource: CollectionViewDataSource<PageCell>!
+    private let layout: HorizontalPagedCollectionViewLayout
+    
+    init(layout: HorizontalPagedCollectionViewLayout) {
+        self.layout = layout
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         
@@ -26,7 +41,7 @@ private class ViewController: UIViewController {
         )
 
         // Configure the SUT
-        let horizontalLayout = HorizontalPagedCollectionViewLayout()
+        let horizontalLayout = layout
         horizontalLayout.minimumLineSpacing = ModuleConstants.Spacing
         horizontalLayout.sectionInset = [.left: ModuleConstants.Spacing, .right: ModuleConstants.Spacing]
 
