@@ -2,7 +2,6 @@
 import UIKit
 
 public protocol InAppNotificationType {
-    var textColor: UIColor { get }
     var backgroundColor: UIColor { get }
     var image: UIImage? { get }
 }
@@ -11,9 +10,9 @@ public class InAppNotifications {
     
     // MARK: - Static notification types
     
-    public static let success: InAppNotificationType = InAppNotificationTypeDefinition(textColor: UIColor.white, backgroundColor: UIColor.flatGreen, image: UIImage(named: "success", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
-    public static let error: InAppNotificationType = InAppNotificationTypeDefinition(textColor: UIColor.white, backgroundColor: UIColor.flatRed, image: UIImage(named: "error", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
-    public static let info: InAppNotificationType = InAppNotificationTypeDefinition(textColor: UIColor.white, backgroundColor: UIColor.flatGray, image: UIImage(named: "info", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
+    public static let success: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatGreen, image: UIImage(named: "success", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
+    public static let error: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatRed, image: UIImage(named: "error", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
+    public static let info: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatGray, image: UIImage(named: "info", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
 
     
     // MARK: - Init
@@ -24,17 +23,16 @@ public class InAppNotifications {
     // MARK: - Helpers
     
     /** Shows a CRNotification **/
-    public static func showNotification(textColor: UIColor, backgroundColor: UIColor, image: UIImage?, title: String, message: String?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
-        let notificationDefinition = InAppNotificationTypeDefinition(textColor: textColor, backgroundColor: backgroundColor, image: image)
+    public static func showNotification(backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
+        let notificationDefinition = InAppNotificationTypeDefinition(backgroundColor: backgroundColor, image: image)
         showNotification(type: notificationDefinition, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
     }
     
     /** Shows a CRNotification from a InAppNotificationType **/
-    public static func showNotification(type: InAppNotificationType, title: String, message: String?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
+    public static func showNotification(type: InAppNotificationType, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
         let view = InAppNotificationView()
         
         view.setBackgroundColor(color: type.backgroundColor)
-        view.setTextColor(color: type.textColor)
         view.setImage(image: type.image)
         view.setTitle(title: title)
         view.setMessage(message: message)
@@ -52,7 +50,6 @@ public class InAppNotifications {
 }
 
 private struct InAppNotificationTypeDefinition: InAppNotificationType {
-    var textColor: UIColor
     var backgroundColor: UIColor
     var image: UIImage?
 }
@@ -170,20 +167,14 @@ private class InAppNotificationView: UIView {
         backgroundColor = color
     }
     
-    /** Sets the background color of the notification **/
-    internal func setTextColor(color: UIColor) {
-        titleLabel.textColor = color
-        messageLabel.textColor = color
-    }
-    
     /** Sets the title of the notification **/
-    internal func setTitle(title: String) {
-        titleLabel.text = title
+    internal func setTitle(title: NSAttributedString) {
+        titleLabel.attributedText = title
     }
     
     /** Sets the message of the notification **/
-    internal func setMessage(message: String?) {
-        messageLabel.text = message
+    internal func setMessage(message: NSAttributedString?) {
+        messageLabel.attributedText = message
         messageLabel.isHidden = (message == nil)
     }
     
