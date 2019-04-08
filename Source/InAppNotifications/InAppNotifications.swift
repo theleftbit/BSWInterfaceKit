@@ -6,6 +6,10 @@ public protocol InAppNotificationType {
     var image: UIImage? { get }
 }
 
+public protocol InAppNotificationDismissable {
+    func dismissNotification(animated: Bool)
+}
+
 public class InAppNotifications {
     
     // MARK: - Static notification types
@@ -23,13 +27,15 @@ public class InAppNotifications {
     // MARK: - Helpers
     
     /** Shows a CRNotification **/
-    public static func showNotification(backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
+    @discardableResult
+    public static func showNotification(backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let notificationDefinition = InAppNotificationTypeDefinition(backgroundColor: backgroundColor, image: image)
-        showNotification(type: notificationDefinition, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
+        return showNotification(type: notificationDefinition, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
     }
     
     /** Shows a CRNotification from a InAppNotificationType **/
-    public static func showNotification(type: InAppNotificationType, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
+    @discardableResult
+    public static func showNotification(type: InAppNotificationType, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let view = InAppNotificationView()
         
         view.setBackgroundColor(color: type.backgroundColor)
@@ -41,11 +47,12 @@ public class InAppNotifications {
         
         guard let window = UIApplication.shared.keyWindow else {
             print("Failed to show CRNotification. No keywindow available.")
-            return
+            return nil
         }
         
         window.addSubview(view)
         view.showNotification()
+        return view
     }
 }
 
@@ -64,7 +71,7 @@ private extension UIColor {
 }
 
 @objc(BSWInAppNotificationView)
-private class InAppNotificationView: UIView {
+private class InAppNotificationView: UIView, InAppNotificationDismissable {
     
     private let imageView: UIImageView = {
         let view = UIImageView()
@@ -144,8 +151,8 @@ private class InAppNotificationView: UIView {
     
     private func setupTargets() {
         NotificationCenter.default.addObserver(self, selector: #selector(didRotate), name: UIDevice.orientationDidChangeNotification, object: nil)
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissNotification))
-        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(self.dismissNotification))
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(_dismissNotification))
+        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(_dismissNotification))
         swipeRecognizer.direction = .up
         
         addGestureRecognizer(tapRecognizer)
@@ -192,7 +199,7 @@ private class InAppNotificationView: UIView {
     /** Dismisses the notification with a delay > 0 **/
     internal func setDismisTimer(delay: TimeInterval) {
         if delay > 0 {
-            Timer.scheduledTimer(timeInterval: Double(delay), target: self, selector: #selector(dismissNotification), userInfo: nil, repeats: false)
+            Timer.scheduledTimer(timeInterval: Double(delay), target: self, selector: #selector(_dismissNotification), userInfo: nil, repeats: false)
         }
     }
     
@@ -204,7 +211,15 @@ private class InAppNotificationView: UIView {
     }
     
     /** Animates out the notification **/
-    @objc internal func dismissNotification() {
+    @objc private func _dismissNotification() {
+        dismissNotification(animated: true)
+    }
+    
+    func dismissNotification(animated: Bool) {
+        guard animated else {
+            removeFromSuperview()
+            return
+        }
         UIView.animate(withDuration: 0.1, animations: {
             self.frame.origin.y = self.frame.origin.y + 5
         }, completion: {
