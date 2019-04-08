@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.dependency "BSWFoundation", "~> 2.2.0"
-  s.dependency "Nuke", "~> 7.5.1"
+  s.dependency "Nuke", "~> 7.6"
 end
