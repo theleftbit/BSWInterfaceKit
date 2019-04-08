@@ -24,7 +24,7 @@ class BSWSnapshotTest: XCTestCase {
         RandomColorFactory.isOn = false
     }
 
-    var currentWindow: UIWindow {
+    private var currentWindow: UIWindow {
         return UIApplication.shared.keyWindow!
     }
 

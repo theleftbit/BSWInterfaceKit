@@ -94,6 +94,7 @@ class UIViewControllerTests: BSWSnapshotTest {
 //MARK: Mock VCs
 
 @available(iOS 11.0, *)
+@objc(TestViewController)
 private class TestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
