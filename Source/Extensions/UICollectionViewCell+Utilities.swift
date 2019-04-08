@@ -4,7 +4,7 @@ import BSWFoundation
 
 public extension UICollectionViewCell {
 
-    public enum WiggleAppearance {
+    enum WiggleAppearance {
         public static var Spacing: CGFloat = 7
         public static var DeleteButtonImage: UIImage?
         public static var WiggleDuration: TimeInterval = 0.1

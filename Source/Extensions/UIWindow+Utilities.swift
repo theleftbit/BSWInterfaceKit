@@ -22,12 +22,12 @@ public extension UIWindow {
     }
 
     @objc(bsw_visibleViewController)
-    public var visibleViewController: UIViewController? {
+    var visibleViewController: UIViewController? {
         return UIWindow.getVisibleViewControllerFrom(self.rootViewController)
     }
 
     @objc(bsw_getVisibleViewControllerFrom:)
-    public static func getVisibleViewControllerFrom(_ vc: UIViewController?) -> UIViewController? {
+    static func getVisibleViewControllerFrom(_ vc: UIViewController?) -> UIViewController? {
         if let nc = vc as? UINavigationController {
             return UIWindow.getVisibleViewControllerFrom(nc.visibleViewController)
         } else if let tc = vc as? UITabBarController {
@@ -42,7 +42,7 @@ public extension UIWindow {
     }
 
     @objc(bsw_showErrorAlert:error:)
-    public func showErrorAlert(_ message: String, error: Error) {
+    func showErrorAlert(_ message: String, error: Error) {
         guard let rootViewController = self.visibleViewController else { return }
         rootViewController.showErrorAlert(message, error: error)
     }
