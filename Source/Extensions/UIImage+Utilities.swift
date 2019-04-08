@@ -7,7 +7,7 @@ import Foundation
 
 public extension UIImage {
 
-    public class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
+    class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
         return UIImage(
             named: name,
             in: Bundle.interfaceKitBundle(),
@@ -15,14 +15,14 @@ public extension UIImage {
         )
     }
 
-    public enum Template: String {
+    enum Template: String {
         case plusRound = "PlusRound"
         case cancelRound = "CancelRound"
         case close = "Close"
         case camera = "ic_camera"
     }
     
-    public class func templateImage(_ template: Template) -> UIImage {
+    class func templateImage(_ template: Template) -> UIImage {
         return UIImage.interfaceKitImageNamed(template.rawValue)!
     }
     
@@ -33,7 +33,7 @@ public extension UIImage {
      
      - returns: The UIImage based on the gradient layer
      */
-    static public func image(fromGradientLayer gradientLayer: CAGradientLayer) -> UIImage {
+    static func image(fromGradientLayer gradientLayer: CAGradientLayer) -> UIImage {
         UIGraphicsBeginImageContext(gradientLayer.bounds.size)
         gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -41,7 +41,7 @@ public extension UIImage {
         return image!
     }
 
-    public func tint(_ tintColor: UIColor?) -> UIImage {
+    func tint(_ tintColor: UIColor?) -> UIImage {
         guard let tintColor = tintColor else { return self }
         return modifiedImage { context, rect in
             context.setBlendMode(.multiply)
