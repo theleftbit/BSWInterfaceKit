@@ -87,9 +87,7 @@ final public class PhotoGalleryView: UIView {
         )
         collectionView.dataSource = collectionViewDataSource
         collectionView.delegate = self
-        if #available(iOS 10.0, *) {
-            collectionView.prefetchDataSource = self
-        }
+        collectionView.prefetchDataSource = self
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.alwaysBounceVertical = false
         collectionViewLayout.scrollDirection = .horizontal
