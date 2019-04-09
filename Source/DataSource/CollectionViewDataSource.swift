@@ -39,6 +39,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     public var infiniteScrollSupport: CollectionViewInfiniteScrollSupport<Cell.VM>? {
         didSet {
             guard let _ = self.infiniteScrollSupport else {
+                offsetObserver = nil
                 return
             }
             collectionView.registerReusableCell(InfiniteLoadingCollectionViewCell.self)
