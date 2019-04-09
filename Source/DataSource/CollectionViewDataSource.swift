@@ -10,33 +10,45 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     public private(set) var data: [Cell.VM]
     public weak var collectionView: UICollectionView!
     public var emptyConfiguration: ErrorView.Configuration?
-    public let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
     private var emptyView: UIView?
+    private var offsetObserver: NSKeyValueObservation?
 
     public init(data: [Cell.VM] = [],
                 collectionView: UICollectionView,
-                emptyConfiguration: ErrorView.Configuration? = nil,
-                reorderSupport: CollectionViewReorderSupport<Cell.VM>? = nil) {
+                emptyConfiguration: ErrorView.Configuration? = nil) {
         self.data = data
         self.collectionView = collectionView
         self.emptyConfiguration = emptyConfiguration
-        self.reorderSupport = reorderSupport
-        
+
         super.init()
 
         collectionView.registerReusableCell(Cell.self)
         collectionView.dataSource = self
-        if let _ = self.reorderSupport {
+    }
+
+    public var infiniteScrollSupport: CollectionViewInfiniteScrollSupport<Cell.VM>? {
+        didSet {
+            guard let infiniteScrollSupport = self.infiniteScrollSupport else {
+                return
+            }
+            offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
+                guard let `self` = self else { return }
+                
+            })
+        }
+    }
+    
+    public var reorderSupport: CollectionViewReorderSupport<Cell.VM>? {
+        didSet {
+            guard let _ = self.reorderSupport else { return }
+            
             let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
             self.collectionView.addGestureRecognizer(longPressGesture)
         }
     }
-
+    
     public var pullToRefreshSupport: CollectionViewPullToRefreshSupport<Cell.VM>? {
         didSet {
-            guard #available (iOS 10.0, *) else {
-                return
-            }
             guard let pullToRefreshSupport = self.pullToRefreshSupport else {
                 self.collectionView.refreshControl = nil
                 return
@@ -119,8 +131,8 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     }
     
     @objc public func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
-        let movedItem = data[(destinationIndexPath as NSIndexPath).item]
+        guard let commitMoveHandler = reorderSupport?.didMoveItemAtIndexPath else { return }
+        let movedItem = data[destinationIndexPath.item]
         data.moveItem(fromIndex: sourceIndexPath.item, toIndex: destinationIndexPath.item)
         commitMoveHandler(sourceIndexPath, destinationIndexPath, movedItem)
     }
@@ -171,7 +183,6 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     
     //MARK: IBAction
 
-    @available (iOS 10.0, *)
     @objc func handlePullToRefresh() {
         guard let pullToRefreshSupport = self.pullToRefreshSupport else { return }
         
@@ -215,7 +226,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     }
 }
 
-//MARK: - Reorder Support
+//MARK: - Edit Support
 
 public enum CollectionViewEditActionKind<Model> {
     case insert(item: Model, atIndexPath: IndexPath)
@@ -224,12 +235,19 @@ public enum CollectionViewEditActionKind<Model> {
     case reload(item: Model, indexPath: IndexPath)
 }
 
+//MARK: - Reorder Support
+
 public struct CollectionViewReorderSupport<Model> {
-    public typealias CommitMoveItemHandler = ((_ from: IndexPath, _ to: IndexPath, _ movedItem: Model) -> Void)
+    public typealias DidMoveItemHandler = ((_ from: IndexPath, _ to: IndexPath, _ movedItem: Model) -> Void)
     public typealias CanMoveItemHandler = ((IndexPath) -> Bool)
     
     public let canMoveItemAtIndexPath: CanMoveItemHandler
-    public let moveItemAtIndexPath: CommitMoveItemHandler
+    public let didMoveItemAtIndexPath: DidMoveItemHandler
+    
+    public init(canMoveItemAtIndexPath: @escaping CanMoveItemHandler, didMoveItemAtIndexPath: @escaping DidMoveItemHandler) {
+        self.canMoveItemAtIndexPath = canMoveItemAtIndexPath
+        self.didMoveItemAtIndexPath = didMoveItemAtIndexPath
+    }
 }
 
 //MARK: - Pull to Refresh Support
@@ -266,6 +284,25 @@ public struct CollectionViewSupplementaryViewSupport {
         self.kind = kind
         self.shouldHideOnEmptyDataSet = shouldHideOnEmptyDataSet
         self.configureHeader = configureHeader
+    }
+}
+
+//MARK: - Infinite Scroll support
+
+public struct CollectionViewInfiniteScrollSupport<Model> {
+    public enum FetchResult {
+        case newDataAvailable([Model])
+        case noNewDataAvailable(shouldKeepPaging: Bool)
+    }
+    public typealias ConfigureCell = (UICollectionViewCell) -> ()
+    public typealias FetchHandler = (@escaping (FetchResult) -> ()) -> ()
+
+    public let configureCell: ConfigureCell
+    public let fetchHandler: FetchHandler
+
+    public init(configureCell: @escaping ConfigureCell, fetchHandler: @escaping FetchHandler) {
+        self.configureCell = configureCell
+        self.fetchHandler = fetchHandler
     }
 }
 

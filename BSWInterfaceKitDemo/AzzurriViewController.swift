@@ -5,23 +5,10 @@
 import BSWInterfaceKit
 import BSWFoundation
 
-enum FruitError: Error {
-    case unknownError
-}
-
-@available(iOS 11.0, *)
 class AzzurriViewController: UIViewController {
 
     var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
     var collectionView: UICollectionView!
-
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     override func loadView() {
         view = UIView()
@@ -48,6 +35,12 @@ class AzzurriViewController: UIViewController {
             }
             return ErrorView.Configuration(title: NSAttributedString(string: "No more players"), buttonConfiguration: retryButton)
         }()
+        
+        dataSource.infiniteScrollSupport = .init(configureCell: { [weak self] cell in
+            self?.configureInfiniteCell(cell)
+        }, fetchHandler: { [weak self] handler in
+            self?.fetchNextPage(handler: handler)
+        })
     }
 
     override func viewDidLoad() {
@@ -156,5 +149,13 @@ extension AzzurriViewController {
         }
         cell.configureFor(viewModel: vm)
         return cell
+    }
+    
+    private func configureInfiniteCell(_ cell: UICollectionViewCell) {
+        
+    }
+    
+    private func fetchNextPage(handler: (CollectionViewInfiniteScrollSupport<PolaroidCollectionViewCell.VM>.FetchResult) -> ()) {
+        
     }
 }
