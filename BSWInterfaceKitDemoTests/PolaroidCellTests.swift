@@ -15,6 +15,14 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         super.setUp()
         let columnLayout = ColumnFlowLayout()
         columnLayout.minColumnWidth = 120
+        columnLayout.cellFactory = { [unowned self] indexPath in
+            let cell = PolaroidCollectionViewCell()
+            guard let vm = self.dataSource.data[safe: indexPath.item] else {
+                return cell
+            }
+            cell.configureFor(viewModel: vm)
+            return cell
+        }
         collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 350, height: 500), collectionViewLayout: columnLayout)
         dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
             data: PolaroidCollectionViewCellTests.mockData(),

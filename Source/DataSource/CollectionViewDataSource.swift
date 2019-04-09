@@ -72,20 +72,25 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     }
     
     public func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>]) {
-        actions.forEach {
-            switch $0 {
-            case .insert(let item, let indexPath):
-                data.insert(item, at: indexPath.item)
-            case .remove(let fromIndexPath):
-                data.remove(at: fromIndexPath.item)
-            case .move(let from, let to):
-                data.moveItem(fromIndex: from.item, toIndex: to.item)
-            case .reload(let model, let indexPath):
-                data[indexPath.item] = model
-            }
-        }
         
-        collectionView.performEditActions(actions)
+        collectionView.performBatchUpdates({
+            actions.forEach {
+                switch $0 {
+                case .remove(let fromIndexPath):
+                    data.remove(at: fromIndexPath.item)
+                    collectionView.deleteItems(at: [fromIndexPath])
+                case .insert(let item, let indexPath):
+                    data.insert(item, at: indexPath.item)
+                    collectionView.insertItems(at: [indexPath])
+                case .move(let from, let to):
+                    data.moveItem(fromIndex: from.item, toIndex: to.item)
+                    collectionView.moveItem(at: from, to: to)
+                case .reload(let model, let indexPath):
+                    data[indexPath.item] = model
+                    collectionView.reloadItems(at: [indexPath])
+                }
+            }
+        }, completion: nil)
     }
     
     //MARK:- UICollectionViewDataSource
@@ -227,6 +232,8 @@ public struct CollectionViewReorderSupport<Model> {
     public let moveItemAtIndexPath: CommitMoveItemHandler
 }
 
+//MARK: - Pull to Refresh Support
+
 public struct CollectionViewPullToRefreshSupport<Model> {
     public enum Behavior {
         case replace([Model])
@@ -243,6 +250,8 @@ public struct CollectionViewPullToRefreshSupport<Model> {
     }
 }
 
+//MARK: - SupplementaryViewSupport
+
 public struct CollectionViewSupplementaryViewSupport {
 
     public typealias ConfigureHeader = (UICollectionReusableView) -> ()
@@ -257,27 +266,6 @@ public struct CollectionViewSupplementaryViewSupport {
         self.kind = kind
         self.shouldHideOnEmptyDataSet = shouldHideOnEmptyDataSet
         self.configureHeader = configureHeader
-    }
-}
-
-private extension UICollectionView {
-     func performEditActions<T>(_ actions: [CollectionViewEditActionKind<T>]) {
-        performBatchUpdates({ 
-            
-            actions.forEach {
-                switch $0 {
-                case .remove(let from):
-                    self.deleteItems(at: [from])
-                case .insert(_, let at):
-                    self.insertItems(at: [at])
-                case .move(let from, let to):
-                    self.moveItem(at: from, to: to)
-                case .reload(_, let indexPath):
-                    self.reloadItems(at: [indexPath])
-                }
-            }
-
-            }, completion: nil)
     }
 }
 

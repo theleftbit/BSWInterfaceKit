@@ -35,28 +35,25 @@ private class ViewController: UIViewController {
     
     var showsHeader: Bool {
         set {
-            let layout = collectionView.collectionViewLayout as! ColumnFlowLayout
-            layout.showsHeader = newValue
+            columnLayout.showsHeader = newValue
         } get {
-            let layout = collectionView.collectionViewLayout as! ColumnFlowLayout
-            return layout.showsHeader
+            return columnLayout.showsHeader
         }
     }
-    let collectionView: UICollectionView = {
-        return UICollectionView(
-            frame: .zero,
-            collectionViewLayout: ColumnFlowLayout()
-        )
-    }()
     
-    var flowLayout: UICollectionViewFlowLayout {
-        return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+    private var columnLayout: ColumnFlowLayout {
+        return collectionView.collectionViewLayout as! ColumnFlowLayout
     }
+    
+    private let collectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: ColumnFlowLayout()
+    )
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let safeView = UIView.init()
+        let safeView = UIView()
         safeView.backgroundColor = .red
         view.addSubview(safeView)
         safeView.pinToSuperviewSafeLayoutEdges()
@@ -64,6 +61,14 @@ private class ViewController: UIViewController {
         view.backgroundColor = UIColor.lightGray
         view.addSubview(collectionView)
         
+        columnLayout.cellFactory = { [unowned self] in
+            return self.factoryCellForItem(atIndexPath: $0)
+        }
+
+        columnLayout.headerFactory = { [unowned self] in
+            return self.factoryHeaderForItem(atIndexPath: $0)
+        }
+
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
         collectionView.dataSource = self
@@ -72,6 +77,23 @@ private class ViewController: UIViewController {
         collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: "PostCollectionViewCell")
         collectionView.register(Header.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         collectionView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    }
+    
+    private func factoryCellForItem(atIndexPath indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = PostCollectionViewCell()
+        guard let vm = mockData[safe: indexPath.item] else {
+            return cell
+        }
+        cell.configureFor(viewModel: vm)
+        return cell
+    }
+
+    private func factoryHeaderForItem(atIndexPath indexPath: IndexPath) -> UICollectionReusableView? {
+        guard showsHeader else {
+            return nil
+        }
+
+        return Header()
     }
 }
 
