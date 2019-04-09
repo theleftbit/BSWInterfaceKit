@@ -9,21 +9,16 @@ import UIKit
 @available(iOS 11.0, *)
 open class ColumnFlowLayout: UICollectionViewLayout {
     
-    // These are used to work around a bug on iOS 11 and lower
-    // were dequeing a cell will invalidate the collectionView's
-    // layout, causing a Stack Overflow when called during `prepare`.
-    // If you must support older OS versions, please return a
-    // cell created without dequeing and configured for the given
-    // indexPath to workaround this issue. For iOS 12 and higher,
-    // these methods won't be called and will rely on cell dequeing.
-    // Reference: https://i.imgur.com/eNdUbmn.jpg
+    // These are used to create a factory cell to calculate the size.
+    // of the scrollable content of the collectionView. Please return
+    // a configured cell for the given index path without using
+    // dequeueCell like this:
+    // https://i.imgur.com/LxYrTZB.png https://i.imgur.com/TCwbLeC.png
     public typealias CellFactory = (IndexPath) -> UICollectionViewCell
     public typealias HeaderFactory = (IndexPath) -> UICollectionReusableView?
 
-    @available(iOS, deprecated:12.0, message:"Not neccesary anymore")
     open var cellFactory: CellFactory!
 
-    @available(iOS, deprecated:12.0, message:"Not neccesary anymore")
     open var headerFactory: HeaderFactory = { _ in
         return nil
     }
@@ -127,15 +122,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             
             let indexPath = IndexPath(item: item, section: 0)
             
-            // Check ColumnFlowLayoutFactoryDataSource for reference
-            let _cell: UICollectionViewCell? = {
-                if #available(iOS 12, *) {
-                    return dataSource.collectionView(cv, cellForItemAt: indexPath)
-                } else {
-                    return self.cellFactory(indexPath)
-                }
-            }()
-            guard let cell = _cell else { fatalError() }
+            let cell = self.cellFactory(indexPath)
             
             // Automatically calculate the height of the cell using Autolayout
             let height = ColumnFlowLayout.cellHeight(cell: cell, availableWidth: cellWidth)
