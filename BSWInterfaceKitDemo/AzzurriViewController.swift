@@ -52,9 +52,9 @@ class AzzurriViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, actionHandler: { [weak self] in
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, actionHandler: { [weak self] in
             guard let `self` = self else { return }
-            self.fetchData(animated: true)
+            self.setEditing(true, animated: true)
         })
         fetchData(animated: false)
     }
