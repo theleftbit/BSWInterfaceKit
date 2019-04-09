@@ -145,7 +145,7 @@ extension AzzurriViewController {
     func factoryCellForItem(atIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         let cell = PolaroidCollectionViewCell()
         guard let vm = dataSource.data[safe: indexPath.item] else {
-            return cell
+            return InfiniteLoadingCollectionViewCell()
         }
         cell.configureFor(viewModel: vm)
         return cell
@@ -154,8 +154,18 @@ extension AzzurriViewController {
     private func configureInfiniteCell(_ cell: UICollectionViewCell) {
         
     }
-    
-    private func fetchNextPage(handler: (CollectionViewInfiniteScrollSupport<PolaroidCollectionViewCell.VM>.FetchResult) -> ()) {
-        
+
+    private func fetchNextPage(handler: @escaping (CollectionViewInfiniteScrollSupport<PolaroidCollectionViewCell.VM>.FetchResult) -> ()) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
+            if fetchCount == 1 {
+                handler(.noNewDataAvailable(shouldKeepPaging: false))
+                fetchCount = 0
+            } else {
+                handler(.newDataAvailable(AzzurriViewController.mockData()))
+                fetchCount += 1
+            }
+        }
     }
 }
+
+private var fetchCount: Int = 0

@@ -62,7 +62,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     
     override open func prepare() {
         super.prepare()
-        guard let cv = collectionView, let dataSource = cv.dataSource else { return }
+        guard let cv = collectionView else { return }
         guard cache.isEmpty else { return }
         // Figure out how many columns we can fit
         let maxNumColumns = Int(availableWidth / minColumnWidth)
@@ -119,20 +119,27 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             let indexPath = IndexPath(item: item, section: 0)
             
             let cell = self.cellFactory(indexPath)
+            let cellFrame: CGRect = {
+                if cell is InfiniteLoadingCollectionViewCell, item == (numberOfItems - 1), let lastItem = layoutAttributesForItem(at: IndexPath(item: item - 1, section: 0)) {
+                    let size = CGSize(width: availableWidth, height: InfiniteLoadingCollectionViewCell.preferredHeight)
+                    return CGRect(origin: CGPoint(x: itemSpacing, y: lastItem.frame.maxY), size: size)
+                } else {
+                    // Automatically calculate the height of the cell using Autolayout
+                    let height = ColumnFlowLayout.cellHeight(cell: cell, availableWidth: cellWidth)
+                    let frame = CGRect(x: xOffset[currentColumn], y: yOffset[currentColumn], width: cellWidth, height: height)
+                    let isFirstCellInColumn = (yOffset[currentColumn] == yStartOffset)
+                    return frame.offsetBy(dx: 0, dy: isFirstCellInColumn ? 0 : itemSpacing)
+                }
+            }()
             
-            // Automatically calculate the height of the cell using Autolayout
-            let height = ColumnFlowLayout.cellHeight(cell: cell, availableWidth: cellWidth)
-            let frame = CGRect(x: xOffset[currentColumn], y: yOffset[currentColumn], width: cellWidth, height: height)
-            let isFirstCellInColumn = (yOffset[currentColumn] == yStartOffset)
-            let insetFrame = frame.offsetBy(dx: 0, dy: isFirstCellInColumn ? 0 : itemSpacing)
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-            attributes.frame = insetFrame
+            attributes.frame = cellFrame
             cache.append(attributes)
             
             // Do some book-keeping to make sure the next
             // iteration uses the updated values
-            contentHeight = max(contentHeight, insetFrame.maxY)
-            yOffset[currentColumn] = insetFrame.maxY
+            contentHeight = max(contentHeight, cellFrame.maxY)
+            yOffset[currentColumn] = cellFrame.maxY
             currentColumn = currentColumn < (numberOfColumns - 1) ? (currentColumn + 1) : 0
         }
         

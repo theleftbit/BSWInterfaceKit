@@ -12,7 +12,17 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     public var emptyConfiguration: ErrorView.Configuration?
     private var emptyView: UIView?
     private var offsetObserver: NSKeyValueObservation?
-
+    private var isRequestingNextPage: Bool = false {
+        didSet {
+            if isRequestingNextPage {
+                loadingCollectionViewCell?.activityIndicator.startAnimating()
+            } else {
+                loadingCollectionViewCell?.activityIndicator.stopAnimating()
+            }
+        }
+    }
+    private var loadingCollectionViewCell: InfiniteLoadingCollectionViewCell?
+    
     public init(data: [Cell.VM] = [],
                 collectionView: UICollectionView,
                 emptyConfiguration: ErrorView.Configuration? = nil) {
@@ -28,12 +38,17 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
 
     public var infiniteScrollSupport: CollectionViewInfiniteScrollSupport<Cell.VM>? {
         didSet {
-            guard let infiniteScrollSupport = self.infiniteScrollSupport else {
+            guard let _ = self.infiniteScrollSupport else {
                 return
             }
+            collectionView.registerReusableCell(InfiniteLoadingCollectionViewCell.self)
             offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
-                guard let `self` = self else { return }
-                
+                let offsetY = cv.contentOffset.y
+                let contentHeight = cv.contentSize.height
+                guard let `self` = self, offsetY > 0, contentHeight > 0 else { return }
+                if offsetY > contentHeight - cv.frame.size.height {
+                    self.requestNextInfiniteScrollPage()
+                }
             })
         }
     }
@@ -114,15 +129,23 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     @objc public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         defer { addEmptyView() }
-        
-        return self.data.count
+        let infiniteCellCount: Int = (self.infiniteScrollSupport == nil) ? 0 : 1
+        return self.data.count + infiniteCellCount
     }
     
     @objc public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        let model = data[indexPath.item]
-        cell.configureFor(viewModel: model)
-        return cell
+        if isInfiniteLoadingIndex(indexPath) {
+            let cell: InfiniteLoadingCollectionViewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            cell.configureFor(viewModel: ())
+            infiniteScrollSupport?.configureCell(cell)
+            loadingCollectionViewCell = cell
+            return cell
+        } else {
+            let cell: Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            let model = data[indexPath.item]
+            cell.configureFor(viewModel: model)
+            return cell
+        }
     }
     
     @objc public func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
@@ -154,6 +177,43 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     
     //MARK:- Private
     
+    private func isInfiniteLoadingIndex(_ indexPath: IndexPath) -> Bool {
+        return indexPath.item == data.count && self.infiniteScrollSupport != nil
+    }
+    
+    private func requestNextInfiniteScrollPage() {
+        guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollSupport else { return }
+        isRequestingNextPage = true
+        infiniteScrollSupport.fetchHandler { result in
+            self.isRequestingNextPage = false
+            let dataCount = self.data.count
+            switch result {
+            case .newDataAvailable(let newData):
+                var newIndex = 0
+                let actions: [CollectionViewEditActionKind<Cell.VM>] = newData.map {
+                    defer { newIndex += 1 }
+                    return .insert(item: $0, atIndexPath: IndexPath(item: dataCount + newIndex, section: 0))
+                }
+                self.performEditActions(actions)
+            case .noNewDataAvailable(let shouldKeepPaging):
+                
+                // Temporarily remove the support to make the
+                // remove spinner animation pretty
+                let support = self.infiniteScrollSupport
+                self.infiniteScrollSupport = nil
+                
+                self.collectionView.performBatchUpdates({
+                    self.collectionView.deleteItems(at: [IndexPath(item: dataCount, section: 0)])
+                }, completion: { _ in
+                    guard shouldKeepPaging else { return }
+                    // Then this will add back the spinner
+                    self.infiniteScrollSupport = support
+                    self.collectionView.reloadData()
+                })
+            }
+        }
+    }
+
     private func addEmptyView() {
         
         guard let emptyConfiguration = self.emptyConfiguration else {
@@ -294,7 +354,7 @@ public struct CollectionViewInfiniteScrollSupport<Model> {
         case newDataAvailable([Model])
         case noNewDataAvailable(shouldKeepPaging: Bool)
     }
-    public typealias ConfigureCell = (UICollectionViewCell) -> ()
+    public typealias ConfigureCell = (InfiniteLoadingCollectionViewCell) -> ()
     public typealias FetchHandler = (@escaping (FetchResult) -> ()) -> ()
 
     public let configureCell: ConfigureCell
