@@ -7,7 +7,6 @@ import UIKit
 
 //MARK: Cells
 
-@available(iOS 9.0, *)
 @objc(BSWPolaroidCollectionViewCell)
 open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 

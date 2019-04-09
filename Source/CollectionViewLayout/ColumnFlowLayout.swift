@@ -97,11 +97,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             guard showsHeader else {
                 return nil
             }
-            if #available(iOS 12, *) {
-                return dataSource.collectionView?(cv, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: headerIndexPath)
-            } else {
-                return self.headerFactory(headerIndexPath)
-            }
+            return self.headerFactory(headerIndexPath)
         }()
         
         if let header = _header {
