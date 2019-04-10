@@ -158,10 +158,10 @@ extension AzzurriViewController {
     private func fetchNextPage(handler: @escaping (CollectionViewInfiniteScrollSupport<PolaroidCollectionViewCell.VM>.FetchResult) -> ()) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
             if fetchCount == 1 {
-                handler(.noNewDataAvailable(shouldKeepPaging: false))
+                handler(.init(newDataAvailable: nil, shouldKeepPaging: false))
                 fetchCount = 0
             } else {
-                handler(.newDataAvailable(AzzurriViewController.mockData()))
+                handler(.init(newDataAvailable: AzzurriViewController.mockData(), shouldKeepPaging: true))
                 fetchCount += 1
             }
         }

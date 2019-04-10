@@ -185,33 +185,27 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     private func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollSupport else { return }
         isRequestingNextPage = true
-        infiniteScrollSupport.fetchHandler { result in
+        infiniteScrollSupport.fetchHandler { [weak self] result in
+            guard let `self` = self else { return }
             self.isRequestingNextPage = false
             let dataCount = self.data.count
-            switch result {
-            case .newDataAvailable(let newData):
+            if let newData = result.newDataAvailable, !newData.isEmpty {
                 var newIndex = 0
                 let actions: [CollectionViewEditActionKind<Cell.VM>] = newData.map {
                     defer { newIndex += 1 }
                     return .insert(item: $0, atIndexPath: IndexPath(item: dataCount + newIndex, section: 0))
                 }
                 self.performEditActions(actions)
-            case .noNewDataAvailable(let shouldKeepPaging):
-                
-                // Temporarily remove the support to make the
-                // remove spinner animation pretty
-                let support = self.infiniteScrollSupport
-                self.infiniteScrollSupport = nil
-                
-                self.collectionView.performBatchUpdates({
-                    self.collectionView.deleteItems(at: [IndexPath(item: dataCount, section: 0)])
-                }, completion: { _ in
-                    guard shouldKeepPaging else { return }
-                    // Then this will add back the spinner
-                    self.infiniteScrollSupport = support
-                    self.collectionView.reloadData()
-                })
             }
+            
+            if result.shouldKeepPaging { /* User requested to keep paging */ return }
+
+            // Clear this property since we're no longer allowing paging
+            self.infiniteScrollSupport = nil
+            
+            self.collectionView.performBatchUpdates({
+                self.collectionView.deleteItems(at: [IndexPath(item: dataCount, section: 0)])
+            }, completion: { _ in })
         }
     }
 
@@ -351,9 +345,13 @@ public struct CollectionViewSupplementaryViewSupport {
 //MARK: - Infinite Scroll support
 
 public struct CollectionViewInfiniteScrollSupport<Model> {
-    public enum FetchResult {
-        case newDataAvailable([Model])
-        case noNewDataAvailable(shouldKeepPaging: Bool)
+    public struct FetchResult {
+        let newDataAvailable: [Model]?
+        let shouldKeepPaging: Bool
+        public init(newDataAvailable: [Model]?, shouldKeepPaging: Bool) {
+            self.newDataAvailable = newDataAvailable
+            self.shouldKeepPaging = shouldKeepPaging
+        }
     }
     public typealias ConfigureCell = (InfiniteLoadingCollectionViewCell) -> ()
     public typealias FetchHandler = (@escaping (FetchResult) -> ()) -> ()
