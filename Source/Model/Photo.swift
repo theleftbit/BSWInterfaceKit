@@ -30,14 +30,14 @@ public struct Photo: Equatable {
         self.size = image.size
     }
 
-    public init(url: URL?, averageColor: UIColor = RandomColorFactory.randomColor(), size: CGSize? = nil) {
+    public init(url: URL?, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil) {
         self.kind = (url == nil) ? .empty : .url(url!)
         self.averageColor = averageColor
         self.size = size
     }
     
     public static func emptyPhoto() -> Photo {
-        return Photo(kind: .empty, averageColor: RandomColorFactory.randomColor(), size: nil)
+        return Photo(kind: .empty, averageColor: UIColor.randomColor(), size: nil)
     }
 }
 
