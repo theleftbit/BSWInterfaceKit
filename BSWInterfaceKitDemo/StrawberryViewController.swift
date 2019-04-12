@@ -16,7 +16,7 @@ class StrawberryInteractor {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
             deferred.fill(with: .success(StrawberryViewModel()))
         }
-        return Task(future: Future(deferred))
+        return Task(Future(deferred))
     }
 }
 
