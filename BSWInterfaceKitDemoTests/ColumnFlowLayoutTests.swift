@@ -21,6 +21,13 @@ class ColumnFlowLayoutTests: BSWSnapshotTest {
         vc.showsHeader = true
         waitABitAndVerify(viewController: vc)
     }
+
+    func testLayoutWithFooter() {
+        let vc = ViewController()
+        vc.howManyCellsToShow = 1
+        vc.showsFooter = true
+        waitABitAndVerify(viewController: vc)
+    }
 }
 
 //
@@ -32,6 +39,14 @@ import UIKit
 
 @available(iOS 11, *)
 private class ViewController: UIViewController {
+
+    var showsFooter: Bool {
+        set {
+            columnLayout.showsFooter = newValue
+        } get {
+            return columnLayout.showsFooter
+        }
+    }
     
     var showsHeader: Bool {
         set {
@@ -40,6 +55,8 @@ private class ViewController: UIViewController {
             return columnLayout.showsHeader
         }
     }
+    
+    var howManyCellsToShow: Int?
     
     private var columnLayout: ColumnFlowLayout {
         return collectionView.collectionViewLayout as! ColumnFlowLayout
@@ -69,6 +86,10 @@ private class ViewController: UIViewController {
             return self.factoryHeaderForItem(atIndexPath: $0)
         }
 
+        columnLayout.footerFactory = { [unowned self] in
+            return self.factoryFooterForItem(atIndexPath: $0)
+        }
+
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
         collectionView.dataSource = self
@@ -76,6 +97,7 @@ private class ViewController: UIViewController {
         collectionView.pinToSuperview()
         collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: "PostCollectionViewCell")
         collectionView.register(Header.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        collectionView.register(Footer.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         collectionView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
     
@@ -95,13 +117,26 @@ private class ViewController: UIViewController {
 
         return Header()
     }
+
+    private func factoryFooterForItem(atIndexPath indexPath: IndexPath) -> UICollectionReusableView? {
+        guard showsFooter else {
+            return nil
+        }
+        
+        return Footer()
+    }
 }
 
 
 @available(iOS 11, *)
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return mockData.count
+        
+        if let howManyCellsToShow = self.howManyCellsToShow {
+            return howManyCellsToShow
+        } else {
+            return mockData.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -111,11 +146,12 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard showsHeader else {
-            return UICollectionReusableView()
+        if showsHeader && kind == UICollectionView.elementKindSectionHeader {
+            return collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header", for: indexPath)
+        } else if showsFooter && kind == UICollectionView.elementKindSectionFooter {
+            return collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath)
         }
-        
-        return collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header", for: indexPath)
+        return UICollectionReusableView()
     }
 }
 
@@ -265,6 +301,29 @@ private class Header: UICollectionReusableView {
             label.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
             ])
         label.attributedText = TextStyler.styler.attributedString("This is a Header", color: UIColor.black, forStyle: .headline)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private class Footer: UICollectionReusableView {
+    
+    private let label = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        label.textAlignment = .center
+        addAutolayoutSubview(label)
+        layoutMargins = UIEdgeInsets(uniform: 20)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            label.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            label.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            label.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
+            ])
+        label.attributedText = TextStyler.styler.attributedString("This is a Footer", color: UIColor.black, forStyle: .headline)
     }
     
     required init?(coder aDecoder: NSCoder) {
