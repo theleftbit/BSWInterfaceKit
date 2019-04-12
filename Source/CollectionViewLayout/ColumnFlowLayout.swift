@@ -15,11 +15,14 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     // dequeueCell like this:
     // https://i.imgur.com/LxYrTZB.png https://i.imgur.com/TCwbLeC.png
     public typealias CellFactory = (IndexPath) -> UICollectionViewCell
-    public typealias HeaderFactory = (IndexPath) -> UICollectionReusableView?
+    public typealias HeaderFooterFactory = (IndexPath) -> UICollectionReusableView?
 
     open var cellFactory: CellFactory!
 
-    open var headerFactory: HeaderFactory = { _ in
+    open var headerFactory: HeaderFooterFactory = { _ in
+        return nil
+    }
+    open var footerFactory: HeaderFooterFactory = { _ in
         return nil
     }
 
@@ -35,6 +38,12 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     }
     
     open var showsHeader: Bool = false {
+        didSet {
+            invalidateLayout()
+        }
+    }
+
+    open var showsFooter: Bool = false {
         didSet {
             invalidateLayout()
         }
@@ -62,7 +71,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     
     override open func prepare() {
         super.prepare()
-        guard let cv = collectionView, let dataSource = cv.dataSource else { return }
+        guard let cv = collectionView else { return }
         guard cache.isEmpty else { return }
         // Figure out how many columns we can fit
         let maxNumColumns = Int(availableWidth / minColumnWidth)
@@ -119,23 +128,41 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             let indexPath = IndexPath(item: item, section: 0)
             
             let cell = self.cellFactory(indexPath)
+            let cellFrame: CGRect = {
+                // Automatically calculate the height of the cell using Autolayout
+                let height = ColumnFlowLayout.cellHeight(cell: cell, availableWidth: cellWidth)
+                let frame = CGRect(x: xOffset[currentColumn], y: yOffset[currentColumn], width: cellWidth, height: height)
+                let isFirstCellInColumn = (yOffset[currentColumn] == yStartOffset)
+                return frame.offsetBy(dx: 0, dy: isFirstCellInColumn ? 0 : itemSpacing)
+            }()
             
-            // Automatically calculate the height of the cell using Autolayout
-            let height = ColumnFlowLayout.cellHeight(cell: cell, availableWidth: cellWidth)
-            let frame = CGRect(x: xOffset[currentColumn], y: yOffset[currentColumn], width: cellWidth, height: height)
-            let isFirstCellInColumn = (yOffset[currentColumn] == yStartOffset)
-            let insetFrame = frame.offsetBy(dx: 0, dy: isFirstCellInColumn ? 0 : itemSpacing)
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-            attributes.frame = insetFrame
+            attributes.frame = cellFrame
             cache.append(attributes)
             
             // Do some book-keeping to make sure the next
             // iteration uses the updated values
-            contentHeight = max(contentHeight, insetFrame.maxY)
-            yOffset[currentColumn] = insetFrame.maxY
+            contentHeight = max(contentHeight, cellFrame.maxY)
+            yOffset[currentColumn] = cellFrame.maxY
             currentColumn = currentColumn < (numberOfColumns - 1) ? (currentColumn + 1) : 0
         }
         
+        let _footer: UICollectionReusableView? = {
+            guard showsFooter else {
+                return nil
+            }
+            return self.footerFactory(headerIndexPath)
+        }()
+        
+        if let footer = _footer {
+            let footerWidth = cv.frame.width
+            let height = ColumnFlowLayout.reusableViewHeight(view: footer, availableWidth: footerWidth)
+            let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, with: headerIndexPath)
+            attributes.frame = CGRect(x: 0, y: cache.last?.frame.maxY ?? 0, width: footerWidth, height: height)
+            cache.append(attributes)
+            contentHeight += height
+        }
+
         contentHeight += cv.layoutMargins.bottom
     }
     
