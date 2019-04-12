@@ -1,15 +1,21 @@
 
 import UIKit
 
-public class InfiniteLoadingCollectionViewCell: UICollectionViewCell, ViewModelReusable {
+public class InfiniteLoadingCollectionViewFooter: UICollectionReusableView, ViewModelReusable, CollectionViewInfiniteFooter {
     
     public let activityIndicator = UIActivityIndicatorView(style: .gray)
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .clear
-        contentView.addAutolayoutSubview(activityIndicator)
-        activityIndicator.centerInSuperview()
+        backgroundColor = .clear
+        addAutolayoutSubview(activityIndicator)
+        let constraints = [
+            activityIndicator.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            activityIndicator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor)
+            ]
+        constraints.forEach({ $0.priority = .init(999) })
+        NSLayoutConstraint.activate(constraints)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -20,7 +26,7 @@ public class InfiniteLoadingCollectionViewCell: UICollectionViewCell, ViewModelR
 
     }
     
-    static var preferredHeight: CGFloat {
-        return 50
-    }
+    public func startAnimating() {
+        activityIndicator.startAnimating()
+    }    
 }

@@ -9,7 +9,8 @@ class AzzurriViewController: UIViewController {
 
     var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
     var collectionView: UICollectionView!
-    
+    private var fetchCount: Int = 0
+
     override func loadView() {
         view = UIView()
         view.backgroundColor = .groupTableViewBackground
@@ -36,9 +37,7 @@ class AzzurriViewController: UIViewController {
             return ErrorView.Configuration(title: NSAttributedString(string: "No more players"), buttonConfiguration: retryButton)
         }()
         
-        dataSource.infiniteScrollSupport = .init(configureCell: { [weak self] cell in
-            self?.configureInfiniteCell(cell)
-        }, fetchHandler: { [weak self] handler in
+        dataSource.infiniteScrollSupport = .init(fetchHandler: { [weak self] (handler) in
             self?.fetchNextPage(handler: handler)
         })
     }
@@ -145,27 +144,19 @@ extension AzzurriViewController {
     func factoryCellForItem(atIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         let cell = PolaroidCollectionViewCell()
         guard let vm = dataSource.data[safe: indexPath.item] else {
-            return InfiniteLoadingCollectionViewCell()
+            return cell
         }
         cell.configureFor(viewModel: vm)
         return cell
     }
-    
-    private func configureInfiniteCell(_ cell: UICollectionViewCell) {
-        
+
+    func factoryFooter(atIndexPath indexPath: IndexPath) -> UICollectionReusableView {
+        return InfiniteLoadingCollectionViewFooter()
     }
 
     private func fetchNextPage(handler: @escaping (CollectionViewInfiniteScrollSupport<PolaroidCollectionViewCell.VM>.FetchResult) -> ()) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
-            if fetchCount == 1 {
-                handler(.init(newDataAvailable: nil, shouldKeepPaging: false))
-                fetchCount = 0
-            } else {
-                handler(.init(newDataAvailable: AzzurriViewController.mockData(), shouldKeepPaging: true))
-                fetchCount += 1
-            }
+            handler(.init(newDataAvailable: AzzurriViewController.mockData(), shouldKeepPaging: true))
         }
     }
 }
-
-private var fetchCount: Int = 0
