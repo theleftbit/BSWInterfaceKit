@@ -150,10 +150,6 @@ extension AzzurriViewController {
         return cell
     }
 
-    func factoryFooter(atIndexPath indexPath: IndexPath) -> UICollectionReusableView {
-        return InfiniteLoadingCollectionViewFooter()
-    }
-
     private func fetchNextPage(handler: @escaping (CollectionViewInfiniteScrollSupport<PolaroidCollectionViewCell.VM>.FetchResult) -> ()) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(1)) {
             handler(.init(newDataAvailable: AzzurriViewController.mockData(), shouldKeepPaging: true))
