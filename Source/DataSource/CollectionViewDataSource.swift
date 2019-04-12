@@ -4,51 +4,44 @@
 //
 
 import UIKit
+import BSWFoundation
 
 public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewCell>: NSObject, UICollectionViewDataSource {
     
     public private(set) var data: [Cell.VM]
     public weak var collectionView: UICollectionView!
     public var emptyConfiguration: ErrorView.Configuration?
-    public let reorderSupport: CollectionViewReorderSupport<Cell.VM>?
     private var emptyView: UIView?
-
+    private var offsetObserver: NSKeyValueObservation?
+    private var isRequestingNextPage: Bool = false
+    
     public init(data: [Cell.VM] = [],
                 collectionView: UICollectionView,
-                emptyConfiguration: ErrorView.Configuration? = nil,
-                reorderSupport: CollectionViewReorderSupport<Cell.VM>? = nil) {
+                emptyConfiguration: ErrorView.Configuration? = nil) {
         self.data = data
         self.collectionView = collectionView
         self.emptyConfiguration = emptyConfiguration
-        self.reorderSupport = reorderSupport
         
         super.init()
-
+        
         collectionView.registerReusableCell(Cell.self)
         collectionView.dataSource = self
-        if let _ = self.reorderSupport {
-            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
-            self.collectionView.addGestureRecognizer(longPressGesture)
-        }
     }
-
+    
     public var pullToRefreshSupport: CollectionViewPullToRefreshSupport<Cell.VM>? {
         didSet {
-            guard #available (iOS 10.0, *) else {
-                return
-            }
             guard let pullToRefreshSupport = self.pullToRefreshSupport else {
                 self.collectionView.refreshControl = nil
                 return
             }
-
+            
             let refreshControl = UIRefreshControl()
             refreshControl.tintColor = pullToRefreshSupport.tintColor
             refreshControl.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
             self.collectionView.refreshControl = refreshControl
         }
     }
-
+    
     public var supplementaryViewSupport: CollectionViewSupplementaryViewSupport? {
         didSet {
             defer {
@@ -65,13 +58,64 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
             )
         }
     }
+    
+    public var reorderSupport: CollectionViewReorderSupport<Cell.VM>? {
+        didSet {
+            guard let _ = self.reorderSupport else { return }
+            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
+            self.collectionView.addGestureRecognizer(longPressGesture)
+        }
+    }
+    
+    public var infiniteScrollSupport: CollectionViewInfiniteScrollSupport<Cell.VM>? {
+        didSet {
+            defer {
+                collectionView.reloadData()
+            }
+            guard let infiniteScrollSupport = self.infiniteScrollSupport else {
+                offsetObserver = nil
+                if let columnLayout = self.collectionView.collectionViewLayout as? ColumnFlowLayout {
+                    columnLayout.showsFooter = false
+                }
+                return
+            }
+            
+            // To ease adoption, we're adding here some callbacks neccesaries
+            // to make the layout query the dataSource for the footer
+            if let columnLayout = self.collectionView.collectionViewLayout as? ColumnFlowLayout {
+                columnLayout.showsFooter = true
+                columnLayout.footerFactory = { _ in
+                    return infiniteScrollSupport.footerViewClass.init()
+                }
+            }
+            
+            collectionView.register(
+                infiniteScrollSupport.footerViewClass,
+                forSupplementaryViewOfKind: UICollectionView.SupplementaryViewKind.footer.toUIKit(),
+                withReuseIdentifier: Constants.InfinitePagingReuseID
+            )
+            offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
+                let offsetY = cv.contentOffset.y
+                let contentHeight = cv.contentSize.height
+                guard let `self` = self, offsetY > 0, contentHeight > 0 else { return }
+                if offsetY > contentHeight - cv.frame.size.height {
+                    self.requestNextInfiniteScrollPage()
+                }
+            })
+        }
+    }
 
     public func updateData(_ data: [Cell.VM]) {
         self.data = data
         collectionView.reloadData()
     }
     
-    public func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>]) {
+    public func performEditActions(_ actions: [CollectionViewEditActionKind<Cell.VM>], completion: @escaping VoidHandler = {}) {
+        
+        guard actions.count > 0 else {
+            completion()
+            return
+        }
         
         collectionView.performBatchUpdates({
             actions.forEach {
@@ -90,11 +134,13 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
                     collectionView.reloadItems(at: [indexPath])
                 }
             }
-        }, completion: nil)
+        }, completion: { _ in
+            completion()
+        })
     }
     
     //MARK:- UICollectionViewDataSource
-
+    
     @objc public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -119,28 +165,61 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     }
     
     @objc public func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        guard let commitMoveHandler = reorderSupport?.moveItemAtIndexPath else { return }
-        let movedItem = data[(destinationIndexPath as NSIndexPath).item]
+        guard let commitMoveHandler = reorderSupport?.didMoveItemHandler else { return }
+        let movedItem = data[destinationIndexPath.item]
         data.moveItem(fromIndex: sourceIndexPath.item, toIndex: destinationIndexPath.item)
         commitMoveHandler(sourceIndexPath, destinationIndexPath, movedItem)
     }
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let supplementaryViewSupport = self.supplementaryViewSupport else {
+        if let infiniteScrollSupport = self.infiniteScrollSupport, kind == UICollectionView.elementKindSectionFooter {
+            let supplementaryView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: Constants.InfinitePagingReuseID,
+                for: indexPath
+            )
+            let footer = supplementaryView as! CollectionViewInfiniteFooter
+            infiniteScrollSupport.configureFooter(footer)
+            return supplementaryView
+        } else if let supplementaryViewSupport = self.supplementaryViewSupport {
+            let supplementaryView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: supplementaryViewSupport.kind.toUIKit(),
+                withReuseIdentifier: Constants.SupplementaryViewReuseID,
+                for: indexPath
+            )
+            supplementaryViewSupport.configureHeader(supplementaryView)
+            supplementaryView.isHidden = (data.count == 0) && supplementaryViewSupport.shouldHideOnEmptyDataSet
+            return supplementaryView
+        } else {
             fatalError()
         }
-        
-        let supplementaryView = collectionView.dequeueReusableSupplementaryView(
-            ofKind: supplementaryViewSupport.kind.toUIKit(),
-            withReuseIdentifier: Constants.SupplementaryViewReuseID,
-            for: indexPath
-        )
-        supplementaryViewSupport.configureHeader(supplementaryView)
-        supplementaryView.isHidden = (data.count == 0) && supplementaryViewSupport.shouldHideOnEmptyDataSet
-        return supplementaryView
     }
     
     //MARK:- Private
+    private func requestNextInfiniteScrollPage() {
+        guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollSupport else { return }
+        isRequestingNextPage = true
+        infiniteScrollSupport.fetchHandler { [weak self] result in
+            guard let `self` = self else { return }
+            let actions: [CollectionViewEditActionKind<Cell.VM>] = {
+                guard let newData = result.newDataAvailable else { return [] }
+                let dataCount = self.data.count
+                var newIndex = 0
+                return newData.map {
+                    defer { newIndex += 1 }
+                    return .insert(item: $0, atIndexPath: IndexPath(item: dataCount + newIndex, section: 0))
+                }
+            }()
+            self.performEditActions(actions) {
+                self.isRequestingNextPage = false
+                // No more paging
+                if !result.shouldKeepPaging {
+                    self.infiniteScrollSupport = nil
+                }
+            }
+
+        }
+    }
     
     private func addEmptyView() {
         
@@ -170,7 +249,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     }
     
     //MARK: IBAction
-
+    
     @available (iOS 10.0, *)
     @objc func handlePullToRefresh() {
         guard let pullToRefreshSupport = self.pullToRefreshSupport else { return }
@@ -195,7 +274,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
             }
         })
     }
-
+    
     @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
         guard let collectionView = self.collectionView else { return }
         
@@ -215,7 +294,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     }
 }
 
-//MARK: - Reorder Support
+//MARK: - Edit Support
 
 public enum CollectionViewEditActionKind<Model> {
     case insert(item: Model, atIndexPath: IndexPath)
@@ -224,12 +303,19 @@ public enum CollectionViewEditActionKind<Model> {
     case reload(item: Model, indexPath: IndexPath)
 }
 
+//MARK: - Reorder Support
+
 public struct CollectionViewReorderSupport<Model> {
-    public typealias CommitMoveItemHandler = ((_ from: IndexPath, _ to: IndexPath, _ movedItem: Model) -> Void)
+    public typealias DidMoveItemHandler = ((_ from: IndexPath, _ to: IndexPath, _ movedItem: Model) -> Void)
     public typealias CanMoveItemHandler = ((IndexPath) -> Bool)
     
     public let canMoveItemAtIndexPath: CanMoveItemHandler
-    public let moveItemAtIndexPath: CommitMoveItemHandler
+    public let didMoveItemHandler: DidMoveItemHandler
+    
+    public init(canMoveItemAtIndexPath: @escaping CanMoveItemHandler, didMoveItemAtIndexPath: @escaping DidMoveItemHandler) {
+        self.canMoveItemAtIndexPath = canMoveItemAtIndexPath
+        self.didMoveItemHandler = didMoveItemAtIndexPath
+    }
 }
 
 //MARK: - Pull to Refresh Support
@@ -243,7 +329,7 @@ public struct CollectionViewPullToRefreshSupport<Model> {
     public typealias Handler = (@escaping (Behavior) -> ()) -> ()
     public let tintColor: UIColor?
     public let handler: Handler
-
+    
     public init(tintColor: UIColor? = nil, handler: @escaping Handler) {
         self.handler = handler
         self.tintColor = tintColor
@@ -253,14 +339,14 @@ public struct CollectionViewPullToRefreshSupport<Model> {
 //MARK: - SupplementaryViewSupport
 
 public struct CollectionViewSupplementaryViewSupport {
-
+    
     public typealias ConfigureHeader = (UICollectionReusableView) -> ()
-
+    
     public let kind: UICollectionView.SupplementaryViewKind
     public let configureHeader: ConfigureHeader
     public let shouldHideOnEmptyDataSet: Bool
     public let supplementaryViewClass: UICollectionReusableView.Type
-
+    
     public init(supplementaryViewClass: UICollectionReusableView.Type, kind: UICollectionView.SupplementaryViewKind, shouldHideOnEmptyDataSet: Bool = false, configureHeader: @escaping ConfigureHeader) {
         self.supplementaryViewClass = supplementaryViewClass
         self.kind = kind
@@ -269,7 +355,41 @@ public struct CollectionViewSupplementaryViewSupport {
     }
 }
 
+//MARK: - Infinite Scroll support
+
+public protocol CollectionViewInfiniteFooter: UICollectionReusableView {
+    func startAnimating()
+}
+
+public struct CollectionViewInfiniteScrollSupport<Model> {
+    public struct FetchResult {
+        let newDataAvailable: [Model]?
+        let shouldKeepPaging: Bool
+        public init(newDataAvailable: [Model]?, shouldKeepPaging: Bool) {
+            self.newDataAvailable = newDataAvailable
+            self.shouldKeepPaging = shouldKeepPaging
+        }
+    }
+    public typealias ConfigureFooter = (CollectionViewInfiniteFooter) -> ()
+    public typealias FetchHandler = (@escaping (FetchResult) -> ()) -> ()
+    
+    public let footerViewClass: UICollectionReusableView.Type
+    public let configureFooter: ConfigureFooter
+    public let fetchHandler: FetchHandler
+    
+    public init(
+        footerViewClass: UICollectionReusableView.Type = InfiniteLoadingCollectionViewFooter.self,
+        configureFooter: @escaping ConfigureFooter = { $0.startAnimating() },
+        fetchHandler: @escaping FetchHandler) {
+        self.footerViewClass = footerViewClass
+        self.configureFooter = configureFooter
+        self.fetchHandler = fetchHandler
+    }
+}
+
+
 private enum Constants {
     static let SupplementaryViewReuseID = "SupplementaryViewReuseID"
+    static let InfinitePagingReuseID = "InfinitePagingReuseID"
     static let Spacing: CGFloat = 20
 }

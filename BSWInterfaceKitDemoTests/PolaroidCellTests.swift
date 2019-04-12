@@ -8,27 +8,35 @@ import BSWInterfaceKit
 
 @available(iOS 11.0, *)
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
-    var collectionView: UICollectionView!
-    var dataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
 
-    override func setUp() {
-        super.setUp()
+    func testLayout() {
+        let cv = MockCollectionView()
+        verify(view: cv)
+    }
+
+}
+
+class MockCollectionView: UICollectionView {
+    
+    var mockDataSource: CollectionViewDataSource<PolaroidCollectionViewCell>!
+
+    init() {
         let columnLayout = ColumnFlowLayout()
+        super.init(frame: CGRect(x: 0, y: 0, width: 350, height: 500), collectionViewLayout: columnLayout)
         columnLayout.minColumnWidth = 120
         columnLayout.cellFactory = { [unowned self] indexPath in
             let cell = PolaroidCollectionViewCell()
-            guard let vm = self.dataSource.data[safe: indexPath.item] else {
+            guard let vm = self.mockDataSource.data[safe: indexPath.item] else {
                 return cell
             }
             cell.configureFor(viewModel: vm)
             return cell
         }
-        collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 350, height: 500), collectionViewLayout: columnLayout)
-        dataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
-            data: PolaroidCollectionViewCellTests.mockData(),
-            collectionView: collectionView
+        mockDataSource = CollectionViewDataSource<PolaroidCollectionViewCell>(
+            data: MockCollectionView.mockData(),
+            collectionView: self
         )
-        dataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport { completion in
+        mockDataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport { completion in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
                 let vm1 = PolaroidCollectionViewCell.VM(
                     cellImage: Photo.emptyPhoto(),
@@ -40,10 +48,10 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
         }
     }
     
-    func testLayout() {
-        verify(view: collectionView)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
     static func mockData() -> [PolaroidCollectionViewCell.VM] {
         return AzzurriViewController.mockData().map({
             return PolaroidCollectionViewCell.VM(
@@ -52,21 +60,5 @@ class PolaroidCollectionViewCellTests: BSWSnapshotTest {
                 cellDetails: $0.cellDetails
             )
         })
-    }
-}
-
-class HostView: UIView {
-    init(overridenTraitCollection: UITraitCollection, frame: CGRect) {
-        self.overridenTraitCollection = overridenTraitCollection
-        super.init(frame: frame)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    var overridenTraitCollection: UITraitCollection!
-    override var traitCollection: UITraitCollection {
-        return overridenTraitCollection
     }
 }

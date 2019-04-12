@@ -90,7 +90,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
                 guard let fromPhoto = self.photos[safe:indexPath.item] , fromPhoto.isFilled()  else { return false }
                 return true
             },
-            moveItemAtIndexPath: { (from, to, movedItem) in
+            didMoveItemAtIndexPath: { (from, to, movedItem) in
                 
                 //If the destination is not valid, transition back
                 guard movedItem.isFilled() else {
@@ -105,9 +105,9 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         /// Prepare the collectionViewDataSource
         photosDataSource = CollectionViewDataSource(
             data: photos,
-            collectionView: self,
-            reorderSupport: reorderSupport
+            collectionView: self
         )
+        photosDataSource.reorderSupport = reorderSupport
         dataSource = photosDataSource
         delegate = self
         
