@@ -145,7 +145,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     private func userAddedProfilePicture(_ url: URL?) {
         let photos = self.photosDataSource.data
         guard let url = url else { return }
-        guard let index = photos.index(where: { return $0.isEmpty() }) else { return }
+        guard let index = photos.firstIndex(where: { return $0.isEmpty() }) else { return }
         profilePhotoDelegate?.userAddedProfilePicture(url) {
             guard let tuple = $0 else { return }
             let firstEmptyIndexPath = IndexPath(item: index, section: 0)
