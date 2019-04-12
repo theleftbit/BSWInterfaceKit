@@ -27,6 +27,8 @@ open class ScrollableStackView: UIScrollView {
         case .vertical:
             stackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
             alwaysBounceVertical = true
+        @unknown default:
+            fatalError()
         }
 
         clipsToBounds = true
@@ -53,7 +55,7 @@ open class ScrollableStackView: UIScrollView {
     }
 
     open func indexOfView(_ view: UIView) -> Int? {
-        return stackView.arrangedSubviews.index(of: view)
+        return stackView.arrangedSubviews.firstIndex(of: view)
     }
 
     open func removeAllArrangedViews() {
