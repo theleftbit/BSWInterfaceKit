@@ -8,7 +8,7 @@ PODS:
     - Nuke (~> 7.6)
   - KeychainAccess (3.2.0)
   - Nuke (7.6)
-  - SnapshotTesting (1.1.0)
+  - SnapshotTesting (1.5.0)
 
 DEPENDENCIES:
   - BSWInterfaceKit (from `./BSWInterfaceKit.podspec`)
@@ -32,7 +32,7 @@ SPEC CHECKSUMS:
   BSWInterfaceKit: c53cf101bf7c650b61e1f03959fc979ca8e7a3c0
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Nuke: aa1c6a5919b543debe814530881f2fccb58c26d4
-  SnapshotTesting: 8ed6a4dceee63f59a60e1bc86f9adbba54eb9287
+  SnapshotTesting: 9ca1d80f6322509a035856170c11d0571b1f7171
 
 PODFILE CHECKSUM: 6508f2c1934b65692851a6a5b383a01c0e290921
 

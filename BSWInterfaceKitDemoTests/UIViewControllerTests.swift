@@ -9,6 +9,17 @@ import XCTest
 @available(iOS 11.0, *)
 class UIViewControllerTests: BSWSnapshotTest {
 
+    func testInitialLayoutCallback() {
+        let sut = TestViewController()
+        rootViewController = sut
+        let exp = expectation(description: "Layout the view and wait for it")
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+            exp.fulfill()
+        }
+        let _ = waiter.wait(for: [exp], timeout: 1)
+        XCTAssert(sut.viewInitialLayoutDidCompleteCalled)
+    }
+    
     func testChildViewController() {
         let parentVC = UIViewController()
         let childVC = UIViewController()
@@ -96,9 +107,17 @@ class UIViewControllerTests: BSWSnapshotTest {
 @available(iOS 11.0, *)
 @objc(TestViewController)
 private class TestViewController: UIViewController {
+    
+    var viewInitialLayoutDidCompleteCalled = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+    }
+    
+    override func viewInitialLayoutDidComplete() {
+        super.viewInitialLayoutDidComplete()
+        viewInitialLayoutDidCompleteCalled = true
     }
 }
 
