@@ -23,6 +23,7 @@ open class BottomContainerViewController: UIViewController {
     }
     private let bottomViewKind: BottomViewKind
     private var buttonContainer: UIViewController!
+    private var bottomConstraint: NSLayoutConstraint!
     
     private enum BottomViewKind {
         case button(UIButton, UIEdgeInsets)
@@ -59,7 +60,8 @@ open class BottomContainerViewController: UIViewController {
         }
         addChild(buttonContainer)
         view.addAutolayoutSubview(buttonContainer.view)
-        
+        bottomConstraint = buttonContainer.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+
         NSLayoutConstraint.activate([
             containedViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
             containedViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -67,7 +69,7 @@ open class BottomContainerViewController: UIViewController {
             containedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             buttonContainer.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonContainer.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonContainer.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bottomConstraint,
             ])
         containedViewController.didMove(toParent: self)
         buttonContainer.didMove(toParent: self)
@@ -105,7 +107,7 @@ open class BottomContainerViewController: UIViewController {
             return containedViewController
         }
     }
-    
+
     @objc(BSWButtonContainerViewController)
     private class ButtonContainerViewController: UIViewController {
         
@@ -152,5 +154,29 @@ extension BottomContainerViewController: IntrinsicSizeCalculable {
 public extension UIViewController {
     var bottomContainerViewController: BottomContainerViewController? {
         return self.parent as? BottomContainerViewController
+    }
+}
+
+//MARK: Animations
+
+public extension BottomContainerViewController {
+    
+    enum Animation {
+        case hideBottomController(extraPadding: CGFloat)
+        case showBottomController
+    }
+    
+    func performAnimation(_ animation: Animation, animator: UIViewPropertyAnimator = UIViewPropertyAnimator(duration: 3, curve: .easeInOut, animations: nil)) {
+
+        switch animation {
+        case .hideBottomController(let extraPadding):
+            bottomConstraint.constant = buttonContainer.view.frame.height + extraPadding
+        case .showBottomController:
+            bottomConstraint.constant = 0
+        }
+        animator.addAnimations {
+            self.view.layoutIfNeeded()
+        }
+        animator.startAnimation()
     }
 }
