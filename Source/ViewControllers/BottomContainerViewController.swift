@@ -73,8 +73,8 @@ open class BottomContainerViewController: UIViewController {
         buttonContainer.didMove(toParent: self)
     }
     
-    open override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    open override func viewInitialLayoutDidComplete() {
+        super.viewInitialLayoutDidComplete()
         let safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame
         let inset = safeAreaFrame.origin.y + safeAreaFrame.size.height - buttonContainer.view.frame.minY
         containedViewController.additionalSafeAreaInsets = UIEdgeInsets(dictionaryLiteral: (.bottom, inset))
