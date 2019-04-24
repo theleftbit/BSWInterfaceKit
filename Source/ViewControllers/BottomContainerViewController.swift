@@ -162,17 +162,20 @@ public extension UIViewController {
 public extension BottomContainerViewController {
     
     enum Animation {
-        case hideBottomController(extraPadding: CGFloat)
+        case custom(spacing: CGFloat)
+        case hideBottomController
         case showBottomController
     }
     
     func performAnimation(_ animation: Animation, animator: UIViewPropertyAnimator = UIViewPropertyAnimator(duration: 3, curve: .easeInOut, animations: nil)) {
 
         switch animation {
-        case .hideBottomController(let extraPadding):
-            bottomConstraint.constant = buttonContainer.view.frame.height + extraPadding
+        case .hideBottomController:
+            bottomConstraint.constant = buttonContainer.view.frame.height
         case .showBottomController:
             bottomConstraint.constant = 0
+        case .custom(let spacing):
+            bottomConstraint.constant = spacing
         }
         animator.addAnimations {
             self.view.layoutIfNeeded()
