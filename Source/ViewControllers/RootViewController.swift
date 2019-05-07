@@ -7,7 +7,11 @@
 final public class RootViewController: ContainerViewController {}
 
 @available(iOS 11.0, *) @objc(BSWContainerViewController)
-public class ContainerViewController: UIViewController {
+open class ContainerViewController: UIViewController {
+    
+    public enum Appereance {
+        static public var BackgroundColor: UIColor = .clear
+    }
     
     private(set) public var containedViewController: UIViewController
     private let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut)
@@ -17,18 +21,23 @@ public class ContainerViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    public override func viewDidLoad() {
+    open override func loadView() {
+        view = UIView()
+        view.backgroundColor = Appereance.BackgroundColor
+    }
+    
+    open override func viewDidLoad() {
         super.viewDidLoad()
         containViewController(containedViewController)
     }
     
-    public override var preferredStatusBarStyle: UIStatusBarStyle {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
         return containedViewController.preferredStatusBarStyle
     }
     
-    public func updateContainedViewController(_ newVC: UIViewController) {
+    open func updateContainedViewController(_ newVC: UIViewController) {
         
         // Notify current VC that time is up
         self.containedViewController.willMove(toParent: nil)
