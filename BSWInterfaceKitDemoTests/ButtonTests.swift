@@ -25,7 +25,13 @@ class ButtonTests: BSWSnapshotTest {
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
-    
+
+    func testImageButtonWithCornerRadius() {
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), cornerRadius: 5, actionHandler: {}))
+        button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
+        verify(view: button)
+    }
+
     func testImageTitleButton() {
         let image: UIImage = #imageLiteral(resourceName: "women")
         let title = NSAttributedString(string: "Click Me")

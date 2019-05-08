@@ -18,28 +18,33 @@ public struct ButtonConfiguration {
     public let buttonTitle: ButtonTitle
     public let backgroundColor: UIColor
     public let contentInset: UIEdgeInsets
+    public let cornerRadius: CGFloat
     public let actionHandler: ButtonActionHandler
-
+    
     public init(title: String,
                 titleColor: UIColor? = nil,
                 backgroundColor: UIColor = .clear,
                 contentInset: UIEdgeInsets = UIEdgeInsets(uniform: 5),
+                cornerRadius: CGFloat = 0,
                 actionHandler: @escaping ButtonActionHandler) {
         let tintColor = titleColor ?? UIApplication.shared.keyWindow!.tintColor
         self.buttonTitle = .text(TextStyler.styler.attributedString(title, color: tintColor))
         self.backgroundColor = backgroundColor
         self.actionHandler = actionHandler
         self.contentInset = contentInset
+        self.cornerRadius = cornerRadius
     }
 
     public init(buttonTitle: ButtonTitle,
                 backgroundColor: UIColor = .clear,
                 contentInset: UIEdgeInsets = UIEdgeInsets(uniform: 5),
+                cornerRadius: CGFloat = 0,
                 actionHandler: @escaping ButtonActionHandler) {
         self.buttonTitle = buttonTitle
         self.backgroundColor = backgroundColor
         self.actionHandler = actionHandler
         self.contentInset = contentInset
+        self.cornerRadius = cornerRadius
     }
 }
 
@@ -76,7 +81,7 @@ extension UIButton {
             imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
             setAttributedTitle(title, for: .normal)
         }
-        
+        layer.cornerRadius = buttonConfiguration.cornerRadius
         backgroundColor = buttonConfiguration.backgroundColor
         contentEdgeInsets = buttonConfiguration.contentInset
         objc_setAssociatedObject(self, &AssociatedObjects.ActionBlockWrapper, ActionBlockWrapper(block: buttonConfiguration.actionHandler), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
