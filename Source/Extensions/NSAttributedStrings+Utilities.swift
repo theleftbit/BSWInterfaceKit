@@ -106,11 +106,14 @@ private extension NSTextAttachment {
 }
 
 public extension NSMutableAttributedString {
-    func addLink(onSubstring substring: String, linkURL: URL) {
+    func addLink(onSubstring substring: String, linkURL: URL, linkColor: UIColor? = nil) {
         guard let range = self.string.range(of: substring) else { fatalError() }
         let lowerBound = range.lowerBound.utf16Offset(in: self.string)
         let upperBound = range.upperBound.utf16Offset(in: self.string)
         self.addAttribute(.link, value: linkURL, range: NSRange(location: lowerBound, length: upperBound - lowerBound))
+        if let color = linkColor {
+            self.addAttribute(.foregroundColor, value: color, range: NSRange(location: lowerBound, length: upperBound - lowerBound))
+        }
     }
 
     func setKern(_ kern: CGFloat) {
