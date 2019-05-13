@@ -28,6 +28,7 @@
 		F56D522320F767130008D67C /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56D522220F767130008D67C /* AvatarViewTests.swift */; };
 		F57ABCD6224D15B000258BAE /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57ABCD5224D15B000258BAE /* HorizontalPagedCollectionViewLayoutTests.swift */; };
 		F5BC58882199CBCB00493461 /* ColumnFlowLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BC58872199CBCB00493461 /* ColumnFlowLayoutTests.swift */; };
+		F5D37D1F2289BDE60051EA82 /* NSAttributedStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D37D1E2289BDE60051EA82 /* NSAttributedStringTests.swift */; };
 		F5F8BD69222FCDA400CCCE43 /* AlertOperationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F8BD68222FCDA400CCCE43 /* AlertOperationViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,7 @@
 		F56D522220F767130008D67C /* AvatarViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarViewTests.swift; sourceTree = "<group>"; };
 		F57ABCD5224D15B000258BAE /* HorizontalPagedCollectionViewLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalPagedCollectionViewLayoutTests.swift; sourceTree = "<group>"; };
 		F5BC58872199CBCB00493461 /* ColumnFlowLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnFlowLayoutTests.swift; sourceTree = "<group>"; };
+		F5D37D1E2289BDE60051EA82 /* NSAttributedStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringTests.swift; sourceTree = "<group>"; };
 		F5F8BD68222FCDA400CCCE43 /* AlertOperationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertOperationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,6 +166,7 @@
 				EB3B03591E9CD9AD009E6F80 /* UIViewControllerTests.swift */,
 				EB0B24251E81B2BF005491F1 /* UIViewTests.swift */,
 				F57ABCD5224D15B000258BAE /* HorizontalPagedCollectionViewLayoutTests.swift */,
+				F5D37D1E2289BDE60051EA82 /* NSAttributedStringTests.swift */,
 			);
 			name = Suite;
 			sourceTree = "<group>";
@@ -420,6 +423,7 @@
 				F5BC58882199CBCB00493461 /* ColumnFlowLayoutTests.swift in Sources */,
 				EB067A1C1E806A8300A8AC91 /* ButtonTests.swift in Sources */,
 				F53E036E2122DE49004C5E13 /* ScrollableTabsViewControllerTests.swift in Sources */,
+				F5D37D1F2289BDE60051EA82 /* NSAttributedStringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
