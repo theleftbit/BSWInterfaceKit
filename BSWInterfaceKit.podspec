@@ -20,6 +20,6 @@ Pod::Spec.new do |s|
   s.resource_bundle = { "BSWInterfaceKit" => "Assets/**/*.{xcassets,storyboard,strings}" }
 
   # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.dependency "BSWFoundation", "~> 2.3.0"
+  s.dependency "BSWFoundation", "~> 2.4.0"
   s.dependency "Nuke", "~> 7.6"
 end
