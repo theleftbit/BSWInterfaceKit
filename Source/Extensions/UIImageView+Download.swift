@@ -61,14 +61,31 @@ extension UIImageView {
 
     @nonobjc
     public func setPhoto(_ photo: Photo) {
+        if let preferredContentMode = photo.preferredContentMode {
+            contentMode = preferredContentMode
+        }
         switch photo.kind {
         case .image(let image):
             self.image = image
-        case .url(let url):
+        case .url(let url, let _placeholderImage):
+            if let placeholderImage = _placeholderImage {
+                image = placeholderImage.image
+                contentMode = placeholderImage.preferredContentMode
+            }
             backgroundColor = photo.averageColor
             setImageWithURL(url) { result in
-                guard result.error == nil else { return }
-                self.backgroundColor = nil
+                switch result {
+                case .failure:
+                    if let placeholderImage = _placeholderImage {
+                        self.image = placeholderImage.image
+                        self.contentMode = placeholderImage.preferredContentMode
+                    }
+                case .success:
+                    if let preferredContentMode = photo.preferredContentMode {
+                        self.contentMode = preferredContentMode
+                    }
+                    self.backgroundColor = nil
+                }
             }
         case .empty:
             image = nil
