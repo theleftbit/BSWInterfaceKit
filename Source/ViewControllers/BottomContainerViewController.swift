@@ -98,11 +98,21 @@ open class BottomContainerViewController: UIViewController {
         }
     }
     
+    // Normally, this VC is embedded in a container like SplitVC or NavVC.
+    // In that case,  we should forward all actions to it so it can handle
+    // stuff like `showViewController:sender:` or `showDetailViewController:sender:`
+    // If that's not the case, we forward the method to the containedVC (the top one)
+    // which should handle it.
     open override func targetViewController(forAction action: Selector, sender: Any?) -> UIViewController? {
-        if let splitVC = splitViewController {
-            return splitVC
-        } else if let navVC = navigationController {
+        
+        // Actions should be forwarded from smaller
+        // container to bigger container, that's why
+        // if we have a navVC, that's who should handle
+        // it **before** we let splitVC have a say
+        if let navVC = navigationController {
             return navVC
+        } else if let splitVC = splitViewController {
+            return splitVC
         } else {
             return containedViewController
         }
