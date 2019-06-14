@@ -15,12 +15,36 @@
 		EBBB9FAF1E7BF524000F1232 /* AzzurriViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */; };
 		F5200B9922B39E1C008D42E7 /* BSWInterfaceKit in Frameworks */ = {isa = PBXBuildFile; productRef = F5200B9822B39E1C008D42E7 /* BSWInterfaceKit */; };
 		F54886DC203ED769005191D3 /* FacebookLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */; };
+		F5ABD27C22B3A83600CA08CB /* BSWSnapshotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD27A22B3A83600CA08CB /* BSWSnapshotTest.swift */; };
+		F5ABD28022B3A86900CA08CB /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = F5ABD27F22B3A86900CA08CB /* SnapshotTesting */; };
+		F5ABD28D22B3A8A800CA08CB /* TextStylerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28122B3A8A700CA08CB /* TextStylerTests.swift */; };
+		F5ABD28E22B3A8A800CA08CB /* NSAttributedStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28222B3A8A700CA08CB /* NSAttributedStringTests.swift */; };
+		F5ABD28F22B3A8A800CA08CB /* ClassicProfileViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28322B3A8A700CA08CB /* ClassicProfileViewControllerTests.swift */; };
+		F5ABD29022B3A8A800CA08CB /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28422B3A8A700CA08CB /* AvatarViewTests.swift */; };
+		F5ABD29122B3A8A800CA08CB /* PolaroidCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28522B3A8A700CA08CB /* PolaroidCellTests.swift */; };
+		F5ABD29222B3A8A800CA08CB /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28622B3A8A700CA08CB /* HorizontalPagedCollectionViewLayoutTests.swift */; };
+		F5ABD29322B3A8A800CA08CB /* ProfilePhotoPickerCollectionViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28722B3A8A700CA08CB /* ProfilePhotoPickerCollectionViewTests.swift */; };
+		F5ABD29422B3A8A800CA08CB /* ColumnFlowLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28822B3A8A700CA08CB /* ColumnFlowLayoutTests.swift */; };
+		F5ABD29522B3A8A800CA08CB /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28922B3A8A700CA08CB /* UIViewControllerTests.swift */; };
+		F5ABD29622B3A8A800CA08CB /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28A22B3A8A700CA08CB /* UIViewTests.swift */; };
+		F5ABD29722B3A8A800CA08CB /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28B22B3A8A800CA08CB /* ButtonTests.swift */; };
+		F5ABD29822B3A8A800CA08CB /* ScrollableTabsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ABD28C22B3A8A800CA08CB /* ScrollableTabsViewControllerTests.swift */; };
 		F5F8BD69222FCDA400CCCE43 /* AlertOperationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F8BD68222FCDA400CCCE43 /* AlertOperationViewController.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F5ABD27122B3A7F200CA08CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D427AA8E5E06E105148C9250 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBB3CEB41E50C60B0063303C;
+			remoteInfo = BSWInterfaceKitDemoDemo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		876CB44B6FD0A748932B75CC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemoDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BSWInterfaceKitDemoDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BSWInterfaceKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBB3CEB71E50C60B0063303C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EBB3CEB91E50C60B0063303C /* FeaturesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesViewController.swift; sourceTree = "<group>"; };
 		EBB3CEBE1E50C60B0063303C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -30,6 +54,21 @@
 		EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AzzurriViewController.swift; sourceTree = "<group>"; };
 		F5200B9722B39A47008D42E7 /* BSWInterfaceKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BSWInterfaceKit; sourceTree = "<group>"; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
+		F5ABD26C22B3A7F200CA08CB /* BSWInterfaceKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BSWInterfaceKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5ABD27022B3A7F200CA08CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F5ABD27A22B3A83600CA08CB /* BSWSnapshotTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BSWSnapshotTest.swift; sourceTree = "<group>"; };
+		F5ABD28122B3A8A700CA08CB /* TextStylerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextStylerTests.swift; sourceTree = "<group>"; };
+		F5ABD28222B3A8A700CA08CB /* NSAttributedStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAttributedStringTests.swift; sourceTree = "<group>"; };
+		F5ABD28322B3A8A700CA08CB /* ClassicProfileViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicProfileViewControllerTests.swift; sourceTree = "<group>"; };
+		F5ABD28422B3A8A700CA08CB /* AvatarViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarViewTests.swift; sourceTree = "<group>"; };
+		F5ABD28522B3A8A700CA08CB /* PolaroidCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolaroidCellTests.swift; sourceTree = "<group>"; };
+		F5ABD28622B3A8A700CA08CB /* HorizontalPagedCollectionViewLayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalPagedCollectionViewLayoutTests.swift; sourceTree = "<group>"; };
+		F5ABD28722B3A8A700CA08CB /* ProfilePhotoPickerCollectionViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoPickerCollectionViewTests.swift; sourceTree = "<group>"; };
+		F5ABD28822B3A8A700CA08CB /* ColumnFlowLayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColumnFlowLayoutTests.swift; sourceTree = "<group>"; };
+		F5ABD28922B3A8A700CA08CB /* UIViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerTests.swift; sourceTree = "<group>"; };
+		F5ABD28A22B3A8A700CA08CB /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
+		F5ABD28B22B3A8A800CA08CB /* ButtonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
+		F5ABD28C22B3A8A800CA08CB /* ScrollableTabsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollableTabsViewControllerTests.swift; sourceTree = "<group>"; };
 		F5F8BD68222FCDA400CCCE43 /* AlertOperationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertOperationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -42,6 +81,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F5ABD26922B3A7F200CA08CB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5ABD28022B3A86900CA08CB /* SnapshotTesting in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -50,6 +97,7 @@
 			children = (
 				F5200B9722B39A47008D42E7 /* BSWInterfaceKit */,
 				EBB3CEB61E50C60B0063303C /* BSWInterfaceKitDemo */,
+				F5ABD26D22B3A7F200CA08CB /* BSWInterfaceKitTests */,
 				9F252AEF9DC385C64E668E8B /* Products */,
 				E8668C1A6301F6D5C33A656D /* Frameworks */,
 			);
@@ -60,7 +108,8 @@
 		9F252AEF9DC385C64E668E8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemoDemo.app */,
+				EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemo.app */,
+				F5ABD26C22B3A7F200CA08CB /* BSWInterfaceKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,12 +146,41 @@
 			path = BSWInterfaceKitDemo;
 			sourceTree = "<group>";
 		};
+		F5ABD26D22B3A7F200CA08CB /* BSWInterfaceKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				F5ABD27A22B3A83600CA08CB /* BSWSnapshotTest.swift */,
+				F5ABD29922B3A8D800CA08CB /* TestSuite */,
+				F5ABD27022B3A7F200CA08CB /* Info.plist */,
+			);
+			path = BSWInterfaceKitTests;
+			sourceTree = "<group>";
+		};
+		F5ABD29922B3A8D800CA08CB /* TestSuite */ = {
+			isa = PBXGroup;
+			children = (
+				F5ABD28422B3A8A700CA08CB /* AvatarViewTests.swift */,
+				F5ABD28B22B3A8A800CA08CB /* ButtonTests.swift */,
+				F5ABD28322B3A8A700CA08CB /* ClassicProfileViewControllerTests.swift */,
+				F5ABD28822B3A8A700CA08CB /* ColumnFlowLayoutTests.swift */,
+				F5ABD28622B3A8A700CA08CB /* HorizontalPagedCollectionViewLayoutTests.swift */,
+				F5ABD28222B3A8A700CA08CB /* NSAttributedStringTests.swift */,
+				F5ABD28522B3A8A700CA08CB /* PolaroidCellTests.swift */,
+				F5ABD28722B3A8A700CA08CB /* ProfilePhotoPickerCollectionViewTests.swift */,
+				F5ABD28C22B3A8A800CA08CB /* ScrollableTabsViewControllerTests.swift */,
+				F5ABD28122B3A8A700CA08CB /* TextStylerTests.swift */,
+				F5ABD28922B3A8A700CA08CB /* UIViewControllerTests.swift */,
+				F5ABD28A22B3A8A700CA08CB /* UIViewTests.swift */,
+			);
+			path = TestSuite;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EBB3CEB41E50C60B0063303C /* BSWInterfaceKitDemoDemo */ = {
+		EBB3CEB41E50C60B0063303C /* BSWInterfaceKitDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EBB3CECF1E50C60B0063303C /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemoDemo" */;
+			buildConfigurationList = EBB3CECF1E50C60B0063303C /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemo" */;
 			buildPhases = (
 				EBB3CEB11E50C60B0063303C /* Sources */,
 				EBB3CEB21E50C60B0063303C /* Frameworks */,
@@ -112,13 +190,34 @@
 			);
 			dependencies = (
 			);
-			name = BSWInterfaceKitDemoDemo;
+			name = BSWInterfaceKitDemo;
 			packageProductDependencies = (
 				F5200B9822B39E1C008D42E7 /* BSWInterfaceKit */,
 			);
 			productName = BSWInterfaceKitDemo;
-			productReference = EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemoDemo.app */;
+			productReference = EBB3CEB51E50C60B0063303C /* BSWInterfaceKitDemo.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F5ABD26B22B3A7F200CA08CB /* BSWInterfaceKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F5ABD27522B3A7F200CA08CB /* Build configuration list for PBXNativeTarget "BSWInterfaceKitTests" */;
+			buildPhases = (
+				F5ABD26822B3A7F200CA08CB /* Sources */,
+				F5ABD26922B3A7F200CA08CB /* Frameworks */,
+				F5ABD26A22B3A7F200CA08CB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F5ABD27222B3A7F200CA08CB /* PBXTargetDependency */,
+			);
+			name = BSWInterfaceKitTests;
+			packageProductDependencies = (
+				F5ABD27F22B3A86900CA08CB /* SnapshotTesting */,
+			);
+			productName = BSWInterfaceKitTests;
+			productReference = F5ABD26C22B3A7F200CA08CB /* BSWInterfaceKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -126,7 +225,7 @@
 		D427AA8E5E06E105148C9250 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0820;
+				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1100;
 				TargetAttributes = {
 					EBB3CEB41E50C60B0063303C = {
@@ -134,6 +233,11 @@
 						DevelopmentTeam = JC3H35UYFP;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
+					};
+					F5ABD26B22B3A7F200CA08CB = {
+						CreatedOnToolsVersion = 11.0;
+						LastSwiftMigration = 1100;
+						TestTargetID = EBB3CEB41E50C60B0063303C;
 					};
 				};
 			};
@@ -146,11 +250,15 @@
 				Base,
 			);
 			mainGroup = 421629A8412B159ACA82BB03;
+			packageReferences = (
+				F5ABD27E22B3A86900CA08CB /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+			);
 			productRefGroup = 9F252AEF9DC385C64E668E8B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EBB3CEB41E50C60B0063303C /* BSWInterfaceKitDemoDemo */,
+				EBB3CEB41E50C60B0063303C /* BSWInterfaceKitDemo */,
+				F5ABD26B22B3A7F200CA08CB /* BSWInterfaceKitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -162,6 +270,13 @@
 			files = (
 				EBB3CEC21E50C60B0063303C /* LaunchScreen.storyboard in Resources */,
 				EBB3CEBF1E50C60B0063303C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5ABD26A22B3A7F200CA08CB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +296,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F5ABD26822B3A7F200CA08CB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5ABD27C22B3A83600CA08CB /* BSWSnapshotTest.swift in Sources */,
+				F5ABD29822B3A8A800CA08CB /* ScrollableTabsViewControllerTests.swift in Sources */,
+				F5ABD29322B3A8A800CA08CB /* ProfilePhotoPickerCollectionViewTests.swift in Sources */,
+				F5ABD28D22B3A8A800CA08CB /* TextStylerTests.swift in Sources */,
+				F5ABD29722B3A8A800CA08CB /* ButtonTests.swift in Sources */,
+				F5ABD28E22B3A8A800CA08CB /* NSAttributedStringTests.swift in Sources */,
+				F5ABD29022B3A8A800CA08CB /* AvatarViewTests.swift in Sources */,
+				F5ABD29622B3A8A800CA08CB /* UIViewTests.swift in Sources */,
+				F5ABD28F22B3A8A800CA08CB /* ClassicProfileViewControllerTests.swift in Sources */,
+				F5ABD29422B3A8A800CA08CB /* ColumnFlowLayoutTests.swift in Sources */,
+				F5ABD29122B3A8A800CA08CB /* PolaroidCellTests.swift in Sources */,
+				F5ABD29522B3A8A800CA08CB /* UIViewControllerTests.swift in Sources */,
+				F5ABD29222B3A8A800CA08CB /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F5ABD27222B3A7F200CA08CB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EBB3CEB41E50C60B0063303C /* BSWInterfaceKitDemo */;
+			targetProxy = F5ABD27122B3A7F200CA08CB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		EBB3CEC01E50C60B0063303C /* LaunchScreen.storyboard */ = {
@@ -339,14 +482,96 @@
 			};
 			name = Release;
 		};
+		F5ABD27322B3A7F200CA08CB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = BSWInterfaceKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theleftbit.BSWInterfaceKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BSWInterfaceKitDemo.app/BSWInterfaceKitDemo";
+			};
+			name = Debug;
+		};
+		F5ABD27422B3A7F200CA08CB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = BSWInterfaceKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theleftbit.BSWInterfaceKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BSWInterfaceKitDemo.app/BSWInterfaceKitDemo";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EBB3CECF1E50C60B0063303C /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemoDemo" */ = {
+		EBB3CECF1E50C60B0063303C /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EBB3CED01E50C60B0063303C /* Debug */,
 				EBB3CED11E50C60B0063303C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F5ABD27522B3A7F200CA08CB /* Build configuration list for PBXNativeTarget "BSWInterfaceKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5ABD27322B3A7F200CA08CB /* Debug */,
+				F5ABD27422B3A7F200CA08CB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -362,10 +587,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		F5ABD27E22B3A86900CA08CB /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		F5200B9822B39E1C008D42E7 /* BSWInterfaceKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BSWInterfaceKit;
+		};
+		F5ABD27F22B3A86900CA08CB /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F5ABD27E22B3A86900CA08CB /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

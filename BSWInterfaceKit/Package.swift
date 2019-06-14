@@ -17,15 +17,11 @@ let package = Package(
         .package(url: "https://github.com/bignerdranch/Deferred.git", from: "4.0.0"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", .branch("xcode11")),
         .package(url: "https://github.com/kean/Nuke.git", .revision("8.0-rc.1")),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .branch("master")),
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
         .target(
             name: "BSWInterfaceKit",
             dependencies: ["Nuke", "BSWInterfaceKitObjC", "Deferred", "BSWFoundation"]),
-        .testTarget(
-            name: "BSWInterfaceKitTests",
-            dependencies: ["BSWInterfaceKit", "SnapshotTesting"]),
     ]
 )
