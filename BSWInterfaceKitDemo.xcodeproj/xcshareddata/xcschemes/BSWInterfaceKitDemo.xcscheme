@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EBB3CEB41E50C60B0063303C"
-               BuildableName = "BSWInterfaceKitDemoDemo.app"
-               BlueprintName = "BSWInterfaceKitDemoDemo"
+               BuildableName = "BSWInterfaceKitDemo.app"
+               BlueprintName = "BSWInterfaceKitDemo"
                ReferencedContainer = "container:BSWInterfaceKitDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EBB3CEB41E50C60B0063303C"
-            BuildableName = "BSWInterfaceKitDemoDemo.app"
-            BlueprintName = "BSWInterfaceKitDemoDemo"
+            BuildableName = "BSWInterfaceKitDemo.app"
+            BlueprintName = "BSWInterfaceKitDemo"
             ReferencedContainer = "container:BSWInterfaceKitDemo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -50,24 +50,14 @@
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
-      <CodeCoverageTargets>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "455C12913F6B7E5B16B5A673171C13D6"
-            BuildableName = "BSWInterfaceKit.framework"
-            BlueprintName = "BSWInterfaceKit"
-            ReferencedContainer = "container:Pods/Pods.xcodeproj">
-         </BuildableReference>
-      </CodeCoverageTargets>
       <Testables>
          <TestableReference
-            skipped = "NO"
-            testExecutionOrdering = "random">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EBB3CEC71E50C60B0063303C"
-               BuildableName = "BSWInterfaceKitDemoDemoTests.xctest"
-               BlueprintName = "BSWInterfaceKitDemoDemoTests"
+               BlueprintIdentifier = "F5ABD26B22B3A7F200CA08CB"
+               BuildableName = "BSWInterfaceKitTests.xctest"
+               BlueprintName = "BSWInterfaceKitTests"
                ReferencedContainer = "container:BSWInterfaceKitDemo.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -88,8 +78,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EBB3CEB41E50C60B0063303C"
-            BuildableName = "BSWInterfaceKitDemoDemo.app"
-            BlueprintName = "BSWInterfaceKitDemoDemo"
+            BuildableName = "BSWInterfaceKitDemo.app"
+            BlueprintName = "BSWInterfaceKitDemo"
             ReferencedContainer = "container:BSWInterfaceKitDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -105,8 +95,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EBB3CEB41E50C60B0063303C"
-            BuildableName = "BSWInterfaceKitDemoDemo.app"
-            BlueprintName = "BSWInterfaceKitDemoDemo"
+            BuildableName = "BSWInterfaceKitDemo.app"
+            BlueprintName = "BSWInterfaceKitDemo"
             ReferencedContainer = "container:BSWInterfaceKitDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

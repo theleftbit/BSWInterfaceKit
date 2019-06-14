@@ -9,6 +9,7 @@ class ButtonTests: BSWSnapshotTest {
 
     open var button: UIButton!
 
+    /*
     func testRadioButton() {
         let button = ButtonTests.buttonForRadioTests()
         verify(view: button)
@@ -69,4 +70,5 @@ class ButtonTests: BSWSnapshotTest {
         button.frame = CGRect(x: 0, y: 0, width: button.intrinsicContentSize.width, height: button.intrinsicContentSize.height)
         return button
     }
+     */
 }
