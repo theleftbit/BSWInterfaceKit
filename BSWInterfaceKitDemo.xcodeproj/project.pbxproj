@@ -52,7 +52,7 @@
 		EBB3CEC31E50C60B0063303C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EBBB9FAC1E7BF0FE000F1232 /* StrawberryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrawberryViewController.swift; sourceTree = "<group>"; };
 		EBBB9FAE1E7BF524000F1232 /* AzzurriViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AzzurriViewController.swift; sourceTree = "<group>"; };
-		F5200B9722B39A47008D42E7 /* BSWInterfaceKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BSWInterfaceKit; sourceTree = "<group>"; };
+		F5200B9722B39A47008D42E7 /*  */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ""; sourceTree = "<group>"; };
 		F54886DB203ED769005191D3 /* FacebookLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookLoginViewController.swift; sourceTree = "<group>"; };
 		F5ABD26C22B3A7F200CA08CB /* BSWInterfaceKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BSWInterfaceKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5ABD27022B3A7F200CA08CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 		421629A8412B159ACA82BB03 = {
 			isa = PBXGroup;
 			children = (
-				F5200B9722B39A47008D42E7 /* BSWInterfaceKit */,
+				F5200B9722B39A47008D42E7 /*  */,
 				EBB3CEB61E50C60B0063303C /* BSWInterfaceKitDemo */,
 				F5ABD26D22B3A7F200CA08CB /* BSWInterfaceKitTests */,
 				9F252AEF9DC385C64E668E8B /* Products */,
