@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "BSWFoundation",
+        "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
+        "state": {
+          "branch": "xcode11",
+          "revision": "04b4a3341995740e739e19bd95c8b05d7c0c1f0f",
+          "version": null
+        }
+      },
+      {
+        "package": "Deferred",
+        "repositoryURL": "https://github.com/bignerdranch/Deferred.git",
+        "state": {
+          "branch": null,
+          "revision": "5faced2c125570f495f0b439f1b3f977e164090f",
+          "version": "4.0.0"
+        }
+      },
+      {
+        "package": "KeychainAccess",
+        "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
+        "state": {
+          "branch": null,
+          "revision": "0046db4ab8fd7be31a59e57912dbb96639ad8ce9",
+          "version": "3.2.0"
+        }
+      },
+      {
+        "package": "Nuke",
+        "repositoryURL": "https://github.com/kean/Nuke.git",
+        "state": {
+          "branch": "8.0-rc.1",
+          "revision": "469efb593c2c1c2e0d40f8b74cb6a2fb95581d77",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

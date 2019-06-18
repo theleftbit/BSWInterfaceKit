@@ -11,7 +11,8 @@ let package = Package(
     products: [
         .library(
             name: "BSWInterfaceKit",
-            targets: ["BSWInterfaceKit"]),
+            targets: ["BSWInterfaceKit", "BSWInterfaceKitObjC"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/bignerdranch/Deferred.git", from: "4.0.0"),
