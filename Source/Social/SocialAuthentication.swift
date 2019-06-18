@@ -20,6 +20,11 @@ public class SocialAuthenticationManager {
         public let authToken: String
         public let approvedPermissions: Set<String>
         public let rejectedPermissions: Set<String>
+        public init(authToken: String, approvedPermissions: Set<String> = [], rejectedPermissions: Set<String> = []) {
+            self.authToken = authToken
+            self.approvedPermissions = approvedPermissions
+            self.rejectedPermissions = rejectedPermissions
+        }
     }
 
     /**
