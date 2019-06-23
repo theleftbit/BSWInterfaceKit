@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
           "branch": "xcode11",
-          "revision": "04b4a3341995740e739e19bd95c8b05d7c0c1f0f",
+          "revision": "45802250ef65661c033608280254472dc1d57ae8",
           "version": null
         }
       },
@@ -42,7 +42,7 @@
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
           "branch": "master",
-          "revision": "950c0dc422ee26a82dcdc03d965b470e35edf1f2",
+          "revision": "dc14bff0dab1262d855fa415d136fb5a5bdfcbf9",
           "version": null
         }
       }
