@@ -14,6 +14,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
     enum Features: String, CaseIterable {
         case profileViewController = "ProfileViewController"
         case asyncViewModelController = "AsyncViewModelController"
+        case asyncViewSwiftUI = "AsyncViewSwiftUI"
         case collectionViewDataSource = "CollectionViewDataSource"
         case facebookLogin = "FacebookLogin"
         case alertOperations = "AlertOperations"
@@ -62,6 +63,8 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
                 return AlertOperationViewController()
             case .asyncViewModelController:
                 return StrawberryViewController(dataProvider: StrawberryInteractor.dataProvider())
+            case .asyncViewSwiftUI:
+                return ToDoList.Factory.todoListAsUIKit()
             case .collectionViewDataSource:
                 return AzzurriViewController()
             case .facebookLogin:
