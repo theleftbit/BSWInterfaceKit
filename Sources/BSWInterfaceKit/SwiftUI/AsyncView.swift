@@ -24,7 +24,7 @@ public struct AsyncView<HostedView: View & ViewModelInitiable>: View {
     }
     
     public var body: some View {
-        generateView()
+        stateView
             .onAppear {
                 self.fetchData()
         }
@@ -45,7 +45,7 @@ public struct AsyncView<HostedView: View & ViewModelInitiable>: View {
         })
     }
     
-    private func generateView() -> some View {
+    private var stateView: AnyView {
         switch asyncState {
         case .loading:
             return AnyView(Loading(loadingMessage: TextStyler.styler.attributedString("Loading...")))
