@@ -111,7 +111,7 @@ public enum StateContainerAppereance {
             return .init(duration: 0.3, curve: .easeInOut)
         }
         
-        var animator: UIViewPropertyAnimator {
+        public var animator: UIViewPropertyAnimator {
             return .init(duration: duration, curve: curve)
         }
     }
