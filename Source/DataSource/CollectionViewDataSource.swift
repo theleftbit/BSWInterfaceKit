@@ -14,6 +14,12 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     private var emptyView: UIView?
     private var offsetObserver: NSKeyValueObservation?
     private var isRequestingNextPage: Bool = false
+    private var scrollDirection: UICollectionView.ScrollDirection {
+        guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+            return .vertical
+        }
+        return flowLayout.scrollDirection
+    }
     
     public init(data: [Cell.VM] = [],
                 collectionView: UICollectionView,
@@ -94,12 +100,26 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
                 forSupplementaryViewOfKind: UICollectionView.SupplementaryViewKind.footer.toUIKit(),
                 withReuseIdentifier: Constants.InfinitePagingReuseID
             )
+            
             offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
-                let offsetY = cv.contentOffset.y
-                let contentHeight = cv.contentSize.height
-                guard let `self` = self, offsetY > 0, contentHeight > 0 else { return }
-                if offsetY > contentHeight - cv.frame.size.height {
-                    self.requestNextInfiniteScrollPage()
+                guard let self = self else { return }
+                switch self.scrollDirection {
+                case .vertical:
+                    let offsetY = cv.contentOffset.y
+                    let contentHeight = cv.contentSize.height
+                    guard offsetY > 0, contentHeight > 0 else { return }
+                    if offsetY > contentHeight - cv.frame.size.height {
+                        self.requestNextInfiniteScrollPage()
+                    }
+                case .horizontal:
+                    let offsetX = cv.contentOffset.x
+                    let contentWidth = cv.contentSize.width
+                    guard offsetX > 0, contentWidth > 0 else { return }
+                    if offsetX > contentWidth - cv.frame.size.width {
+                        self.requestNextInfiniteScrollPage()
+                    }
+                @unknown default:
+                    fatalError()
                 }
             })
         }
