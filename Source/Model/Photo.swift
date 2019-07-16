@@ -100,8 +100,8 @@ public extension Photo {
 
 public extension Photo {
     struct PlaceholderImage: Equatable {
-        let image: UIImage
-        let preferredContentMode: UIView.ContentMode
+        public let image: UIImage
+        public let preferredContentMode: UIView.ContentMode
         public init(image: UIImage, preferredContentMode: UIView.ContentMode) {
             self.image = image
             self.preferredContentMode = preferredContentMode
