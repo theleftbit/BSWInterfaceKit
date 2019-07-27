@@ -10,11 +10,11 @@ public protocol ViewModelInitiable {
 @available(iOS 13.0, *)
 public struct AsyncView<HostedView: View & ViewModelInitiable>: View {
     
-    public init(dataFetcher: Publishers.Future<HostedView.VM, Error>) {
+    public init(dataFetcher: Combine.Future<HostedView.VM, Error>) {
         self.dataFetcher = dataFetcher
     }
     
-    private let dataFetcher: Publishers.Future<HostedView.VM, Error>
+    private let dataFetcher: Combine.Future<HostedView.VM, Error>
     @State private var asyncState = AsyncState.loading
     
     private enum AsyncState {

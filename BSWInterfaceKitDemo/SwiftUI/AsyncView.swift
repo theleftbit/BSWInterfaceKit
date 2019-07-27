@@ -14,14 +14,14 @@ struct ToDoList: View, ViewModelInitiable {
     }
     
     var body: some View {
-        List(todos.identified(by: \.id)) { todo in
+        ForEach(todos, id: \.id) { todo in
             ToDoRow(toDo: todo)
         }
     }
     
     enum Factory {
         static func todoList() -> some View {
-            NavigationView(root: {
+            NavigationView(content: {
                 AsyncView<ToDoList>(dataFetcher: apiClient.fetchTodos().future)
                 .navigationBarTitle(Text("ToDos"))
             })
