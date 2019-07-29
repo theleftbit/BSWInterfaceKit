@@ -31,6 +31,11 @@
 		F56F914C22EF43C200E45944 /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90C622EF43C200E45944 /* AvatarViewTests.swift */; };
 		F56F914D22EF43C200E45944 /* ClassicProfileViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90C722EF43C200E45944 /* ClassicProfileViewControllerTests.swift */; };
 		F56F91BC22EF43FB00E45944 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = F56F91BB22EF43FB00E45944 /* SnapshotTesting */; };
+		F5CF123F22EF7A5E0086BC92 /* Deferred in Frameworks */ = {isa = PBXBuildFile; productRef = F5CF123E22EF7A5E0086BC92 /* Deferred */; };
+		F5CF124022EF7A5E0086BC92 /* Deferred in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F5CF123E22EF7A5E0086BC92 /* Deferred */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F5CF124322EF7AC40086BC92 /* Deferred in Frameworks */ = {isa = PBXBuildFile; productRef = F5CF124222EF7AC40086BC92 /* Deferred */; };
+		F5CF124422EF7AC40086BC92 /* Deferred in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F5CF124222EF7AC40086BC92 /* Deferred */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F5CF124922EF7BBF0086BC92 /* BSWInterfaceKit in Frameworks */ = {isa = PBXBuildFile; productRef = F5CF124822EF7BBF0086BC92 /* BSWInterfaceKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +47,31 @@
 			remoteInfo = BSWInterfaceKitDemo;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F5CF123C22EF79CB0086BC92 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F5CF124422EF7AC40086BC92 /* Deferred in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5CF124122EF7A5E0086BC92 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F5CF124022EF7A5E0086BC92 /* Deferred in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F56F908422EF422300E45944 /* BSWInterfaceKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BSWInterfaceKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F56F90B922EF42E100E45944 /* BSWInterfaceKit in Frameworks */,
+				F5CF123F22EF7A5E0086BC92 /* Deferred in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,7 +116,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5CF124922EF7BBF0086BC92 /* BSWInterfaceKit in Frameworks */,
 				F56F91BC22EF43FB00E45944 /* SnapshotTesting in Frameworks */,
+				F5CF124322EF7AC40086BC92 /* Deferred in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,7 +152,6 @@
 				F56F90B622EF427B00E45944 /* Features */,
 				F56F909522EF422400E45944 /* Info.plist */,
 				F56F909222EF422400E45944 /* LaunchScreen.storyboard */,
-				F56F90AD22EF426900E45944 /* SwiftUI */,
 			);
 			path = BSWInterfaceKitDemo;
 			sourceTree = "<group>";
@@ -145,6 +177,7 @@
 		F56F90B622EF427B00E45944 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				F56F90AD22EF426900E45944 /* SwiftUI */,
 				F56F90AB22EF426900E45944 /* AlertOperationViewController.swift */,
 				F56F90A922EF426900E45944 /* AzzurriViewController.swift */,
 				F56F90AA22EF426900E45944 /* FacebookLoginViewController.swift */,
@@ -190,6 +223,7 @@
 				F56F908022EF422300E45944 /* Sources */,
 				F56F908122EF422300E45944 /* Frameworks */,
 				F56F908222EF422300E45944 /* Resources */,
+				F5CF124122EF7A5E0086BC92 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -198,6 +232,7 @@
 			name = BSWInterfaceKitDemo;
 			packageProductDependencies = (
 				F56F90B822EF42E100E45944 /* BSWInterfaceKit */,
+				F5CF123E22EF7A5E0086BC92 /* Deferred */,
 			);
 			productName = BSWInterfaceKitDemo;
 			productReference = F56F908422EF422300E45944 /* BSWInterfaceKitDemo.app */;
@@ -210,6 +245,7 @@
 				F56F909622EF422500E45944 /* Sources */,
 				F56F909722EF422500E45944 /* Frameworks */,
 				F56F909822EF422500E45944 /* Resources */,
+				F5CF123C22EF79CB0086BC92 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -219,6 +255,8 @@
 			name = BSWInterfaceKitDemoTests;
 			packageProductDependencies = (
 				F56F91BB22EF43FB00E45944 /* SnapshotTesting */,
+				F5CF124222EF7AC40086BC92 /* Deferred */,
+				F5CF124822EF7BBF0086BC92 /* BSWInterfaceKit */,
 			);
 			productName = BSWInterfaceKitDemoTests;
 			productReference = F56F909A22EF422500E45944 /* BSWInterfaceKitDemoTests.xctest */;
@@ -255,6 +293,7 @@
 			mainGroup = F56F907B22EF422300E45944;
 			packageReferences = (
 				F56F91BA22EF43FB00E45944 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */,
 			);
 			productRefGroup = F56F908522EF422300E45944 /* Products */;
 			projectDirPath = "";
@@ -578,6 +617,14 @@
 				kind = branch;
 			};
 		};
+		F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bignerdranch/Deferred.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -589,6 +636,20 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F56F91BA22EF43FB00E45944 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
+		};
+		F5CF123E22EF7A5E0086BC92 /* Deferred */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */;
+			productName = Deferred;
+		};
+		F5CF124222EF7AC40086BC92 /* Deferred */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */;
+			productName = Deferred;
+		};
+		F5CF124822EF7BBF0086BC92 /* BSWInterfaceKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BSWInterfaceKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
