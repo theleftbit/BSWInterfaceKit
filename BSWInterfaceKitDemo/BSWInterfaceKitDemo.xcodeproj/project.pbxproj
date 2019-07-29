@@ -33,8 +33,6 @@
 		F56F91BC22EF43FB00E45944 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = F56F91BB22EF43FB00E45944 /* SnapshotTesting */; };
 		F5CF123F22EF7A5E0086BC92 /* Deferred in Frameworks */ = {isa = PBXBuildFile; productRef = F5CF123E22EF7A5E0086BC92 /* Deferred */; };
 		F5CF124022EF7A5E0086BC92 /* Deferred in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F5CF123E22EF7A5E0086BC92 /* Deferred */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		F5CF124322EF7AC40086BC92 /* Deferred in Frameworks */ = {isa = PBXBuildFile; productRef = F5CF124222EF7AC40086BC92 /* Deferred */; };
-		F5CF124422EF7AC40086BC92 /* Deferred in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F5CF124222EF7AC40086BC92 /* Deferred */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F5CF124922EF7BBF0086BC92 /* BSWInterfaceKit in Frameworks */ = {isa = PBXBuildFile; productRef = F5CF124822EF7BBF0086BC92 /* BSWInterfaceKit */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +53,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F5CF124422EF7AC40086BC92 /* Deferred in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,7 +115,6 @@
 			files = (
 				F5CF124922EF7BBF0086BC92 /* BSWInterfaceKit in Frameworks */,
 				F56F91BC22EF43FB00E45944 /* SnapshotTesting in Frameworks */,
-				F5CF124322EF7AC40086BC92 /* Deferred in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +251,6 @@
 			name = BSWInterfaceKitDemoTests;
 			packageProductDependencies = (
 				F56F91BB22EF43FB00E45944 /* SnapshotTesting */,
-				F5CF124222EF7AC40086BC92 /* Deferred */,
 				F5CF124822EF7BBF0086BC92 /* BSWInterfaceKit */,
 			);
 			productName = BSWInterfaceKitDemoTests;
@@ -638,11 +633,6 @@
 			productName = SnapshotTesting;
 		};
 		F5CF123E22EF7A5E0086BC92 /* Deferred */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */;
-			productName = Deferred;
-		};
-		F5CF124222EF7AC40086BC92 /* Deferred */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */;
 			productName = Deferred;
