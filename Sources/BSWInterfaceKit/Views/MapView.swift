@@ -17,7 +17,7 @@ public class MapView: UIImageView {
     }
     
     public init() {
-        super.init(image: UIImage.interfaceKitImageNamed("grid-placeholder"))
+        super.init(image: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -51,7 +51,9 @@ public class MapView: UIImageView {
         snapshotter.start { (snapshot, error) in
             guard error == nil, let snapshot = snapshot else { return }
             
-            let renderer = UIGraphicsImageRenderer(size: options.size)
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = UIScreen.main.scale
+            let renderer = UIGraphicsImageRenderer(size: options.size, format: format)
             let image = renderer.image(actions: { (context) in
                 snapshot.image.draw(at: .zero)
                 

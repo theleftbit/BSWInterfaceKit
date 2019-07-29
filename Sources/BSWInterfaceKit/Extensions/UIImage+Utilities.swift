@@ -42,6 +42,7 @@ public extension UIImage {
         return image!
     }
 
+    @available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in 14.0b; please migrate to a different API.")
     func tint(_ tintColor: UIColor) -> UIImage {
         return modifiedImage { context, rect in
             context.setBlendMode(.multiply)

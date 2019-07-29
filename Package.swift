@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .library(
             name: "BSWInterfaceKit",
+            type: .dynamic,
             targets: ["BSWInterfaceKit", "BSWInterfaceKitObjC"]
         ),
     ],
