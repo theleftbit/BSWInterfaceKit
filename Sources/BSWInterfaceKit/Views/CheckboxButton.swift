@@ -8,7 +8,7 @@ import UIKit
 @objc(BSWCheckboxButton)
 public class CheckboxButton: UIButton {
 
-    public enum Appereance {
+    public enum Appearance {
         public static var checkTintColor: UIColor = .black
         public static var backgroundTintColor = UIColor(r: 243, g: 243, b: 243)
     }
@@ -38,22 +38,27 @@ public class CheckboxButton: UIButton {
     }
     
     static private func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
-        let nonSelectedImage = UIImage.interfaceKitImageNamed("ic_checkbox_background")!.tint(Appereance.backgroundTintColor)
-        
-        let checkboxImage = UIImage.interfaceKitImageNamed("ic_checkbox_check")!.tint(Appereance.checkTintColor)
-        let size = nonSelectedImage.size
-        let padding: CGFloat = 5
-        
-        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
+        let backgroundImage = UIImage.interfaceKitImageNamed("rectangle.fill")!.withTintColor(Appearance.backgroundTintColor)
+        let checkboxImage = UIImage.interfaceKitImageNamed("checkmark")!.withTintColor(Appearance.checkTintColor)
+        let targetSize = CGSize(width: 36, height: 36)
+        let horizontalPadding: CGFloat = 6
+        let verticalPadding: CGFloat = 9
 
-        let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        let areaSize2 = CGRect(x: padding, y: padding, width: size.width - 2*padding, height: size.height - 2*padding)
-        nonSelectedImage.draw(in: areaSize)
-        checkboxImage.draw(in: areaSize2, blendMode: .normal, alpha: 1)
+        let areaSize = CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height)
+        let areaSize2 = CGRect(x: horizontalPadding, y: verticalPadding, width: targetSize.width - 2*horizontalPadding, height: targetSize.height - 2*verticalPadding)
         
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = UIScreen.main.scale
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
+        let newCheckboxImage = renderer.image { ctx in
+            backgroundImage.draw(in: areaSize)
+            checkboxImage.draw(in: areaSize2, blendMode: .normal, alpha: 1)
+        }
 
-        return (nonSelectedImage, newImage)
+        let newBackgroundImage = renderer.image { ctx in
+            backgroundImage.draw(in: areaSize)
+        }
+
+        return (newBackgroundImage, newCheckboxImage)
     }
 }
