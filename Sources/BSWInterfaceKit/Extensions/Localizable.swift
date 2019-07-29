@@ -47,7 +47,7 @@ extension BSWInterfaceKitStrings: CustomStringConvertible {
     }
 }
 
-internal func localizableString(_ key: BSWInterfaceKitStrings) -> String {
+func localizableString(_ key: BSWInterfaceKitStrings) -> String {
     return key.string
 }
 
