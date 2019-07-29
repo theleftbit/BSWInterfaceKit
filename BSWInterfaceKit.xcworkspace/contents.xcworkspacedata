@@ -5,6 +5,6 @@
       location = "group:BSWInterfaceKitDemo/BSWInterfaceKitDemo.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:BSWInterfaceKit">
+      location = "group:.">
    </FileRef>
 </Workspace>
