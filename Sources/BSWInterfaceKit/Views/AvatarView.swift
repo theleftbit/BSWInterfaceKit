@@ -51,9 +51,9 @@ public class AvatarView: UIView {
     private var tapRecognizer: UITapGestureRecognizer?
     private let cameraImageView: UIImageView = {
         let imageView = UIImageView()
-        let cameraImage = UIImage.templateImage(.camera)
-        imageView.image = cameraImage.withRenderingMode(.alwaysTemplate)
+        imageView.image = UIImage.templateImage(.camera).withRenderingMode(.alwaysTemplate)
         imageView.tintColor = .white
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 
