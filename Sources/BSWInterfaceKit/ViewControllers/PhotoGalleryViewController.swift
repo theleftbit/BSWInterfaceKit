@@ -54,13 +54,15 @@ public final class PhotoGalleryViewController: UIViewController {
         photosGallery.pinToSuperview()
         
         //Add the close button
-        let closeButton = UIButton(type: UIButton.ButtonType.custom)
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.setImage(UIImage.templateImage(.close), for: .normal)
-        closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchUpInside)
-        view.addSubview(closeButton)
-        closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor).isActive = true
-        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 12).isActive = true
+        guard #available(iOS 13.0, *) else { return }
+        let closeButton = UIButton.systemButton(with: UIImage.templateImage(.close), target: self, action: #selector(onCloseButton))
+        closeButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(textStyle: .largeTitle, scale: .small), forImageIn: .normal)
+
+        view.addAutolayoutSubview(closeButton)
+        NSLayoutConstraint.activate([
+            closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 12)
+        ])
         
         view.layoutIfNeeded()
         photosGallery.scrollToPhoto(atIndex: currentPage)

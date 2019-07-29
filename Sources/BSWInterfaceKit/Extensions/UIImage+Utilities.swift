@@ -17,10 +17,10 @@ public extension UIImage {
     }
 
     enum Template: String {
-        case plusRound = "PlusRound"
-        case cancelRound = "CancelRound"
-        case close = "Close"
-        case camera = "ic_camera"
+        case plusRound = "plus.circle"
+        case cancelRound = "xmark.circle"
+        case close = "xmark"
+        case camera = "camera"
     }
     
     class func templateImage(_ template: Template) -> UIImage {
