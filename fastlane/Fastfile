@@ -8,8 +8,9 @@ platform :ios do
   desc "Execute unit tests"
   lane :unit_tests do
     run_tests(
+      workspace: "BSWInterfaceKit.xcworkspace",
       scheme: "BSWInterfaceKitDemo",
-      devices: ["iPhone X"],
+      devices: ["iPhone Xs"],
       )
   end
 end
