@@ -3,6 +3,7 @@
 //  Created by Pierluigi Cifani on 20/06/2019.
 //
 
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13.0, *)
@@ -21,3 +22,4 @@ public struct Loading: UIViewRepresentable {
     }
     public func updateUIView(_ uiView: LoadingView, context: Self.Context) {}
 }
+#endif

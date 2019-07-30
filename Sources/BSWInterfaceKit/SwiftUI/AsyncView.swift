@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 import Combine
 
@@ -56,3 +57,4 @@ public struct AsyncView<HostedView: View & ViewModelInitiable>: View {
         }
     }
 }
+#endif
