@@ -32,9 +32,9 @@
         "package": "Nuke",
         "repositoryURL": "https://github.com/kean/Nuke.git",
         "state": {
-          "branch": "8.0-rc.1",
-          "revision": "469efb593c2c1c2e0d40f8b74cb6a2fb95581d77",
-          "version": null
+          "branch": null,
+          "revision": "cff4c5a8f610dcb297ca9593f57b963dee6d8324",
+          "version": "8.0.1"
         }
       },
       {
