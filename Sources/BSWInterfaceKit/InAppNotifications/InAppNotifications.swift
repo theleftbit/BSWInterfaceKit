@@ -17,7 +17,7 @@ public class InAppNotifications {
     public static let success: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatGreen, image: UIImage(named: "success", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
     public static let error: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatRed, image: UIImage(named: "error", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
     public static let info: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatGray, image: UIImage(named: "info", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
-
+    
     
     // MARK: - Init
     
@@ -43,7 +43,7 @@ public class InAppNotifications {
         view.setTitle(title: title)
         view.setMessage(message: message)
         view.setDismisTimer(delay: dismissDelay)
-		view.setCompletionBlock(completion)
+        view.setCompletionBlock(completion)
         
         guard let window = UIApplication.shared.keyWindow else {
             print("Failed to show CRNotification. No keywindow available.")
@@ -75,6 +75,7 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     
     private let imageView: UIImageView = {
         let view = UIImageView()
+        view.contentMode = .scaleAspectFit
         view.translatesAutoresizingMaskIntoConstraints = false
         view.tintColor = .white
         return view
@@ -142,8 +143,6 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
         contentStackView.spacing = 8
         contentStackView.layoutMargins = .init(uniform: 12)
         contentStackView.isLayoutMarginsRelativeArrangement = true
-        
-        imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor).isActive = true
         
         addAutolayoutSubview(contentStackView)
         contentStackView.pinToSuperview()
