@@ -2,6 +2,7 @@ default_platform(:ios)
 
 before_all do |lane, options|
   setup_jenkins(derived_data_path: "./derivedData")
+  xcode_select("/Applications/Xcode-beta.app")
 end
 
 platform :ios do
@@ -17,4 +18,5 @@ end
 
 after_all do |lane, options|
   clear_derived_data(derived_data_path: "./derivedData")
+  xcode_select("/Applications/Xcode.app")
 end

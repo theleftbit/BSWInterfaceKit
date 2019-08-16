@@ -16,14 +16,6 @@ public class MapView: UIImageView {
         static let Distance: CLLocationDistance = 1000
     }
     
-    public init() {
-        super.init(image: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     public weak var presenterController: UIViewController? {
         didSet {
             guard presenterController != nil else { return }
