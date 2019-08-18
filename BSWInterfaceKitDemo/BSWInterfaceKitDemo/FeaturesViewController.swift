@@ -65,7 +65,8 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
                 return StrawberryViewController(dataProvider: StrawberryInteractor.dataProvider())
             case .asyncViewSwiftUI:
                 if #available(iOS 13.0.0, *) {
-                    return ToDoList.Factory.todoListAsUIKit()
+//                    return ToDoList.Factory.todoListAsUIKit()
+                    return UIViewController()
                 } else {
                     return UIViewController()
                 }

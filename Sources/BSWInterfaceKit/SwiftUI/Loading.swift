@@ -1,7 +1,5 @@
-//
-//  File.swift
-//  Created by Pierluigi Cifani on 20/06/2019.
-//
+
+/*
 
 #if canImport(SwiftUI)
 import SwiftUI
@@ -23,3 +21,4 @@ public struct Loading: UIViewRepresentable {
     public func updateUIView(_ uiView: LoadingView, context: Self.Context) {}
 }
 #endif
+ */

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F54DB34C2309552A008E306B /* BSWInterfaceKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F56F90B822EF42E100E45944 /* BSWInterfaceKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F56F908822EF422300E45944 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F908722EF422300E45944 /* AppDelegate.swift */; };
 		F56F909122EF422400E45944 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F56F909022EF422400E45944 /* Assets.xcassets */; };
 		F56F909422EF422400E45944 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F56F909222EF422400E45944 /* LaunchScreen.storyboard */; };
@@ -66,6 +67,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F54DB34C2309552A008E306B /* BSWInterfaceKit in Embed Frameworks */,
 				F5CF124022EF7A5E0086BC92 /* Deferred in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
