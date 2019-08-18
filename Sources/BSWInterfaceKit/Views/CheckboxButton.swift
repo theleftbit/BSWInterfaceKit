@@ -39,7 +39,7 @@ public class CheckboxButton: UIButton {
     
     static private func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
         let backgroundImage: UIImage = {
-            let image = UIImage.interfaceKitImageNamed("rectangle.fill")!
+            let image = UIImage.templateImage(.rectangle)
             if #available(iOS 13.0, *) {
                 return image.withTintColor(Appearance.backgroundTintColor)
             } else {
@@ -48,7 +48,7 @@ public class CheckboxButton: UIButton {
         }()
 
         let checkboxImage: UIImage = {
-            let image = UIImage.interfaceKitImageNamed("checkmark")!
+            let image = UIImage.templateImage(.checkmark)
             if #available(iOS 13.0, *) {
                 return image.withTintColor(Appearance.checkTintColor)
             } else {

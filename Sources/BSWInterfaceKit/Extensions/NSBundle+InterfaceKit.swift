@@ -11,9 +11,9 @@ import UIKit
 extension Bundle {
     class func interfaceKitBundle() -> Bundle {
         let frameworkBundle = Bundle.init(for: InterfaceKit.self)
-        if let url = Bundle.main.url(forResource: "BSWInterfaceKit", withExtension: "bundle"), let bundle = Bundle(url: url) {
+        if let url = Bundle.main.url(forResource: "BSWInterfaceKitAssets", withExtension: "bundle"), let bundle = Bundle(url: url) {
             return bundle
-        } else if let url = frameworkBundle.url(forResource: "BSWInterfaceKit", withExtension: "bundle"), let bundle = Bundle(url: url) {
+        } else if let url = frameworkBundle.url(forResource: "BSWInterfaceKitAssets", withExtension: "bundle"), let bundle = Bundle(url: url) {
             return bundle
         } else {
             fatalError()

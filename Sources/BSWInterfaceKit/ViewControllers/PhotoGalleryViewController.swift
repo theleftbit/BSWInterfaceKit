@@ -54,10 +54,21 @@ public final class PhotoGalleryViewController: UIViewController {
         photosGallery.pinToSuperview()
         
         //Add the close button
-        guard #available(iOS 13.0, *) else { return }
-        let closeButton = UIButton.systemButton(with: UIImage.templateImage(.close), target: self, action: #selector(onCloseButton))
-        closeButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(textStyle: .largeTitle, scale: .small), forImageIn: .normal)
+        let closeButton: UIButton = {
+            if #available(iOS 13.0, *) {
+                let closeButton = UIButton.systemButton(with: UIImage.templateImage(.close), target: self, action: #selector(onCloseButton))
+                closeButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(textStyle: .largeTitle, scale: .small), forImageIn: .normal)
+                return closeButton
+            } else {
+                let closeButton = UIButton(type: .custom)
+                closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchDown)
+                let image = UIImage.templateImage(.close).withRenderingMode(.alwaysTemplate)
+                closeButton.setImage(image, for: .normal)
+                return closeButton
+            }
+        }()
 
+        closeButton.tintColor = .white
         view.addAutolayoutSubview(closeButton)
         NSLayoutConstraint.activate([
             closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
