@@ -41,7 +41,7 @@ class PresentAlertOperation: Operation {
             }
 
             let alert = UIAlertController(title: self.title, message: self.message, preferredStyle: .alert)
-            let action = UIAlertAction(title: BSWInterfaceKitStrings.dismiss.string, style: .cancel) { _ in
+            let action = UIAlertAction(title: "dismiss".localized, style: .cancel) { _ in
                 self.finishOperation()
             }
 
