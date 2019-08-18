@@ -183,17 +183,17 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         let _alertController: UIAlertController? = {
             switch photo {
             case .empty:
-                let alert = UIAlertController(title: localizableString(.addPhotoTitle), message: nil, preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "add-photo-title".localized, message: nil, preferredStyle: .actionSheet)
                 
-                let albumAction = UIAlertAction(title: localizableString(.photoAlbum), style: .default) { _ in
+                let albumAction = UIAlertAction(title: "photo-album".localized, style: .default) { _ in
                     self.userRequestedProfilePictureUpload(fromSource: .photoAlbum)
                 }
 
-                let cameraAction = UIAlertAction(title: localizableString(.camera), style: .default) { _ in
+                let cameraAction = UIAlertAction(title: "camera".localized, style: .default) { _ in
                     self.userRequestedProfilePictureUpload(fromSource: .camera)
                 }
                 
-                let dismissAction = UIAlertAction(title: localizableString(.dismiss), style: .cancel) { _ in
+                let dismissAction = UIAlertAction(title: "dismiss".localized, style: .cancel) { _ in
                     
                 }
 
@@ -202,9 +202,9 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
                 alert.addAction(dismissAction)
                 return alert
             case .filled:
-                let alert = UIAlertController(title: localizableString(.confirmDeleteTitle), message: nil, preferredStyle: .alert)
+                let alert = UIAlertController(title: "confirm-delete-title".localized, message: nil, preferredStyle: .alert)
                 
-                let yesAction = UIAlertAction(title: localizableString(.yes), style: .destructive) { _ in
+                let yesAction = UIAlertAction(title: "yes".localized, style: .destructive) { _ in
                     self.profilePhotoDelegate?.userDeletedProfilePictureAtIndex((index as NSIndexPath).item)
                     
                     let actions: [CollectionViewEditActionKind<PhotoPickerViewModel>] = [
@@ -215,7 +215,7 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
                     self.photosDataSource.performEditActions(actions)
                 }
                 
-                let noAction = UIAlertAction(title: localizableString(.no), style: .default) { _ in
+                let noAction = UIAlertAction(title: "no".localized, style: .default) { _ in
                     
                 }
                 
