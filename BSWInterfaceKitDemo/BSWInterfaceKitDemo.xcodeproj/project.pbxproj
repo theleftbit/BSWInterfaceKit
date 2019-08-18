@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F51A1A5C2309656600492A73 /* BSWFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5B2309656600492A73 /* BSWFoundation */; };
+		F51A1A5D2309656600492A73 /* BSWFoundation in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5B2309656600492A73 /* BSWFoundation */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F51A1A5F230965E600492A73 /* BSWFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5E230965E600492A73 /* BSWFoundation */; };
+		F51A1A60230965E600492A73 /* BSWFoundation in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5E230965E600492A73 /* BSWFoundation */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F54DB34C2309552A008E306B /* BSWInterfaceKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F56F90B822EF42E100E45944 /* BSWInterfaceKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F54DB37623095B14008E306B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54DB37523095B14008E306B /* Assets.xcassets */; };
 		F54DB37723095EC3008E306B /* BSWInterfaceKitAssets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */; };
@@ -74,6 +78,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F51A1A60230965E600492A73 /* BSWFoundation in Embed Frameworks */,
 				F5C8080322F0529D00571F35 /* Deferred in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -87,6 +92,7 @@
 			files = (
 				F54DB34C2309552A008E306B /* BSWInterfaceKit in Embed Frameworks */,
 				F5CF124022EF7A5E0086BC92 /* Deferred in Embed Frameworks */,
+				F51A1A5D2309656600492A73 /* BSWFoundation in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,6 +142,7 @@
 			files = (
 				F56F90B922EF42E100E45944 /* BSWInterfaceKit in Frameworks */,
 				F5CF123F22EF7A5E0086BC92 /* Deferred in Frameworks */,
+				F51A1A5C2309656600492A73 /* BSWFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F51A1A5F230965E600492A73 /* BSWFoundation in Frameworks */,
 				F5C8080222F0529D00571F35 /* Deferred in Frameworks */,
 				F5CF124922EF7BBF0086BC92 /* BSWInterfaceKit in Frameworks */,
 				F56F91BC22EF43FB00E45944 /* SnapshotTesting in Frameworks */,
@@ -290,6 +298,7 @@
 			packageProductDependencies = (
 				F56F90B822EF42E100E45944 /* BSWInterfaceKit */,
 				F5CF123E22EF7A5E0086BC92 /* Deferred */,
+				F51A1A5B2309656600492A73 /* BSWFoundation */,
 			);
 			productName = BSWInterfaceKitDemo;
 			productReference = F56F908422EF422300E45944 /* BSWInterfaceKitDemo.app */;
@@ -314,6 +323,7 @@
 				F56F91BB22EF43FB00E45944 /* SnapshotTesting */,
 				F5CF124822EF7BBF0086BC92 /* BSWInterfaceKit */,
 				F5C8080122F0529D00571F35 /* Deferred */,
+				F51A1A5E230965E600492A73 /* BSWFoundation */,
 			);
 			productName = BSWInterfaceKitDemoTests;
 			productReference = F56F909A22EF422500E45944 /* BSWInterfaceKitDemoTests.xctest */;
@@ -356,6 +366,7 @@
 			packageReferences = (
 				F56F91BA22EF43FB00E45944 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				F5CF123D22EF7A5E0086BC92 /* XCRemoteSwiftPackageReference "Deferred" */,
+				F51A1A5A2309656600492A73 /* XCRemoteSwiftPackageReference "BSWFoundation" */,
 			);
 			productRefGroup = F56F908522EF422300E45944 /* Products */;
 			projectDirPath = "";
@@ -742,6 +753,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F51A1A5A2309656600492A73 /* XCRemoteSwiftPackageReference "BSWFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/theleftbit/BSWFoundation.git";
+			requirement = {
+				branch = xcode11;
+				kind = branch;
+			};
+		};
 		F56F91BA22EF43FB00E45944 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
@@ -761,6 +780,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F51A1A5B2309656600492A73 /* BSWFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F51A1A5A2309656600492A73 /* XCRemoteSwiftPackageReference "BSWFoundation" */;
+			productName = BSWFoundation;
+		};
+		F51A1A5E230965E600492A73 /* BSWFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F51A1A5A2309656600492A73 /* XCRemoteSwiftPackageReference "BSWFoundation" */;
+			productName = BSWFoundation;
+		};
 		F56F90B822EF42E100E45944 /* BSWInterfaceKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BSWInterfaceKit;
