@@ -272,6 +272,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         imageView.isUserInteractionEnabled = true
         spinner.hidesWhenStopped = true
         accesoryView.tintColor = .black
+        accesoryView.imageView?.contentMode = .scaleAspectFit
         
         //Layout
         imageView.fillSuperview(withMargin: Constants.CellPadding)

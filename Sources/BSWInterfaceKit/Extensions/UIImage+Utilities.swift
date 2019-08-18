@@ -7,26 +7,30 @@ import UIKit
 import BSWInterfaceKitObjC
 
 public extension UIImage {
-
-    class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: name, compatibleWith: compatibleWithTraitCollection)
-        } else {
-            return nil
-        }
-    }
-
+    
     enum Template: String {
         case plusRound = "plus.circle"
         case cancelRound = "xmark.circle"
         case close = "xmark"
         case camera = "camera"
+        case rectangle = "rectangle.fill"
+        case checkmark = "checkmark"
     }
     
     class func templateImage(_ template: Template) -> UIImage {
         return UIImage.interfaceKitImageNamed(template.rawValue)!
     }
     
+    private class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
+        if #available(iOS 13.0, *) {
+            return UIImage(systemName: name, compatibleWith: compatibleWithTraitCollection)
+        } else {
+            let bundle = Bundle.interfaceKitBundle()
+            return UIImage(named: name, in: bundle, compatibleWith: compatibleWithTraitCollection)
+        }
+    }
+
+
     /**
      Generates an UIImage from a CAGradientLayer
      

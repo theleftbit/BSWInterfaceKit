@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F54DB34C2309552A008E306B /* BSWInterfaceKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F56F90B822EF42E100E45944 /* BSWInterfaceKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F54DB37623095B14008E306B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54DB37523095B14008E306B /* Assets.xcassets */; };
+		F54DB37723095EC3008E306B /* BSWInterfaceKitAssets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */; };
 		F56F908822EF422300E45944 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F908722EF422300E45944 /* AppDelegate.swift */; };
 		F56F909122EF422400E45944 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F56F909022EF422400E45944 /* Assets.xcassets */; };
 		F56F909422EF422400E45944 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F56F909222EF422400E45944 /* LaunchScreen.storyboard */; };
@@ -40,6 +42,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F54DB36F230959B6008E306B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F56F907C22EF422300E45944 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F54DB35023095718008E306B;
+			remoteInfo = BSWInterfaceKitAssets;
+		};
+		F54DB372230959BC008E306B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F56F907C22EF422300E45944 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F54DB35023095718008E306B;
+			remoteInfo = BSWInterfaceKitAssets;
+		};
 		F56F909B22EF422500E45944 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F56F907C22EF422300E45944 /* Project object */;
@@ -76,6 +92,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BSWInterfaceKitAssets.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		F54DB35323095718008E306B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F54DB37523095B14008E306B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F56F908422EF422300E45944 /* BSWInterfaceKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BSWInterfaceKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F56F908722EF422300E45944 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F56F909022EF422400E45944 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -127,11 +146,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F54DB35223095718008E306B /* BSWInterfaceKitAssets */ = {
+			isa = PBXGroup;
+			children = (
+				F54DB35323095718008E306B /* Info.plist */,
+				F54DB37523095B14008E306B /* Assets.xcassets */,
+			);
+			path = BSWInterfaceKitAssets;
+			sourceTree = "<group>";
+		};
 		F56F907B22EF422300E45944 = {
 			isa = PBXGroup;
 			children = (
 				F56F908622EF422300E45944 /* BSWInterfaceKitDemo */,
 				F56F909D22EF422500E45944 /* BSWInterfaceKitDemoTests */,
+				F54DB35223095718008E306B /* BSWInterfaceKitAssets */,
 				F56F908522EF422300E45944 /* Products */,
 				F56F90B722EF42E100E45944 /* Frameworks */,
 			);
@@ -142,6 +171,7 @@
 			children = (
 				F56F908422EF422300E45944 /* BSWInterfaceKitDemo.app */,
 				F56F909A22EF422500E45944 /* BSWInterfaceKitDemoTests.xctest */,
+				F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -218,6 +248,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F54DB35023095718008E306B /* BSWInterfaceKitAssets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F54DB35423095718008E306B /* Build configuration list for PBXNativeTarget "BSWInterfaceKitAssets" */;
+			buildPhases = (
+				F54DB34F23095718008E306B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BSWInterfaceKitAssets;
+			productName = BSWInterfaceKitAssets;
+			productReference = F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		F56F908322EF422300E45944 /* BSWInterfaceKitDemo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F56F90A322EF422500E45944 /* Build configuration list for PBXNativeTarget "BSWInterfaceKitDemo" */;
@@ -230,6 +275,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				F54DB370230959B6008E306B /* PBXTargetDependency */,
+				F54DB373230959BC008E306B /* PBXTargetDependency */,
 			);
 			name = BSWInterfaceKitDemo;
 			packageProductDependencies = (
@@ -274,6 +321,9 @@
 				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "The Left Bit";
 				TargetAttributes = {
+					F54DB35023095718008E306B = {
+						CreatedOnToolsVersion = 11.0;
+					};
 					F56F908322EF422300E45944 = {
 						CreatedOnToolsVersion = 11.0;
 					};
@@ -303,15 +353,25 @@
 			targets = (
 				F56F908322EF422300E45944 /* BSWInterfaceKitDemo */,
 				F56F909922EF422500E45944 /* BSWInterfaceKitDemoTests */,
+				F54DB35023095718008E306B /* BSWInterfaceKitAssets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F54DB34F23095718008E306B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F54DB37623095B14008E306B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F56F908222EF422300E45944 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F54DB37723095EC3008E306B /* BSWInterfaceKitAssets.bundle in Resources */,
 				F56F909422EF422400E45944 /* LaunchScreen.storyboard in Resources */,
 				F56F909122EF422400E45944 /* Assets.xcassets in Resources */,
 			);
@@ -364,6 +424,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F54DB370230959B6008E306B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F54DB35023095718008E306B /* BSWInterfaceKitAssets */;
+			targetProxy = F54DB36F230959B6008E306B /* PBXContainerItemProxy */;
+		};
+		F54DB373230959BC008E306B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F54DB35023095718008E306B /* BSWInterfaceKitAssets */;
+			targetProxy = F54DB372230959BC008E306B /* PBXContainerItemProxy */;
+		};
 		F56F909C22EF422500E45944 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F56F908322EF422300E45944 /* BSWInterfaceKitDemo */;
@@ -383,6 +453,36 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		F54DB35523095718008E306B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = BSWInterfaceKitAssets/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theleftbit.BSWInterfaceKitAssets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		F54DB35623095718008E306B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = BSWInterfaceKitAssets/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theleftbit.BSWInterfaceKitAssets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 		F56F90A122EF422500E45944 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -581,6 +681,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F54DB35423095718008E306B /* Build configuration list for PBXNativeTarget "BSWInterfaceKitAssets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F54DB35523095718008E306B /* Debug */,
+				F54DB35623095718008E306B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F56F907F22EF422300E45944 /* Build configuration list for PBXProject "BSWInterfaceKitDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
