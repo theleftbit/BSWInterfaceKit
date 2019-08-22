@@ -10,7 +10,9 @@ open class TextStyler {
     // https://gist.github.com/zacwest/916d31da5d03405809c4
     
     public static let styler = TextStyler()
-    public init() {}
+    public init(preferredFontName: String? = nil) {
+        self.preferredFontName = preferredFontName
+    }
     open var preferredFontName: String?
     
     open func attributedString(_ string: String, color: UIColor? = nil, forStyle style: UIFont.TextStyle = .body) -> NSAttributedString {
