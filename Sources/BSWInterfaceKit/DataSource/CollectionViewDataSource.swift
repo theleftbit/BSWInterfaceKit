@@ -125,6 +125,10 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
         }
     }
 
+    public func updateDataWithoutReloadingCollectionView(_ data: [Cell.VM]) {
+        self.data = data
+    }
+    
     public func updateData(_ data: [Cell.VM]) {
         self.data = data
         collectionView.reloadData()
