@@ -47,6 +47,12 @@ final public class PhotoGalleryView: UIView {
         return UInt(pageControl.currentPage)
     }
     
+    public override var backgroundColor: UIColor? {
+        didSet {
+            collectionView.backgroundColor = backgroundColor
+        }
+    }
+    
     // MARK: Initialization
     
     public init(photos: [Photo], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
