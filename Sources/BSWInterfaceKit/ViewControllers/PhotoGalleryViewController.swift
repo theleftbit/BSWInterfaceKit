@@ -91,5 +91,6 @@ public final class PhotoGalleryViewController: UIViewController {
     
     @objc func onCloseButton() {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
+        self.dismiss(animated: true, completion: nil)
     }
 }
