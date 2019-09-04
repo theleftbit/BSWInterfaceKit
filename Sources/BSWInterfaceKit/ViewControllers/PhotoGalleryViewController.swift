@@ -79,6 +79,11 @@ public final class PhotoGalleryViewController: UIViewController {
         photosGallery.scrollToPhoto(atIndex: currentPage)
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presentationController?.delegate = self
+    }
+    
     public override var shouldAutorotate: Bool {
         return true
     }
@@ -92,5 +97,13 @@ public final class PhotoGalleryViewController: UIViewController {
     @objc func onCloseButton() {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
         self.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension PhotoGalleryViewController: UIAdaptivePresentationControllerDelegate {
+    
+    @available(iOS 13.0, *)
+    public func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+        delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }
 }
