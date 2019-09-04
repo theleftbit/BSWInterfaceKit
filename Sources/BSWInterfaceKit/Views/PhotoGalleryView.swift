@@ -55,16 +55,12 @@ final public class PhotoGalleryView: UIView {
     
     // MARK: Initialization
     
-    public init(photos: [Photo], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
+    public init(photos: [Photo] = [], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
         self.photos = photos
         self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
         super.init(frame: CGRect.zero)
         setup()
-    }
-    
-    convenience public init() {
-        self.init(photos: [])
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -104,25 +100,11 @@ final public class PhotoGalleryView: UIView {
         addAutolayoutSubview(pageControl)
         pageControl.numberOfPages = photos.count
 
-        // Constraints
-        setupConstraints()
-    }
-
-    // MARK: Constraints
-
-    private func setupConstraints() {
+        // Do the layout
         collectionView.pinToSuperview()
-
-        let bottomConstraint: NSLayoutConstraint = {
-            if #available(iOS 11, *) {
-                return pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -4)
-            } else {
-                return pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4)
-            }
-        }()
         NSLayoutConstraint.activate([
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-            bottomConstraint
+            pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -4)
             ])
     }
 }

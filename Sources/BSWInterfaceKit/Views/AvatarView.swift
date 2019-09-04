@@ -35,7 +35,6 @@ public class AvatarView: UIView {
                 tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTap))
                 self.addGestureRecognizer(tapRecognizer!)
                 
-                cameraImageView.translatesAutoresizingMaskIntoConstraints = false
                 addAutolayoutSubview(cameraImageView)
                 cameraImageView.centerInSuperview()
                 NSLayoutConstraint.activate([
