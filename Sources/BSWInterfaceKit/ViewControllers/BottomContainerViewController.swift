@@ -79,7 +79,7 @@ open class BottomContainerViewController: UIViewController {
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame
-        let inset = safeAreaFrame.origin.y + safeAreaFrame.size.height - buttonContainer.view.frame.minY
+        let inset = safeAreaFrame.intersection(buttonContainer.view.frame).height
         containedViewController.additionalSafeAreaInsets = [
             .bottom : inset
         ]
