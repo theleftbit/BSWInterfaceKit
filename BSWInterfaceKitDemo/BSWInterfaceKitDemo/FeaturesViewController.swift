@@ -12,6 +12,7 @@ import BSWInterfaceKit
 class FeaturesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     enum Features: String, CaseIterable {
+        case bottomVC = "BottomVC"
         case profileViewController = "ProfileViewController"
         case asyncViewModelController = "AsyncViewModelController"
         case asyncViewSwiftUI = "AsyncViewSwiftUI"
@@ -59,6 +60,8 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         let feature = Features.allCases[indexPath.row]
         let vc: UIViewController = {
             switch feature {
+            case .bottomVC:
+                return TableViewController.Factory.viewController()
             case .alertOperations:
                 return AlertOperationViewController()
             case .asyncViewModelController:

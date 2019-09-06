@@ -78,9 +78,8 @@ open class BottomContainerViewController: UIViewController {
     
     open override func viewInitialLayoutDidComplete() {
         super.viewInitialLayoutDidComplete()
-        let safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame
-        let inset = safeAreaFrame.origin.y + safeAreaFrame.size.height - buttonContainer.view.frame.minY
-        containedViewController.additionalSafeAreaInsets = UIEdgeInsets(dictionaryLiteral: (.bottom, inset))
+        let intersection = self.view.frame.intersection(buttonContainer.view.frame)
+        containedViewController.additionalSafeAreaInsets = [.bottom: intersection.size.height]
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
