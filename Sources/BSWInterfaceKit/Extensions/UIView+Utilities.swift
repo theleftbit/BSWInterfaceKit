@@ -137,4 +137,19 @@ extension UIView {
     public class func instantiateFromNib() -> Self? {
         return instantiateFromNib(self)
     }
+    
+    public func dontMakeBiggerOrSmaller() {
+        dontMakeBiggerOrSmallerVertically()
+        dontMakeBiggerOrSmallerHorizontally()
+    }
+
+    public func dontMakeBiggerOrSmallerVertically() {
+        setContentHuggingPriority(.required, for: .vertical)
+        setContentCompressionResistancePriority(.required, for: .vertical)
+    }
+    
+    public func dontMakeBiggerOrSmallerHorizontally() {
+        setContentHuggingPriority(.required, for: .horizontal)
+        setContentCompressionResistancePriority(.required, for: .horizontal)
+    }
 }
