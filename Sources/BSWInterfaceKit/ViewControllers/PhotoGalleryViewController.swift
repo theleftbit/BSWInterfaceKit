@@ -11,9 +11,13 @@ public protocol PhotoGalleryViewControllerDelegate: class {
 
 public final class PhotoGalleryViewController: UIViewController {
     
+    public enum Appearance {
+        static public var BackgroundColor: UIColor = .black
+        static public var TintColor: UIColor = .white
+    }
+
     private let photosGallery: PhotoGalleryView
     public var allowShare: Bool
-    public weak var presentFromView: UIView?
     public weak var delegate: PhotoGalleryViewControllerDelegate?
     public var currentPage: UInt = 0
     public var photos: [Photo] {
@@ -21,10 +25,8 @@ public final class PhotoGalleryViewController: UIViewController {
     }
 
     public init(photos: [Photo],
-         presentFromView: UIView? = nil,
          initialPageIndex: UInt = 0,
          allowShare: Bool = true) {
-        self.presentFromView = presentFromView
         self.allowShare = allowShare
         self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .scaleAspectFit)
         self.currentPage = initialPageIndex
@@ -47,8 +49,9 @@ public final class PhotoGalleryViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.black
-
+        view.backgroundColor = Appearance.BackgroundColor
+        photosGallery.backgroundColor = Appearance.BackgroundColor
+        
         //Set up the Gallery
         view.addSubview(photosGallery)
         photosGallery.pinToSuperview()
@@ -68,7 +71,7 @@ public final class PhotoGalleryViewController: UIViewController {
             }
         }()
 
-        closeButton.tintColor = .white
+        closeButton.tintColor = Appearance.TintColor
         view.addAutolayoutSubview(closeButton)
         NSLayoutConstraint.activate([
             closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),

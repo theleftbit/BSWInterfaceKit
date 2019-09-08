@@ -124,7 +124,6 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
         
         let gallery = PhotoGalleryViewController(
             photos: viewModel.photos,
-            presentFromView: fromView,
             initialPageIndex: index,
             allowShare: false
         )
