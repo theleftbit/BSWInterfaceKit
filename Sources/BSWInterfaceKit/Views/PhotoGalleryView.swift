@@ -24,11 +24,9 @@ final public class PhotoGalleryView: UIView {
         return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
     }
 
-    private let pageControl: UIPageControl = {
+    public let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.hidesForSinglePage = true
-        pageControl.pageIndicatorTintColor = UIColor.white
-        pageControl.pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.5)
         return pageControl
     }()
     
