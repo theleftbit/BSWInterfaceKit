@@ -41,7 +41,7 @@ private class FooVC: UIViewController {
 
 extension SampleVC: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        let properties = CardPresentation.AnimationProperties(kind: .presentation(position: .top), animationDuration: 2, backgroundColor: .clear)
+        let properties = CardPresentation.AnimationProperties(kind: .presentation(position: .top), animationDuration: 2, backgroundColor: .clear, shouldAnimateNewVCAlpha: false)
         return CardPresentation.transitioningFor(properties: properties)
     }
     
