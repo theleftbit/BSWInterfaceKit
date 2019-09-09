@@ -11,6 +11,7 @@
 		F51A1A5D2309656600492A73 /* BSWFoundation in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5B2309656600492A73 /* BSWFoundation */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F51A1A5F230965E600492A73 /* BSWFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5E230965E600492A73 /* BSWFoundation */; };
 		F51A1A60230965E600492A73 /* BSWFoundation in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F51A1A5E230965E600492A73 /* BSWFoundation */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F5408A29232695F200E0BC4C /* CardPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5408A28232695F200E0BC4C /* CardPresentationTests.swift */; };
 		F545909E2322C7E80037E8B9 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F545909D2322C7E80037E8B9 /* TableViewController.swift */; };
 		F54DB34C2309552A008E306B /* BSWInterfaceKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F56F90B822EF42E100E45944 /* BSWInterfaceKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F54DB37623095B14008E306B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54DB37523095B14008E306B /* Assets.xcassets */; };
@@ -101,6 +102,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F5408A28232695F200E0BC4C /* CardPresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentationTests.swift; sourceTree = "<group>"; };
 		F545909D2322C7E80037E8B9 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BSWInterfaceKitAssets.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54DB35323095718008E306B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -259,6 +261,7 @@
 				F56F90C522EF43C200E45944 /* ColumnFlowLayoutTests.swift */,
 				F56F90C622EF43C200E45944 /* AvatarViewTests.swift */,
 				F56F90C722EF43C200E45944 /* ClassicProfileViewControllerTests.swift */,
+				F5408A28232695F200E0BC4C /* CardPresentationTests.swift */,
 				F54DB37F2309620C008E306B /* LocalizableTests.swift */,
 			);
 			path = TestSuite;
@@ -440,6 +443,7 @@
 				F54DB3802309620C008E306B /* LocalizableTests.swift in Sources */,
 				F56F914222EF43C200E45944 /* NSAttributedStringTests.swift in Sources */,
 				F56F914622EF43C200E45944 /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */,
+				F5408A29232695F200E0BC4C /* CardPresentationTests.swift in Sources */,
 				F56F914A22EF43C200E45944 /* ButtonTests.swift in Sources */,
 				F56F914B22EF43C200E45944 /* ColumnFlowLayoutTests.swift in Sources */,
 				F56F914C22EF43C200E45944 /* AvatarViewTests.swift in Sources */,
