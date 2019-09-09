@@ -115,6 +115,19 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         // Add VC's view
         containerView.addAutolayoutSubview(toViewController.view)
 
+        // Calculate the height of the new VC to prepare animate it
+        let toVCHeight: CGFloat = {
+            switch cardHeight {
+            case .fixed(let height): return height
+            case .intrinsicHeight:
+                return toViewController.view.systemLayoutSizeFitting(
+                    CGSize(width: containerView.frame.width, height: UIView.layoutFittingCompressedSize.height),
+                    withHorizontalFittingPriority: .required,
+                    verticalFittingPriority: .fittingSizeLevel
+                ).height
+            }
+        }()
+
         //Prepare Constraints
         let anchorConstraint: NSLayoutConstraint = {
             switch position {
@@ -130,21 +143,12 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
             anchorConstraint
         ])
         
+        if #available(iOS 13, *) {
+            toViewController.view.heightAnchor.constraint(equalToConstant: toVCHeight).isActive = true
+        }
+        
         // Store this constraint somewhere so we can get it later
         bgView.anchorConstraint = anchorConstraint
-
-        // Calculate the height of the new VC to prepare animate it
-        let toVCHeight: CGFloat = {
-            switch cardHeight {
-            case .fixed(let height): return height
-            case .intrinsicHeight:
-                return toViewController.view.systemLayoutSizeFitting(
-                    CGSize(width: containerView.frame.width, height: UIView.layoutFittingCompressedSize.height),
-                    withHorizontalFittingPriority: .required,
-                    verticalFittingPriority: .fittingSizeLevel
-                ).height
-            }
-        }()
         
         toViewController.view.alpha = properties.shouldAnimateNewVCAlpha ? 0.0 : 1.0
         bgView.alpha = 0.0
