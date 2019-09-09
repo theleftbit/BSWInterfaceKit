@@ -34,6 +34,7 @@ public enum CardPresentation {
         public let animationDuration: TimeInterval
         public let kind: Kind
         public let backgroundColor: UIColor
+        public let shouldAnimateNewVCAlpha: Bool
 
         public enum CardHeight { // swiftlint:disable:this nesting
             case fixed(CGFloat)
@@ -50,10 +51,11 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7)) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true) {
             self.kind = kind
             self.animationDuration = animationDuration
             self.backgroundColor = backgroundColor
+            self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
         }
     }
 
@@ -144,7 +146,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
             }
         }()
         
-        toViewController.view.alpha = 0.0
+        toViewController.view.alpha = properties.shouldAnimateNewVCAlpha ? 0.0 : 1.0
         bgView.alpha = 0.0
         containerView.layoutIfNeeded()
 
