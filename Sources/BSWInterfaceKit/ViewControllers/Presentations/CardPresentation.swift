@@ -149,11 +149,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
             toViewController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             anchorConstraint
         ])
-        
-        if #available(iOS 13, *) {
-            toViewController.view.heightAnchor.constraint(equalToConstant: toVCHeight).isActive = true
-        }
-        
+                
         // Store this constraint somewhere so we can get it later
         bgView.anchorConstraint = anchorConstraint
         
