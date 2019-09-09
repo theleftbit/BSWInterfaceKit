@@ -10,14 +10,16 @@ import UIKit
  instance for a card-like modal animation.
  - Attention: To use it:
  ```
- extension FooViewController: UIViewControllerTransitioningDelegate {
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CardPresentation.transitioningFor(kind: .presentation)
-    }
-
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CardPresentation.transitioningFor(kind: .dismissal)
-    }
+ extension FooVC: UIViewControllerTransitioningDelegate {
+     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+         let properties = CardPresentation.AnimationProperties(kind: .presentation(cardHeight: .intrinsicHeight), animationDuration: 2)
+         return CardPresentation.transitioningFor(properties: properties)
+     }
+     
+     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+         let properties = CardPresentation.AnimationProperties(kind: .dismissal, animationDuration: 2)
+         return CardPresentation.transitioningFor(properties: properties)
+     }
  }
  ```
  - note: For an example on how it [looks](http://i.giphy.com/l0EwZqcEkc15D6XOo.gif)
@@ -29,19 +31,29 @@ public enum CardPresentation {
      These are the properties you can edit of the card-like modal presentation.
      */
     public struct AnimationProperties {
-        public let cardHeight: CGFloat
         public let animationDuration: TimeInterval
         public let kind: Kind
+        public let backgroundColor: UIColor
+
+        public enum CardHeight { // swiftlint:disable:this nesting
+            case fixed(CGFloat)
+            case intrinsicHeight
+        }
+
+        public enum Position { // swiftlint:disable:this nesting
+            case top
+            case bottom
+        }
 
         public enum Kind { // swiftlint:disable:this nesting
             case dismissal
-            case presentation
+            case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(cardHeight: CGFloat = 400, animationDuration: TimeInterval = 0.6, kind: Kind) {
-            self.cardHeight = cardHeight
-            self.animationDuration = animationDuration
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7)) {
             self.kind = kind
+            self.animationDuration = animationDuration
+            self.backgroundColor = backgroundColor
         }
     }
 
@@ -80,53 +92,76 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
     // MARK: - UIViewControllerAnimatedTransitioning
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        if NSClassFromString("XCTest") != nil {
-            return TimeInterval(CGFloat.leastNonzeroMagnitude)
-        } else {
-            return properties.animationDuration
-        }
+        return properties.animationDuration
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
 
         guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
+        guard case .presentation(let cardHeight, let position) = properties.kind else { fatalError() }
 
         let containerView = transitionContext.containerView
         let duration = self.transitionDuration(using: transitionContext)
 
         // Add background view
         let bgView = PresentationBackgroundView(frame: containerView.bounds)
+        bgView.backgroundColor = properties.backgroundColor
         bgView.parentViewController = toViewController
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
 
-
         // Add VC's view
-        containerView.addSubview(toViewController.view)
+        containerView.addAutolayoutSubview(toViewController.view)
 
-        let frame = containerView.frame
-        let cardTopInset = frame.size.height - max(0.0, properties.cardHeight)
+        //Prepare Constraints
+        let anchorConstraint: NSLayoutConstraint = {
+            switch position {
+            case .bottom:
+                return toViewController.view.topAnchor.constraint(equalTo: containerView.bottomAnchor)
+            case .top:
+                return containerView.topAnchor.constraint(equalTo: toViewController.view.bottomAnchor)
+            }
+        }()
+        NSLayoutConstraint.activate([
+            toViewController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            toViewController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            anchorConstraint
+        ])
+        
+        // Store this constraint somewhere so we can get it later
+        bgView.anchorConstraint = anchorConstraint
 
-        let initialFrame = frame.inset(by: UIEdgeInsets(top: containerView.bounds.height, left:0.0, bottom:0.0, right:0.0))
-        let finalFrame = frame.inset(by: UIEdgeInsets(top: cardTopInset, left: 0.0, bottom: 0.0, right: 0.0))
-
-        toViewController.view.frame = initialFrame
+        // Calculate the height of the new VC to prepare animate it
+        let toVCHeight: CGFloat = {
+            switch cardHeight {
+            case .fixed(let height): return height
+            case .intrinsicHeight:
+                return toViewController.view.systemLayoutSizeFitting(
+                    CGSize(width: containerView.frame.width, height: UIView.layoutFittingCompressedSize.height),
+                    withHorizontalFittingPriority: .required,
+                    verticalFittingPriority: .fittingSizeLevel
+                ).height
+            }
+        }()
+        
         toViewController.view.alpha = 0.0
         bgView.alpha = 0.0
+        containerView.layoutIfNeeded()
 
-        //Start slide up animation
-        UIView.animate(withDuration: duration,
-                       delay: 0.0,
-                       usingSpringWithDamping: 1.0,
-                       initialSpringVelocity: 0.5 / 1.0,
-                       options: [],
-                       animations: {() -> Void in
-                        toViewController.view.frame = finalFrame
-                        toViewController.view.alpha = 1.0
-                        bgView.alpha = 1.0
-        }, completion: {(_ finished: Bool) -> Void in
+        // This is the change that animates this from the bottom
+        anchorConstraint.constant = -toVCHeight
+        
+        // Start slide up animation
+        let animator = UIViewPropertyAnimator.init(duration: duration, dampingRatio: 1.0) {
+            containerView.layoutIfNeeded()
+            toViewController.view.alpha = 1.0
+            bgView.alpha = 1.0
+        }
+        animator.addCompletion { (position) in
+            guard position == .end else { return }
             transitionContext.completeTransition(true)
-        })
+        }
+        animator.startAnimation()
     }
 }
 
@@ -141,34 +176,28 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
 
     // MARK: UIViewControllerAnimatedTransitioning
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        if NSClassFromString("XCTest") != nil {
-            return TimeInterval(CGFloat.leastNonzeroMagnitude)
-        } else {
-            return properties.animationDuration
-        }
+        return properties.animationDuration
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
 
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
-        guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) else { return }
+        guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView else { fatalError() }
 
-        let frame = containerView.frame
-        let finalFrame = frame.inset(by: UIEdgeInsets(top: containerView.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
+        bgView.anchorConstraint.constant = 0
 
-        UIView.animate(withDuration: properties.animationDuration,
-                       delay: 0.0,
-                       usingSpringWithDamping: 1.0,
-                       initialSpringVelocity: 0.5 / 1.0,
-                       options: [],
-                       animations: {() -> Void in
-                        fromViewController.view.frame = finalFrame
-                        bgView.alpha = 0.0
-        }, completion: {(_ finished: Bool) -> Void in
+        //Start slide up animation
+        let animator = UIViewPropertyAnimator.init(duration: properties.animationDuration, dampingRatio: 1.0) {
+            containerView.layoutIfNeeded()
+            bgView.alpha = 0.0
+        }
+        animator.addCompletion { (position) in
+            guard position == .end else { return }
             fromViewController.view.removeFromSuperview()
             transitionContext.completeTransition(true)
-        })
+        }
+        animator.startAnimation()
     }
 }
 

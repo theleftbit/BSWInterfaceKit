@@ -67,11 +67,7 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
     // MARK: - UIViewControllerAnimatedTransitioning
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        if NSClassFromString("XCTest") != nil {
-            return TimeInterval(CGFloat.leastNonzeroMagnitude)
-        } else {
-            return properties.animationDuration
-        }
+        return properties.animationDuration
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -150,11 +146,7 @@ private class MarqueeDismissController: NSObject, UIViewControllerAnimatedTransi
     
     // MARK: UIViewControllerAnimatedTransitioning
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        if NSClassFromString("XCTest") != nil {
-            return TimeInterval(CGFloat.leastNonzeroMagnitude)
-        } else {
-            return properties.animationDuration
-        }
+        return properties.animationDuration
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
