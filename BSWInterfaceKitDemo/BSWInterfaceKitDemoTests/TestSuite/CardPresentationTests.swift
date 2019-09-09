@@ -41,12 +41,24 @@ private class FooVC: UIViewController {
 
 extension SampleVC: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        let properties = CardPresentation.AnimationProperties(kind: .presentation(position: .top), animationDuration: 2, backgroundColor: .clear, shouldAnimateNewVCAlpha: false)
+        let properties = CardPresentation.AnimationProperties(
+            kind: .presentation(position: .top),
+            animationDuration: 2,
+            presentationInsideSafeArea: true,
+            backgroundColor: .clear,
+            shouldAnimateNewVCAlpha: false
+        )
         return CardPresentation.transitioningFor(properties: properties)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        let properties = CardPresentation.AnimationProperties(kind: .dismissal, animationDuration: 2)
+        let properties = CardPresentation.AnimationProperties(
+            kind: .dismissal,
+            animationDuration: 2,
+            presentationInsideSafeArea: true,
+            backgroundColor: .clear,
+            shouldAnimateNewVCAlpha: false
+        )
         return CardPresentation.transitioningFor(properties: properties)
     }
 }

@@ -31,11 +31,12 @@ public enum CardPresentation {
      These are the properties you can edit of the card-like modal presentation.
      */
     public struct AnimationProperties {
-        public let animationDuration: TimeInterval
         public let kind: Kind
+        public let animationDuration: TimeInterval
+        public let presentationInsideSafeArea: Bool
         public let backgroundColor: UIColor
         public let shouldAnimateNewVCAlpha: Bool
-
+        
         public enum CardHeight { // swiftlint:disable:this nesting
             case fixed(CGFloat)
             case intrinsicHeight
@@ -51,9 +52,10 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true) {
             self.kind = kind
             self.animationDuration = animationDuration
+            self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
         }
@@ -108,6 +110,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         // Add background view
         let bgView = PresentationBackgroundView(frame: containerView.bounds)
         bgView.backgroundColor = properties.backgroundColor
+        bgView.position = position
         bgView.parentViewController = toViewController
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
@@ -130,11 +133,15 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         //Prepare Constraints
         let anchorConstraint: NSLayoutConstraint = {
-            switch position {
-            case .bottom:
+            switch (position, properties.presentationInsideSafeArea) {
+            case (.bottom, false):
                 return toViewController.view.topAnchor.constraint(equalTo: containerView.bottomAnchor)
-            case .top:
+            case (.top, false):
                 return containerView.topAnchor.constraint(equalTo: toViewController.view.bottomAnchor)
+            case (.bottom, true):
+                return toViewController.view.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor)
+            case (.top, true):
+                return containerView.safeAreaLayoutGuide.topAnchor.constraint(equalTo: toViewController.view.bottomAnchor)
             }
         }()
         NSLayoutConstraint.activate([
@@ -155,10 +162,30 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         containerView.layoutIfNeeded()
 
         // This is the change that animates this from the bottom
-        anchorConstraint.constant = -toVCHeight
+        let extraPadding: CGFloat = {
+            guard properties.presentationInsideSafeArea,
+                let fromVC = transitionContext.viewController(forKey: .from) else {
+                return 0
+            }
+            switch position {
+            case .top:
+                if let navVC = fromVC as? UINavigationController, let containerInsets = navVC.topViewController?.view?.safeAreaInsets {
+                    return containerInsets.top
+                } else {
+                    return containerView.safeAreaInsets.top
+                }
+            case .bottom:
+                if let tabVC = fromVC as? UITabBarController, let containerInsets = tabVC.selectedViewController?.view.safeAreaInsets {
+                    return containerInsets.bottom
+                } else {
+                    return containerView.safeAreaInsets.bottom
+                }
+            }
+        }()
+        anchorConstraint.constant = -(toVCHeight + extraPadding)
         
         // Start slide up animation
-        let animator = UIViewPropertyAnimator.init(duration: duration, dampingRatio: 1.0) {
+        let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1.0) {
             containerView.layoutIfNeeded()
             toViewController.view.alpha = 1.0
             bgView.alpha = 1.0
@@ -191,10 +218,22 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
         guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView else { fatalError() }
 
-        bgView.anchorConstraint.constant = 0
+        let extraPadding: CGFloat = {
+            guard properties.presentationInsideSafeArea else {
+                return 0
+            }
+            switch bgView.position! {
+            case .top:
+                return containerView.safeAreaInsets.top
+            case .bottom:
+                return containerView.safeAreaInsets.bottom
+            }
+        }()
+
+        bgView.anchorConstraint.constant = extraPadding + 0
 
         //Start slide up animation
-        let animator = UIViewPropertyAnimator.init(duration: properties.animationDuration, dampingRatio: 1.0) {
+        let animator = UIViewPropertyAnimator(duration: properties.animationDuration, dampingRatio: 1.0) {
             containerView.layoutIfNeeded()
             bgView.alpha = 0.0
         }
