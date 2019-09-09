@@ -9,7 +9,10 @@ import UIKit
 class PresentationBackgroundView: UIView {
     weak var parentViewController: UIViewController?
     weak var singleFingerTap: UITapGestureRecognizer?
+    
+    // Context Properties for CardPresentation
     weak var anchorConstraint: NSLayoutConstraint!
+    var position: CardPresentation.AnimationProperties.Position!
     
     override init(frame aRect: CGRect) {
         super.init(frame: aRect)
