@@ -12,11 +12,11 @@
       },
       {
         "package": "Deferred",
-        "repositoryURL": "https://github.com/bignerdranch/Deferred.git",
+        "repositoryURL": "https://github.com/theleftbit/Deferred.git",
         "state": {
-          "branch": null,
-          "revision": "5faced2c125570f495f0b439f1b3f977e164090f",
-          "version": "4.0.0"
+          "branch": "master",
+          "revision": "7453e83d9d37d51ca1084c7a43820f988ea77efb",
+          "version": null
         }
       },
       {
