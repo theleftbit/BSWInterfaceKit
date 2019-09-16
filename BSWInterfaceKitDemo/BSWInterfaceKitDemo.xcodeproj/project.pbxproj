@@ -768,7 +768,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/theleftbit/BSWFoundation.git";
 			requirement = {
-				branch = xcode11;
+				branch = develop;
 				kind = branch;
 			};
 		};

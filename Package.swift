@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/theleftbit/Deferred.git", .branch("master")),
-        .package(url: "https://github.com/theleftbit/BSWFoundation.git", .branch("xcode11")),
+        .package(url: "https://github.com/theleftbit/BSWFoundation.git", .branch("develop")),
         .package(url: "https://github.com/kean/Nuke.git", from: "8.0.1"),
     ],
     targets: [
