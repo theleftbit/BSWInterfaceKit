@@ -6,7 +6,7 @@
 import UIKit
 
 public protocol PhotoGalleryViewControllerDelegate: class {
-    func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt)
+    func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }
 
 public final class PhotoGalleryViewController: UIViewController {
@@ -19,13 +19,13 @@ public final class PhotoGalleryViewController: UIViewController {
     private let photosGallery: PhotoGalleryView
     public var allowShare: Bool
     public weak var delegate: PhotoGalleryViewControllerDelegate?
-    public var currentPage: UInt = 0
+    public var currentPage: Int = 0
     public var photos: [Photo] {
         return photosGallery.photos
     }
 
     public init(photos: [Photo],
-         initialPageIndex: UInt = 0,
+         initialPageIndex: Int = 0,
          allowShare: Bool = true) {
         self.allowShare = allowShare
         self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .scaleAspectFit)
@@ -45,7 +45,8 @@ public final class PhotoGalleryViewController: UIViewController {
         view = UIView()
         view.backgroundColor = Appearance.BackgroundColor
         photosGallery.backgroundColor = Appearance.BackgroundColor
-        
+        photosGallery.zoomEnabled = true
+
         //Set up the Gallery
         view.addSubview(photosGallery)
         photosGallery.pinToSuperview()

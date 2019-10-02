@@ -9,7 +9,7 @@ import BSWFoundation
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: class {
-    func didTapPhotoAt(index: UInt, fromView: UIView)
+    func didTapPhotoAt(index: Int, fromView: UIView)
 }
 
 // MARK: - PhotoGalleryView
@@ -40,9 +40,14 @@ final public class PhotoGalleryView: UIView {
     private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     public weak var delegate: PhotoGalleryViewDelegate?
+    public var zoomEnabled = false {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
     
-    public var currentPage: UInt {
-        return UInt(pageControl.currentPage)
+    public var currentPage: Int {
+        return pageControl.currentPage
     }
     
     public override var backgroundColor: UIColor? {
@@ -65,14 +70,14 @@ final public class PhotoGalleryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }    
 
-    public func scrollToPhoto(atIndex index: UInt, animated: Bool = false) {
+    public func scrollToPhoto(atIndex index: Int, animated: Bool = false) {
         collectionView.scrollToItem(at: IndexPath(item: Int(index), section: 0), at: .centeredHorizontally, animated: animated)
     }
 
     public func invalidateLayout() {
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.setNeedsLayout()
-        scrollToPhoto(atIndex: UInt(pageControl.currentPage))
+        scrollToPhoto(atIndex: pageControl.currentPage)
     }
 
     private func setup() {
@@ -113,18 +118,19 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let photoCell = cell as? PhotoCollectionViewCell else { return }
-        photoCell.cellImageView.contentMode = self.imageContentMode
+        photoCell.scrollView.cellImageView.contentMode = self.imageContentMode
+        photoCell.scrollView.isUserInteractionEnabled = zoomEnabled
     }
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) else {
             return
         }
-        delegate?.didTapPhotoAt(index: UInt(indexPath.item), fromView: cell)
+        delegate?.didTapPhotoAt(index: indexPath.item, fromView: cell)
     }
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return self.frame.size
+        return self.safeAreaLayoutGuide.layoutFrame.size
     }
 }
 

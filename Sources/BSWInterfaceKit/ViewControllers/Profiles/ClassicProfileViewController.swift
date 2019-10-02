@@ -118,7 +118,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
 //MARK:- PhotoGalleryViewDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
-    public func didTapPhotoAt(index: UInt, fromView: UIView) {
+    public func didTapPhotoAt(index: Int, fromView: UIView) {
         
         guard let viewModel = dataProvider.peek()?.value else { return }
         
@@ -127,6 +127,7 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
             initialPageIndex: index,
             allowShare: false
         )
+        gallery.modalPresentationStyle = .overFullScreen
         gallery.delegate = self
         present(gallery, animated: true, completion: nil)
     }
@@ -135,7 +136,7 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
 //MARK:- PhotoGalleryViewControllerDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
-    public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: UInt) {
+    public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int) {
         photoGallery.scrollToPhoto(atIndex: index)
         dismiss(animated: true, completion: nil)
     }
