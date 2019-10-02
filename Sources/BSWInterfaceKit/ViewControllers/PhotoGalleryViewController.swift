@@ -40,15 +40,9 @@ public final class PhotoGalleryViewController: UIViewController {
     public override var prefersStatusBarHidden : Bool {
         return true
     }
-
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { (_) in
-            self.photosGallery.invalidateLayout()
-        }, completion: nil)
-    }
     
-    override public func viewDidLoad() {
-        super.viewDidLoad()
+    override public func loadView() {
+        view = UIView()
         view.backgroundColor = Appearance.BackgroundColor
         photosGallery.backgroundColor = Appearance.BackgroundColor
         
@@ -82,6 +76,18 @@ public final class PhotoGalleryViewController: UIViewController {
         photosGallery.scrollToPhoto(atIndex: currentPage)
     }
     
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (_) in
+        }, completion: { _ in
+            self.photosGallery.invalidateLayout()
+        })
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        photosGallery.invalidateLayout()
+    }
+
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presentationController?.delegate = self
