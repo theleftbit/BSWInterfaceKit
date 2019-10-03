@@ -72,9 +72,6 @@ public final class PhotoGalleryViewController: UIViewController {
             closeButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 12)
         ])
-        
-        view.layoutIfNeeded()
-        photosGallery.scrollToPhoto(atIndex: currentPage)
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -87,6 +84,7 @@ public final class PhotoGalleryViewController: UIViewController {
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         photosGallery.invalidateLayout()
+        photosGallery.scrollToPhoto(atIndex: currentPage)
     }
 
     public override func viewWillAppear(_ animated: Bool) {
