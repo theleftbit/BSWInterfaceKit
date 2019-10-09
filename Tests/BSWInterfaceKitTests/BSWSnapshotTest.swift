@@ -24,9 +24,7 @@ class BSWSnapshotTest: XCTestCase {
         RandomColorFactory.isOn = false
     }
 
-    private var currentWindow: UIWindow {
-        return UIApplication.shared.keyWindow!
-    }
+    private let currentWindow = UIWindow()
 
     var rootViewController: UIViewController? {
         get {
