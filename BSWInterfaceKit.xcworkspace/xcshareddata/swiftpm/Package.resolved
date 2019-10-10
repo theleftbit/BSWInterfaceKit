@@ -5,18 +5,18 @@
         "package": "BSWFoundation",
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
-          "branch": "develop",
-          "revision": "e50b65658fafe30c79403f8533513ddf5cf38d42",
-          "version": null
+          "branch": null,
+          "revision": "d8b0f0025ec689aa1cf705d3e0e07207f0e79009",
+          "version": "3.1.0"
         }
       },
       {
         "package": "Deferred",
-        "repositoryURL": "https://github.com/theleftbit/Deferred.git",
+        "repositoryURL": "https://github.com/bignerdranch/Deferred.git",
         "state": {
-          "branch": "master",
-          "revision": "7453e83d9d37d51ca1084c7a43820f988ea77efb",
-          "version": null
+          "branch": null,
+          "revision": "96ad3f6dd1ddaffe1830dbb3b1cb783a87d6e952",
+          "version": "4.1.0"
         }
       },
       {
@@ -33,17 +33,17 @@
         "repositoryURL": "https://github.com/kean/Nuke.git",
         "state": {
           "branch": null,
-          "revision": "58543e405a5c7640d08109faf0e2060d9e9b44dd",
-          "version": "8.1.1"
+          "revision": "b323dd3d7b82fa973fb7350bb505d7a52795b995",
+          "version": "8.3.0"
         }
       },
       {
         "package": "SnapshotTesting",
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
-          "branch": "master",
-          "revision": "dc14bff0dab1262d855fa415d136fb5a5bdfcbf9",
-          "version": null
+          "branch": null,
+          "revision": "35aac0fbc74cdb0848923d42ddbdd3400c938f72",
+          "version": "1.6.0"
         }
       }
     ]
