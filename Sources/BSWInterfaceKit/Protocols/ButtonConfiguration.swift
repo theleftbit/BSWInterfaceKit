@@ -27,7 +27,7 @@ public struct ButtonConfiguration {
                 contentInset: UIEdgeInsets = UIEdgeInsets(uniform: 5),
                 cornerRadius: CGFloat = 0,
                 actionHandler: @escaping ButtonActionHandler) {
-        let tintColor = titleColor ?? UIApplication.shared.keyWindow!.tintColor
+        let tintColor = titleColor ?? UIApplication.shared.keyWindow?.tintColor
         self.buttonTitle = .text(TextStyler.styler.attributedString(title, color: tintColor))
         self.backgroundColor = backgroundColor
         self.actionHandler = actionHandler
