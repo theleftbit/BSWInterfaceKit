@@ -8,6 +8,7 @@ import BSWInterfaceKit
 class ButtonTests: BSWSnapshotTest {
 
     var button: UIButton!
+    let sampleImage = ButtonTests.drawCircle(size: .init(width: 35, height: 35))
     
     func testRadioButton() {
         let button = ButtonTests.buttonForRadioTests()
@@ -20,37 +21,33 @@ class ButtonTests: BSWSnapshotTest {
         verify(view: button)
     }
 
-    func _testImageButton() {
-        #warning("TODO: figure this out")
-        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), actionHandler: {}))
+    func testImageButton() {
+        let buttonConfig = ButtonConfiguration.init(buttonTitle: .image(self.sampleImage), actionHandler: {})
+        let button = UIButton(buttonConfiguration: buttonConfig)
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
 
-    func _testImageButtonWithCornerRadius() {
-        #warning("TODO: figure this out")
-        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), cornerRadius: 5, actionHandler: {}))
+    func testImageButtonWithCornerRadius() {
+        let buttonConfig = ButtonConfiguration.init(title: "Hello World", titleColor: .white, backgroundColor: .systemBlue, contentInset: .init(uniform: 5), cornerRadius: 5, actionHandler: {})
+        let button = UIButton(buttonConfiguration: buttonConfig)
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
 
-    func _testImageTitleButton() {
-        #warning("TODO: figure this out")
-        let image: UIImage = #imageLiteral(resourceName: "women")
+    func testImageTitleButton() {
         let title = NSAttributedString(string: "Click Me")
-        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, image), actionHandler: {}))
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
     
-    func _testTapButton() {
-        #warning("TODO: figure this out")
-
+    func testTapButton() {
         let exp = expectation(description: "Expecting touches in button")
         
         var isActionHandled: Bool = false
         
-        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(#imageLiteral(resourceName: "women")), actionHandler: {
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: .image(sampleImage), actionHandler: {
             isActionHandled = true
             exp.fulfill()
         }))
@@ -65,12 +62,26 @@ class ButtonTests: BSWSnapshotTest {
 
     // MARK: Private
 
-    fileprivate static func buttonForRadioTests() -> UIButton {
+    private static func buttonForRadioTests() -> UIButton {
         let button = CheckboxButton()
         button.backgroundColor = .white
         button.setTitleColor(.black, for: .normal)
         button.setTitle("Push Me", for: .normal)
         button.frame = CGRect(x: 0, y: 0, width: button.intrinsicContentSize.width, height: button.intrinsicContentSize.height)
         return button
+    }
+    
+
+    /// This is a function that generates a sample UIImage since we can't
+    /// use Xcode Assets because we're SPM doesn't support them
+    private static func drawCircle(size: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { ctx in
+            ctx.cgContext.setFillColor(UIColor.red.cgColor)
+            ctx.cgContext.setStrokeColor(UIColor.green.cgColor)
+            let rectangle = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+            ctx.cgContext.addEllipse(in: rectangle)
+            ctx.cgContext.drawPath(using: .fillStroke)
+        }
     }
 }

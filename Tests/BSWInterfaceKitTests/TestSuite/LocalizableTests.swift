@@ -7,10 +7,11 @@
 import XCTest
 @testable import BSWInterfaceKit
 
+/// Since moving to SPM, it's no longer possible to test this :(
+
 class LocalizableTests: XCTestCase {
 
     func _testLocalizationWorks() {
-        #warning("TODO")
         XCTAssert("add-photo-title".localized != "add-photo-title")
         XCTAssert("lastname-placeholder".localized != "lastname-placeholder")
     }
