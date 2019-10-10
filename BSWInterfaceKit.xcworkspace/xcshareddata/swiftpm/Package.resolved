@@ -5,9 +5,9 @@
         "package": "BSWFoundation",
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
-          "branch": "fix-static-behaviour",
-          "revision": "2dc44e7b4d53943fab85f53ac263198c8f1da37f",
-          "version": null
+          "branch": null,
+          "revision": "d8b0f0025ec689aa1cf705d3e0e07207f0e79009",
+          "version": "3.1.0"
         }
       },
       {
