@@ -12,12 +12,18 @@ final public class RootViewController: ContainerViewController {}
 @available(iOS 11.0, *) @objc(BSWContainerViewController)
 open class ContainerViewController: UIViewController {
     
+    public enum LayoutMode {
+        case pinToSuperview
+        case pinToSafeArea
+    }
+    
     public enum Appereance {
         static public var BackgroundColor: UIColor = .clear
     }
     
     private(set) public var containedViewController: UIViewController
     private let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut)
+    public var layoutMode = LayoutMode.pinToSuperview
     
     public init(containedViewController: UIViewController) {
         self.containedViewController = containedViewController
@@ -44,7 +50,12 @@ open class ContainerViewController: UIViewController {
         // Add new VC
         self.addChild(newVC)
         self.view.insertSubview(newVC.view, belowSubview: self.containedViewController.view)
-        newVC.view.pinToSuperview()
+        switch layoutMode {
+        case .pinToSuperview:
+            newVC.view.pinToSuperview()
+        case .pinToSafeArea:
+            newVC.view.pinToSuperviewSafeLayoutEdges()
+        }
         newVC.didMove(toParent: self)
         
         newVC.view.alpha = 0
