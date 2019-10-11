@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 22/02/2018.
 //
 
+ #if os(iOS) && !targetEnvironment(macCatalyst)
+
 import UIKit
 import SafariServices
 import Deferred
@@ -122,3 +124,5 @@ extension SocialAuthenticationManager {
         let title: String
     }
 }
+
+#endif
