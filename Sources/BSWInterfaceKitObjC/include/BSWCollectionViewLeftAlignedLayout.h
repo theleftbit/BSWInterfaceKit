@@ -24,7 +24,7 @@
  *  Based on http://stackoverflow.com/questions/13017257/how-do-you-determine-spacing-between-cells-in-uicollectionview-flowlayout
  */
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface BSWCollectionViewLeftAlignedLayout : UICollectionViewFlowLayout
 
