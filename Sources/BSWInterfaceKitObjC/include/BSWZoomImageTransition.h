@@ -3,7 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
 #import "BSWZoomTransitionType.h"
 
 NS_ASSUME_NONNULL_BEGIN

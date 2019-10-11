@@ -24,7 +24,6 @@ open class BottomContainerViewController: UIViewController {
     }
     private let bottomViewKind: BottomViewKind
     private var buttonContainer: UIViewController!
-    private var bottomConstraint: NSLayoutConstraint!
     
     private enum BottomViewKind {
         case button(UIButton, UIEdgeInsets)
@@ -61,7 +60,6 @@ open class BottomContainerViewController: UIViewController {
         }
         addChild(buttonContainer)
         view.addAutolayoutSubview(buttonContainer.view)
-        bottomConstraint = buttonContainer.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
 
         NSLayoutConstraint.activate([
             containedViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
@@ -70,7 +68,7 @@ open class BottomContainerViewController: UIViewController {
             containedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             buttonContainer.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonContainer.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomConstraint,
+            buttonContainer.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
         containedViewController.didMove(toParent: self)
         buttonContainer.didMove(toParent: self)
@@ -181,17 +179,18 @@ public extension BottomContainerViewController {
     }
     
     func performAnimation(_ animation: Animation, animator: UIViewPropertyAnimator = UIViewPropertyAnimator(duration: 3, curve: .easeInOut, animations: nil)) {
-
-        switch animation {
-        case .hideBottomController:
-            bottomConstraint.constant = buttonContainer.view.frame.height
-        case .showBottomController:
-            bottomConstraint.constant = 0
-        case .custom(let spacing):
-            bottomConstraint.constant = spacing
-        }
+        let transform: CGAffineTransform = {
+            switch animation {
+            case .showBottomController:
+                return .identity
+            case .hideBottomController:
+                return CGAffineTransform.init(translationX: 0, y: buttonContainer.view.frame.height)
+            case .custom(let spacing):
+                return CGAffineTransform.init(translationX: 0, y: spacing)
+            }
+        }()
         animator.addAnimations {
-            self.view.layoutIfNeeded()
+            self.bottomController?.view.transform = transform
         }
         animator.startAnimation()
     }
