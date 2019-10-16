@@ -11,6 +11,7 @@ public class CheckboxButton: UIButton {
     public enum Appearance {
         public static var checkTintColor: UIColor = .black
         public static var backgroundTintColor = UIColor(r: 243, g: 243, b: 243)
+        public static var images: (nonSelectedImage: UIImage, selectedImage: UIImage)? = nil
     }
     
     private enum Constants {
@@ -20,8 +21,10 @@ public class CheckboxButton: UIButton {
     public init() {
         super.init(frame: .zero)
         
-
-        let images = CheckboxButton.generateImages()
+        var images = CheckboxButton.generateImages()
+        if let updatedImages = Appearance.images {
+            images = updatedImages
+        }
         self.contentMode = .scaleAspectFit
         self.setImage(images.nonSelectedImage, for: .normal)
         self.setImage(images.selectedImage, for: .selected)
