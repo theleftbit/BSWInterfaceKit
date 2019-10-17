@@ -21,10 +21,13 @@ public class CheckboxButton: UIButton {
     public init() {
         super.init(frame: .zero)
         
-        var images = CheckboxButton.generateImages()
-        if let updatedImages = Appearance.images {
-            images = updatedImages
-        }
+        let images: (nonSelectedImage: UIImage, selectedImage: UIImage) = {
+            if let updatedImages = Appearance.images {
+                return updatedImages
+            } else {
+                return CheckboxButton.generateImages()
+            }
+        }()
         self.contentMode = .scaleAspectFit
         self.setImage(images.nonSelectedImage, for: .normal)
         self.setImage(images.selectedImage, for: .selected)
