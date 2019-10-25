@@ -1,5 +1,0 @@
-- Welcome to the {
-}jungle{
-    NSColor = "UIExtendedSRGBColorSpace 1 0 0 1";
-    NSLink = "https://www.youtube.com/watch?v=o1tj2zJ2Wvg";
-}
