@@ -6,7 +6,6 @@
 import BSWInterfaceKit
 import UIKit
 
-@available(iOS 11.0, *)
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
 
     func testLayout() {
