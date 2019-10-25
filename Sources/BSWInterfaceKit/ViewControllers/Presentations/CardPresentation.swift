@@ -3,6 +3,8 @@
 //  Created by Pierluigi Cifani.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 /**
@@ -245,3 +247,4 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
 private enum Constants {
     static let BackgroundViewTag = 78
 }
+#endif

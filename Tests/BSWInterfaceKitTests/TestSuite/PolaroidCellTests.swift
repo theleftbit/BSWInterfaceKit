@@ -1,18 +1,14 @@
-//
-//  Created by Pierluigi Cifani on 20/03/2017.
-//
-//
+
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import UIKit
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
-
     func testLayout() {
         let cv = MockCollectionView()
         verify(view: cv)
     }
-
 }
 
 class MockCollectionView: UICollectionView {
@@ -85,3 +81,5 @@ class MockCollectionView: UICollectionView {
         return [vm1, vm2, vm3, vm4, vm5]
     }
 }
+
+#endif

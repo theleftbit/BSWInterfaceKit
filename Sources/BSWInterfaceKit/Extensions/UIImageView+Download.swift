@@ -3,6 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import BSWFoundation
 import Task
 import Nuke
@@ -97,3 +99,5 @@ extension UIImageView {
 }
 
 private let preheater = Nuke.ImagePreheater(destination: .diskCache)
+
+#endif

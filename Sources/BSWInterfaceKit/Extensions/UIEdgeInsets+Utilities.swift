@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 07/03/2018.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 //: Suggested by [@al_skipp](https://twitter.com/al_skipp)
@@ -49,3 +51,5 @@ extension UIEdgeInsets: ExpressibleByDictionaryLiteral {
         }
     }
 }
+
+#endif

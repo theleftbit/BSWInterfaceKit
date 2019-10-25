@@ -1,9 +1,9 @@
 //
-//  MapView.swift
 //  BSWInterfaceKit
-//
 //  Created by Pierluigi Cifani on 21/07/2018.
 //
+
+#if canImport(UIKit)
 
 import UIKit
 import MapKit
@@ -107,3 +107,4 @@ public class MapView: UIImageView {
     }
 }
 
+#endif

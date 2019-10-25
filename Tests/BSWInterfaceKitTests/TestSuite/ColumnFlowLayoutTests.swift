@@ -1,9 +1,9 @@
 //
 //  ColumnFlowLayoutTests.swift
-//  BSWInterfaceKitDemoTests
-//
 //  Created by Pierluigi Cifani on 12/11/2018.
 //
+
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -324,3 +324,5 @@ private class Footer: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#endif

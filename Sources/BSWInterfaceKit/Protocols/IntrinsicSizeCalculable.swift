@@ -3,6 +3,8 @@
 //  Created by Pierluigi Cifani on 13/08/2018.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public protocol IntrinsicSizeCalculable {
@@ -18,3 +20,5 @@ public protocol IntrinsicSizeCalculable {
         return estimatedSize + navigationBar.bounds.height
     }
 }
+
+#endif

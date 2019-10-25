@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 30/03/2018.
 //  Copyright © 2018 TheLeftBit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -205,3 +206,4 @@ open class FormTextField: UITextField, ViewModelConfigurable {
 
 // MARK: Appereance
 
+#endif

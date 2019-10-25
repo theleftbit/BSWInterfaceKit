@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 27/09/2018.
 //  Copyright © 2018 The Left Bit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -194,3 +195,5 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         return estimatedSize.height
     }
 }
+
+#endif

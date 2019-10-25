@@ -6,6 +6,8 @@
 //  Copyright © 2017 freshos. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 private class Keyboard {
@@ -131,3 +133,5 @@ func isVisible(view: UIView) -> Bool {
     }
     return isVisible(view: view, inView: view.superview)
 }
+
+#endif

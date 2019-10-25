@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 01/10/2018.
 //  Copyright © 2018 TheLeftBit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 import BSWInterfaceKitObjC
@@ -193,3 +194,5 @@ public extension BottomContainerViewController {
         animator.startAnimation()
     }
 }
+
+#endif

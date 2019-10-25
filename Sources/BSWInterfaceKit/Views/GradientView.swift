@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 01/08/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -57,3 +58,4 @@ public enum GradientFactory {
         return gradientLayer
     }
 }
+#endif

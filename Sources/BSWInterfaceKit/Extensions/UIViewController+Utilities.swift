@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 10/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 import SafariServices
@@ -94,3 +95,5 @@ private let alertQueue: OperationQueue = {
     operationQueue.name = "com.bswinterfacekit.alertpresenting"
     return operationQueue
 }()
+
+#endif

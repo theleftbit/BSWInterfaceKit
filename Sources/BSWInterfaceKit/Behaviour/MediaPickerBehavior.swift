@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 08/08/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 import MobileCoreServices
@@ -273,3 +274,4 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         case unknown
     }
 }
+#endif

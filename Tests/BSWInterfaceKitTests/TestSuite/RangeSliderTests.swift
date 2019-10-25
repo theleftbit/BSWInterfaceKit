@@ -1,6 +1,7 @@
 //
 //  Created by Michele Restuccia on 22/10/2019.
 //
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -19,3 +20,5 @@ class RangeSliderTests: BSWSnapshotTest {
         verify(view: sut)
     }
 }
+
+#endif

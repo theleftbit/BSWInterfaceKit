@@ -1,6 +1,4 @@
-//
-//  Created by Pierluigi Cifani on 20/03/2017.
-//
+#if canImport(UIKit)
 
 import XCTest
 import BSWInterfaceKit
@@ -86,3 +84,4 @@ class ButtonTests: BSWSnapshotTest {
         }
     }
 }
+#endif

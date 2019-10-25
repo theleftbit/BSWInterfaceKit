@@ -3,6 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 extension UILabel {
@@ -13,3 +15,4 @@ extension UILabel {
         return label
     }
 }
+#endif

@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 09/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -115,3 +116,4 @@ extension PhotoGalleryViewController: UIAdaptivePresentationControllerDelegate {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }
 }
+#endif

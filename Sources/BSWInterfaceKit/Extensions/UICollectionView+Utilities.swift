@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 31/03/2017.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -63,3 +64,4 @@ extension UICollectionView {
     }
 }
 
+#endif
