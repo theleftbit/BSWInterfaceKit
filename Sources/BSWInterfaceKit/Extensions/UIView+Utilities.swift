@@ -57,7 +57,6 @@ extension UIView {
         return color
     }
 
-    @available(iOS 11.0, *)
     @discardableResult
     @objc(bsw_pinToSuperviewSafeLayoutEdges:)
     public func pinToSuperviewSafeLayoutEdges(withMargin margin: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {

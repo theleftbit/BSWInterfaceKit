@@ -6,7 +6,7 @@
 import UIKit
 import BSWInterfaceKitObjC
 
-@available(iOS 11.0, *) @objc(BSWBottomContainerViewController)
+@objc(BSWBottomContainerViewController)
 open class BottomContainerViewController: UIViewController {
     
     public let containedViewController: UIViewController
@@ -160,8 +160,6 @@ extension BottomContainerViewController: IntrinsicSizeCalculable {
     }
 }
 
-
-@available(iOS 11.0, *)
 public extension UIViewController {
     var bottomContainerViewController: BottomContainerViewController? {
         return self.parent as? BottomContainerViewController

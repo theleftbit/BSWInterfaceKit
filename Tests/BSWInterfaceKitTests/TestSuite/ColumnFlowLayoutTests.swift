@@ -8,7 +8,6 @@
 import BSWInterfaceKit
 import XCTest
 
-@available(iOS 11, *)
 class ColumnFlowLayoutTests: BSWSnapshotTest {
     
     func testLayout() {
@@ -37,7 +36,6 @@ class ColumnFlowLayoutTests: BSWSnapshotTest {
 
 import UIKit
 
-@available(iOS 11, *)
 private class ViewController: UIViewController {
 
     var showsFooter: Bool {
@@ -127,8 +125,6 @@ private class ViewController: UIViewController {
     }
 }
 
-
-@available(iOS 11, *)
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -155,8 +151,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     }
 }
 
-
-@available(iOS 11, *)
 extension ViewController {
     var mockData: [PostCollectionViewCell.VM] {
         return [

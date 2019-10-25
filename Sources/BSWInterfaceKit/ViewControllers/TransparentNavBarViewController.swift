@@ -44,7 +44,6 @@ extension TransparentNavBarViewController {
     // subviews below the navBar
     @objc(BSWTransparentNavBarViewHost)
     private class HostView: UIView {
-        @available(iOS 11.0, *)
         override var safeAreaInsets: UIEdgeInsets {
             let superSafeArea = super.safeAreaInsets
             return UIEdgeInsets(top: 0, left: superSafeArea.left, bottom: superSafeArea.bottom, right: superSafeArea.right)

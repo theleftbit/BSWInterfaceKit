@@ -18,8 +18,6 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     public enum Kind {
         case photo
         case video
-        
-        @available(iOS 11, *)
         case thumbnail(CGSize)
 
         func toUIKit() -> UIImagePickerController.CameraCaptureMode {
@@ -162,9 +160,7 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         case .photo:
             handlePhotoRequest(info: info, request: currentRequest)
         case .thumbnail:
-            if #available(iOS 11.0, *) {
-                handleThumbnailRequest(info: info, request: currentRequest)
-            }
+            handleThumbnailRequest(info: info, request: currentRequest)
         }
     }
     
@@ -212,7 +208,6 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         }
     }
     
-    @available(iOS 11.0, *)
     private func handleThumbnailRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         guard case .thumbnail(let size) = request.kind else {
             fatalError()

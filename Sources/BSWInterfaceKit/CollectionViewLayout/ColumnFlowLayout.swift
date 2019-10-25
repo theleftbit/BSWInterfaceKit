@@ -5,8 +5,6 @@
 
 import UIKit
 
-
-@available(iOS 11.0, *)
 open class ColumnFlowLayout: UICollectionViewLayout {
     
     // These are used to create a factory cell to calculate the size.

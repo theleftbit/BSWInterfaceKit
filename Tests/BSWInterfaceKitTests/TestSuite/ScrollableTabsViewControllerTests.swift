@@ -47,12 +47,10 @@ class YellowViewController: UIViewController {
         let label = UILabel()
         label.text = "Hello"
         view.addAutolayoutSubview(label)
-        if #available(iOS 11.0, *) {
-            NSLayoutConstraint.activate([
-                label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                ])
-        }
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
     }
 }
 
