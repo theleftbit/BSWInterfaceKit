@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 
 import UIKit
 
@@ -235,5 +236,5 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     private func topInset() -> CGFloat {
         return self.safeAreaInsets.top
     }
-    
 }
+#endif

@@ -3,6 +3,8 @@
 //  Copyright © 2019 TheLeftBit. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 import MessageUI
 
@@ -24,3 +26,4 @@ final public class MailComposerBehavior: NSObject, MFMailComposeViewControllerDe
     }
 }
 
+#endif

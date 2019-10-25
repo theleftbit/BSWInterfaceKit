@@ -2,6 +2,7 @@
 //  ScrollableTabsViewControllerTests.swift
 //  Created by Pierluigi Cifani on 14/08/2018.
 //
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -69,3 +70,5 @@ class RedViewController: UIViewController {
         view.backgroundColor = .red
     }
 }
+
+#endif

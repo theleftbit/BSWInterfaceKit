@@ -1,6 +1,4 @@
-//
-//  Created by Pierluigi Cifani on 13/05/2019.
-//
+#if canImport(UIKit)
 
 import XCTest
 import BSWInterfaceKit
@@ -16,3 +14,5 @@ class NSAttributedStringTests: XCTestCase {
         assertSnapshot(matching: attributedString, as: .dump)
     }
 }
+
+#endif

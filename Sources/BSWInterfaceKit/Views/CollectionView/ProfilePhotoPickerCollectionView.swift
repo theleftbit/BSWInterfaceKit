@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 04/08/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -321,3 +322,4 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         cellDelegate?.didTapOnProfilePhotoCell(self)
     }
 }
+#endif

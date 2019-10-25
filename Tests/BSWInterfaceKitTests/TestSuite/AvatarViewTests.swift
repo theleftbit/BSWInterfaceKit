@@ -1,9 +1,4 @@
-//
-//  File.swift
-//  BSWInterfaceKitDemoTests
-//
-//  Created by Pierluigi Cifani on 12/07/2018.
-//
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -37,3 +32,5 @@ class AvatarViewTests: BSWSnapshotTest {
         verify(view: avatarView, file: file, testName: testName)
     }
 }
+
+#endif

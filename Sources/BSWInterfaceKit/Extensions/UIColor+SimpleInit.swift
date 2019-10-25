@@ -3,6 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 extension UIColor {
@@ -56,3 +58,5 @@ extension UIColor {
         return RandomColorFactory.randomColor()
     }
 }
+
+#endif

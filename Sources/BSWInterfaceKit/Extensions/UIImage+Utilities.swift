@@ -3,6 +3,8 @@
 //  Created by Pierluigi Cifani on 22/04/16.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 import BSWInterfaceKitObjC
 
@@ -98,3 +100,5 @@ public extension UIImage {
         return newImage
     }
 }
+
+#endif

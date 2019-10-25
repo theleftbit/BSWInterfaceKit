@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 05/01/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -97,3 +98,5 @@ extension NavBarTransparentBehavior: UIScrollViewDelegate {
         updateNavBar(forScrollView: scrollView)
     }
 }
+
+#endif

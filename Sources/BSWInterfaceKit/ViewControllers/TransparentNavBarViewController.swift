@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 20/07/2018.
 //  Copyright © 2018 Dada. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -49,5 +50,5 @@ extension TransparentNavBarViewController {
             return UIEdgeInsets(top: 0, left: superSafeArea.left, bottom: superSafeArea.bottom, right: superSafeArea.right)
         }
     }
-    
 }
+#endif

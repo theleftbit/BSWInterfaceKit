@@ -3,6 +3,8 @@
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 //https://www.raywenderlich.com/2297-how-to-make-a-custom-control-tutorial-a-reusable-slider#toc-anchor-009
 
 import UIKit
@@ -243,3 +245,5 @@ public class RangeSlider: UIControl {
         }
     }
 }
+
+#endif

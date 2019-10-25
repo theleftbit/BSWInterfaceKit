@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 2/22/16.
 //  Copyright © 2018 TheLeftBit SL SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import BSWFoundation
 import UIKit
@@ -152,3 +153,4 @@ extension UIView {
         setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 }
+#endif

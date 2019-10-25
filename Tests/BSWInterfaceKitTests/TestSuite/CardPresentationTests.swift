@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 09/09/2019.
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import UIKit
@@ -63,3 +64,4 @@ extension SampleVC: UIViewControllerTransitioningDelegate {
     }
 }
 
+#endif

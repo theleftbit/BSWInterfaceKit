@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 12/07/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -21,3 +22,4 @@ extension UITableView {
         return cell
     }
 }
+#endif

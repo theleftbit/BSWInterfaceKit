@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 20/03/2017.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -82,3 +83,4 @@ class PresentAlertOperation: Operation {
         self.isFinished = true
     }
 }
+#endif

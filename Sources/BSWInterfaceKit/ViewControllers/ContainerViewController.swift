@@ -2,6 +2,7 @@
 //  RootViewController.swift
 //  Created by Pierluigi Cifani on 15/09/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 import Task
@@ -72,3 +73,4 @@ open class ContainerViewController: UIViewController {
         animator.startAnimation()
     }
 }
+#endif

@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 17/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -87,3 +88,4 @@ open class ErrorView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+#endif

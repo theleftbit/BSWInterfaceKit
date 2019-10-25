@@ -3,6 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 import BSWFoundation
 
@@ -417,3 +419,5 @@ private enum Constants {
     static let InfinitePagingReuseID = "InfinitePagingReuseID"
     static let Spacing: CGFloat = 20
 }
+
+#endif

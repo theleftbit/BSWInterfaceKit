@@ -3,7 +3,7 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-import UIKit
+#if canImport(UIKit)
 import UIKit
 
 extension UIImageView {
@@ -44,3 +44,4 @@ extension UIImageView {
     }
     
 }
+#endif

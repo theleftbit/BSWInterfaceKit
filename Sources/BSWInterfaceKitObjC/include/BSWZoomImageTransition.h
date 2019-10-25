@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 02/08/15.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if TARGET_OS_IOS
 
 @import UIKit;
 
@@ -33,3 +34,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif

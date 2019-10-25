@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -84,3 +85,4 @@ public class CheckboxButton: UIButton {
         return (newBackgroundImage, newCheckboxImage)
     }
 }
+#endif

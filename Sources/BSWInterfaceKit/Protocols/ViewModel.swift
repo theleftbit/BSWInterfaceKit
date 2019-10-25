@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 03/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 import BSWFoundation
@@ -42,3 +43,4 @@ public enum ReuseType {
     case classReference(AnyClass)
 }
 
+#endif

@@ -1,6 +1,4 @@
-//
-//  Created by Pierluigi Cifani on 12/02/2017.
-//
+#if canImport(UIKit)
 
 import XCTest
 import SnapshotTesting
@@ -117,3 +115,4 @@ private extension UIScreen {
     }
 }
 
+#endif

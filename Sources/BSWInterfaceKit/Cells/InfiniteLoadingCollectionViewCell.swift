@@ -1,4 +1,6 @@
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class InfiniteLoadingCollectionViewFooter: UICollectionReusableView, ViewModelReusable, CollectionViewInfiniteFooter {
@@ -30,3 +32,5 @@ public class InfiniteLoadingCollectionViewFooter: UICollectionReusableView, View
         activityIndicator.startAnimating()
     }    
 }
+
+#endif
