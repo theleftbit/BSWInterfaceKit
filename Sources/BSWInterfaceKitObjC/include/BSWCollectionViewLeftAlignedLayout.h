@@ -24,6 +24,8 @@
  *  Based on http://stackoverflow.com/questions/13017257/how-do-you-determine-spacing-between-cells-in-uicollectionview-flowlayout
  */
 
+#include <TargetConditionals.h>
+
 #if TARGET_OS_IOS
 @import UIKit;
 

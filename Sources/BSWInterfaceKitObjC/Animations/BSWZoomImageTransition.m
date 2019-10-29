@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 02/08/15.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#include <TargetConditionals.h>
+
 #if TARGET_OS_IOS
 
 #import "BSWZoomImageTransition.h"
