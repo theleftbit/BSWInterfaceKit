@@ -5,6 +5,8 @@
 //  Created by Pierluigi Cifani on 31/10/2018.
 //
 
+@import Foundation;
+
 #ifndef BSWZoomTransitionType_h
 #define BSWZoomTransitionType_h
 
