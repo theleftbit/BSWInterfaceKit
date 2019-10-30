@@ -150,6 +150,7 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     }
     
     private func setupTargets() {
+        
         NotificationCenter.default.addObserver(self, selector: #selector(didRotate), name: UIDevice.orientationDidChangeNotification, object: nil)
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(_dismissNotification))
         let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(_dismissNotification))

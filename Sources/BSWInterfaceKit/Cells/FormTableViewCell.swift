@@ -104,7 +104,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 textContentType = .password
             case .newPassword:
                 placeholder = "password-placeholder".localized
-                if #available(iOS 12.0, *) {
+                if #available(iOS 12.0, tvOS 12.0, *) {
                     textContentType = .newPassword
                 }
             case .telephone:

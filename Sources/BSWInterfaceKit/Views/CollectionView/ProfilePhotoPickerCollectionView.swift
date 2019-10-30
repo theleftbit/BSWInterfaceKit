@@ -53,6 +53,7 @@ public protocol ProfilePhotoPickerDelegate: class {
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
 
+@available(tvOS, unavailable)
 public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {

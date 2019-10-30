@@ -38,6 +38,7 @@ public final class PhotoGalleryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     public override var prefersStatusBarHidden : Bool {
         return true
     }
@@ -54,7 +55,7 @@ public final class PhotoGalleryViewController: UIViewController {
         
         //Add the close button
         let closeButton: UIButton = {
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, tvOS 13.0, *) {
                 let closeButton = UIButton.systemButton(with: UIImage.templateImage(.close), target: self, action: #selector(onCloseButton))
                 closeButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(textStyle: .largeTitle, scale: .small), forImageIn: .normal)
                 return closeButton
