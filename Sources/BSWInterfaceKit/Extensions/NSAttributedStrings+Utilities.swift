@@ -57,6 +57,14 @@ public extension NSAttributedString {
         string.addAttribute(.font, value: newFont, range: range)
         return string
     }
+
+    func modifyingColor(_ newColor: UIColor) -> NSAttributedString {
+        let string = self.mutableCopy() as! NSMutableAttributedString
+        let range = NSRange(location: 0, length: string.length)
+        string.removeAttribute(.foregroundColor, range: range)
+        string.addAttribute(.foregroundColor, value: newColor, range: range)
+        return string
+    }
     
     var bolded: NSAttributedString {
         let range = NSRange(location: 0, length: self.length)
