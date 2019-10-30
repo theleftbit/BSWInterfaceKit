@@ -36,6 +36,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
         collectionView.dataSource = self
     }
     
+    @available(tvOS, unavailable)
     public var pullToRefreshSupport: CollectionViewPullToRefreshSupport<Cell.VM>? {
         didSet {
             guard let pullToRefreshSupport = self.pullToRefreshSupport else {
@@ -276,7 +277,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     
     //MARK: IBAction
     
-    @available (iOS 10.0, *)
+    @available(tvOS, unavailable)
     @objc func handlePullToRefresh() {
         guard let pullToRefreshSupport = self.pullToRefreshSupport else { return }
         
@@ -346,6 +347,7 @@ public struct CollectionViewReorderSupport<Model> {
 
 //MARK: - Pull to Refresh Support
 
+@available(tvOS, unavailable)
 public struct CollectionViewPullToRefreshSupport<Model> {
     public enum Behavior {
         case replace([Model])

@@ -5,7 +5,6 @@
 #if canImport(UIKit)
 
 import UIKit
-import SafariServices
 
 extension UIViewController {
 
@@ -59,6 +58,10 @@ extension UINavigationController {
     }
 }
 
+#if canImport(SafariServices)
+
+import SafariServices
+
 //MARK: - SafariViewController
 extension UIViewController {
     @objc public func presentSafariVC(withURL url: URL) {
@@ -66,6 +69,8 @@ extension UIViewController {
         self.present(safariVC, animated: true, completion: nil)
     }
 }
+
+#endif
 
 //MARK: - Child VC
 

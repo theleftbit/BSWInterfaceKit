@@ -4,6 +4,7 @@
 //
 
 #if canImport(UIKit)
+#if canImport(MessageUI)
 
 import UIKit
 import MessageUI
@@ -26,4 +27,5 @@ final public class MailComposerBehavior: NSObject, MFMailComposeViewControllerDe
     }
 }
 
+#endif
 #endif

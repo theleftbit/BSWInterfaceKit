@@ -73,7 +73,7 @@ public extension UIImage {
     }
     
     private class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
-        if #available(iOS 13.0, *) {
+        if #available(iOS 13.0, tvOS 13.0, *) {
             return UIImage(systemName: name, compatibleWith: compatibleWithTraitCollection)
         } else {
             let bundle = Bundle.interfaceKitBundle()

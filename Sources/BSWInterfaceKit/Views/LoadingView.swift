@@ -17,7 +17,7 @@ public class LoadingView: UIView {
         return stackView
     }()
     
-    public init(loadingMessage: NSAttributedString? = nil, activityIndicatorStyle: UIActivityIndicatorView.Style = .gray) {
+    public init(loadingMessage: NSAttributedString? = nil, activityIndicatorStyle: UIActivityIndicatorView.Style = .defaultStyle) {
         super.init(frame: .zero)
         self.addSubview(stackView)
         stackView.centerInSuperview()
@@ -41,4 +41,5 @@ public class LoadingView: UIView {
         return stackView.arrangedSubviews.count > 0 ? stackView.intrinsicContentSize : .zero
     }
 }
+
 #endif

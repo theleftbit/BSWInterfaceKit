@@ -14,6 +14,7 @@ import Photos
 
 public typealias MediaHandler = ((URL?) -> Void)
 
+@available(tvOS, unavailable)
 final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     public enum Kind {

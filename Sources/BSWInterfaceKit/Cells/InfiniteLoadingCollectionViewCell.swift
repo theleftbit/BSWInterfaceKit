@@ -5,7 +5,7 @@ import UIKit
 
 public class InfiniteLoadingCollectionViewFooter: UICollectionReusableView, ViewModelReusable, CollectionViewInfiniteFooter {
     
-    public let activityIndicator = UIActivityIndicatorView(style: .gray)
+    public let activityIndicator = UIActivityIndicatorView(style: .defaultStyle)
     
     public override init(frame: CGRect) {
         super.init(frame: frame)

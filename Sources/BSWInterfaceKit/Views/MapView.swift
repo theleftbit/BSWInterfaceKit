@@ -10,6 +10,7 @@ import MapKit
 
 @objc(BSWMapView)
 @available (iOS 10, *)
+@available(tvOS, unavailable)
 public class MapView: UIImageView {
     
     private enum Constants {
