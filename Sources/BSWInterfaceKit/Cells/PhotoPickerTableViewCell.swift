@@ -1,8 +1,10 @@
+#if canImport(UIKit)
 
 import UIKit
 
 // MARK: Private classes
 
+@available(tvOS, unavailable)
 open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout {
     
     let photosCollectionView = ProfilePhotoPickerCollectionView()
@@ -38,3 +40,4 @@ open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFl
         photosCollectionView.profilePhotoDelegate = profilePhotoDelegate
     }
 }
+#endif

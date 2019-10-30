@@ -1,12 +1,9 @@
-//
-//  Created by Pierluigi Cifani on 11/04/2017.
-//
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import BSWFoundation
 import XCTest
 
-@available(iOS 11.0, *)
 class UIViewControllerTests: BSWSnapshotTest {
 
     func testInitialLayoutCallback() {
@@ -104,7 +101,6 @@ class UIViewControllerTests: BSWSnapshotTest {
 
 //MARK: Mock VCs
 
-@available(iOS 11.0, *)
 @objc(TestViewController)
 private class TestViewController: UIViewController {
     
@@ -121,7 +117,6 @@ private class TestViewController: UIViewController {
     }
 }
 
-@available(iOS 11.0, *)
 func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) -> BottomContainerViewController {
     let containedViewController = TestViewController()
     let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
@@ -130,8 +125,6 @@ func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) 
     return BottomContainerViewController(containedViewController: containedViewController, button: button, margins: margins)
 }
 
-
-@available(iOS 11.0, *)
 func bottomViewControllerContainer() -> BottomContainerViewController {
     @objc(BSWInterfaceKitTestsTopVC)
     class TopVC: UIViewController {
@@ -189,3 +182,4 @@ private class ContentVC: UIViewController {
     }
 }
 
+#endif

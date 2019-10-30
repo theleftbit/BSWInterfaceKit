@@ -2,6 +2,7 @@
 //  ScrollableTabsViewControllerTests.swift
 //  Created by Pierluigi Cifani on 14/08/2018.
 //
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -47,12 +48,10 @@ class YellowViewController: UIViewController {
         let label = UILabel()
         label.text = "Hello"
         view.addAutolayoutSubview(label)
-        if #available(iOS 11.0, *) {
-            NSLayoutConstraint.activate([
-                label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                ])
-        }
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
     }
 }
 
@@ -71,3 +70,5 @@ class RedViewController: UIViewController {
         view.backgroundColor = .red
     }
 }
+
+#endif

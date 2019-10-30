@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 23/02/2018.
 //
+#if os(iOS) && !targetEnvironment(macCatalyst)
 
 import UIKit
 
@@ -146,3 +147,5 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
         )
     }
 }
+
+#endif

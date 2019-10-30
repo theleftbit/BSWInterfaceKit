@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 12/07/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -15,3 +16,5 @@ extension UITextField {
         return textField
     }
 }
+
+#endif

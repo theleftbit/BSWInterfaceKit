@@ -2,9 +2,9 @@
 //  Created by Pierluigi Cifani on 10/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
-import SafariServices
 
 extension UIViewController {
 
@@ -58,6 +58,10 @@ extension UINavigationController {
     }
 }
 
+#if canImport(SafariServices)
+
+import SafariServices
+
 //MARK: - SafariViewController
 extension UIViewController {
     @objc public func presentSafariVC(withURL url: URL) {
@@ -65,6 +69,8 @@ extension UIViewController {
         self.present(safariVC, animated: true, completion: nil)
     }
 }
+
+#endif
 
 //MARK: - Child VC
 
@@ -94,3 +100,5 @@ private let alertQueue: OperationQueue = {
     operationQueue.name = "com.bswinterfacekit.alertpresenting"
     return operationQueue
 }()
+
+#endif

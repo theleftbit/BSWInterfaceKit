@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 21/03/2017.
 //
 
+#if canImport(UIKit)
+
 import BSWInterfaceKit
 import UIKit
 
@@ -20,3 +22,5 @@ class ProfilePhotoPickerCollectionViewTests: BSWSnapshotTest {
         verify(view: photoPicker)
     }
 }
+
+#endif

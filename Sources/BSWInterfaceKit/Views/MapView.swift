@@ -1,15 +1,16 @@
 //
-//  MapView.swift
 //  BSWInterfaceKit
-//
 //  Created by Pierluigi Cifani on 21/07/2018.
 //
+
+#if canImport(UIKit)
 
 import UIKit
 import MapKit
 
 @objc(BSWMapView)
 @available (iOS 10, *)
+@available(tvOS, unavailable)
 public class MapView: UIImageView {
     
     private enum Constants {
@@ -107,3 +108,4 @@ public class MapView: UIImageView {
     }
 }
 
+#endif

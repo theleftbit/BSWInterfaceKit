@@ -2,14 +2,15 @@
 //  RootViewController.swift
 //  Created by Pierluigi Cifani on 15/09/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 import Task
 
-@available(iOS 11.0, *) @objc(BSWRootViewController)
+@objc(BSWRootViewController)
 final public class RootViewController: ContainerViewController {}
 
-@available(iOS 11.0, *) @objc(BSWContainerViewController)
+@objc(BSWContainerViewController)
 open class ContainerViewController: UIViewController {
     
     public enum LayoutMode {
@@ -72,3 +73,4 @@ open class ContainerViewController: UIViewController {
         animator.startAnimation()
     }
 }
+#endif

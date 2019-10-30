@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 21/03/2017.
 //
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -41,3 +42,5 @@ class UIViewTests: BSWSnapshotTest {
         verify(view: hostView)
     }
 }
+
+#endif

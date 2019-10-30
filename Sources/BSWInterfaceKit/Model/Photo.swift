@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 07/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 import Nuke
@@ -118,3 +119,4 @@ extension Photo {
         return [photo1, photo2, photo3, photo4]
     }
 }
+#endif

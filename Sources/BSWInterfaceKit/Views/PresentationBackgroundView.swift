@@ -2,6 +2,7 @@
 //  PresentationBackgroundViewController.swift
 //  Created by Pierluigi Cifani on 13/08/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -35,3 +36,4 @@ class PresentationBackgroundView: UIView {
         self.parentViewController?.dismiss(animated: true, completion: nil)
     }
 }
+#endif

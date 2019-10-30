@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 28/03/2019.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 import BSWInterfaceKit
 
@@ -92,3 +94,5 @@ private class PageCell: UICollectionViewCell, ViewModelReusable {
         imageView.setPhoto(viewModel)
     }
 }
+
+#endif

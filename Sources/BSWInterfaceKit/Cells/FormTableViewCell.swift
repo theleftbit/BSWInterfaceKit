@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 30/03/2018.
 //  Copyright © 2018 TheLeftBit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -103,7 +104,7 @@ open class FormTextField: UITextField, ViewModelConfigurable {
                 textContentType = .password
             case .newPassword:
                 placeholder = "password-placeholder".localized
-                if #available(iOS 12.0, *) {
+                if #available(iOS 12.0, tvOS 12.0, *) {
                     textContentType = .newPassword
                 }
             case .telephone:
@@ -205,3 +206,4 @@ open class FormTextField: UITextField, ViewModelConfigurable {
 
 // MARK: Appereance
 
+#endif

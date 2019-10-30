@@ -2,11 +2,10 @@
 //  Created by Pierluigi Cifani on 27/09/2018.
 //  Copyright © 2018 The Left Bit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
-
-@available(iOS 11.0, *)
 open class ColumnFlowLayout: UICollectionViewLayout {
     
     // These are used to create a factory cell to calculate the size.
@@ -196,3 +195,5 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         return estimatedSize.height
     }
 }
+
+#endif

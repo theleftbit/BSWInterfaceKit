@@ -3,6 +3,8 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 open class TextStyler {
@@ -57,3 +59,5 @@ open class TextStyler {
         return metrics.scaledFont(for: font, compatibleWith: traitCollection)
     }
 }
+
+#endif

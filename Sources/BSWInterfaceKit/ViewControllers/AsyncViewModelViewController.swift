@@ -2,6 +2,7 @@
 //  AsyncViewModelPresenter.swift
 //  Created by Pierluigi Cifani on 12/02/2017.
 //
+#if canImport(UIKit)
 
 import UIKit
 import BSWFoundation
@@ -45,3 +46,4 @@ open class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewM
     }
 }
 
+#endif

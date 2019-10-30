@@ -2,9 +2,9 @@
 //  UIViewController+States.swift
 //  Created by Pierluigi Cifani on 15/09/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
-
 
 // MARK: - Error and Loading
 @nonobjc
@@ -141,3 +141,4 @@ private class StateContainerViewController: UIViewController {
             ])
     }
 }
+#endif

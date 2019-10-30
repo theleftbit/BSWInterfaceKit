@@ -2,6 +2,7 @@
 //  MarqueePresentation.swift
 //  Created by Pierluigi Cifani on 13/08/2018.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -173,3 +174,4 @@ private class MarqueeDismissController: NSObject, UIViewControllerAnimatedTransi
 private enum Constants {
     static let BackgroundViewTag = 79
 }
+#endif

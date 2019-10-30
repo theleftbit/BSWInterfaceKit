@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 28/03/2019.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
@@ -91,3 +93,5 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         return CGPoint(x: newHorizontalOffset, y: proposedContentOffset.y)
     }
 }
+
+#endif

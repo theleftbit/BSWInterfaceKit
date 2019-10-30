@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 06/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -100,3 +101,4 @@ open class ScrollableStackView: UIScrollView {
         return stackView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: horizontalFittingPriority, verticalFittingPriority: verticalFittingPriority)
     }
 }
+#endif
