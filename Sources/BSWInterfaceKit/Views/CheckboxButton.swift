@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -46,7 +47,7 @@ public class CheckboxButton: UIButton {
     static private func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
         let backgroundImage: UIImage = {
             let image = UIImage.templateImage(.rectangle)
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, tvOS 13.0, *) {
                 return image.withTintColor(Appearance.backgroundTintColor)
             } else {
                 return image.tint(Appearance.backgroundTintColor)
@@ -55,7 +56,7 @@ public class CheckboxButton: UIButton {
 
         let checkboxImage: UIImage = {
             let image = UIImage.templateImage(.checkmark)
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, tvOS 13.0, *) {
                 return image.withTintColor(Appearance.checkTintColor)
             } else {
                 return image.tint(Appearance.checkTintColor)
@@ -84,3 +85,4 @@ public class CheckboxButton: UIButton {
         return (newBackgroundImage, newCheckboxImage)
     }
 }
+#endif

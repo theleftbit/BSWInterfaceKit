@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 04/08/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -52,6 +53,7 @@ public protocol ProfilePhotoPickerDelegate: class {
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
 
+@available(tvOS, unavailable)
 public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {
@@ -321,3 +323,4 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         cellDelegate?.didTapOnProfilePhotoCell(self)
     }
 }
+#endif

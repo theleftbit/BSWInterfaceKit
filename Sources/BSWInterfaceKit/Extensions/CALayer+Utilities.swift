@@ -2,6 +2,8 @@
 //  Created by Pierluigi Cifani on 11/07/2018.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 // https://medium.com/swifty-tim/views-with-rounded-corners-and-shadows-c3adc0085182
@@ -47,3 +49,5 @@ public extension CALayer {
         }
     }
 }
+
+#endif

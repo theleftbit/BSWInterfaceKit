@@ -1,3 +1,6 @@
+
+#if canImport(UIKit)
+
 import UIKit
 import ObjectiveC
 import BSWFoundation
@@ -87,3 +90,5 @@ public extension UICollectionViewCell {
 private func randomInterval(_ interval: TimeInterval, variance: Double) -> TimeInterval {
     return interval + variance * Double((Double(arc4random_uniform(1000)) - 500.0) / 500.0)
 }
+
+#endif

@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 11/04/2017.
 //
+#if canImport(UIKit)
 
 import BSWInterfaceKit
 import XCTest
@@ -63,3 +64,5 @@ extension Snapshotting where Value == NSAttributedString, Format == UIImage {
         return label
     }
 }
+
+#endif

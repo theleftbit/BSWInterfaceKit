@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 28/04/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -152,3 +153,5 @@ public class PolaroidCollectionCellBasicInfoView: UIView {
         stackView.addArrangedSubview(detailLabel)
     }
 }
+
+#endif

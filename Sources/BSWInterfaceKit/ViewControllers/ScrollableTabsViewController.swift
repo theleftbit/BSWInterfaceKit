@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 23/11/2017.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 
@@ -383,3 +384,4 @@ extension ScrollableTabsViewController {
         }
     }
 }
+#endif

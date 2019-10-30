@@ -1,9 +1,11 @@
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class InfiniteLoadingCollectionViewFooter: UICollectionReusableView, ViewModelReusable, CollectionViewInfiniteFooter {
     
-    public let activityIndicator = UIActivityIndicatorView(style: .gray)
+    public let activityIndicator = UIActivityIndicatorView(style: .defaultStyle)
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,3 +32,5 @@ public class InfiniteLoadingCollectionViewFooter: UICollectionReusableView, View
         activityIndicator.startAnimating()
     }    
 }
+
+#endif
