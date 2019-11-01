@@ -11,14 +11,20 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
     public enum ItemSizing {
         case usingLineSpacing
         case usingAvailableWidth(margin: CGFloat)
+        case hardcoded(width: CGFloat)
     }
-    
+
+    public enum ItemAlignment {
+        case left
+        case centered
+    }
+
     override public var scrollDirection: UICollectionView.ScrollDirection {
         didSet {
             assert(scrollDirection == .horizontal)
         }
     }
-
+    
     override public var minimumInteritemSpacing: CGFloat {
         didSet {
             fatalError("This has no meaning, please use minimumLineSpacing")
@@ -29,9 +35,11 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
     
     public var velocityFactor: CGFloat = 0.1
     public let itemSizing: ItemSizing
-    
-    public init(itemSizing: ItemSizing = .usingLineSpacing) {
+    public let itemAlignment: ItemAlignment
+
+    public init(itemSizing: ItemSizing = .usingLineSpacing, itemAlignment: ItemAlignment = .left) {
         self.itemSizing = itemSizing
+        self.itemAlignment = itemAlignment
         super.init()
         scrollDirection = .horizontal
     }
@@ -46,6 +54,22 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
         super.prepare()
         guard let cv = self.collectionView else { return }
         assert(cv.isPagingEnabled == false)
+        
+        // Adjust sectionInset according to the item's alignment
+        switch self.itemAlignment {
+        case .left:
+            break // No adjustment neccesary
+        case .centered:
+            if sectionInset != .zero {
+               print("Ignoring sectionInsets on .centered alignment")
+            }
+            // .centered only supports hardcoded widths
+            guard case .hardcoded(let width) = itemSizing else { break }
+            let cellWidth = width
+            let sideInsets = (cv.frame.width - cellWidth)/2
+            sectionInset = [.left: sideInsets, .right: sideInsets]
+        }
+        
         let availableSize = cv.frame.inset(by: sectionInset)
         itemSize = {
             switch self.itemSizing {
@@ -53,6 +77,8 @@ public class HorizontalPagedCollectionViewLayout: UICollectionViewFlowLayout {
                 return CGSize(width: availableSize.width - minimumLineSpacing, height: availableSize.height)
             case .usingAvailableWidth(let margin):
                 return CGSize(width: availableSize.width - margin, height: availableSize.height)
+            case .hardcoded(let width):
+                return CGSize(width: width, height: availableSize.height)
             }
         }()
         cv.decelerationRate = .fast
