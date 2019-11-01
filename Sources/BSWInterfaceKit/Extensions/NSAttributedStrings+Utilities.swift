@@ -138,6 +138,7 @@ public extension NSMutableAttributedString {
     func setLineHeight(_ lineHeight: CGFloat) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.minimumLineHeight = lineHeight
+        paragraphStyle.maximumLineHeight = lineHeight
         paragraphStyle.lineBreakMode = .byTruncatingTail //We always want this
         setParagraphStyle(paragraphStyle)
     }
