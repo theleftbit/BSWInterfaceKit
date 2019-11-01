@@ -21,6 +21,7 @@
 		F56F90B322EF426900E45944 /* FeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90AC22EF426900E45944 /* FeaturesViewController.swift */; };
 		F56F90B422EF426900E45944 /* AsyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90AE22EF426900E45944 /* AsyncView.swift */; };
 		F56F90B522EF426900E45944 /* StrawberryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90AF22EF426900E45944 /* StrawberryViewController.swift */; };
+		F5783581236C4B20005DD42B /* PlanSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5783580236C4B20005DD42B /* PlanSelectorViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		F56F90AC22EF426900E45944 /* FeaturesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeaturesViewController.swift; path = ../FeaturesViewController.swift; sourceTree = "<group>"; };
 		F56F90AE22EF426900E45944 /* AsyncView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncView.swift; sourceTree = "<group>"; };
 		F56F90AF22EF426900E45944 /* StrawberryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StrawberryViewController.swift; path = ../StrawberryViewController.swift; sourceTree = "<group>"; };
+		F5783580236C4B20005DD42B /* PlanSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSelectorViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				F56F90AC22EF426900E45944 /* FeaturesViewController.swift */,
 				F56F90AF22EF426900E45944 /* StrawberryViewController.swift */,
 				F545909D2322C7E80037E8B9 /* TableViewController.swift */,
+				F5783580236C4B20005DD42B /* PlanSelectorViewController.swift */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				F56F90B022EF426900E45944 /* AzzurriViewController.swift in Sources */,
 				F545909E2322C7E80037E8B9 /* TableViewController.swift in Sources */,
 				F56F90B222EF426900E45944 /* AlertOperationViewController.swift in Sources */,
+				F5783581236C4B20005DD42B /* PlanSelectorViewController.swift in Sources */,
 				F56F90B522EF426900E45944 /* StrawberryViewController.swift in Sources */,
 				F56F908822EF422300E45944 /* AppDelegate.swift in Sources */,
 				F56F90B122EF426900E45944 /* FacebookLoginViewController.swift in Sources */,

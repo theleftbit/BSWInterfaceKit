@@ -19,6 +19,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         case collectionViewDataSource = "CollectionViewDataSource"
         case facebookLogin = "FacebookLogin"
         case alertOperations = "AlertOperations"
+        case centerPagedCollectionView = "CenterPagedCollectionView"
     }
 
     let featuresTableView : UITableView = {
@@ -80,6 +81,8 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
             case .profileViewController:
                 let viewModel = ClassicProfileViewModel.buffon()
                 return ClassicProfileViewController(viewModel: viewModel)
+            case .centerPagedCollectionView:
+                return PlanSelectorViewController()
             }
         }()
         show(vc, sender: self)
