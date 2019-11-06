@@ -13,6 +13,12 @@ class NSAttributedStringTests: XCTestCase {
         )
         assertSnapshot(matching: attributedString, as: .dump)
     }
+    
+    func testBolding() {
+        let attributedString = TextStyler.styler.attributedString("Welcome to the jungle")
+        let boldingJungle = attributedString.bolding(substring: "jungle")
+        assertSnapshot(matching: boldingJungle, as: .dump)
+    }
 }
 
 #endif
