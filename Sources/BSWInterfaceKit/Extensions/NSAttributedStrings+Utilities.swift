@@ -50,28 +50,44 @@ public extension NSAttributedString {
         self.init(attributedString: attributedString)
     }
 
-    func modifyingFont(_ newFont: UIFont) -> NSAttributedString {
+    func modifyingFont(_ newFont: UIFont, range: NSRange? = nil) -> NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
-        let range = NSRange(location: 0, length: string.length)
+        let range: NSRange = {
+            if let userRange = range { return userRange }
+            else { return NSRange(location: 0, length: string.length) }
+        }()
         string.removeAttribute(.font, range: range)
         string.addAttribute(.font, value: newFont, range: range)
         return string
     }
 
-    func modifyingColor(_ newColor: UIColor) -> NSAttributedString {
+    func modifyingColor(_ newColor: UIColor, range: NSRange? = nil) -> NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
-        let range = NSRange(location: 0, length: string.length)
+        let range: NSRange = {
+            if let userRange = range { return userRange }
+            else { return NSRange(location: 0, length: string.length) }
+        }()
         string.removeAttribute(.foregroundColor, range: range)
         string.addAttribute(.foregroundColor, value: newColor, range: range)
         return string
     }
     
     var bolded: NSAttributedString {
-        let range = NSRange(location: 0, length: self.length)
-        let font = self.attributes(at: 0, longestEffectiveRange: nil, in: range)[.font] as! UIFont
-        return modifyingFont(font.bolded)
+        return bolding(substring: self.string)
+    }
+
+    func bolding(substring: String) -> NSAttributedString {
+        let nsRange = (self.string as NSString).range(of: substring)
+        guard nsRange.location != NSNotFound else {
+            return self
+        }
+        guard let font = self.attributes(at: 0, longestEffectiveRange: nil, in: nsRange)[.font] as? UIFont else {
+            return self
+        }
+        return modifyingFont(font.bolded, range: nsRange)
     }
     
+
     func setAttachmentWidth(_ width: CGFloat) {
         enumerateAttribute(.attachment, in: NSRange(location: 0, length: length), options: [], using: { (value, range, stop) in
             guard let attachment = value as? NSTextAttachment else { return }
