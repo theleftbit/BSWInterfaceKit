@@ -36,7 +36,7 @@ public class InAppNotifications {
     
     /** Shows a CRNotification from a InAppNotificationType **/
     @discardableResult
-    public static func showNotification(type: InAppNotificationType, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
+    public static func showNotification(type: InAppNotificationType, title: NSAttributedString?, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let view = InAppNotificationView()
         
         view.setBackgroundColor(color: type.backgroundColor)
@@ -176,8 +176,9 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     }
     
     /** Sets the title of the notification **/
-    internal func setTitle(title: NSAttributedString) {
+    internal func setTitle(title: NSAttributedString?) {
         titleLabel.attributedText = title
+        titleLabel.isHidden = (title == nil)
     }
     
     /** Sets the message of the notification **/
