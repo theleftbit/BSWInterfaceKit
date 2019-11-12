@@ -104,6 +104,16 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
 
         guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
+        guard var fromViewController = transitionContext.viewController(forKey: .from) else { return }
+        if let containerVC = fromViewController as? ContainerViewController {
+            fromViewController = containerVC.containedViewController
+        }
+        if let tabBarController = fromViewController as? UITabBarController {
+            fromViewController = tabBarController.selectedViewController ?? fromViewController
+        }
+        if let navController = fromViewController as? UINavigationController {
+            fromViewController = navController.topViewController ?? fromViewController
+        }
         guard case .presentation(let cardHeight, let position) = properties.kind else { fatalError() }
 
         let containerView = transitionContext.containerView
@@ -135,15 +145,11 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         //Prepare Constraints
         let anchorConstraint: NSLayoutConstraint = {
-            switch (position, properties.presentationInsideSafeArea) {
-            case (.bottom, false):
+            switch (position) {
+            case .bottom:
                 return toViewController.view.topAnchor.constraint(equalTo: containerView.bottomAnchor)
-            case (.top, false):
+            case .top:
                 return containerView.topAnchor.constraint(equalTo: toViewController.view.bottomAnchor)
-            case (.bottom, true):
-                return toViewController.view.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor)
-            case (.top, true):
-                return containerView.safeAreaLayoutGuide.topAnchor.constraint(equalTo: toViewController.view.bottomAnchor)
             }
         }()
         NSLayoutConstraint.activate([
@@ -161,22 +167,27 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         // This is the change that animates this from the bottom
         let extraPadding: CGFloat = {
-            guard properties.presentationInsideSafeArea,
-                let fromVC = transitionContext.viewController(forKey: .from) else {
-                return 0
-            }
-            switch position {
-            case .top:
-                if let navVC = fromVC as? UINavigationController, let containerInsets = navVC.topViewController?.view?.safeAreaInsets {
-                    return containerInsets.top
-                } else {
-                    return containerView.safeAreaInsets.top
+            if properties.presentationInsideSafeArea {
+                switch position {
+                case .top:
+                    return fromViewController.view.safeAreaInsets.top
+                case .bottom:
+                    return fromViewController.view.safeAreaInsets.bottom
                 }
-            case .bottom:
-                if let tabVC = fromVC as? UITabBarController, let containerInsets = tabVC.selectedViewController?.view.safeAreaInsets {
-                    return containerInsets.bottom
+            } else {
+                if UIDevice.current.hasNotch {
+                    // iOS 13 has a bug where it will
+                    // crash if we return 0 from here on
+                    // notched devices.
+                    // So... we must workaround it ourselves
+                    switch position {
+                    case .top:
+                        return 20
+                    case .bottom:
+                        return 34
+                    }
                 } else {
-                    return containerView.safeAreaInsets.bottom
+                    return 0
                 }
             }
         }()
@@ -216,19 +227,7 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
         guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView else { fatalError() }
 
-        let extraPadding: CGFloat = {
-            guard properties.presentationInsideSafeArea else {
-                return 0
-            }
-            switch bgView.position! {
-            case .top:
-                return containerView.safeAreaInsets.top
-            case .bottom:
-                return containerView.safeAreaInsets.bottom
-            }
-        }()
-
-        bgView.anchorConstraint.constant = extraPadding + 0
+        bgView.anchorConstraint.constant = 0
 
         //Start slide up animation
         let animator = UIViewPropertyAnimator(duration: properties.animationDuration, dampingRatio: 1.0) {
