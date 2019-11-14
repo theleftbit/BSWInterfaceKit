@@ -9,10 +9,11 @@ import SnapshotTesting
 
 class RangeSliderTests: BSWSnapshotTest {
     var sut: RangeSlider!
+    
     override func setUp() {
         super.setUp()
-        sut = RangeSlider()
-        sut.configureFor(viewModel: .init(values: (10, 60), trackTintColor: .gray, trackHighlightTintColor: .red, thumbTintColor: .white))
+        sut = RangeSlider.init(configuration: .init(trackTintColor: .gray, trackHighlightTintColor: .red, thumbTintColor: .white))
+        sut.configureFor(viewModel: .init(minimumValue: 10, maximumValue: 60))
         sut.frame = CGRect(x: 0, y: 0, width: 350, height: 32)
     }
     
