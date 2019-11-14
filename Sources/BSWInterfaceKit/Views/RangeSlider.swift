@@ -12,15 +12,17 @@ import QuartzCore
 
 public class RangeSlider: UIControl {
     
-    public struct VM {
-        public let values: (lower: Double, upper: Double)
+    public struct Configuration {
         public let trackTintColor: UIColor
         public let trackHighlightTintColor: UIColor
         public let thumbTintColor: UIColor
         public let curvaceousness: CGFloat
         
-        public init(values: (lower: Double, upper: Double), trackTintColor: UIColor, trackHighlightTintColor: UIColor, thumbTintColor: UIColor, curvaceousness: CGFloat = 1.0) {
-            self.values = values
+        public init(trackTintColor: UIColor,
+                    trackHighlightTintColor: UIColor,
+                    thumbTintColor: UIColor,
+                    curvaceousness: CGFloat = 1.0) {
+            
             self.trackTintColor = trackTintColor
             self.trackHighlightTintColor = trackHighlightTintColor
             self.thumbTintColor = thumbTintColor
@@ -28,8 +30,24 @@ public class RangeSlider: UIControl {
         }
     }
     
-    public init() {
+    public struct VM {
+        public let minimumValue: Double
+        public let maximumValue: Double
+        
+        public init(minimumValue: Double, maximumValue: Double) {
+            self.minimumValue = minimumValue
+            self.maximumValue = maximumValue
+        }
+    }
+    
+    public init(configuration: Configuration) {
         super.init(frame: .zero)
+        
+        trackTintColor = configuration.trackTintColor
+        trackHighlightTintColor = configuration.trackHighlightTintColor
+        thumbTintColor = configuration.thumbTintColor
+        curvaceousness = configuration.curvaceousness
+        
         trackLayer.rangeSlider = self
         trackLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(trackLayer)
@@ -48,14 +66,15 @@ public class RangeSlider: UIControl {
     }
     
     public func configureFor(viewModel: VM) {
-        minimumValue = viewModel.values.lower
-        maximumValue = viewModel.values.upper
-        lowerValue = viewModel.values.lower
-        upperValue = viewModel.values.upper
-        trackTintColor = viewModel.trackTintColor
-        trackHighlightTintColor = viewModel.trackHighlightTintColor
-        thumbTintColor = viewModel.thumbTintColor
-        curvaceousness = viewModel.curvaceousness
+        minimumValue = viewModel.minimumValue
+        maximumValue = viewModel.maximumValue
+        lowerValue = viewModel.minimumValue
+        upperValue = viewModel.maximumValue
+    }
+    
+    public func updateValues(lowerValue: Double, upperValue: Double) {
+        self.lowerValue = lowerValue
+        self.upperValue = upperValue
     }
     
     override public var intrinsicContentSize: CGSize {
@@ -79,7 +98,7 @@ public class RangeSlider: UIControl {
         didSet { updateLayerFrames() }
     }
     
-    private var maximumValue: Double = 1.0 {
+    private var maximumValue: Double = 10.0 {
         didSet { updateLayerFrames() }
     }
     
