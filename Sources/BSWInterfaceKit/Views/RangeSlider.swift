@@ -22,7 +22,6 @@ public class RangeSlider: UIControl {
                     trackHighlightTintColor: UIColor,
                     thumbTintColor: UIColor,
                     curvaceousness: CGFloat = 1.0) {
-            
             self.trackTintColor = trackTintColor
             self.trackHighlightTintColor = trackHighlightTintColor
             self.thumbTintColor = thumbTintColor
