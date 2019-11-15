@@ -13,11 +13,11 @@ class RangeSliderTests: BSWSnapshotTest {
     override func setUp() {
         super.setUp()
         sut = RangeSlider.init(configuration: .init(trackTintColor: .gray, trackHighlightTintColor: .red, thumbTintColor: .white))
-        sut.configureFor(viewModel: .init(minimumValue: 10, maximumValue: 60))
         sut.frame = CGRect(x: 0, y: 0, width: 350, height: 32)
     }
     
     func testLayout() {
+        sut.configureFor(viewModel: .init(minimumValue: 10, maximumValue: 60))
         verify(view: sut)
     }
 }
