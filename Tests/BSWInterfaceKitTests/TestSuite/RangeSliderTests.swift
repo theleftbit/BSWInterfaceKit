@@ -21,6 +21,8 @@ class RangeSliderTests: BSWSnapshotTest {
         let range = Range<Double>(uncheckedBounds: (12, 55))
         sut.configureFor(viewModel: .init(selectedRange: range))
         verify(view: sut)
+        XCTAssert(sut.selectedRange == range)
+        
     }
 }
 
