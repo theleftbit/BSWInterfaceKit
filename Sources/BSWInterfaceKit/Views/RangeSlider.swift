@@ -40,7 +40,16 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         }
     }
     
-    private let configuration: Configuration
+    public var configuration: Configuration {
+        didSet {
+            trackTintColor = configuration.trackTintColor
+            trackHighlightTintColor = configuration.trackHighlightTintColor
+            thumbTintColor = configuration.thumbTintColor
+            curvaceousness = configuration.curvaceousness
+            minimumValue = configuration.range.lowerBound
+            maximumValue = configuration.range.upperBound
+        }
+    }
     
     public init(configuration: Configuration) {
         self.configuration = configuration
