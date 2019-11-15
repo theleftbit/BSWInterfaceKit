@@ -84,6 +84,10 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
     private let upperThumbLayer = RangeSliderThumbLayer()
     private var previousLocation = CGPoint()
     
+    public var selectedRange: Range<Double> {
+        return .init(uncheckedBounds: (lowerValue, upperValue))
+    }
+    
     private var lowerValue: Double = 0.2 {
         didSet { updateLayerFrames() }
     }
