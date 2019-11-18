@@ -149,6 +149,7 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
     }
 
     private func updateLayerFrames() {
+        guard frame != .zero else { return }
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         
