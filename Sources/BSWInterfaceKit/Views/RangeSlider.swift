@@ -39,27 +39,17 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
             self.selectedRange = selectedRange
         }
     }
-    
-    public var configuration: Configuration {
-        didSet {
-            trackTintColor = configuration.trackTintColor
-            trackHighlightTintColor = configuration.trackHighlightTintColor
-            thumbTintColor = configuration.thumbTintColor
-            curvaceousness = configuration.curvaceousness
-            minimumValue = configuration.range.lowerBound
-            maximumValue = configuration.range.upperBound
-        }
-    }
-    
+        
     public init(configuration: Configuration) {
-        self.configuration = configuration
         super.init(frame: .zero)
         
         trackTintColor = configuration.trackTintColor
         trackHighlightTintColor = configuration.trackHighlightTintColor
         thumbTintColor = configuration.thumbTintColor
         curvaceousness = configuration.curvaceousness
-        
+        minimumValue = configuration.range.lowerBound
+        maximumValue = configuration.range.upperBound
+
         trackLayer.rangeSlider = self
         trackLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(trackLayer)
@@ -78,8 +68,7 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
     }
     
     public func configureFor(viewModel: VM) {
-        minimumValue = configuration.range.lowerBound
-        maximumValue = configuration.range.upperBound
+        guard viewModel.selectedRange != lowerValue..<upperValue else { return }
         lowerValue = viewModel.selectedRange.lowerBound
         upperValue = viewModel.selectedRange.upperBound
     }
