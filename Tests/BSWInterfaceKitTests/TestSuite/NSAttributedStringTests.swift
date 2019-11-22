@@ -19,6 +19,11 @@ class NSAttributedStringTests: XCTestCase {
         let boldingJungle = attributedString.bolding(substring: "jungle")
         assertSnapshot(matching: boldingJungle, as: .dump)
     }
+
+    func testLineHeightMultiplier() {
+        let attributedString = TextStyler.styler.attributedString("Welcome to the jungle\nwe've got fun and games").settingLineHeightMultiplier(1.2)
+        assertSnapshot(matching: attributedString, as: .dump)
+    }
 }
 
 #endif
