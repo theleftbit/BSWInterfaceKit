@@ -119,6 +119,11 @@ public extension NSAttributedString {
         return mutableCopy
     }
 
+    func settingLineHeightMultiplier(_ multiplier: CGFloat) -> NSAttributedString {
+        let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
+        mutableCopy.setLineHeightMultiplier(multiplier)
+        return mutableCopy
+    }
 }
 
 private extension NSTextAttachment {
@@ -156,6 +161,12 @@ public extension NSMutableAttributedString {
         paragraphStyle.minimumLineHeight = lineHeight
         paragraphStyle.maximumLineHeight = lineHeight
         paragraphStyle.lineBreakMode = .byTruncatingTail //We always want this
+        setParagraphStyle(paragraphStyle)
+    }
+
+    func setLineHeightMultiplier(_ multiplier: CGFloat) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = multiplier
         setParagraphStyle(paragraphStyle)
     }
 }
