@@ -87,14 +87,6 @@ public extension NSAttributedString {
         return modifyingFont(font.bolded, range: nsRange)
     }
     
-
-    func setAttachmentWidth(_ width: CGFloat) {
-        enumerateAttribute(.attachment, in: NSRange(location: 0, length: length), options: [], using: { (value, range, stop) in
-            guard let attachment = value as? NSTextAttachment else { return }
-            attachment.setImageWidth(width: width)
-        })
-    }
-    
     func settingKern(_ kern: CGFloat) -> NSAttributedString {
         let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
         mutableCopy.setKern(kern)
@@ -126,12 +118,16 @@ public extension NSAttributedString {
     }
 }
 
-private extension NSTextAttachment {
-    func setImageWidth(width: CGFloat) {
-        let ratio = bounds.size.width / bounds.size.height
-        bounds = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: width, height: width / ratio)
+public extension NSAttributedString {
+    ///https://stackoverflow.com/a/45161058
+    convenience init(withIcon iconImage: UIImage, forFont titleFont: UIFont) {
+        let icon = NSTextAttachment()
+        icon.bounds = CGRect(x: 0, y: (titleFont.capHeight - iconImage.size.height).rounded() / 2, width: iconImage.size.width, height: iconImage.size.height)
+        icon.image = iconImage
+        self.init(attachment: icon)
     }
 }
+
 
 public extension NSMutableAttributedString {
     func addLink(onSubstring substring: String, linkURL: URL) {
