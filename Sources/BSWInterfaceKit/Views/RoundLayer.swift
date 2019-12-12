@@ -4,7 +4,7 @@
 //
 
 import UIKit
-class RoundLayer: CALayer {
+public class RoundLayer: CALayer {
     
     override init() {
         super.init()
@@ -21,13 +21,13 @@ class RoundLayer: CALayer {
         masksToBounds = true
     }
     
-    override var frame: CGRect {
+    override public var frame: CGRect {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override var cornerRadius: CGFloat {
+    override public var cornerRadius: CGFloat {
         get {
             return self.frame.size.width/2
         } set {
