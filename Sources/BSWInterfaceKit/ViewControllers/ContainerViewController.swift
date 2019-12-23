@@ -45,6 +45,14 @@ open class ContainerViewController: UIViewController {
     
     open func updateContainedViewController(_ newVC: UIViewController) {
         
+        /// Make sure that if a user calls `updateContainedViewController:`
+        /// before the animation is completed, the view hierarchy is in sync with
+        /// what the user's trying to achieve, even with a crappy animation
+        if animator.isRunning {
+            animator.stopAnimation(false)
+            animator.finishAnimation(at: .end)
+        }
+        
         // Notify current VC that time is up
         self.containedViewController.willMove(toParent: nil)
         
