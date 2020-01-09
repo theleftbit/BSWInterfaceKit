@@ -39,7 +39,16 @@ class ButtonTests: BSWSnapshotTest {
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
-    
+
+    func testRightImageTitleButton() {
+        let title = NSAttributedString(string: "Click Me")
+        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
+        button.setPrefersImageOnTheRight()
+        button.imageEdgeInsets = [.left : 10]
+        button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
+        verify(view: button)
+    }
+
     /// Since this tested inside a SPM, the Responder Chain is not available and `sendActions(for:)` won't work
     func _testTapButton() {
         let exp = expectation(description: "Expecting touches in button")
