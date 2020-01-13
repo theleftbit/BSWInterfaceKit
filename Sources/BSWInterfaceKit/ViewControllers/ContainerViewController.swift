@@ -49,6 +49,8 @@ open class ContainerViewController: UIViewController {
 
     open func updateContainedViewController(_ newVC: UIViewController) {
         
+        guard newVC != containedViewController else { return }
+        
         /// Make sure that if a user calls `updateContainedViewController:`
         /// before the animation is completed, the view hierarchy is in sync with
         /// what the user's trying to achieve, even with a crappy animation
