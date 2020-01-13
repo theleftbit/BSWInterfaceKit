@@ -84,14 +84,14 @@ open class BottomContainerViewController: UIViewController {
         ]
     }
     
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return containedViewController.preferredStatusBarStyle
-    }
-    
+    open override var childForStatusBarStyle: UIViewController? { containedViewController }
+    open override var childForStatusBarHidden: UIViewController? { containedViewController }
+    open override var childForHomeIndicatorAutoHidden: UIViewController? { containedViewController }
+    open override var childForScreenEdgesDeferringSystemGestures: UIViewController? { containedViewController }
     open override var navigationItem: UINavigationItem {
         return containedViewController.navigationItem
     }
-    
+
     open override var title: String? {
         get {
             return containedViewController.title

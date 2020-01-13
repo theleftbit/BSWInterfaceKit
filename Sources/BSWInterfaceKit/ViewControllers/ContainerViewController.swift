@@ -39,10 +39,14 @@ open class ContainerViewController: UIViewController {
         containViewController(containedViewController)
     }
     
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return containedViewController.preferredStatusBarStyle
+    open override var childForStatusBarStyle: UIViewController? { containedViewController }
+    open override var childForStatusBarHidden: UIViewController? { containedViewController }
+    open override var childForHomeIndicatorAutoHidden: UIViewController? { containedViewController }
+    open override var childForScreenEdgesDeferringSystemGestures: UIViewController? { containedViewController }
+    open override var navigationItem: UINavigationItem {
+        return containedViewController.navigationItem
     }
-    
+
     open func updateContainedViewController(_ newVC: UIViewController) {
         
         /// Make sure that if a user calls `updateContainedViewController:`
