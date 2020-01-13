@@ -61,6 +61,14 @@ public class ScrollableTabsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    open override var childForStatusBarStyle: UIViewController? { viewControllers[selectedIndex] }
+    open override var childForStatusBarHidden: UIViewController? { viewControllers[selectedIndex] }
+    open override var childForHomeIndicatorAutoHidden: UIViewController? { viewControllers[selectedIndex] }
+    open override var childForScreenEdgesDeferringSystemGestures: UIViewController? { viewControllers[selectedIndex] }
+    open override var navigationItem: UINavigationItem {
+        return viewControllers[selectedIndex].navigationItem
+    }
+
     override public func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.backgroundColor

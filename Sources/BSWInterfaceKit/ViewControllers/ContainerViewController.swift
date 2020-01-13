@@ -39,11 +39,17 @@ open class ContainerViewController: UIViewController {
         containViewController(containedViewController)
     }
     
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return containedViewController.preferredStatusBarStyle
+    open override var childForStatusBarStyle: UIViewController? { containedViewController }
+    open override var childForStatusBarHidden: UIViewController? { containedViewController }
+    open override var childForHomeIndicatorAutoHidden: UIViewController? { containedViewController }
+    open override var childForScreenEdgesDeferringSystemGestures: UIViewController? { containedViewController }
+    open override var navigationItem: UINavigationItem {
+        return containedViewController.navigationItem
     }
-    
+
     open func updateContainedViewController(_ newVC: UIViewController) {
+        
+        guard newVC != containedViewController else { return }
         
         /// Make sure that if a user calls `updateContainedViewController:`
         /// before the animation is completed, the view hierarchy is in sync with
