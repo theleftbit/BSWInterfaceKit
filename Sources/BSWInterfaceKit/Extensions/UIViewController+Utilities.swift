@@ -26,7 +26,11 @@ extension UIViewController {
                 return "\(message) \n\n Error code: \(error.localizedDescription)"
             }
             #else
-            return message
+            if let localizedError = error as? LocalizedError, let description = localizedError.errorDescription {
+                return "\(message): \(description)"
+            } else {
+                return "\(message)"
+            }
             #endif
         }()
         
