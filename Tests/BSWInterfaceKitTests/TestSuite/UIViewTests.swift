@@ -25,12 +25,23 @@ class UIViewTests: BSWSnapshotTest {
         hostView.addAutolayoutSubview(childView)
         childView.centerInSuperview()
     }
-
-    func testFillSuperview() {
+    
+    override func tearDown() {
+        super.tearDown()
         hostView.removeAllConstraints()
         childView.removeAllConstraints()
+    }
+
+    func testFillSuperview() {
         childView.fillSuperview(withMargin: 5)
         verify(view: hostView)
+    }
+
+    func testFillSuperviewLayoutMargins() {
+        hostView.layoutMargins = .init(uniform: 10)
+        childView.pinToSuperviewLayoutMargins()
+        verify(view: hostView)
+        hostView.layoutMargins = .zero
     }
 
     func testCenterInSuperview() {
