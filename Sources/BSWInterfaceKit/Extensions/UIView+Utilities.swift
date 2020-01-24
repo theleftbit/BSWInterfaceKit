@@ -79,10 +79,10 @@ extension UIView {
         guard let superView = superview else { return [] }
         translatesAutoresizingMaskIntoConstraints = false
 
-        let guide = self.layoutMarginsGuide
+        let guide = superView.layoutMarginsGuide
         let constraints: [NSLayoutConstraint] = [
             leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-            trailingAnchor.constraint(equalTo: superView.trailingAnchor),
+            trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             topAnchor.constraint(equalTo: guide.topAnchor),
             bottomAnchor.constraint(equalTo: guide.bottomAnchor)
         ]
