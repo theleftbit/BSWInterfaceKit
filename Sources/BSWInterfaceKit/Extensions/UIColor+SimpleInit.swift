@@ -10,6 +10,28 @@ import UIKit
 extension UIColor {
     
     /**
+     Initializes and returns a color given the current trait environment, but if,
+     iOS 13 is not available it'll return the light color.
+     
+     - parameter light: The version of the color to use with `UIUserInterfaceStyle.light`.
+     - parameter dark: The version of the color to use with `UIUserInterfaceStyle.dark`.
+     */
+    convenience init(light: UIColor, dark: UIColor) {
+        if #available(iOS 13.0, *) {
+            self.init(dynamicProvider: { traitCollection in
+                switch traitCollection.userInterfaceStyle {
+                case .dark:
+                    return dark
+                default:
+                    return light
+                }
+            })
+        } else {
+            self.init(cgColor: light.cgColor)
+        }
+    }
+
+    /**
      Initializes and returns a color object using the specified opacity and RGB component values.
      
      - parameter r: The red component of the color object, specified as a value from 0 to 255.
@@ -45,7 +67,7 @@ extension UIColor {
         )
     }
 
-    convenience public init(rgb: UInt, alphaVal: CGFloat) {
+    convenience public init(rgb: UInt, alphaVal: CGFloat = 1) {
         self.init(
             red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0,
             green: CGFloat((rgb & 0x00FF00) >> 8) / 255.0,
