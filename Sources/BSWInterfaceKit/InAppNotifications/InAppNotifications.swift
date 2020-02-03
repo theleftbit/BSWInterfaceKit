@@ -109,14 +109,15 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     required internal init?(coder aDecoder:NSCoder) { fatalError("Not implemented.") }
     
     internal init() {
-        let deviceWidth = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+        let bounds = UIApplication.shared.keyWindow?.bounds ?? UIScreen.main.bounds
+        let deviceWidth = min(bounds.width, bounds.height)
         let widthFactor: CGFloat = 0.85
         let heightFactor: CGFloat = 0.2
         
         let width = deviceWidth * widthFactor
         let height = width * heightFactor
         super.init(frame: CGRect(x: 0, y: -height, width: width, height: height))
-        center.x = UIScreen.main.bounds.width/2
+        center.x = bounds.width/2
         
         setupLayer()
         setupSubviews()
@@ -165,7 +166,8 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     
     @objc internal func didRotate() {
         UIView.animate(withDuration: 0.2) {
-            self.center.x = UIScreen.main.bounds.width / 2
+            let bounds = UIApplication.shared.keyWindow?.bounds ?? UIScreen.main.bounds
+            self.center.x = bounds.width / 2
             self.center.y = self.topInset() + 10 + self.frame.height / 2
         }
     }
