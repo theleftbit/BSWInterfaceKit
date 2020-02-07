@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIViewController (Utilities)
 
 - (void)viewInitialLayoutDidComplete;
+- (void)addConstraintsForCompactSizeClass:(NSArray<NSLayoutConstraint *>*)compactConstraints
+                         regularSizeClass:(NSArray<NSLayoutConstraint *>*)regularConstraints NS_SWIFT_NAME(addConstraintsFor(compactSizeClass:regularSizeClass:));
 
 @end
 
