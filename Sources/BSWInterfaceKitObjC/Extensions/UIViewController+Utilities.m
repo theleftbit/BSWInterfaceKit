@@ -47,7 +47,7 @@
     }
 }
 
-#pragma mark viewWillTransitionToSize:withTransitionCoordinator:
+#pragma mark willTransitionToTraitCollection:withTransitionCoordinator:
 
 - (void)bsw_willTransitionToTraitCollection:(UITraitCollection *)newCollection
                   withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
