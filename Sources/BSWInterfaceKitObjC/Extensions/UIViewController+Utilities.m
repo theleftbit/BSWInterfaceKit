@@ -53,7 +53,7 @@
                   withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [self bsw_willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
     if ([self bsw_regularConstraints] == nil || [self bsw_compactConstraints] == nil) {
-        return
+        return;
     }
     if (self.traitCollection.horizontalSizeClass == newCollection.horizontalSizeClass) {
         return;
