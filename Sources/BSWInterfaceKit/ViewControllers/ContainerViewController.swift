@@ -83,6 +83,9 @@ open class ContainerViewController: UIViewController {
             self.containedViewController.view.removeFromSuperview()
             self.containedViewController.removeFromParent()
             self.containedViewController = newVC
+            self.setNeedsStatusBarAppearanceUpdate()
+            self.setNeedsUpdateOfHomeIndicatorAutoHidden()
+            self.setNeedsUpdateOfScreenEdgesDeferringSystemGestures()
         }
         animator.startAnimation()
     }
