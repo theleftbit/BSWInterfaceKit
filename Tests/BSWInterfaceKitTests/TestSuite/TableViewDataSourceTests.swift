@@ -4,22 +4,22 @@ import BSWFoundation
 import BSWInterfaceKit
 import XCTest
 
-class SelectableTableViewDataSourceTests: BSWSnapshotTest {
+class TableViewDataSourceTests: BSWSnapshotTest {
     
     func testLayout() {
-        let vc = SelectableTableViewController()
-        let vm = SelectableArray(options: [
+        let vc = TableViewController()
+        let vm = [
             Cell.VM(text: "Title1"),
             Cell.VM(text: "Title2"),
             Cell.VM(text: "Title3")
-        ], selectedIndex: 0)
+        ]
         verify(viewController: vc, vm: vm)
     }
 }
 
-private class SelectableTableViewController: UIViewController, ViewModelConfigurable {
+private class TableViewController: UIViewController, ViewModelConfigurable {
     let tableView = UITableView()
-    var dataSource: SelectableTableViewDataSource<Cell>!
+    var dataSource: TableViewDataSource<Cell>!
     
     override func loadView() {
         view = tableView
@@ -29,11 +29,10 @@ private class SelectableTableViewController: UIViewController, ViewModelConfigur
         super.viewDidLoad()
     }
     
-    func configureFor(viewModel: SelectableArray<Cell.VM>) {
-        dataSource = SelectableTableViewDataSource<Cell>(
+    func configureFor(viewModel: [Cell.VM]) {
+        dataSource = TableViewDataSource<Cell>(
             tableView: tableView,
-            dataStore: viewModel,
-            shouldForceTableViewHeight: true
+            dataStore: viewModel
         )
     }
 }

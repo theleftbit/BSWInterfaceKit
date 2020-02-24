@@ -88,12 +88,12 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     
     private var obs: NSKeyValueObservation!
     private var heightConstraintForTableView: NSLayoutConstraint!
-        
+    
+    //MARK: UITableViewDataSource
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataStore.options.count
     }
-    
-    //MARK: UITableViewDataSource
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: Cell = tableView.dequeueReusableCell(indexPath: indexPath)
