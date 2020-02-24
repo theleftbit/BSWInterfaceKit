@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/bignerdranch/Deferred.git", from: "4.1.0"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "3.1.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "8.3.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.7.1"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .exact("1.7.1")),
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
