@@ -263,15 +263,15 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
         }
         
         guard let emptyView = self.emptyView, let collectionView = self.collectionView else { return }
-        
-        collectionView.addAutolayoutSubview(emptyView)
+        let hostView = collectionView.superview ?? collectionView
+        hostView.addAutolayoutSubview(emptyView)
         
         let spacing = Constants.Spacing
         NSLayoutConstraint.activate([
-            emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
-            emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
-            emptyView.leadingAnchor.constraint(greaterThanOrEqualTo: collectionView.leadingAnchor, constant: spacing),
-            emptyView.trailingAnchor.constraint(greaterThanOrEqualTo: collectionView.trailingAnchor, constant: -spacing)
+            emptyView.centerXAnchor.constraint(equalTo: hostView.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: hostView.centerYAnchor),
+            emptyView.leadingAnchor.constraint(greaterThanOrEqualTo: hostView.leadingAnchor, constant: spacing),
+            emptyView.trailingAnchor.constraint(greaterThanOrEqualTo: hostView.trailingAnchor, constant: -spacing)
             ])
     }
     
