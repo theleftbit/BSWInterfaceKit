@@ -25,13 +25,12 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     weak public var delegate: SelectableTableViewDataSourceDelegate?
     
     /**
-    Use this datasource if you want the tableView selection and deletion
-    behaviours in a list but need some UIView with an intrinsic height given
-    it's content. Please put this inside a scrollView or it won't scroll!
+    Use this datasource if you want a simple way to create a UI
+    that resembles a tableView with selection
 
-    - Parameter tableView: UITableView.
-    - Parameter dataStore: SelectableArray.
-    - Parameter shouldForceTableViewHeight: fixed height for tableview.
+    - Parameter tableView: the `UITableView` where the content will be layed out.
+    - Parameter dataStore: the `SelectableArray` that represents the data.
+    - Parameter shouldForceTableViewHeight: This parameter will force the tableView's height to it's contentSize. Set this to true if you need some UIView with an intrinsic height given it's content. Please put this inside a scrollView or it won't scroll!.
      */
 
     public init(tableView: UITableView, dataStore: SelectableArray<Cell.VM>, shouldForceTableViewHeight: Bool = false) {
