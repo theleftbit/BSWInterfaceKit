@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
           "branch": null,
-          "revision": "d8b0f0025ec689aa1cf705d3e0e07207f0e79009",
-          "version": "3.1.0"
+          "revision": "4c38c71e569a8ed5ff2d77d611652ce8d46b4ff4",
+          "version": "3.2.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
           "branch": null,
-          "revision": "12c6a7ce9d67f39a23c6bab757bdb073bd997885",
-          "version": "1.7.1"
+          "revision": "114882386a815f4a2e6d8f2f7ee4857acd372438",
+          "version": "1.7.2"
         }
       }
     ]
