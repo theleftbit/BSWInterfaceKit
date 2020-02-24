@@ -92,6 +92,17 @@ class BSWSnapshotTest: XCTestCase {
         let currentSimulatorScale = Int(UIScreen.main.scale)
         assertSnapshot(matching: view, as: .image, named: "\(currentSimulatorScale)x", record: self.recordMode, file: file, testName: testName)
     }
+    
+    func verify<View: ViewModelConfigurable & UIViewController>(viewController: View, vm: View.VM, file: StaticString = #file, testName: String = #function) {
+        viewController.configureFor(viewModel: vm)
+        let estimatedSize = viewController.view.systemLayoutSizeFitting(
+            CGSize(width: 375, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        viewController.view.frame.size = estimatedSize
+        verify(view: viewController.view, file: file, testName: testName)
+    }
 }
 
 private extension UIScreen {
