@@ -11,7 +11,7 @@ public protocol SelectableTableViewDataSourceDelegate: class {
     func tableFooterView() -> (IntrinsicSizeCalculable & UIView)?
 }
 
-extension SelectableTableViewDataSourceDelegate {
+public extension SelectableTableViewDataSourceDelegate {
     func shouldSelectItem(atIndexPath: IndexPath) -> Bool { true }
     func tableFooterView() -> (IntrinsicSizeCalculable & UIView)? { nil }
 }
