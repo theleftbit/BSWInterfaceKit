@@ -14,7 +14,7 @@ public protocol TableViewDataSourceDelegate: class {
 
 public extension TableViewDataSourceDelegate {
     func deleteAt(_ row: Int) {}
-    func canEditRow() { false }
+    func canEditRow() -> Bool { false }
     func tableFooterView() -> (IntrinsicSizeCalculable & UIView)? { nil }
 }
 
@@ -40,7 +40,6 @@ public class TableViewDataSource<Cell: UITableViewCell & ViewModelReusable>: NSO
         super.init()
         tableView.registerReusableCell(Cell.self)
         tableView.dataSource = self
-        tableView.delegate = self
     }
     
     required init?(coder: NSCoder) {
