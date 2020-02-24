@@ -8,10 +8,13 @@ import BSWFoundation
 
 public protocol TableViewDataSourceDelegate: class {
     func deleteAt(_ row: Int)
+    func canEditRow() -> Bool
     func tableFooterView() -> (IntrinsicSizeCalculable & UIView)?
 }
 
 public extension TableViewDataSourceDelegate {
+    func deleteAt(_ row: Int) {}
+    func canEditRow() { false }
     func tableFooterView() -> (IntrinsicSizeCalculable & UIView)? { nil }
 }
 
@@ -24,11 +27,10 @@ public class TableViewDataSource<Cell: UITableViewCell & ViewModelReusable>: NSO
     weak public var delegate: TableViewDataSourceDelegate?
     
     /**
-    Use this datasource if you want a simple way to create a UI
-    that resembles a tableView with selection
+    Use this datasource if you want a simple way to create a tableView
 
     - Parameter tableView: the `UITableView` where the content will be layed out.
-    - Parameter dataStore: the `SelectableArray` that represents the data.
+    - Parameter dataStore: the `Array` that represents the data.
      */
 
     public init(tableView: UITableView, dataStore: [Cell.VM]) {
@@ -63,10 +65,11 @@ public class TableViewDataSource<Cell: UITableViewCell & ViewModelReusable>: NSO
     }
     
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
+        return delegate?.canEditRow() ?? false
     }
     
     public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard delegate?.canEditRow() ?? false else { return }
         if editingStyle == .delete {
             delegate?.deleteAt(indexPath.row)
         }
