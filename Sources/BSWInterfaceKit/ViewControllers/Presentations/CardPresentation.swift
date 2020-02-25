@@ -38,8 +38,7 @@ public enum CardPresentation {
         public let presentationInsideSafeArea: Bool
         public let backgroundColor: UIColor
         public let shouldAnimateNewVCAlpha: Bool
-        public let overridenVerticalSizeClass: UIUserInterfaceSizeClass?
-        public let overridenHorizontalSizeClass: UIUserInterfaceSizeClass?
+        public let overridenTraits: UITraitCollection?
         
         public enum CardHeight { // swiftlint:disable:this nesting
             case fixed(CGFloat)
@@ -56,14 +55,13 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenVerticalSizeClass: UIUserInterfaceSizeClass? = nil, overridenHorizontalSizeClass: UIUserInterfaceSizeClass? = nil) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
             self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
-            self.overridenVerticalSizeClass = overridenVerticalSizeClass
-            self.overridenHorizontalSizeClass = overridenHorizontalSizeClass
+            self.overridenTraits = overridenTraits
         }
     }
 
@@ -135,18 +133,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         containerView.addAutolayoutSubview(toViewController.view)
 
         /// Override size classes if required
-        let newTraitCollection: UITraitCollection = {
-            var overridenTraits = [UITraitCollection]()
-            if let overrideHorizontalSizeClass = properties.overridenHorizontalSizeClass {
-                overridenTraits.append(UITraitCollection(horizontalSizeClass: overrideHorizontalSizeClass))
-            }
-            
-            if let overrideVerticalSizeClass = properties.overridenVerticalSizeClass {
-                overridenTraits.append(UITraitCollection(verticalSizeClass: overrideVerticalSizeClass))
-            }
-            return UITraitCollection(traitsFrom: overridenTraits)
-        }()
-        toViewController.presentationController?.overrideTraitCollection = newTraitCollection
+        toViewController.presentationController?.overrideTraitCollection = properties.overridenTraits
         
         /// Calculate the height of the new VC to prepare animate it
         let toVCHeight: CGFloat = {
