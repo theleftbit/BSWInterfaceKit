@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 
+import UIKit
 import XCTest
 import BSWInterfaceKit
 
@@ -35,3 +37,5 @@ private class SomeViewThatOverridesIntrinsicSize: UIView, IntrinsicSizeCalculabl
         SomeViewThatOverridesIntrinsicSize.HardcodedHeight
     }
 }
+
+#endif
