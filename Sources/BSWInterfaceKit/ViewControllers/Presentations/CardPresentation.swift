@@ -38,6 +38,8 @@ public enum CardPresentation {
         public let presentationInsideSafeArea: Bool
         public let backgroundColor: UIColor
         public let shouldAnimateNewVCAlpha: Bool
+        public let overridenVerticalSizeClass: UIUserInterfaceSizeClass?
+        public let overridenHorizontalSizeClass: UIUserInterfaceSizeClass?
         
         public enum CardHeight { // swiftlint:disable:this nesting
             case fixed(CGFloat)
@@ -54,12 +56,14 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenVerticalSizeClass: UIUserInterfaceSizeClass? = nil, overridenHorizontalSizeClass: UIUserInterfaceSizeClass? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
             self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
+            self.overridenVerticalSizeClass = overridenVerticalSizeClass
+            self.overridenHorizontalSizeClass = overridenHorizontalSizeClass
         }
     }
 
@@ -119,7 +123,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         let containerView = transitionContext.containerView
         let duration = self.transitionDuration(using: transitionContext)
 
-        // Add background view
+        /// Add background view
         let bgView = PresentationBackgroundView(frame: containerView.bounds)
         bgView.backgroundColor = properties.backgroundColor
         bgView.position = position
@@ -127,10 +131,24 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
 
-        // Add VC's view
+        /// Add VC's view
         containerView.addAutolayoutSubview(toViewController.view)
 
-        // Calculate the height of the new VC to prepare animate it
+        /// Override size classes if required
+        let newTraitCollection: UITraitCollection = {
+            var overridenTraits = [UITraitCollection]()
+            if let overrideHorizontalSizeClass = properties.overridenHorizontalSizeClass {
+                overridenTraits.append(UITraitCollection(horizontalSizeClass: overrideHorizontalSizeClass))
+            }
+            
+            if let overrideVerticalSizeClass = properties.overridenVerticalSizeClass {
+                overridenTraits.append(UITraitCollection(verticalSizeClass: overrideVerticalSizeClass))
+            }
+            return UITraitCollection(traitsFrom: overridenTraits)
+        }()
+        toViewController.presentationController?.overrideTraitCollection = newTraitCollection
+        
+        /// Calculate the height of the new VC to prepare animate it
         let toVCHeight: CGFloat = {
             switch cardHeight {
             case .fixed(let height): return height
@@ -141,8 +159,8 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
                 return intrinsicSizeCalculable.heightConstrainedTo(width: containerView.frame.width)
             }
         }()
-
-        //Prepare Constraints
+        
+        /// Prepare Constraints
         let anchorConstraint: NSLayoutConstraint = {
             switch (position) {
             case .bottom:
@@ -157,14 +175,14 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
             anchorConstraint
         ])
                 
-        // Store this constraint somewhere so we can get it later
+        /// Store this constraint somewhere so we can get it later
         bgView.anchorConstraint = anchorConstraint
         
         toViewController.view.alpha = properties.shouldAnimateNewVCAlpha ? 0.0 : 1.0
         bgView.alpha = 0.0
         containerView.layoutIfNeeded()
 
-        // This is the change that animates this from the bottom
+        /// This is the change that animates this from the bottom
         let extraPadding: CGFloat = {
             if properties.presentationInsideSafeArea {
                 switch position {
@@ -192,7 +210,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         }()
         anchorConstraint.constant = -(toVCHeight + extraPadding)
         
-        // Start slide up animation
+        /// Start slide up animation
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1.0) {
             containerView.layoutIfNeeded()
             toViewController.view.alpha = 1.0

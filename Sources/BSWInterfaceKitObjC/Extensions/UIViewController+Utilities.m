@@ -137,8 +137,8 @@
     return objc_getAssociatedObject(self, @selector(bsw_compactConstraints));
 }
 
-- (void)addConstraintsForCompactSizeClass:(NSArray<NSLayoutConstraint *>*)compactConstraints
-                         regularSizeClass:(NSArray<NSLayoutConstraint *>*)regularConstraints {
+- (void)addConstraintsForHorizontalCompactSizeClass:(NSArray<NSLayoutConstraint *>*)compactConstraints
+                                   regularSizeClass:(NSArray<NSLayoutConstraint *>*)regularConstraints {
     [self setBSWCompactConstraints:compactConstraints];
     [self setBSWRegularConstraints:regularConstraints];
     switch (self.traitCollection.horizontalSizeClass) {
