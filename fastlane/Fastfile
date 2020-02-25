@@ -1,9 +1,8 @@
 default_platform(:ios)
-ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "180"
-ENV["FASTLANE_XCODE_LIST_TIMEOUT"] = "180"
 
 before_all do |lane, options|
   setup_jenkins(derived_data_path: "./derivedData")
+  clear_derived_data
 end
 
 platform :ios do
@@ -15,8 +14,4 @@ platform :ios do
       devices: ["iPhone 11"],
       )
   end
-end
-
-after_all do |lane, options|
-  clear_derived_data(derived_data_path: "./derivedData")
 end
