@@ -135,11 +135,10 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
             switch cardHeight {
             case .fixed(let height): return height
             case .intrinsicHeight:
-                return toViewController.view.systemLayoutSizeFitting(
-                    CGSize(width: containerView.frame.width, height: UIView.layoutFittingCompressedSize.height),
-                    withHorizontalFittingPriority: .required,
-                    verticalFittingPriority: .fittingSizeLevel
-                ).height
+                guard let intrinsicSizeCalculable = toViewController as? IntrinsicSizeCalculable else {
+                    fatalError()
+                }
+                return intrinsicSizeCalculable.heightConstrainedTo(width: containerView.frame.width)
             }
         }()
 
