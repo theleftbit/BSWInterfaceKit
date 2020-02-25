@@ -178,21 +178,29 @@ open class ColumnFlowLayout: UICollectionViewLayout {
     }
 
     static func reusableViewHeight(view: UICollectionReusableView, availableWidth: CGFloat) -> CGFloat {
-        let estimatedSize = view.systemLayoutSizeFitting(
-            CGSize(width: availableWidth, height: UIView.layoutFittingCompressedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-        return estimatedSize.height
+        if let intrinsicSizeCalculable = view as? IntrinsicSizeCalculable {
+            return intrinsicSizeCalculable.heightConstrainedTo(width: availableWidth)
+        } else {
+            let estimatedSize = view.systemLayoutSizeFitting(
+                CGSize(width: availableWidth, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            return estimatedSize.height
+        }
     }
 
     static func cellHeight(cell: UICollectionViewCell, availableWidth: CGFloat) -> CGFloat {
-        let estimatedSize = cell.contentView.systemLayoutSizeFitting(
-            CGSize(width: availableWidth, height: UIView.layoutFittingCompressedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-        return estimatedSize.height
+        if let intrinsicSizeCalculable = cell as? IntrinsicSizeCalculable {
+            return intrinsicSizeCalculable.heightConstrainedTo(width: availableWidth)
+        } else {
+            let estimatedSize = cell.contentView.systemLayoutSizeFitting(
+                CGSize(width: availableWidth, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            return estimatedSize.height
+        }
     }
 }
 

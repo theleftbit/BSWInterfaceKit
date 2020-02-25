@@ -199,7 +199,7 @@ extension ViewController {
 
 import UIKit
 
-private class PostCollectionViewCell: UICollectionViewCell {
+private class PostCollectionViewCell: UICollectionViewCell, IntrinsicSizeCalculable {
     
     private let imageView = UIImageView()
     
