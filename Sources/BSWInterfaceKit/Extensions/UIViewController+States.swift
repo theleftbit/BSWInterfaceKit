@@ -129,7 +129,14 @@ private class StateContainerViewController: UIViewController {
     }
     
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-        
+    
+    @objc(BSWStateContainerView)
+    private class StateContainerView: UIView {}
+    
+    override func loadView() {
+        view = StateContainerView()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = self.backgroundColor
