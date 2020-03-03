@@ -9,8 +9,8 @@
 import UIKit
 import MessageUI
 
-final public class MailComposerBehavior: NSObject, MFMailComposeViewControllerDelegate {
-    public static let composer = MailComposerBehavior()
+final public class MessageComposerBehavior: NSObject, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate {
+    public static let composer = MessageComposerBehavior()
     
     public func mailViewController(email: String) -> UIViewController? {
         guard MFMailComposeViewController.canSendMail() else {
@@ -21,8 +21,23 @@ final public class MailComposerBehavior: NSObject, MFMailComposeViewControllerDe
         mailVC.setToRecipients([email])
         return mailVC
     }
-    
+
+    public func smsViewController(phoneNumber: String) -> UIViewController? {
+        guard MFMessageComposeViewController.canSendText() else {
+            return nil
+        }
+        let smsVC = MFMessageComposeViewController()
+        smsVC.messageComposeDelegate = self
+        smsVC.recipients = [phoneNumber]
+        return smsVC
+    }
+
     public func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    public func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+
         controller.dismiss(animated: true, completion: nil)
     }
 }
