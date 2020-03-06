@@ -27,15 +27,11 @@ private class SelectableTableViewController: UIViewController, ViewModelConfigur
         view = tableView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     func configureFor(viewModel: SelectableArray<Cell.VM>) {
         dataSource = SelectableTableViewDataSource<Cell>(
             tableView: tableView,
             dataStore: viewModel,
-            shouldForceTableViewHeight: true
+            configuration: .init(shouldForceTableViewHeight: true)
         )
     }
 }

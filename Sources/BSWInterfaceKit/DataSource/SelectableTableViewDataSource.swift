@@ -4,25 +4,23 @@
 import UIKit
 import BSWFoundation
 
-//MARK: SelectableTableViewDataSourceDelegate
-
-public protocol SelectableTableViewDataSourceDelegate: class {
-    func shouldSelectItem(atIndexPath: IndexPath) -> Bool
-    func tableFooterView() -> (IntrinsicSizeCalculable & UIView)?
-}
-
-public extension SelectableTableViewDataSourceDelegate {
-    func shouldSelectItem(atIndexPath: IndexPath) -> Bool { true }
-    func tableFooterView() -> (IntrinsicSizeCalculable & UIView)? { nil }
-}
-
 //MARK: SelectableTableViewDataSource
 
 public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReusable>: NSObject, UITableViewDelegate, UITableViewDataSource {
     
+    public struct Configuration {
+        let shouldForceTableViewHeight: Bool
+        let shouldSelectItemAtIndexPath: (IndexPath) -> Bool
+
+        public init(shouldForceTableViewHeight: Bool = false, shouldSelectItemAtIndexPath:  @escaping (IndexPath) -> Bool = { _ in return true}) {
+            self.shouldForceTableViewHeight = shouldForceTableViewHeight
+            self.shouldSelectItemAtIndexPath = shouldSelectItemAtIndexPath
+        }
+    }
+    
     public var dataStore: SelectableArray<Cell.VM>
     weak public var tableView: UITableView!
-    weak public var delegate: SelectableTableViewDataSourceDelegate?
+    private let configuration: Configuration
     
     /**
     Use this datasource if you want a simple way to create a UI
@@ -33,9 +31,10 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     - Parameter shouldForceTableViewHeight: This parameter will force the tableView's height to it's contentSize. Set this to true if you need some UIView with an intrinsic height given it's content. Please put this inside a scrollView or it won't scroll!.
      */
 
-    public init(tableView: UITableView, dataStore: SelectableArray<Cell.VM>, shouldForceTableViewHeight: Bool = false) {
+    public init(tableView: UITableView, dataStore: SelectableArray<Cell.VM>, configuration: Configuration = .init()) {
         self.dataStore = dataStore
         self.tableView = tableView
+        self.configuration = configuration
         
         super.init()
         tableView.registerReusableCell(Cell.self)
@@ -43,7 +42,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
         tableView.delegate = self
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.setEditing(true, animated: false)
-        if shouldForceTableViewHeight {
+        if configuration.shouldForceTableViewHeight {
             heightConstraintForTableView = tableView.heightAnchor.constraint(equalToConstant: 0)
             obs = tableView.observe(\.contentSize) { [weak self] (tv, change) in
                 guard let `self` = self else {
@@ -109,28 +108,9 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     }
     
     public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard let delegate = self.delegate else {
-            return true
-        }
-        return delegate.shouldSelectItem(atIndexPath: indexPath)
+        return configuration.shouldSelectItemAtIndexPath(indexPath)
     }
-    
-    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if let view = self.delegate?.tableFooterView() {
-            return view.heightConstrainedTo(width: tableView.frame.width)
-        } else {
-            return 1
-        }
-    }
-    
-    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if let view = self.delegate?.tableFooterView() {
-            return view
-        } else {
-            return UIView()
-        }
-    }
-    
+        
     //MARK: UITableViewDelegate
         
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
