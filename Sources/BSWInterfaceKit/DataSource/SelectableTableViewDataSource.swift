@@ -48,6 +48,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
                 guard let `self` = self else {
                     return
                 }
+                print(tv.contentSize)
                 self.heightConstraintForTableView.constant = tv.contentSize.height
                 self.heightConstraintForTableView.isActive = (tv.contentSize.height > 0)
             }
@@ -114,16 +115,26 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     //MARK: UITableViewDelegate
         
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let allOtherSelected = tableView.indexPathsForSelectedRows?.filter({$0 != indexPath}) ?? []
-        allOtherSelected.forEach {
-            tableView.deselectRow(at: $0, animated: true)
-        }
         dataStore.select(atIndex: indexPath.row)
+
+        let allOtherSelected = tableView.indexPathsForSelectedRows?.filter({$0 != indexPath}) ?? []
+
+        tableView.performBatchUpdates({
+            allOtherSelected.forEach {
+                tableView.deselectRow(at: $0, animated: true)
+            }
+        }, completion: { _ in
+            tableView.reloadData()
+        })
     }
     
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         dataStore.removeSelection()
-        tableView.reloadRows(at: [indexPath], with: .automatic)
+        tableView.performBatchUpdates({
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }, completion: { _ in
+            tableView.reloadData()
+        })
     }
 }
 
