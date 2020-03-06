@@ -48,7 +48,6 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
                 guard let `self` = self else {
                     return
                 }
-                print(tv.contentSize)
                 self.heightConstraintForTableView.constant = tv.contentSize.height
                 self.heightConstraintForTableView.isActive = (tv.contentSize.height > 0)
             }
