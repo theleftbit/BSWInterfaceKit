@@ -8,12 +8,10 @@ import BSWFoundation
 
 public protocol SelectableTableViewDataSourceDelegate: class {
     func shouldSelectItem(atIndexPath: IndexPath) -> Bool
-    func tableFooterView() -> (IntrinsicSizeCalculable & UIView)?
 }
 
 public extension SelectableTableViewDataSourceDelegate {
     func shouldSelectItem(atIndexPath: IndexPath) -> Bool { true }
-    func tableFooterView() -> (IntrinsicSizeCalculable & UIView)? { nil }
 }
 
 //MARK: SelectableTableViewDataSource
@@ -114,23 +112,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
         }
         return delegate.shouldSelectItem(atIndexPath: indexPath)
     }
-    
-    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if let view = self.delegate?.tableFooterView() {
-            return view.heightConstrainedTo(width: tableView.frame.width)
-        } else {
-            return 1
-        }
-    }
-    
-    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if let view = self.delegate?.tableFooterView() {
-            return view
-        } else {
-            return UIView()
-        }
-    }
-    
+        
     //MARK: UITableViewDelegate
         
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
