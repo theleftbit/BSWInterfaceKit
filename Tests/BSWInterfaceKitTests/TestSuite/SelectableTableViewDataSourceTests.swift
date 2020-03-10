@@ -20,7 +20,7 @@ class SelectableTableViewDataSourceTests: BSWSnapshotTest {
 }
 
 private class SelectableTableViewController: UIViewController, ViewModelConfigurable {
-    let tableView = UITableView()
+    let tableView = FixedHeightTableView()
     var dataSource: SelectableTableViewDataSource<Cell>!
     
     override func loadView() {
@@ -30,8 +30,7 @@ private class SelectableTableViewController: UIViewController, ViewModelConfigur
     func configureFor(viewModel: SelectableArray<Cell.VM>) {
         dataSource = SelectableTableViewDataSource<Cell>(
             tableView: tableView,
-            dataStore: viewModel,
-            configuration: .init(shouldForceTableViewHeight: true)
+            dataStore: viewModel
         )
     }
 }
