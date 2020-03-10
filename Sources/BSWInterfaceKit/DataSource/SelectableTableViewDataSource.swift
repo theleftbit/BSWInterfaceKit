@@ -9,11 +9,9 @@ import BSWFoundation
 public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReusable>: NSObject, UITableViewDelegate, UITableViewDataSource {
     
     public struct Configuration {
-        let shouldForceTableViewHeight: Bool
         let shouldSelectItemAtIndexPath: (IndexPath) -> Bool
 
-        public init(shouldForceTableViewHeight: Bool = false, shouldSelectItemAtIndexPath:  @escaping (IndexPath) -> Bool = { _ in return true}) {
-            self.shouldForceTableViewHeight = shouldForceTableViewHeight
+        public init(shouldSelectItemAtIndexPath:  @escaping (IndexPath) -> Bool = { _ in return true}) {
             self.shouldSelectItemAtIndexPath = shouldSelectItemAtIndexPath
         }
     }
@@ -28,7 +26,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
 
     - Parameter tableView: the `UITableView` where the content will be layed out.
     - Parameter dataStore: the `SelectableArray` that represents the data.
-    - Parameter shouldForceTableViewHeight: This parameter will force the tableView's height to it's contentSize. Set this to true if you need some UIView with an intrinsic height given it's content. Please put this inside a scrollView or it won't scroll!.
+    - Parameter configuration: Customizations for this class.
      */
 
     public init(tableView: UITableView, dataStore: SelectableArray<Cell.VM>, configuration: Configuration = .init()) {
@@ -42,16 +40,6 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
         tableView.delegate = self
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.setEditing(true, animated: false)
-        if configuration.shouldForceTableViewHeight {
-            heightConstraintForTableView = tableView.heightAnchor.constraint(equalToConstant: 0)
-            obs = tableView.observe(\.contentSize) { [weak self] (tv, change) in
-                guard let `self` = self else {
-                    return
-                }
-                self.heightConstraintForTableView.constant = tv.contentSize.height
-                self.heightConstraintForTableView.isActive = (tv.contentSize.height > 0)
-            }
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -85,9 +73,6 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
 
     //MARK: Private
     
-    private var obs: NSKeyValueObservation!
-    private var heightConstraintForTableView: NSLayoutConstraint!
-        
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataStore.options.count
     }
