@@ -38,6 +38,8 @@ public class CheckboxButton: UIView, ViewModelConfigurable {
     public init() {
         super.init(frame: .zero)
         tableView.estimatedRowHeight = 44
+        tableView.separatorStyle = .none
+        
         addAutolayoutSubview(tableView)
         tableView.pinToSuperview()
     }
