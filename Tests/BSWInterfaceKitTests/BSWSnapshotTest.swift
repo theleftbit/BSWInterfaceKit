@@ -103,6 +103,25 @@ class BSWSnapshotTest: XCTestCase {
         viewController.view.frame.size = estimatedSize
         verify(view: viewController.view, file: file, testName: testName)
     }
+
+    func verify<View: ViewModelConfigurable & UIView>(view: View, vm: View.VM, file: StaticString = #file, testName: String = #function) {
+        view.configureFor(viewModel: vm)
+        
+        /// First, set a ridiculous frame and do a fake layout pass.
+        /// Some views seem to need this to get their shit togheter
+        /// before calling `systemLayoutSizeFitting`
+        view.frame = .init(origin: .zero, size: .init(width: 375, height: 5000))
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+
+        let estimatedSize = view.systemLayoutSizeFitting(
+            CGSize(width: 375, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        view.frame.size = estimatedSize
+        verify(view: view, file: file, testName: testName)
+    }
 }
 
 private extension UIScreen {
