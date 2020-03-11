@@ -14,11 +14,13 @@ public class CheckboxButton: UIView, ViewModelConfigurable {
         let attributedText: NSAttributedString
         let isSelected: Bool
         let tintColor: UIColor?
+        let backgroundColor: UIColor?
         
-        public init(attributedText: NSAttributedString, isSelected: Bool = false, tintColor: UIColor? = nil) {
+        public init(attributedText: NSAttributedString, isSelected: Bool = false, tintColor: UIColor? = nil, backgroundColor: UIColor? = nil) {
             self.attributedText = attributedText
             self.isSelected = isSelected
             self.tintColor = tintColor
+            self.backgroundColor = backgroundColor
         }
     }
     
@@ -50,7 +52,7 @@ public class CheckboxButton: UIView, ViewModelConfigurable {
             textLabel?.numberOfLines = 0
             selectedBackgroundView = {
                 let v = UIView()
-                v.backgroundColor = .white
+                v.backgroundColor = .clear
                 return v
             }()
         }
@@ -60,6 +62,7 @@ public class CheckboxButton: UIView, ViewModelConfigurable {
         }
         
         func configureFor(viewModel: VM) {
+            backgroundColor = viewModel.backgroundColor
             tintColor = viewModel.tintColor
             isSelected = viewModel.isSelected
             textLabel?.attributedText = viewModel.attributedText
