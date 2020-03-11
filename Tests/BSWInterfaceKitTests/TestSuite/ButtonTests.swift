@@ -7,6 +7,17 @@ class ButtonTests: BSWSnapshotTest {
 
     var button: UIButton!
     let sampleImage = ButtonTests.drawCircle(size: .init(width: 35, height: 35))
+    
+    func testRadioButton() {
+        let button = ButtonTests.buttonForRadioTests()
+        verify(view: button)
+    }
+
+    func testEnabledRadioButton() {
+        let button = ButtonTests.buttonForRadioTests()
+        button.isSelected = true
+        verify(view: button)
+    }
 
     func testImageButton() {
         let buttonConfig = ButtonConfiguration.init(buttonTitle: .image(self.sampleImage), actionHandler: {})
@@ -58,6 +69,16 @@ class ButtonTests: BSWSnapshotTest {
     }
 
     // MARK: Private
+
+    private static func buttonForRadioTests() -> UIButton {
+        let button = CheckboxButton()
+        button.backgroundColor = .white
+        button.setTitleColor(.black, for: .normal)
+        button.setTitle("Push Me", for: .normal)
+        button.frame = CGRect(x: 0, y: 0, width: button.intrinsicContentSize.width, height: button.intrinsicContentSize.height)
+        return button
+    }
+    
 
     /// This is a function that generates a sample UIImage since we can't
     /// use Xcode Assets because we're SPM doesn't support them
