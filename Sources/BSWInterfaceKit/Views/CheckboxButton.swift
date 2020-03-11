@@ -24,6 +24,14 @@ public class CheckboxButton: UIView, ViewModelConfigurable {
         }
     }
     
+    public var isSelected: Bool {
+        if let _ = dataSource?.selectedIndex {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     private let tableView = FixedHeightTableView()
     private var dataSource: SelectableTableViewDataSource<Cell>!
     

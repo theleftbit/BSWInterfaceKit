@@ -54,7 +54,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
                 return
             }
             dataStore.select(atIndex: index)
-            self.tableView(tableView, didSelectRowAt: .init(row: index, section: 0))
+            tableView.reloadData()
         }
     }
     
