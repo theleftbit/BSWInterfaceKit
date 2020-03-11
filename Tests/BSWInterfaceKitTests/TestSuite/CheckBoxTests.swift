@@ -6,8 +6,8 @@ import BSWInterfaceKit
 class CheckboxButtonTests: BSWSnapshotTest {
     
     func testRadioButton() {
-        let button = CheckboxButton2()
-        let vm = CheckboxButton2.VM(attributedText:
+        let button = CheckboxButton()
+        let vm = CheckboxButton.VM(attributedText:
             TextStyler.styler.attributedString(
                 "You're telling the enemy exactly what you're going to do. No wonder you've been fighting Lorem Ipsum your entire adult life")
         )
@@ -15,8 +15,8 @@ class CheckboxButtonTests: BSWSnapshotTest {
     }
     
     func testRadioButton_Selected() {
-        let button = CheckboxButton2()
-        let vm = CheckboxButton2.VM(
+        let button = CheckboxButton()
+        let vm = CheckboxButton.VM(
             attributedText: TextStyler.styler.attributedString("You're telling the enemy exactly what you're going to do. No wonder you've been fighting Lorem Ipsum your entire adult life"),
             isSelected: true,
             tintColor: .red
