@@ -67,6 +67,8 @@ class BSWSnapshotTest: XCTestCase {
         let exp = expectation(description: "verify view")
         let deadlineTime = DispatchTime.now() + .milliseconds(50)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+            self.rootViewController = nil
+            
             let screenSize = UIScreen.main.bounds
             let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
             assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
