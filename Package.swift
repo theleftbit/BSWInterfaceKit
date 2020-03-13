@@ -17,7 +17,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", Package.Dependency.Requirement.exact("1.7.1")),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .exact("1.7.2")),
         .package(url: "https://github.com/bignerdranch/Deferred.git", from: "4.1.0"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "3.2.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "8.3.0"),
