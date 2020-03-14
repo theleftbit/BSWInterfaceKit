@@ -6,6 +6,7 @@
 
 import UIKit
 import BSWInterfaceKit
+import BSWSnapshotTest
 
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
     

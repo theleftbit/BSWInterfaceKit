@@ -6,6 +6,7 @@
 
 import BSWInterfaceKit
 import UIKit
+import BSWSnapshotTest
 
 class ProfilePhotoPickerCollectionViewTests: BSWSnapshotTest {
 
