@@ -2,6 +2,7 @@
 
 import XCTest
 import BSWInterfaceKit
+import BSWSnapshotTest
 
 class ButtonTests: BSWSnapshotTest {
 

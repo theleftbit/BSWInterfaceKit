@@ -2,6 +2,7 @@
 
 import BSWInterfaceKit
 import XCTest
+import BSWSnapshotTest
 
 class AvatarViewTests: BSWSnapshotTest {
 
