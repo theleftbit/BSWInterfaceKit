@@ -3,6 +3,7 @@
 
 import BSWInterfaceKit
 import UIKit
+import BSWSnapshotTest
 
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
     func testLayout() {

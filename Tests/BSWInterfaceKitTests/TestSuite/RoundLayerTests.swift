@@ -5,7 +5,7 @@
 
 import BSWInterfaceKit
 import XCTest
-import SnapshotTesting
+import BSWSnapshotTest
 
 class RoundLayerTests: BSWSnapshotTest {
     
