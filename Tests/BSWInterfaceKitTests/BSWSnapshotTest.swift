@@ -11,7 +11,7 @@ extension String: LocalizedError {
 class BSWSnapshotTest: XCTestCase {
 
     let waiter = XCTWaiter()
-
+    let defaultWidth: CGFloat = 375
     var recordMode = false
     
     override func setUp() {
@@ -78,27 +78,30 @@ class BSWSnapshotTest: XCTestCase {
     }
 
     func verify(view: UIView, file: StaticString = #file, testName: String = #function) {
-
-        view.setNeedsLayout()
-        view.layoutIfNeeded()
-
-        if let scrollView = view as? UIScrollView {
-            scrollView.frame = CGRect(
-                x: scrollView.frame.origin.x,
-                y: scrollView.frame.origin.y,
-                width: scrollView.contentSize.width,
-                height: scrollView.contentSize.height
-            )
-        }
-
         let currentSimulatorScale = Int(UIScreen.main.scale)
         assertSnapshot(matching: view, as: .image, named: "\(currentSimulatorScale)x", record: self.recordMode, file: file, testName: testName)
     }
-    
+
+    func verify(scrollView: UIScrollView, file: StaticString = #file, testName: String = #function) {
+        /// First, set a ridiculous frame and do a fake layout pass.
+        /// Some views seem to need this to get their shit togheter
+        /// before calling `systemLayoutSizeFitting`
+        scrollView.frame = .init(origin: .zero, size: .init(width: defaultWidth, height: 5000))
+        scrollView.setNeedsLayout()
+        scrollView.layoutIfNeeded()
+        scrollView.frame = CGRect(
+            x: scrollView.frame.origin.x,
+            y: scrollView.frame.origin.y,
+            width: scrollView.contentSize.width,
+            height: scrollView.contentSize.height
+        )
+        verify(view: scrollView, file: file, testName: testName)
+    }
+
     func verify<View: ViewModelConfigurable & UIViewController>(viewController: View, vm: View.VM, file: StaticString = #file, testName: String = #function) {
         viewController.configureFor(viewModel: vm)
         let estimatedSize = viewController.view.systemLayoutSizeFitting(
-            CGSize(width: 375, height: UIView.layoutFittingCompressedSize.height),
+            CGSize(width: defaultWidth, height: UIView.layoutFittingCompressedSize.height),
             withHorizontalFittingPriority: .required,
             verticalFittingPriority: .fittingSizeLevel
         )
@@ -112,17 +115,23 @@ class BSWSnapshotTest: XCTestCase {
         /// First, set a ridiculous frame and do a fake layout pass.
         /// Some views seem to need this to get their shit togheter
         /// before calling `systemLayoutSizeFitting`
-        view.frame = .init(origin: .zero, size: .init(width: 375, height: 5000))
+        view.frame = .init(origin: .zero, size: .init(width: defaultWidth, height: 5000))
         view.setNeedsLayout()
         view.layoutIfNeeded()
 
         let estimatedSize = view.systemLayoutSizeFitting(
-            CGSize(width: 375, height: UIView.layoutFittingCompressedSize.height),
+            CGSize(width: defaultWidth, height: UIView.layoutFittingCompressedSize.height),
             withHorizontalFittingPriority: .required,
             verticalFittingPriority: .fittingSizeLevel
         )
         view.frame.size = estimatedSize
         verify(view: view, file: file, testName: testName)
+    }
+    
+    func verify<View: IntrinsicSizeCalculable & UIViewController>(viewController: View, file: StaticString = #file, testName: String = #function) {
+        let estimatedHeight = viewController.heightConstrainedTo(width: defaultWidth)
+        viewController.view.frame.size = .init(width: defaultWidth, height: estimatedHeight)
+        verify(view: viewController.view, file: file, testName: testName)
     }
 }
 
