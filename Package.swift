@@ -17,7 +17,6 @@ let package = Package(
         ),
         .library(
             name: "BSWSnapshotTest",
-            type: .dynamic, 
             targets: ["BSWSnapshotTest"]
         ),
     ],
