@@ -15,6 +15,10 @@ let package = Package(
             name: "BSWInterfaceKit",
             targets: ["BSWInterfaceKit", "BSWInterfaceKitObjC"]
         ),
+        .library(
+            name: "BSWSnapshotTest",
+            targets: ["BSWSnapshotTest"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .exact("1.7.2")),
@@ -28,9 +32,10 @@ let package = Package(
             name: "BSWInterfaceKit",
             dependencies: ["Nuke", "BSWInterfaceKitObjC", "Deferred", "BSWFoundation"]
         ),
+        .target(name: "BSWSnapshotTest", dependencies: ["SnapshotTesting", "BSWInterfaceKit"]),
         .testTarget(
             name: "BSWInterfaceKitTests",
-            dependencies: ["BSWInterfaceKit", "SnapshotTesting"]
+            dependencies: ["BSWSnapshotTest"]
         ),
     ]
 )

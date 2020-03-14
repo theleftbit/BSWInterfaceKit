@@ -5,6 +5,7 @@
 
 import BSWInterfaceKit
 import XCTest
+import BSWSnapshotTest
 
 class UIViewTests: BSWSnapshotTest {
 

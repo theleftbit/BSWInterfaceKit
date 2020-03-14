@@ -7,6 +7,7 @@
 
 import BSWInterfaceKit
 import XCTest
+import BSWSnapshotTest
 
 class ColumnFlowLayoutTests: BSWSnapshotTest {
     

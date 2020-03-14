@@ -4,8 +4,9 @@
 //
 #if canImport(UIKit)
 
+import UIKit
 import BSWInterfaceKit
-import XCTest
+import BSWSnapshotTest
 
 class ScrollableTabsViewControllerTests: BSWSnapshotTest {
     

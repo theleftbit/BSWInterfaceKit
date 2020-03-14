@@ -5,6 +5,7 @@
 
 import BSWInterfaceKit
 import UIKit
+import BSWSnapshotTest
 
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 

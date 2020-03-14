@@ -3,6 +3,7 @@
 import BSWInterfaceKit
 import BSWFoundation
 import XCTest
+import BSWSnapshotTest
 
 class UIViewControllerTests: BSWSnapshotTest {
 
@@ -180,6 +181,10 @@ private class ContentVC: UIViewController {
         view.widthAnchor.constraint(equalToConstant: size.width).isActive = true
         view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
     }
+}
+
+extension String: LocalizedError {
+
 }
 
 #endif
