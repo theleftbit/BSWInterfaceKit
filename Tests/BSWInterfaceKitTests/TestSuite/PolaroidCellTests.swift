@@ -7,7 +7,7 @@ import UIKit
 class PolaroidCollectionViewCellTests: BSWSnapshotTest {
     func testLayout() {
         let cv = MockCollectionView()
-        verify(view: cv)
+        verify(scrollView: cv)
     }
 }
 
@@ -17,7 +17,7 @@ class MockCollectionView: UICollectionView {
 
     init() {
         let columnLayout = ColumnFlowLayout()
-        super.init(frame: CGRect(x: 0, y: 0, width: 350, height: 500), collectionViewLayout: columnLayout)
+        super.init(frame: .zero, collectionViewLayout: columnLayout)
         columnLayout.minColumnWidth = 120
         columnLayout.cellFactory = { [unowned self] indexPath in
             let cell = PolaroidCollectionViewCell()
