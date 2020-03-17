@@ -3,7 +3,6 @@
 import BSWInterfaceKit
 import BSWFoundation
 import XCTest
-import BSWSnapshotTest
 
 class UIViewControllerTests: BSWSnapshotTest {
 
@@ -31,7 +30,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         guard UIDevice.current.model != "iPad" else { return }
         let buttonHeight: CGFloat = 50
         let vc = bottomViewController(buttonHeight: buttonHeight)
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
         XCTAssertNotNil(vc.button)
         XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == buttonHeight)
     }
@@ -41,14 +40,14 @@ class UIViewControllerTests: BSWSnapshotTest {
         let buttonHeight: CGFloat = 50
         let padding: CGFloat = 20
         let vc = bottomViewController(margins: UIEdgeInsets(top: 0, left: padding, bottom: padding, right: padding), buttonHeight: buttonHeight)
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
         XCTAssertNotNil(vc.button)
         XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == (buttonHeight + padding))
     }
 
     func testAddBottomController() {
         let vc = bottomViewControllerContainer()
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
         XCTAssertNotNil(vc.bottomController)
         XCTAssert(vc.containedViewController.bottomContainerViewController == vc)
     }
@@ -74,7 +73,7 @@ class UIViewControllerTests: BSWSnapshotTest {
             
         }
         vc.showErrorMessage("Something Failed", error: "Some Error", retryButton: buttonConfig)
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
     
     func testLoadingView() {
@@ -96,7 +95,7 @@ class UIViewControllerTests: BSWSnapshotTest {
             return containerView
         }()
         vc.showLoadingView(loadingView)
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 }
 

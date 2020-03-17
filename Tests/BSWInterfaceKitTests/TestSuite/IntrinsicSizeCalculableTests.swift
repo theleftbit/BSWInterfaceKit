@@ -3,7 +3,6 @@
 import UIKit
 import XCTest
 import BSWInterfaceKit
-import BSWSnapshotTest
 
 class IntrinsicSizeCalculableTests: XCTestCase {
 
