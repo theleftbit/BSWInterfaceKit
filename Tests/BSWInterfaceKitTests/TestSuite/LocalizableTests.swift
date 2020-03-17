@@ -6,7 +6,6 @@
 
 import XCTest
 @testable import BSWInterfaceKit
-import BSWSnapshotTest
 
 /// Since moving to SPM, it's no longer possible to test this :(
 

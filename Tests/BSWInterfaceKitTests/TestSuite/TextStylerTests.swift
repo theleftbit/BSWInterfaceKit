@@ -5,7 +5,6 @@
 
 import BSWInterfaceKit
 import XCTest
-import BSWSnapshotTest
 
 class TextStylerTests: BSWSnapshotTest {
 
