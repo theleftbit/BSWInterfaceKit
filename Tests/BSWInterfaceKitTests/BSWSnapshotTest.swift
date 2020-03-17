@@ -17,6 +17,10 @@ open class BSWSnapshotTest: XCTestCase {
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
         RandomColorFactory.isOn = false
+        
+        if let value = ProcessInfo.processInfo.environment["GENERATE_SNAPSHOTS"], value == "1" {
+            recordMode = true
+        }
     }
 
     private let currentWindow = UIWindow()
@@ -60,7 +64,7 @@ open class BSWSnapshotTest: XCTestCase {
 
     /// Sets this VC as the rootVC of the current window and snapshots it after some time.
     /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
-    public func waitABitAndVerify(viewController: UIViewController, file: StaticString = #file, testName: String = #function) {
+    public func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #file, testName: String = #function) {
         rootViewController = viewController
         
         let exp = expectation(description: "verify view")
@@ -71,6 +75,10 @@ open class BSWSnapshotTest: XCTestCase {
             let screenSize = UIScreen.main.bounds
             let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
             assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+            if #available(iOS 13.0, *), testDarkMode {
+                viewController.overrideUserInterfaceStyle = .dark
+                assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+            }
             exp.fulfill()
         }
         let _ = waiter.wait(for: [exp], timeout: 1)

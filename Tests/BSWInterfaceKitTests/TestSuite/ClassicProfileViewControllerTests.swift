@@ -5,7 +5,6 @@
 
 import BSWInterfaceKit
 import UIKit
-import BSWSnapshotTest
 
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
@@ -13,7 +12,7 @@ class ClassicProfileViewControllerTests: BSWSnapshotTest {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: detailVC)
-        waitABitAndVerify(viewController: navController)
+        waitABitAndVerify(viewController: navController, testDarkMode: false)
     }
 }
 

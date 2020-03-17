@@ -6,13 +6,12 @@
 
 import UIKit
 import BSWInterfaceKit
-import BSWSnapshotTest
 
 class ScrollableTabsViewControllerTests: BSWSnapshotTest {
     
     func testLayout() {
         let vc = ScrollableTabsViewController(viewControllers: [YellowViewController(), PurpleViewController(), RedViewController()])
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 }
 

@@ -3,7 +3,6 @@
 import BSWFoundation
 import BSWInterfaceKit
 import XCTest
-import BSWSnapshotTest
 
 class SelectableTableViewDataSourceTests: BSWSnapshotTest {
     
