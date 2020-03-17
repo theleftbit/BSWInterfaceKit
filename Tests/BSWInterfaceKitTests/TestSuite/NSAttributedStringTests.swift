@@ -3,7 +3,6 @@
 import XCTest
 import BSWInterfaceKit
 import SnapshotTesting
-import BSWSnapshotTest
 
 class NSAttributedStringTests: XCTestCase {
     func testLinks() {

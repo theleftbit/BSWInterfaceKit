@@ -7,26 +7,25 @@
 
 import BSWInterfaceKit
 import XCTest
-import BSWSnapshotTest
 
 class ColumnFlowLayoutTests: BSWSnapshotTest {
     
     func testLayout() {
         let vc = ViewController()
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
     func testLayoutWithHeader() {
         let vc = ViewController()
         vc.showsHeader = true
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
     func testLayoutWithFooter() {
         let vc = ViewController()
         vc.howManyCellsToShow = 1
         vc.showsFooter = true
-        waitABitAndVerify(viewController: vc)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 }
 

@@ -6,7 +6,6 @@
 import BSWInterfaceKit
 import XCTest
 import SnapshotTesting
-import BSWSnapshotTest
 
 class RangeSliderTests: BSWSnapshotTest {
     var sut: RangeSlider!
