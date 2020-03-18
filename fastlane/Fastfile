@@ -2,7 +2,6 @@ default_platform(:ios)
 
 before_all do |lane, options|
   setup_jenkins(derived_data_path: "./derivedData")
-  clear_derived_data
 end
 
 platform :ios do
@@ -14,4 +13,9 @@ platform :ios do
       devices: ["iPhone 11"],
       )
   end
+end
+
+
+after_all do |lane, options|
+  clear_derived_data(derived_data_path: "./derivedData")
 end
