@@ -10,7 +10,7 @@ platform :ios do
   lane :unit_tests do
     run_tests(
       workspace: "BSWInterfaceKit.xcworkspace",
-      scheme: "BSWInterfaceKit",
+      scheme: "BSWInterfaceKitDemo",
       devices: ["iPhone 11"],
       )
   end
