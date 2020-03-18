@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F5D7CB7A24222A910095EB0D"
+               BuildableName = "BSWInterfaceKitDemoTests.xctest"
+               BlueprintName = "BSWInterfaceKitDemoTests"
+               ReferencedContainer = "container:BSWInterfaceKitDemo/BSWInterfaceKitDemo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
