@@ -5,18 +5,18 @@
         "package": "BSWFoundation",
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
-          "branch": "dynamic-spm",
-          "revision": "cfe85673ec789ee90f44691faeb5a0c5d2309cb9",
-          "version": null
+          "branch": null,
+          "revision": "2fcc959a6c0dd00dfb66e9b27033e43e4fcc4221",
+          "version": "3.3.0"
         }
       },
       {
         "package": "Deferred",
         "repositoryURL": "https://github.com/theleftbit/Deferred.git",
         "state": {
-          "branch": "dynamic-spm",
-          "revision": "c78716504c70b0b35736e10bb72aa800341efbdd",
-          "version": null
+          "branch": null,
+          "revision": "736f09b1792609e5e5f494a5dfd3dc8abc6ebdeb",
+          "version": "4.2.0"
         }
       },
       {

@@ -19,8 +19,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.7.1"),
-        .package(url: "https://github.com/theleftbit/Deferred.git", .branch("dynamic-spm")),
-        .package(url: "https://github.com/theleftbit/BSWFoundation.git", .branch("dynamic-spm")),
+        .package(url: "https://github.com/theleftbit/Deferred.git", from: "4.2.0"),
+        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "3.3.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "8.3.0"),
     ],
     targets: [
