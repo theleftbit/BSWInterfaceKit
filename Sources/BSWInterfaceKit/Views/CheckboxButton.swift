@@ -28,12 +28,9 @@ public class CheckboxButton: UIButton {
             return .opaqueSeparator
         }()
         public static var images: (nonSelectedImage: UIImage, selectedImage: UIImage)? = nil
+        public static var Padding = CGFloat(10)
     }
     
-    private enum Constants {
-        static let Inset = CGFloat(10)
-    }
-
     public init() {
         super.init(frame: .zero)
         
@@ -47,8 +44,8 @@ public class CheckboxButton: UIButton {
         self.contentMode = .scaleAspectFit
         self.setImage(images.nonSelectedImage, for: .normal)
         self.setImage(images.selectedImage, for: .selected)
-        self.imageEdgeInsets = [.left: -Constants.Inset]
-        self.contentEdgeInsets = .init(uniform: Constants.Inset)
+        self.imageEdgeInsets = [.left: -Appearance.Padding]
+        self.contentEdgeInsets = .init(uniform: Appearance.Padding)
         isSelected = false
     }
     
