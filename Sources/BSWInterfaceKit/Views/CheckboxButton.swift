@@ -6,17 +6,32 @@
 
 import UIKit
 
+/// Use this button on your app to add a "Checkbox" like UI.
+/// To customize it's look and feel, please use `Appereance`
+/// to edit the color for the unselected and selected state. You could
+/// also provide your own custom images but this is not encouraged
+/// since it's better be consistent design with the OS.
 @objc(BSWCheckboxButton)
 public class CheckboxButton: UIButton {
 
     public enum Appearance {
-        public static var checkTintColor: UIColor = .black
-        public static var backgroundTintColor = UIColor(r: 243, g: 243, b: 243)
+        public static var checkTintColor: UIColor = {
+            guard #available(iOS 13.0, tvOS 13.0, *) else {
+                return .black
+            }
+            return .systemBlue
+        }()
+        public static var backgroundTintColor: UIColor = {
+            guard #available(iOS 13.0, tvOS 13.0, *) else {
+                return UIColor(r: 243, g: 243, b: 243)
+            }
+            return .opaqueSeparator
+        }()
         public static var images: (nonSelectedImage: UIImage, selectedImage: UIImage)? = nil
     }
     
     private enum Constants {
-        static let ImageInset = CGFloat(10)
+        static let Inset = CGFloat(10)
     }
 
     public init() {
@@ -32,36 +47,48 @@ public class CheckboxButton: UIButton {
         self.contentMode = .scaleAspectFit
         self.setImage(images.nonSelectedImage, for: .normal)
         self.setImage(images.selectedImage, for: .selected)
-        self.imageEdgeInsets = [.left: -Constants.ImageInset]
+        self.imageEdgeInsets = [.left: -Constants.Inset]
+        self.contentEdgeInsets = .init(uniform: Constants.Inset)
+        isSelected = false
+    }
+    
+    public override var isSelected: Bool {
+        didSet {
+            tintColor = isSelected ? Appearance.checkTintColor : Appearance.backgroundTintColor
+        }
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override public var intrinsicContentSize: CGSize {
-        let superIntrinsicContentSize = super.intrinsicContentSize
-        return CGSize(width: superIntrinsicContentSize.width + Constants.ImageInset, height: superIntrinsicContentSize.height)
-    }
-    
+        
     static private func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
         let backgroundImage: UIImage = {
-            let image = UIImage.templateImage(.rectangle)
             if #available(iOS 13.0, tvOS 13.0, *) {
-                return image.withTintColor(Appearance.backgroundTintColor)
+                return UIImage(systemName: "circle")!
+                    .withTintColor(Appearance.backgroundTintColor, renderingMode: .alwaysTemplate)
             } else {
+                let image = UIImage.templateImage(.rectangle)
                 return image.tint(Appearance.backgroundTintColor)
             }
         }()
 
         let checkboxImage: UIImage = {
-            let image = UIImage.templateImage(.checkmark)
             if #available(iOS 13.0, tvOS 13.0, *) {
-                return image.withTintColor(Appearance.checkTintColor)
+                return UIImage(systemName: "checkmark.circle.fill")!
+                    .withTintColor(Appearance.checkTintColor, renderingMode: .alwaysTemplate)
             } else {
+                let image = UIImage.templateImage(.checkmark)
                 return image.tint(Appearance.checkTintColor)
             }
         }()
+        
+        if #available(iOS 13.0, tvOS 13.0, *) {
+            /// These are good to go  since they're generated using
+            /// `UIImage(systemName:)`. For iOS 12, since they're
+            /// generated manually from a PDF, we need to draw them
+            return (backgroundImage, checkboxImage)
+        }
 
         let targetSize = CGSize(width: 36, height: 36)
         let horizontalPadding: CGFloat = 6
