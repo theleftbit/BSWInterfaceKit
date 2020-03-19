@@ -11,13 +11,6 @@
 		F54DB37623095B14008E306B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54DB37523095B14008E306B /* Assets.xcassets */; };
 		F54DB37723095EC3008E306B /* BSWInterfaceKitAssets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */; };
 		F54DB37A230961A5008E306B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F54DB37C230961A5008E306B /* Localizable.strings */; };
-		F556372E24222B4500BFCD52 /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372724222B4500BFCD52 /* UIViewTests.swift */; };
-		F556372F24222B4500BFCD52 /* ColumnFlowLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372824222B4500BFCD52 /* ColumnFlowLayoutTests.swift */; };
-		F556373024222B4500BFCD52 /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372924222B4500BFCD52 /* HorizontalPagedCollectionViewLayoutTests.swift */; };
-		F556373124222B4500BFCD52 /* IntrinsicSizeCalculableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372A24222B4500BFCD52 /* IntrinsicSizeCalculableTests.swift */; };
-		F556373224222B4500BFCD52 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372B24222B4500BFCD52 /* UIViewControllerTests.swift */; };
-		F556373324222B4500BFCD52 /* LocalizableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372C24222B4500BFCD52 /* LocalizableTests.swift */; };
-		F556373424222B4500BFCD52 /* NSAttributedStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372D24222B4500BFCD52 /* NSAttributedStringTests.swift */; };
 		F556373624222B8900BFCD52 /* BSWInterfaceKit in Frameworks */ = {isa = PBXBuildFile; productRef = F556373524222B8900BFCD52 /* BSWInterfaceKit */; };
 		F556373824222B8900BFCD52 /* BSWInterfaceKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F556373524222B8900BFCD52 /* BSWInterfaceKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F556373A24222B8900BFCD52 /* Deferred in Frameworks */ = {isa = PBXBuildFile; productRef = F556373924222B8900BFCD52 /* Deferred */; };
@@ -35,6 +28,24 @@
 		F56F90B422EF426900E45944 /* AsyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90AE22EF426900E45944 /* AsyncView.swift */; };
 		F56F90B522EF426900E45944 /* StrawberryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56F90AF22EF426900E45944 /* StrawberryViewController.swift */; };
 		F5783581236C4B20005DD42B /* PlanSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5783580236C4B20005DD42B /* PlanSelectorViewController.swift */; };
+		F595C8C32423B04500343E80 /* ColumnFlowLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372824222B4500BFCD52 /* ColumnFlowLayoutTests.swift */; };
+		F595C8C42423B04500343E80 /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372924222B4500BFCD52 /* HorizontalPagedCollectionViewLayoutTests.swift */; };
+		F595C8C52423B04500343E80 /* IntrinsicSizeCalculableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372A24222B4500BFCD52 /* IntrinsicSizeCalculableTests.swift */; };
+		F595C8C62423B04500343E80 /* LocalizableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372C24222B4500BFCD52 /* LocalizableTests.swift */; };
+		F595C8C72423B04500343E80 /* NSAttributedStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372D24222B4500BFCD52 /* NSAttributedStringTests.swift */; };
+		F595C8C82423B04500343E80 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372B24222B4500BFCD52 /* UIViewControllerTests.swift */; };
+		F595C8C92423B04500343E80 /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F556372724222B4500BFCD52 /* UIViewTests.swift */; };
+		F595C8CA2423B04500343E80 /* AvatarViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEBF24222B080044DC8B /* AvatarViewTests.swift */; };
+		F595C8CB2423B04500343E80 /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEC024222B080044DC8B /* ButtonTests.swift */; };
+		F595C8CC2423B04500343E80 /* CardPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEBE24222B080044DC8B /* CardPresentationTests.swift */; };
+		F595C8CD2423B04500343E80 /* ClassicProfileViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEBA24222B080044DC8B /* ClassicProfileViewControllerTests.swift */; };
+		F595C8CE2423B04500343E80 /* PolaroidCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEBC24222B080044DC8B /* PolaroidCellTests.swift */; };
+		F595C8CF2423B04500343E80 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEC124222B080044DC8B /* ProfilePhotoPickerCollectionViewTests.swift */; };
+		F595C8D02423B04500343E80 /* RangeSliderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEBD24222B080044DC8B /* RangeSliderTests.swift */; };
+		F595C8D12423B04500343E80 /* RoundLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEC224222B080044DC8B /* RoundLayerTests.swift */; };
+		F595C8D22423B04500343E80 /* ScrollableTabsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEC324222B080044DC8B /* ScrollableTabsViewControllerTests.swift */; };
+		F595C8D32423B04500343E80 /* SelectableTableViewDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEBB24222B080044DC8B /* SelectableTableViewDataSourceTests.swift */; };
+		F595C8D42423B04500343E80 /* TextStylerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DECEB924222B080044DC8B /* TextStylerTests.swift */; };
 		F5C4BEBA2422299E00238AEA /* BSWInterfaceKit in Frameworks */ = {isa = PBXBuildFile; productRef = F5C4BEB92422299E00238AEA /* BSWInterfaceKit */; };
 		F5C4BEBB2422299E00238AEA /* BSWInterfaceKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F5C4BEB92422299E00238AEA /* BSWInterfaceKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F5C4BEBE242229B300238AEA /* Deferred in Frameworks */ = {isa = PBXBuildFile; productRef = F5C4BEBD242229B300238AEA /* Deferred */; };
@@ -433,14 +444,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F556373024222B4500BFCD52 /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */,
-				F556373124222B4500BFCD52 /* IntrinsicSizeCalculableTests.swift in Sources */,
-				F556373224222B4500BFCD52 /* UIViewControllerTests.swift in Sources */,
-				F556373424222B4500BFCD52 /* NSAttributedStringTests.swift in Sources */,
-				F556372F24222B4500BFCD52 /* ColumnFlowLayoutTests.swift in Sources */,
-				F556372E24222B4500BFCD52 /* UIViewTests.swift in Sources */,
+				F595C8D32423B04500343E80 /* SelectableTableViewDataSourceTests.swift in Sources */,
+				F595C8C92423B04500343E80 /* UIViewTests.swift in Sources */,
+				F595C8D22423B04500343E80 /* ScrollableTabsViewControllerTests.swift in Sources */,
+				F595C8CF2423B04500343E80 /* ProfilePhotoPickerCollectionViewTests.swift in Sources */,
 				F5DECEB824222AFA0044DC8B /* BSWSnapshotTest.swift in Sources */,
-				F556373324222B4500BFCD52 /* LocalizableTests.swift in Sources */,
+				F595C8CE2423B04500343E80 /* PolaroidCellTests.swift in Sources */,
+				F595C8C42423B04500343E80 /* HorizontalPagedCollectionViewLayoutTests.swift in Sources */,
+				F595C8D02423B04500343E80 /* RangeSliderTests.swift in Sources */,
+				F595C8CC2423B04500343E80 /* CardPresentationTests.swift in Sources */,
+				F595C8CA2423B04500343E80 /* AvatarViewTests.swift in Sources */,
+				F595C8D12423B04500343E80 /* RoundLayerTests.swift in Sources */,
+				F595C8C52423B04500343E80 /* IntrinsicSizeCalculableTests.swift in Sources */,
+				F595C8C32423B04500343E80 /* ColumnFlowLayoutTests.swift in Sources */,
+				F595C8CD2423B04500343E80 /* ClassicProfileViewControllerTests.swift in Sources */,
+				F595C8D42423B04500343E80 /* TextStylerTests.swift in Sources */,
+				F595C8C82423B04500343E80 /* UIViewControllerTests.swift in Sources */,
+				F595C8CB2423B04500343E80 /* ButtonTests.swift in Sources */,
+				F595C8C62423B04500343E80 /* LocalizableTests.swift in Sources */,
+				F595C8C72423B04500343E80 /* NSAttributedStringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

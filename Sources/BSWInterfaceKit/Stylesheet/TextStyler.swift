@@ -6,6 +6,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWFoundation
 
 open class TextStyler {
     
@@ -37,7 +38,7 @@ open class TextStyler {
         // Make sure the trait collection we apply
         // is within the user's accepted bounds
         let traitCollection: UITraitCollection? = {
-            guard NSClassFromString("XCTest") == nil else { return nil }
+            guard !UIApplication.shared.isRunningTests else { return nil }
             let userSelectedTrait = UIApplication.shared.preferredContentSizeCategory
             if userSelectedTrait < minContentSizeSupported {
                 return UITraitCollection(preferredContentSizeCategory: minContentSizeSupported)

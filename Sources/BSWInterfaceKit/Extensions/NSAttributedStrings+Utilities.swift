@@ -116,6 +116,22 @@ public extension NSAttributedString {
         mutableCopy.setLineHeightMultiplier(multiplier)
         return mutableCopy
     }
+    
+    func addingLink(onSubstring substring: String, linkURL: URL, linkColor: UIColor?, isUnderlined: Bool = false)  -> NSAttributedString {
+        let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
+        var linkCustomAttributes: [NSAttributedString.Key : Any] = [
+            .attachment: linkURL
+        ]
+        if let linkColor = linkColor {
+            linkCustomAttributes[.foregroundColor] = linkColor
+        }
+        if isUnderlined {
+            linkCustomAttributes[.underlineColor] = linkColor
+            linkCustomAttributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
+        }
+        mutableCopy.addAttributes(onSubstring: substring, attrs: linkCustomAttributes)
+        return mutableCopy
+    }
 }
 
 public extension NSAttributedString {
@@ -130,11 +146,12 @@ public extension NSAttributedString {
 
 
 public extension NSMutableAttributedString {
-    func addLink(onSubstring substring: String, linkURL: URL) {
+
+    func addAttributes(onSubstring substring: String, attrs: [NSAttributedString.Key : Any]) {
         guard let range = self.string.range(of: substring) else { fatalError() }
         let lowerBound = range.lowerBound.utf16Offset(in: self.string)
         let upperBound = range.upperBound.utf16Offset(in: self.string)
-        self.addAttribute(.link, value: linkURL, range: NSRange(location: lowerBound, length: upperBound - lowerBound))
+        self.addAttributes(attrs, range: NSRange(location: lowerBound, length: upperBound - lowerBound))
     }
 
     func setKern(_ kern: CGFloat) {
