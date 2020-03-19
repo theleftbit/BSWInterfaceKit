@@ -12,7 +12,7 @@ import UIKit
 /// also provide your own custom images but this is not encouraged
 /// since it's better be consistent design with the OS.
 @objc(BSWCheckboxButton)
-public class CheckboxButton: UIButton {
+open class CheckboxButton: UIButton {
 
     public enum Appearance {
         public static var checkTintColor: UIColor = {
@@ -44,9 +44,14 @@ public class CheckboxButton: UIButton {
         self.contentMode = .scaleAspectFit
         self.setImage(images.nonSelectedImage, for: .normal)
         self.setImage(images.selectedImage, for: .selected)
-        self.imageEdgeInsets = [.left: -Appearance.Padding]
-        self.contentEdgeInsets = .init(uniform: Appearance.Padding)
+        self.titleEdgeInsets = [.right: -Appearance.Padding, .left: Appearance.Padding]
+        self.contentEdgeInsets = [.right: Appearance.Padding]
+        addTarget(self, action: #selector(toggleSelected), for: .touchUpInside)
         isSelected = false
+    }
+    
+    @objc private func toggleSelected() {
+        isSelected.toggle()
     }
     
     public override var isSelected: Bool {
