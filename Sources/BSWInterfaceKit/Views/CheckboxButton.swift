@@ -13,7 +13,7 @@ import UIKit
 /// since it's better be consistent design with the OS.
 @objc(BSWCheckboxButton)
 open class CheckboxButton: UIButton {
-
+    
     public enum Appearance {
         public static var checkTintColor: UIColor = {
             guard #available(iOS 13.0, tvOS 13.0, *) else {
@@ -41,7 +41,6 @@ open class CheckboxButton: UIButton {
                 return CheckboxButton.generateImages()
             }
         }()
-        self.contentMode = .scaleAspectFit
         self.setImage(images.nonSelectedImage, for: .normal)
         self.setImage(images.selectedImage, for: .selected)
         self.titleEdgeInsets = [.right: -Appearance.Padding, .left: Appearance.Padding]
@@ -63,55 +62,54 @@ open class CheckboxButton: UIButton {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
+    
     static private func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
-        let backgroundImage: UIImage = {
-            if #available(iOS 13.0, tvOS 13.0, *) {
-                return UIImage(systemName: "circle")!
+        /// These are good to go  since they're generated using
+        /// `UIImage(systemName:)`. For iOS 12, since they're
+        /// generated manually from a PDF, we need to draw them
+        if #available(iOS 13.0, tvOS 13.0, *) {
+            let config = UIImage.SymbolConfiguration(scale: .large)
+            let backgroundImage: UIImage = {
+                return UIImage.init(systemName: "circle", withConfiguration: config)!
                     .withTintColor(Appearance.backgroundTintColor, renderingMode: .alwaysTemplate)
-            } else {
+            }()
+            let checkboxImage: UIImage = {
+                return UIImage.init(systemName: "checkmark.circle.fill", withConfiguration: config)!
+                    .withTintColor(Appearance.checkTintColor, renderingMode: .alwaysTemplate)
+            }()
+            return (backgroundImage, checkboxImage)
+        } else {
+            
+            let backgroundImage: UIImage = {
                 let image = UIImage.templateImage(.rectangle)
                 return image.tint(Appearance.backgroundTintColor)
-            }
-        }()
-
-        let checkboxImage: UIImage = {
-            if #available(iOS 13.0, tvOS 13.0, *) {
-                return UIImage(systemName: "checkmark.circle.fill")!
-                    .withTintColor(Appearance.checkTintColor, renderingMode: .alwaysTemplate)
-            } else {
+            }()
+            let checkboxImage: UIImage = {
                 let image = UIImage.templateImage(.checkmark)
                 return image.tint(Appearance.checkTintColor)
+            }()
+            
+            let targetSize = CGSize(width: 36, height: 36)
+            let horizontalPadding: CGFloat = 6
+            let verticalPadding: CGFloat = 9
+            
+            let areaSize = CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height)
+            let areaSize2 = CGRect(x: horizontalPadding, y: verticalPadding, width: targetSize.width - 2*horizontalPadding, height: targetSize.height - 2*verticalPadding)
+            
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = UIScreen.main.scale
+            let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
+            let newCheckboxImage = renderer.image { ctx in
+                backgroundImage.draw(in: areaSize)
+                checkboxImage.draw(in: areaSize2, blendMode: .normal, alpha: 1)
             }
-        }()
-        
-        if #available(iOS 13.0, tvOS 13.0, *) {
-            /// These are good to go  since they're generated using
-            /// `UIImage(systemName:)`. For iOS 12, since they're
-            /// generated manually from a PDF, we need to draw them
-            return (backgroundImage, checkboxImage)
+            
+            let newBackgroundImage = renderer.image { ctx in
+                backgroundImage.draw(in: areaSize)
+            }
+            
+            return (newBackgroundImage, newCheckboxImage)
         }
-
-        let targetSize = CGSize(width: 36, height: 36)
-        let horizontalPadding: CGFloat = 6
-        let verticalPadding: CGFloat = 9
-
-        let areaSize = CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height)
-        let areaSize2 = CGRect(x: horizontalPadding, y: verticalPadding, width: targetSize.width - 2*horizontalPadding, height: targetSize.height - 2*verticalPadding)
-        
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = UIScreen.main.scale
-        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
-        let newCheckboxImage = renderer.image { ctx in
-            backgroundImage.draw(in: areaSize)
-            checkboxImage.draw(in: areaSize2, blendMode: .normal, alpha: 1)
-        }
-
-        let newBackgroundImage = renderer.image { ctx in
-            backgroundImage.draw(in: areaSize)
-        }
-
-        return (newBackgroundImage, newCheckboxImage)
     }
 }
 #endif
