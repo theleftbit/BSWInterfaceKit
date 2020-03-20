@@ -5,6 +5,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWInterfaceKitObjC
 
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
@@ -106,20 +107,29 @@ private extension UITouch {
         let textBoundingBox = layoutManager.usedRect(for: textContainer)
         let textContainerOffset = CGPoint(x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
                                           y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y);
-        let locationOfTouchInTextContainer = CGPoint(x: (locationOfTouchInLabel.x - textContainerOffset.x),
-                                                     y: 0 );
-        // Adjust for multiple lines of text
-        let lineModifier = Int(ceil(locationOfTouchInLabel.y / label.font.lineHeight)) - 1
-        let rightMostFirstLinePoint = CGPoint(x: labelSize.width, y: 0)
-        let charsPerLine = layoutManager.characterIndex(for: rightMostFirstLinePoint, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
 
-        let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-        let adjustedRange = indexOfCharacter + (lineModifier * charsPerLine)
-        var newTargetRange = targetRange
-        if lineModifier > 0 {
-            newTargetRange.location = targetRange.location+(lineModifier*Int(ceil(locationOfTouchInLabel.y)))
+        if layoutManager.numberOfLines() == 1 {
+            let locationOfTouchInTextContainer = CGPoint(x: locationOfTouchInLabel.x - textContainerOffset.x,
+                                                         y: locationOfTouchInLabel.y - textContainerOffset.y);
+            let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+
+            return NSLocationInRange(indexOfCharacter, targetRange)
+        } else {
+            let locationOfTouchInTextContainer = CGPoint(x: (locationOfTouchInLabel.x - textContainerOffset.x),
+                                                         y: 0)
+            // Adjust for multiple lines of text
+            let lineModifier = Int(ceil(locationOfTouchInLabel.y / label.font.lineHeight)) - 1
+            let rightMostFirstLinePoint = CGPoint(x: labelSize.width, y: 0)
+            let charsPerLine = layoutManager.characterIndex(for: rightMostFirstLinePoint, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+
+            let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+            let adjustedRange = indexOfCharacter + (lineModifier * charsPerLine)
+            var newTargetRange = targetRange
+            if lineModifier > 0 {
+                newTargetRange.location = targetRange.location+(lineModifier*Int(ceil(locationOfTouchInLabel.y)))
+            }
+            return NSLocationInRange(adjustedRange, newTargetRange)
         }
-        return NSLocationInRange(adjustedRange, newTargetRange)
     }
 }
 
