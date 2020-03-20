@@ -11,6 +11,7 @@
 
 @implementation NSLayoutManager (BSWUtilities)
 
+/// Based on https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/TextLayout/Tasks/CountLines.html
 - (NSInteger)numberOfLines {
     NSLayoutManager *layoutManager = self;
     NSUInteger numberOfLines, index, numberOfGlyphs =
