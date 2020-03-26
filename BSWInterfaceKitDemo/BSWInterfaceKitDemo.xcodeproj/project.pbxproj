@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F5171480242CE6020018659F /* LinkAwareLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F517147F242CE6020018659F /* LinkAwareLabelViewController.swift */; };
 		F545909E2322C7E80037E8B9 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F545909D2322C7E80037E8B9 /* TableViewController.swift */; };
 		F54DB37623095B14008E306B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54DB37523095B14008E306B /* Assets.xcassets */; };
 		F54DB37723095EC3008E306B /* BSWInterfaceKitAssets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */; };
@@ -102,6 +103,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F517147F242CE6020018659F /* LinkAwareLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkAwareLabelViewController.swift; sourceTree = "<group>"; };
 		F545909D2322C7E80037E8B9 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		F54DB35123095718008E306B /* BSWInterfaceKitAssets.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BSWInterfaceKitAssets.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54DB35323095718008E306B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 				F56F90AF22EF426900E45944 /* StrawberryViewController.swift */,
 				F545909D2322C7E80037E8B9 /* TableViewController.swift */,
 				F5783580236C4B20005DD42B /* PlanSelectorViewController.swift */,
+				F517147F242CE6020018659F /* LinkAwareLabelViewController.swift */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -430,6 +433,7 @@
 			files = (
 				F56F90B322EF426900E45944 /* FeaturesViewController.swift in Sources */,
 				F56F90B422EF426900E45944 /* AsyncView.swift in Sources */,
+				F5171480242CE6020018659F /* LinkAwareLabelViewController.swift in Sources */,
 				F56F90B022EF426900E45944 /* AzzurriViewController.swift in Sources */,
 				F545909E2322C7E80037E8B9 /* TableViewController.swift in Sources */,
 				F56F90B222EF426900E45944 /* AlertOperationViewController.swift in Sources */,
