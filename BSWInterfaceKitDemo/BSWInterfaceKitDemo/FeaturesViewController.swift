@@ -20,6 +20,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
         case facebookLogin = "FacebookLogin"
         case alertOperations = "AlertOperations"
         case centerPagedCollectionView = "CenterPagedCollectionView"
+        case linkedLabel = "LinkAwareLabelViewController"
     }
 
     let featuresTableView : UITableView = {
@@ -67,6 +68,8 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
                 return AlertOperationViewController()
             case .asyncViewModelController:
                 return StrawberryViewController(dataProvider: StrawberryInteractor.dataProvider())
+            case .linkedLabel:
+                return LinkAwareLabelViewController()
             case .asyncViewSwiftUI:
                 if #available(iOS 13.0.0, *) {
 //                    return ToDoList.Factory.todoListAsUIKit()
