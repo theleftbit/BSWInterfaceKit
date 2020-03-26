@@ -79,7 +79,7 @@ open class LinkAwareLabel: UILabel {
         if let handler = didTapOnURL {
             handler(url)
         } else {
-            window?.rootViewController?.presentSafariVC(withURL: url)
+            window?.visibleViewController?.presentSafariVC(withURL: url)
         }
     }
 }
