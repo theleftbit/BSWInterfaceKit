@@ -26,6 +26,10 @@ open class ContainerViewController: UIViewController {
     private let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut)
     public var layoutMode = LayoutMode.pinToSuperview
     
+    public convenience init() {
+        self.init(containedViewController: UIViewController())
+    }
+    
     public init(containedViewController: UIViewController) {
         self.containedViewController = containedViewController
         super.init(nibName: nil, bundle: nil)
@@ -45,6 +49,14 @@ open class ContainerViewController: UIViewController {
     open override var childForScreenEdgesDeferringSystemGestures: UIViewController? { containedViewController }
     open override var navigationItem: UINavigationItem {
         return containedViewController.navigationItem
+    }
+    @available(iOS 13.0, *)
+    open override var isModalInPresentation: Bool {
+        get {
+            containedViewController.isModalInPresentation
+        } set {
+            containedViewController.isModalInPresentation = newValue
+        }
     }
 
     open func updateContainedViewController(_ newVC: UIViewController) {
