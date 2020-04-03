@@ -10,9 +10,11 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     
     public struct Configuration {
         let shouldSelectItemAtIndexPath: (IndexPath) -> Bool
+        let didSelectItemAtIndexPath: (IndexPath) -> ()
 
-        public init(shouldSelectItemAtIndexPath:  @escaping (IndexPath) -> Bool = { _ in return true}) {
+        public init(shouldSelectItemAtIndexPath: @escaping (IndexPath) -> Bool = { _ in return true }, didSelectItemAtIndexPath: @escaping (IndexPath) -> () = { _ in }) {
             self.shouldSelectItemAtIndexPath = shouldSelectItemAtIndexPath
+            self.didSelectItemAtIndexPath = didSelectItemAtIndexPath
         }
     }
     
@@ -109,6 +111,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
             }
         }, completion: { _ in
             tableView.reloadData()
+            self.configuration.didSelectItemAtIndexPath(indexPath)
         })
     }
     
