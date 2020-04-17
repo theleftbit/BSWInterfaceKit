@@ -12,7 +12,7 @@ public enum MarqueePresentation {
         public let sizing: Sizing
         public let animationDuration: TimeInterval
         public let kind: Kind
-        public let roundsCorners: Bool
+        public let roundCornerRadius: CGFloat?
 
         public enum Kind { // swiftlint:disable:this nesting
             case dismissal
@@ -25,11 +25,11 @@ public enum MarqueePresentation {
             case constrainingWidth(CGFloat)
         }
 
-        public init(sizing: Sizing = .constrainingWidth(300), animationDuration: TimeInterval = 0.6, kind: Kind, roundsCorners: Bool = false) {
+        public init(sizing: Sizing = .constrainingWidth(300), animationDuration: TimeInterval = 0.6, kind: Kind, roundCornerRadius: CGFloat? = nil) {
             self.sizing = sizing
             self.animationDuration = animationDuration
             self.kind = kind
-            self.roundsCorners = roundsCorners
+            self.roundCornerRadius = roundCornerRadius
         }
     }
     
@@ -88,8 +88,8 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
         containerView.addSubview(toViewController.view)
         let vcView = toViewController.view!
         
-        if self.properties.roundsCorners {
-            vcView.roundCorners()
+        if let radius = self.properties.roundCornerRadius {
+            vcView.roundCorners(radius: radius)
         }
         switch self.properties.sizing {
         case .fixedSize(let size):
