@@ -39,6 +39,7 @@ public enum CardPresentation {
         public let backgroundColor: UIColor
         public let shouldAnimateNewVCAlpha: Bool
         public let overridenTraits: UITraitCollection?
+        public let roundCornerRadius: CGFloat?
         
         public enum CardHeight { // swiftlint:disable:this nesting
             case fixed(CGFloat)
@@ -55,13 +56,14 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
             self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
             self.overridenTraits = overridenTraits
+            self.roundCornerRadius = roundCornerRadius
         }
     }
 
@@ -129,6 +131,10 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
 
+        if let radius = properties.roundCornerRadius {
+            toViewController.view.roundCorners(radius: radius)
+        }
+        
         /// Add VC's view
         containerView.addAutolayoutSubview(toViewController.view)
 
