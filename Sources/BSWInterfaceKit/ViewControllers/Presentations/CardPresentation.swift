@@ -171,28 +171,14 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         /// This is the change that animates this from the bottom
         let extraPadding: CGFloat = {
-            if properties.presentationInsideSafeArea {
-                switch position {
-                case .top:
-                    return fromViewController.view.safeAreaInsets.top
-                case .bottom:
-                    return fromViewController.view.safeAreaInsets.bottom
-                }
-            } else {
-                if UIDevice.current.hasNotch {
-                    // iOS 13 has a bug where it will
-                    // crash if we return 0 from here on
-                    // notched devices.
-                    // So... we must workaround it ourselves
-                    switch position {
-                    case .top:
-                        return 20
-                    case .bottom:
-                        return 34
-                    }
-                } else {
-                    return 0
-                }
+            guard properties.presentationInsideSafeArea else {
+                return 0
+            }
+            switch position {
+            case .top:
+                return fromViewController.view.safeAreaInsets.top
+            case .bottom:
+                return fromViewController.view.safeAreaInsets.bottom
             }
         }()
         anchorConstraint.constant = -(toVCHeight + extraPadding)
