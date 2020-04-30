@@ -72,11 +72,15 @@ open class ContainerViewController: UIViewController {
         }
         
         // Notify current VC that time is up
-        self.containedViewController.willMove(toParent: nil)
+        let oldVC = self.containedViewController
+        oldVC.willMove(toParent: nil)
+        
+        /// Store a reference to the new guy in town
+        self.containedViewController = newVC
         
         // Add new VC
         self.addChild(newVC)
-        self.view.insertSubview(newVC.view, belowSubview: self.containedViewController.view)
+        self.view.insertSubview(newVC.view, belowSubview: oldVC.view)
         switch layoutMode {
         case .pinToSuperview:
             newVC.view.pinToSuperview()
@@ -87,14 +91,14 @@ open class ContainerViewController: UIViewController {
         
         newVC.view.alpha = 0
         animator.addAnimations {
-            self.containedViewController.view.alpha = 0
+            oldVC.view.alpha = 0
             newVC.view.alpha = 1
         }
         
+
         animator.addCompletion { (_) in
-            self.containedViewController.view.removeFromSuperview()
-            self.containedViewController.removeFromParent()
-            self.containedViewController = newVC
+            oldVC.view.removeFromSuperview()
+            oldVC.removeFromParent()
             self.setNeedsStatusBarAppearanceUpdate()
             self.setNeedsUpdateOfHomeIndicatorAutoHidden()
             self.setNeedsUpdateOfScreenEdgesDeferringSystemGestures()
