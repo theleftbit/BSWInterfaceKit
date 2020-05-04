@@ -95,7 +95,6 @@ open class ContainerViewController: UIViewController {
             newVC.view.alpha = 1
         }
         
-
         animator.addCompletion { (_) in
             oldVC.view.removeFromSuperview()
             oldVC.removeFromParent()
@@ -104,6 +103,14 @@ open class ContainerViewController: UIViewController {
             self.setNeedsUpdateOfScreenEdgesDeferringSystemGestures()
         }
         animator.startAnimation()
+        
+        /// This is a workaround for an issue where the `containedViewController`'s navigationItem wasn't
+        /// being correctly synced with the contets of the navigation bar. This will make sure to force an update to
+        /// it, making the contents of the navigationBar correct after every `updateContainedViewController`.
+        if let navBarHidden = self.navigationController?.isNavigationBarHidden {
+            self.navigationController?.setNavigationBarHidden(!navBarHidden, animated: false)
+            self.navigationController?.setNavigationBarHidden(navBarHidden, animated: false)
+        }
     }
 }
 #endif
