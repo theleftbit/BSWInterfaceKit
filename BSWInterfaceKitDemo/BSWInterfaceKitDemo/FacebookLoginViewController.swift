@@ -6,7 +6,7 @@ import UIKit
 import BSWInterfaceKit
 import Deferred
 
-private let FacebookAppID = "194840897775038"
+private let FacebookAppID = "726622887875928"
 
 class FacebookLoginViewController: UIViewController {
     override func viewDidLoad() {
