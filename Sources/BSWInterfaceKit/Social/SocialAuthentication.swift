@@ -17,7 +17,7 @@ public protocol SocialAuthenticationCredentials {
 public class SocialAuthenticationManager {
 
     static public let manager = SocialAuthenticationManager()
-    private var currentRequest: CurrentRequest?
+    private var authSession: SFAuthenticationSession?
 
     public struct LoginResponse {
         public let authToken: String
@@ -37,71 +37,45 @@ public class SocialAuthenticationManager {
      - parameter credentials: The credentials used to login
 
      - returns: A Task with the response from the O-Auth service
-
-     - note: If you're targeting iOS 11+, then this is all you have to do, but
-     for iOS 9 and 10, you should also call `handleApplicationDidOpenURL` from
-     your app delegate.
      */
     public func loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
         return safariAuthSession_loginWith(credentials: credentials)
     }
 
-    public func handleApplicationDidOpenURL(_ URL: URL, options: [UIApplication.OpenURLOptionsKey : Any]) {
-        guard let sourceApplication = options[.sourceApplication] as? String,
-            sourceApplication == "com.apple.SafariViewService",
-            let currentRequest = self.currentRequest,
-            case .safariVC(let safariVC, let credentials, let deferred) = currentRequest else {
-                return
-        }
-
-        safariVC.dismiss(animated: true, completion: nil)
-        if let response = credentials.extractResponseFrom(URLCallback: URL) {
-            deferred.fill(with: .success(response))
-        } else {
-            deferred.fill(with: .failure(Error(title: "Unknown Response")))
-        }
-        self.currentRequest = nil
-    }
-
     private func safariAuthSession_loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
         let deferred = Deferred<Task<LoginResponse>.Result>()
-        guard self.currentRequest == nil else {
-            deferred.fill(with: .failure(Error(title: "Ongoing login")))
+        guard self.authSession == nil else {
+            deferred.fill(with: .failure(SocialAuthenticationError.ongoingLogin))
             return Task(deferred)
         }
 
         let authSession = SFAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
-            defer { self.currentRequest = nil }
+            defer { self.authSession = nil }
             guard error == nil else {
                 deferred.fill(with: .failure(error!))
                 return
             }
 
-            guard let url = url,
-                let response = credentials.extractResponseFrom(URLCallback: url) else {
-                deferred.fill(with: .failure(Error(title: "Unknown Response")))
+            guard let url = url, let response = credentials.extractResponseFrom(URLCallback: url) else {
+                deferred.fill(with: .failure(SocialAuthenticationError.unknownResponse))
                 return
             }
-
+            
             deferred.fill(with: .success(response))
         }
 
         authSession.start()
 
-        self.currentRequest = .authSession(authSession)
+        self.authSession = authSession
         return Task(deferred)
     }
 }
 
 extension SocialAuthenticationManager {
 
-    private enum CurrentRequest {
-        case authSession(NSObject)
-        case safariVC(UIViewController, SocialAuthenticationCredentials, Deferred<Task<LoginResponse>.Result>)
-    }
-
-    public struct Error: Swift.Error {
-        let title: String
+    public enum SocialAuthenticationError: Swift.Error {
+        case unknownResponse
+        case ongoingLogin
     }
 }
 
