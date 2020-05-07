@@ -105,7 +105,7 @@ open class ContainerViewController: UIViewController {
         animator.startAnimation()
         
         /// This is a workaround for an issue where the `containedViewController`'s navigationItem wasn't
-        /// being correctly synced with the contets of the navigation bar. This will make sure to force an update to
+        /// being correctly synced with the contents of the navigation bar. This will make sure to force an update to
         /// it, making the contents of the navigationBar correct after every `updateContainedViewController`.
         if let navBarHidden = self.navigationController?.isNavigationBarHidden {
             self.navigationController?.setNavigationBarHidden(!navBarHidden, animated: false)
