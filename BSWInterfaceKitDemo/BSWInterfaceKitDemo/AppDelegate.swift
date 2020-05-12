@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = UIViewController()
         }
         else {
-            window?.rootViewController = UINavigationController(rootViewController: FeaturesViewController())
+            window?.rootViewController = SplitViewController(masterViewController: FeaturesViewController())
         }
         window?.makeKeyAndVisible()
         return true
@@ -36,4 +36,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StateContainerAppereance.transitionConfiguration = .simple()
     }
 }
-
