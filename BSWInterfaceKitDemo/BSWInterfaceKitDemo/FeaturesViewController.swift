@@ -88,7 +88,7 @@ class FeaturesViewController: UIViewController, UITableViewDataSource, UITableVi
                 return PlanSelectorViewController()
             }
         }()
-        show(vc, sender: self)
+        showDetailViewController(vc, sender: self)
     }
 }
 
