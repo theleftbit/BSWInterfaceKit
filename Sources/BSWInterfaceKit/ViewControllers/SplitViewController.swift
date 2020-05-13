@@ -72,6 +72,23 @@ open class SplitViewController: UIViewController {
                 minWidthConstraint
             ]
         )
+        masterNavigationController.didMove(toParent: self)
+        detailNavigationController.didMove(toParent: self)
+    }
+    
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        /// Master VC will always be compact.
+        setOverrideTraitCollection(
+            UITraitCollection(horizontalSizeClass: .compact),
+            forChild: masterNavigationController
+        )
+        
+        /// As of the Detail VC, I've found that on the smallest iPad, even in portrait
+        /// the view is more than 440pts in width. I think that's enough to handle
+        /// regular layouts https://i.imgur.com/i7bvrKg.jpg
+        /// If that's not the case, any VC can customize this, calling `setOverrideTraitCollection`
     }
     
     override public func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
