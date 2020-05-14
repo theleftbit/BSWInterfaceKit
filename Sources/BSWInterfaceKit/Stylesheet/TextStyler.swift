@@ -12,11 +12,20 @@ open class TextStyler {
     
     // https://gist.github.com/zacwest/916d31da5d03405809c4
     
-    public static let styler = TextStyler()
-    public init(preferredFontName: String? = nil) {
-        self.preferredFontName = preferredFontName
+    public static let styler = TextStyler(fontDescriptor: nil)
+    
+    convenience init(preferredFontName: String? = nil) {
+        if let fontName = preferredFontName {
+            self.init(fontDescriptor: .init(name: fontName, size: 0))
+        } else {
+            self.init(fontDescriptor: nil)
+        }
     }
-    open var preferredFontName: String?
+    public init(fontDescriptor: UIFontDescriptor? = nil) {
+        self.fontDescriptor = fontDescriptor
+    }
+
+    open var fontDescriptor: UIFontDescriptor?
     open var minContentSizeSupported = UIContentSizeCategory.small
     open var maxContentSizeSupported = UIContentSizeCategory.extraExtraExtraLarge
 
@@ -48,16 +57,14 @@ open class TextStyler {
                 return nil
             }
         }()
-
         let systemFont = UIFont.preferredFont(forTextStyle: style, compatibleWith: traitCollection)
-        guard
-            let preferredFontName = preferredFontName,
-            let font = UIFont(name: preferredFontName, size: systemFont.pointSize) else {
-                return systemFont
+        if let fontDescriptor = fontDescriptor {
+            let font = UIFont.init(descriptor: fontDescriptor, size: systemFont.pointSize)
+            let metrics = UIFontMetrics(forTextStyle: style)
+            return metrics.scaledFont(for: font, compatibleWith: traitCollection)
+        } else {
+            return systemFont
         }
-
-        let metrics = UIFontMetrics(forTextStyle: style)
-        return metrics.scaledFont(for: font, compatibleWith: traitCollection)
     }
 }
 
