@@ -145,4 +145,10 @@ open class SplitViewController: UIViewController {
     }
 }
 
+public extension UIViewController {
+    var bswSplitViewController: SplitViewController? {
+        return (next() as SplitViewController?)
+    }
+}
+
 #endif
