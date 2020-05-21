@@ -2,6 +2,7 @@ default_platform(:ios)
 
 before_all do |lane, options|
   setup_jenkins(derived_data_path: "./derivedData")
+  clear_derived_data(derived_data_path: "./derivedData")
 end
 
 platform :ios do
