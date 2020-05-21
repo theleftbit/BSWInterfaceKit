@@ -27,6 +27,9 @@ open class SplitViewController: UIViewController {
     
     override public func loadView() {
         view = UIView()
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = .systemBackground
+        }
         let separatorView = UIView()
         if #available(iOS 13.0, *) {
             separatorView.backgroundColor = .separator
@@ -139,6 +142,12 @@ open class SplitViewController: UIViewController {
                 view.backgroundColor = .white
             }
         }
+    }
+}
+
+public extension UIViewController {
+    var bswSplitViewController: SplitViewController? {
+        return (next() as SplitViewController?)
     }
 }
 
