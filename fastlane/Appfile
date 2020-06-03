@@ -1,5 +1,0 @@
-app_identifier("com.typeform.videoask") # The bundle identifier of your app
-apple_id("pcifani@theleftbit.com") # Your Apple email address
-
-itc_team_id("118060958") # App Store Connect Team ID
-team_id("2E3K76AD77") # Developer Portal Team ID

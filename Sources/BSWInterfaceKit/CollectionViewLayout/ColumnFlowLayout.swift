@@ -47,6 +47,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             invalidateLayout()
         }
     }
+    
+    open var showsHeaderAndFooterWhenEmpty = false
 
     private var cache = [UICollectionViewLayoutAttributes]()
     private var contentHeight: CGFloat = 0
@@ -77,7 +79,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         let columnWidth = (availableWidth / CGFloat(maxNumColumns)).rounded(.down)
         let numberOfColumns = Int(availableWidth / columnWidth)
         let cellWidth = (availableWidth - CGFloat(numberOfColumns - 1)*itemSpacing)/CGFloat(numberOfColumns)
-        
+        let numberOfItems = cv.numberOfItems(inSection: 0)
+
         // Figure out where each column starts in X
         let xOffset: [CGFloat] = {
             var offsets: [CGFloat] = []
@@ -91,18 +94,19 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             }
             return offsets
         }()
-        
-        // This is were we'll store the Y for each column: since layoutMargins
-        // automatically include safeAreas, we're removing safeArea to use absolute values
-        let numberOfItems = cv.numberOfItems(inSection: 0)
-        guard numberOfItems > 0 else {
-            return
-        }
+
+        let shouldShowAccesoryViews: Bool = {
+            if numberOfItems > 0 {
+                return true
+            } else {
+                return showsHeaderAndFooterWhenEmpty
+            }
+        }()
         
         var headerOffset: CGFloat = 0
         let headerIndexPath = IndexPath(item: 0, section: 0)
         let _header: UICollectionReusableView? = {
-            guard showsHeader else {
+            guard showsHeader && shouldShowAccesoryViews else {
                 return nil
             }
             return self.headerFactory(headerIndexPath)
@@ -116,7 +120,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             cache.append(attributes)
             headerOffset = attributes.frame.maxY
         }
-        
+
         let yStartOffset = headerOffset > 0 ? headerOffset : (cv.layoutMargins.top - cv.safeAreaInsets.top)
         var yOffset = [CGFloat](repeating: yStartOffset, count: numberOfColumns)
 
@@ -147,7 +151,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         }
         
         let _footer: UICollectionReusableView? = {
-            guard showsFooter else {
+            guard showsFooter && shouldShowAccesoryViews else {
                 return nil
             }
             return self.footerFactory(headerIndexPath)
