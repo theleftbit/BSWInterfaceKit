@@ -91,14 +91,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             }
             return offsets
         }()
-        
-        // This is were we'll store the Y for each column: since layoutMargins
-        // automatically include safeAreas, we're removing safeArea to use absolute values
-        let numberOfItems = cv.numberOfItems(inSection: 0)
-        guard numberOfItems > 0 else {
-            return
-        }
-        
+                
         var headerOffset: CGFloat = 0
         let headerIndexPath = IndexPath(item: 0, section: 0)
         let _header: UICollectionReusableView? = {
@@ -116,6 +109,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             cache.append(attributes)
             headerOffset = attributes.frame.maxY
         }
+
+        let numberOfItems = cv.numberOfItems(inSection: 0)
         
         let yStartOffset = headerOffset > 0 ? headerOffset : (cv.layoutMargins.top - cv.safeAreaInsets.top)
         var yOffset = [CGFloat](repeating: yStartOffset, count: numberOfColumns)
