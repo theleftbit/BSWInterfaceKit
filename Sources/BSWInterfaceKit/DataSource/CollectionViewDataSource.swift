@@ -36,6 +36,10 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
         collectionView.dataSource = self
     }
     
+    deinit {
+        emptyView?.removeFromSuperview()
+    }
+    
     @available(tvOS, unavailable)
     public var pullToRefreshSupport: CollectionViewPullToRefreshSupport<Cell.VM>? {
         didSet {
