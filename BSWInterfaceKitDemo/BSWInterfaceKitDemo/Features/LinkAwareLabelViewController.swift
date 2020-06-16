@@ -15,7 +15,7 @@ class LinkAwareLabelViewController: UIViewController {
         view.addAutolayoutSubview(label)
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2),
-            label.trailingAnchor.constraint(equalToSystemSpacingAfter: view.trailingAnchor, multiplier: 2),
+            view.trailingAnchor.constraint(equalToSystemSpacingAfter: label.trailingAnchor, multiplier: 2),
             label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
@@ -32,10 +32,10 @@ class LinkAwareLabelViewController: UIViewController {
             """
             )
             .addingLink(onSubstring: "is fucked", linkURL: URL(string: "https://www.youtube.com/watch?v=ZpUYjpKg9KY")!, linkColor: .systemBlue)
-            .addingLink(onSubstring: "those days", linkURL: URL(string: "https://www.youtube.com/watch?v=ZpUYjpKg9KY")!, linkColor: .systemRed)
+            .addingLink(onSubstring: "sucks", linkURL: URL(string: "https://www.youtube.com/watch?v=ZpUYjpKg9KY")!, linkColor: .systemRed)
             .settingParagraphStyle { p in
                 p.lineHeightMultiple = 1.3
-                p.alignment = .left
+                p.alignment = .right
             }
     }
 }

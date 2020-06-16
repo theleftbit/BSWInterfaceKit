@@ -5,12 +5,10 @@
 #if canImport(UIKit)
 
 import UIKit
-import BSWInterfaceKitObjC
 
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
 /// if it's a URL, executes the `didTapOnURL` handler
-/// Known Issue: link detection is janky on `.right` aligned text
 open class LinkAwareLabel: UILabel {
     
     public override init(frame: CGRect) {
@@ -88,20 +86,15 @@ open class LinkAwareLabel: UILabel {
 
 private extension UITouch {
     func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
-        guard let attributedString = label.attributedText, let font = label.font else {
+        guard let attributedString = label.attributedText, let _ = attributedString.attribute(.font, at: 0, longestEffectiveRange: nil, in: NSRange(location: 0, length: attributedString.length)) else {
             print("No attributed string nor font found. Please provide both to enable link detection")
             return false
         }
         /// Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
-        let textStorage = NSTextStorage(attributedString: {
-            /// https://stackoverflow.com/a/54517473/1152289
-            let attString = NSMutableAttributedString(attributedString: attributedString)
-            attString.addAttributes([NSAttributedString.Key.font: font], range: NSRange(location: 0, length: attString.length))
-            return attString
-        }())
-        
+        let textStorage = NSTextStorage(attributedString: attributedString)
+
         /// Configure layoutManager and textStorage
         layoutManager.addTextContainer(textContainer)
         textStorage.addLayoutManager(layoutManager)
@@ -111,7 +104,11 @@ private extension UITouch {
         textContainer.lineBreakMode = label.lineBreakMode
         textContainer.maximumNumberOfLines = label.numberOfLines
         let labelSize = label.bounds.size
-        textContainer.size = labelSize
+        textContainer.size = {
+            /// If we don't set the height as VERY LARGE, it won't detect links on the last line.
+            /// More info, here https://stackoverflow.com/a/35010994/1152289
+            CGSize(width: labelSize.width, height: CGFloat.greatestFiniteMagnitude)
+        }()
         
         /// Find the tapped character location and compare it to the specified range
         let locationOfTouchInLabel = self.location(in: label)
