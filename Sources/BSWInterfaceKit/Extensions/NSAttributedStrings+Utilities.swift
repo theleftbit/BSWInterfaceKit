@@ -99,6 +99,14 @@ public extension NSAttributedString {
         return mutableCopy
     }
 
+    func settingParagraphStyle(_ style: (NSMutableParagraphStyle) -> ()) -> NSAttributedString {
+        let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
+        let p = NSMutableParagraphStyle()
+        style(p)
+        mutableCopy.setParagraphStyle(p)
+        return mutableCopy
+    }
+
     func settingLineSpacing(_ lineSpacing: CGFloat) -> NSAttributedString {
         let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
         mutableCopy.setLineSpacing(lineSpacing)
