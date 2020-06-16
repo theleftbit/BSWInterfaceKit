@@ -5,7 +5,6 @@
 #if canImport(UIKit)
 
 import UIKit
-import BSWInterfaceKitObjC
 
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
@@ -79,27 +78,23 @@ open class LinkAwareLabel: UILabel {
         if let handler = didTapOnURL {
             handler(url)
         } else {
-            window?.visibleViewController?.presentSafariVC(withURL: url)
+            let vc = next() as UIViewController?
+            vc?.presentSafariVC(withURL: url)
         }
     }
 }
 
 private extension UITouch {
     func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
-        guard let attributedString = label.attributedText, let font = label.font else {
+        guard let attributedString = label.attributedText, let _ = attributedString.attribute(.font, at: 0, longestEffectiveRange: nil, in: NSRange(location: 0, length: attributedString.length)) else {
             print("No attributed string nor font found. Please provide both to enable link detection")
             return false
         }
         /// Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
-        let textStorage = NSTextStorage(attributedString: {
-            /// https://stackoverflow.com/a/54517473/1152289
-            let attString = NSMutableAttributedString(attributedString: attributedString)
-            attString.addAttributes([NSAttributedString.Key.font: font], range: NSRange(location: 0, length: attString.length))
-            return attString
-        }())
-        
+        let textStorage = NSTextStorage(attributedString: attributedString)
+
         /// Configure layoutManager and textStorage
         layoutManager.addTextContainer(textContainer)
         textStorage.addLayoutManager(layoutManager)
@@ -109,18 +104,33 @@ private extension UITouch {
         textContainer.lineBreakMode = label.lineBreakMode
         textContainer.maximumNumberOfLines = label.numberOfLines
         let labelSize = label.bounds.size
-        textContainer.size = labelSize
+        textContainer.size = {
+            /// If we don't set the height as VERY LARGE, it won't detect links on the last line.
+            /// More info, here https://stackoverflow.com/a/35010994/1152289
+            CGSize(width: labelSize.width, height: CGFloat.greatestFiniteMagnitude)
+        }()
         
         /// Find the tapped character location and compare it to the specified range
         let locationOfTouchInLabel = self.location(in: label)
         let textBoundingBox = layoutManager.usedRect(for: textContainer)
-        let textContainerOffset = CGPoint(x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
-                                          y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y);
-        
+        let alignmentOffset: CGFloat = {
+            /// https://gist.github.com/hamdan/e8c98db7bcdcf4cdaa2d41be248823ec#gistcomment-2896404
+            switch label.textAlignment {
+            case .left, .natural, .justified:
+                return 0.0
+            case .center:
+                return 0.5
+            case .right:
+                return 1.0
+            @unknown default:
+                fatalError()
+            }
+        }()
+        let textContainerOffset = CGPoint(x: (labelSize.width - textBoundingBox.size.width) * alignmentOffset - textBoundingBox.origin.x,
+                                          y: (labelSize.height - textBoundingBox.size.height) * alignmentOffset - textBoundingBox.origin.y)
         let locationOfTouchInTextContainer = CGPoint(x: locationOfTouchInLabel.x - textContainerOffset.x,
-                                                     y: locationOfTouchInLabel.y - textContainerOffset.y);
+                                                     y: locationOfTouchInLabel.y - textContainerOffset.y)
         let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-        
         return NSLocationInRange(indexOfCharacter, targetRange)
     }
 }
