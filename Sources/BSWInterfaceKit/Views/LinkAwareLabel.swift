@@ -10,6 +10,7 @@ import BSWInterfaceKitObjC
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
 /// if it's a URL, executes the `didTapOnURL` handler
+/// Known Issue: link detection is janky on `.right` aligned text
 open class LinkAwareLabel: UILabel {
     
     public override init(frame: CGRect) {
@@ -114,8 +115,22 @@ private extension UITouch {
         /// Find the tapped character location and compare it to the specified range
         let locationOfTouchInLabel = self.location(in: label)
         let textBoundingBox = layoutManager.usedRect(for: textContainer)
-        let textContainerOffset = CGPoint(x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
-                                          y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y);
+        let alignmentOffset: CGFloat = {
+            /// https://gist.github.com/hamdan/e8c98db7bcdcf4cdaa2d41be248823ec#gistcomment-2896404
+            switch label.textAlignment {
+            case .left, .natural, .justified:
+                return 0.0
+            case .center:
+                return 0.5
+            case .right:
+                return 1.0
+            @unknown default:
+                fatalError()
+            }
+        }()
+
+        let textContainerOffset = CGPoint(x: (labelSize.width - textBoundingBox.size.width) * alignmentOffset - textBoundingBox.origin.x,
+                                          y: (labelSize.height - textBoundingBox.size.height) * alignmentOffset - textBoundingBox.origin.y);
         
         let locationOfTouchInTextContainer = CGPoint(x: locationOfTouchInLabel.x - textContainerOffset.x,
                                                      y: locationOfTouchInLabel.y - textContainerOffset.y);
