@@ -3,7 +3,7 @@
 import UIKit
 
 public extension UIResponder {
-
+    
     /// This method transverses the responder chain to find an element
     /// conforming to the generic constraint `T`. For example, say you
     /// have `protocol Foo { func bar(_: Int) } `, you could,
@@ -13,7 +13,7 @@ public extension UIResponder {
         guard let responder = self.next else {
             return nil
         }
-
+        
         return (responder as? T) ?? responder.next()
     }
 }
