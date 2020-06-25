@@ -12,7 +12,7 @@ extension UIStackView {
         let dummyView = StackSpacingView(subview: subview, layoutMargins: layoutMargins)
         addArrangedSubview(dummyView)
     }
-
+    
     @objc(bsw_removeAllArrangedSubviews)
     public func removeAllArrangedSubviews() {
         arrangedSubviews.forEach {
@@ -20,7 +20,7 @@ extension UIStackView {
             $0.removeFromSuperview()
         }
     }
-
+    
     @objc(BSWStackSpacingView)
     private class StackSpacingView: UIView {
         
@@ -39,13 +39,13 @@ extension UIStackView {
                 subview.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor),
                 subview.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
                 subview.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
-                ])
+            ])
             
             hiddenObserver = subview.observe(\.isHidden, changeHandler: { [weak self] (view, _) in
                 self?.isHidden = view.isHidden
-                })
+            })
         }
-
+        
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
