@@ -1,7 +1,7 @@
 
-import UIKit
-
 #if canImport(UIKit)
+
+import UIKit
 
 /// Saner implementation of `UISplitViewController` that manages navigation stacks for you.
 /// To set a detail VC, call `showDetailViewController()` from any contained
