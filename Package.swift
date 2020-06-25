@@ -1,10 +1,11 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "BSWInterfaceKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v11),
         .macOS(.v10_15),
@@ -31,7 +32,8 @@ let package = Package(
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
-            dependencies: ["BSWInterfaceKit", "SnapshotTesting"]
+            dependencies: ["BSWInterfaceKit", "SnapshotTesting"],
+            exclude: ["Suite/__Snapshots__/"]
         ),
     ]
 )
