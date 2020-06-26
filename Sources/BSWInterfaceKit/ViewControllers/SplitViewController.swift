@@ -149,6 +149,11 @@ public extension UIViewController {
     var bswSplitViewController: SplitViewController? {
         return (next() as SplitViewController?)
     }
+    
+    var isContainedInSplitView: Bool {
+        guard let _ = self.bswSplitViewController else { return false }
+        return true
+    }
 }
 
 #endif
