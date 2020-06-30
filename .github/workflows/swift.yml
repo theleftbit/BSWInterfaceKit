@@ -1,0 +1,14 @@
+name: Swift
+
+on:
+  push
+  
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Unit Tests
+      run: bundle exec fastlane unit_tests
