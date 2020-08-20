@@ -7,9 +7,23 @@
 
 import UIKit
 
-extension Collection where Iterator.Element : NSAttributedString {
+public enum AttributedStringSpacing {
+    case simple
+    case double
+    
+    fileprivate var attString: NSAttributedString {
+        switch self {
+        case .simple:
+            return NSAttributedString(string: "\n")
+        case .double:
+            return NSAttributedString(string: "\n\n")
+        }
+    }
+}
 
-    func joinedStrings() -> NSAttributedString {
+public extension Collection where Iterator.Element : NSAttributedString {
+    
+    func joinedStrings(spacing: AttributedStringSpacing = .simple) -> NSAttributedString {
         
         //This makes me puke, but hey, choose your battles
 
@@ -17,7 +31,7 @@ extension Collection where Iterator.Element : NSAttributedString {
 
         self.forEach { (string) in
             if let extraDetailsString_ = extraDetailsString {
-                let sumString = extraDetailsString_ + NSAttributedString(string: "\n") + string
+                let sumString = extraDetailsString_ + spacing.attString + string
                 extraDetailsString = sumString.mutableCopy() as? NSMutableAttributedString
             } else {
                 extraDetailsString = string.mutableCopy() as? NSMutableAttributedString
