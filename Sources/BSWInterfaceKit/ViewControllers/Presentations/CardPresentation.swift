@@ -35,7 +35,6 @@ public enum CardPresentation {
     public struct AnimationProperties {
         public let kind: Kind
         public let animationDuration: TimeInterval
-        public let presentationInsideSafeArea: Bool
         public let backgroundColor: UIColor
         public let shouldAnimateNewVCAlpha: Bool
         public let overridenTraits: UITraitCollection?
@@ -56,10 +55,9 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
-            self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
             self.overridenTraits = overridenTraits
@@ -140,59 +138,38 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         /// Override size classes if required
         toViewController.presentationController?.overrideTraitCollection = properties.overridenTraits
-        
-        /// Calculate the height of the new VC to prepare animate it
-        let toVCHeight: CGFloat = {
-            switch cardHeight {
-            case .fixed(let height): return height
-            case .intrinsicHeight:
-                guard let intrinsicSizeCalculable = toViewController as? IntrinsicSizeCalculable else {
-                    fatalError()
-                }
-                return intrinsicSizeCalculable.heightConstrainedTo(width: containerView.frame.width)
-            }
-        }()
-        
-        /// Prepare Constraints
-        let anchorConstraint: NSLayoutConstraint = {
-            switch (position) {
-            case .bottom:
-                return toViewController.view.topAnchor.constraint(equalTo: containerView.bottomAnchor)
-            case .top:
-                return containerView.topAnchor.constraint(equalTo: toViewController.view.bottomAnchor)
-            }
-        }()
+            
+        /// Pin to the bottom
         NSLayoutConstraint.activate([
             toViewController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             toViewController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            anchorConstraint
+            toViewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
         ])
-                
-        /// Store this constraint somewhere so we can get it later
-        bgView.anchorConstraint = anchorConstraint
         
-        toViewController.view.alpha = properties.shouldAnimateNewVCAlpha ? 0.0 : 1.0
-        bgView.alpha = 0.0
+        /// If it's a fixed height, add that constraint
+        switch cardHeight {
+        case .fixed(let height):
+            toViewController.view.heightAnchor.constraint(equalToConstant: height).isActive = true
+        case .intrinsicHeight:
+            break
+        }
+
+        /// Perform the first layout pass
         containerView.layoutIfNeeded()
 
-        /// This is the change that animates this from the bottom
-        let extraPadding: CGFloat = {
-            guard properties.presentationInsideSafeArea else {
-                return 0
-            }
-            switch position {
-            case .top:
-                return fromViewController.view.safeAreaInsets.top
-            case .bottom:
-                return fromViewController.view.safeAreaInsets.bottom
-            }
-        }()
-        anchorConstraint.constant = -(toVCHeight + extraPadding)
+        /// Now move this view offscreen
+        let distanceToMove = toViewController.view.frame.height
+        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMove)
+        toViewController.view.transform = offScreenTransform
         
-        /// Start slide up animation
+        /// Prepare the alpha animation
+        toViewController.view.alpha = properties.shouldAnimateNewVCAlpha ? 0.0 : 1.0
+        bgView.alpha = 0.0
+
+        /// And bring it back on screen
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1.0) {
-            containerView.layoutIfNeeded()
-            toViewController.view.alpha = 1.0
+            toViewController.view.transform = .identity
+            toViewController.view.alpha = 1
             bgView.alpha = 1.0
         }
         animator.addCompletion { (position) in
@@ -213,6 +190,7 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
     }
 
     // MARK: UIViewControllerAnimatedTransitioning
+    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return properties.animationDuration
     }
@@ -223,12 +201,14 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
         guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView else { fatalError() }
 
-        bgView.anchorConstraint.constant = 0
+        let distanceToMove = fromViewController.view.frame.height
+        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMove)
 
-        //Start slide up animation
+        /// And bring it off screen
         let animator = UIViewPropertyAnimator(duration: properties.animationDuration, dampingRatio: 1.0) {
-            containerView.layoutIfNeeded()
-            bgView.alpha = 0.0
+            fromViewController.view.transform = offScreenTransform
+            fromViewController.view.alpha = self.properties.shouldAnimateNewVCAlpha ? 1 : 0
+            bgView.alpha = 0
         }
         animator.addCompletion { (position) in
             guard position == .end else { return }
