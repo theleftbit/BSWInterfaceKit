@@ -12,7 +12,6 @@ class PresentationBackgroundView: UIView {
     weak var singleFingerTap: UITapGestureRecognizer?
     
     // Context Properties for CardPresentation
-    weak var anchorConstraint: NSLayoutConstraint!
     var position: CardPresentation.AnimationProperties.Position!
     
     override init(frame aRect: CGRect) {
