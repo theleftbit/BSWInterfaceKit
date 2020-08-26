@@ -35,7 +35,6 @@ public enum CardPresentation {
     public struct AnimationProperties {
         public let kind: Kind
         public let animationDuration: TimeInterval
-        public let presentationInsideSafeArea: Bool
         public let backgroundColor: UIColor
         public let shouldAnimateNewVCAlpha: Bool
         public let overridenTraits: UITraitCollection?
@@ -56,10 +55,9 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
-            self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
             self.overridenTraits = overridenTraits
