@@ -39,7 +39,8 @@ public enum CardPresentation {
         public let shouldAnimateNewVCAlpha: Bool
         public let overridenTraits: UITraitCollection?
         public let roundCornerRadius: CGFloat?
-        
+        public let initialYOffset: CGFloat?
+
         public enum CardHeight { // swiftlint:disable:this nesting
             case fixed(CGFloat)
             case intrinsicHeight
@@ -55,13 +56,14 @@ public enum CardPresentation {
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil, initialYOffset: CGFloat? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
             self.overridenTraits = overridenTraits
             self.roundCornerRadius = roundCornerRadius
+            self.initialYOffset = initialYOffset
         }
     }
 
@@ -168,7 +170,13 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         /// And bring it back on screen
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1.0) {
-            toViewController.view.transform = .identity
+            toViewController.view.transform = {
+                if let offset = self.properties.initialYOffset {
+                    return CGAffineTransform(translationX: 0, y: offset)
+                } else {
+                    return .identity
+                }
+            }()
             toViewController.view.alpha = 1
             bgView.alpha = 1.0
         }
