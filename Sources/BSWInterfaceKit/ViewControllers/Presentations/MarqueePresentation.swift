@@ -80,7 +80,7 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
         
         // Add background view
         let bgView = PresentationBackgroundView(frame: containerView.bounds)
-        bgView.parentViewController = toViewController
+        bgView.context = .init(parentViewController: toViewController, position: nil, offset: nil) 
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
         

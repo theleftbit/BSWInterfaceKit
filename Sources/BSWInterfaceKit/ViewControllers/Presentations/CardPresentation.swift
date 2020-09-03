@@ -32,33 +32,50 @@ public enum CardPresentation {
     /**
      These are the properties you can edit of the card-like modal presentation.
      */
-    public struct AnimationProperties {
+    public struct AnimationProperties: Equatable {
+        /// The Kind of this animation
         public let kind: Kind
+        
+        /// The duration of this animation
         public let animationDuration: TimeInterval
+        
+        /// If true, the presented VC will be layout inside the safeArea of the presenting VC
+        public let presentationInsideSafeArea: Bool
+        
+        /// The background color for the view below the presented VC
         public let backgroundColor: UIColor
+        
+        /// If true, the alpha of the VC will be animated from 0 to 1
         public let shouldAnimateNewVCAlpha: Bool
+        
+        /// Any traits to set to the presented VC
         public let overridenTraits: UITraitCollection?
+        
+        /// The corner radius for the presented VC
         public let roundCornerRadius: CGFloat?
+        
+        /// Any additional offset to add to the presentation
         public let initialYOffset: CGFloat?
 
-        public enum CardHeight { // swiftlint:disable:this nesting
+        public enum CardHeight: Equatable { // swiftlint:disable:this nesting
             case fixed(CGFloat)
             case intrinsicHeight
         }
 
-        public enum Position { // swiftlint:disable:this nesting
+        public enum Position: Equatable { // swiftlint:disable:this nesting
             case top
             case bottom
         }
 
-        public enum Kind { // swiftlint:disable:this nesting
+        public enum Kind: Equatable { // swiftlint:disable:this nesting
             case dismissal
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
 
-        public init(kind: Kind, animationDuration: TimeInterval = 0.6, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil, initialYOffset: CGFloat? = nil) {
+        public init(kind: Kind, animationDuration: TimeInterval = 0.6, presentationInsideSafeArea: Bool = false, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), shouldAnimateNewVCAlpha: Bool = true, overridenTraits: UITraitCollection? = nil, roundCornerRadius: CGFloat? = nil, initialYOffset: CGFloat? = nil) {
             self.kind = kind
             self.animationDuration = animationDuration
+            self.presentationInsideSafeArea = presentationInsideSafeArea
             self.backgroundColor = backgroundColor
             self.shouldAnimateNewVCAlpha = shouldAnimateNewVCAlpha
             self.overridenTraits = overridenTraits
@@ -122,15 +139,24 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         let containerView = transitionContext.containerView
         let duration = self.transitionDuration(using: transitionContext)
+        let safeAreaOffset: CGFloat = {
+             guard properties.presentationInsideSafeArea else {
+                 return 0
+             }
+             switch position {
+             case .top:
+                 return fromViewController.view.safeAreaInsets.top
+             case .bottom:
+                 return fromViewController.view.safeAreaInsets.bottom
+             }
+         }()
 
         /// Add background view
         let bgView = PresentationBackgroundView(frame: containerView.bounds)
         bgView.backgroundColor = properties.backgroundColor
-        bgView.position = position
-        bgView.parentViewController = toViewController
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
-
+        bgView.context = .init(parentViewController: toViewController, position: position, offset: safeAreaOffset)
         if let radius = properties.roundCornerRadius {
             toViewController.view.roundCorners(radius: radius)
         }
@@ -141,11 +167,19 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         /// Override size classes if required
         toViewController.presentationController?.overrideTraitCollection = properties.overridenTraits
             
-        /// Pin to the bottom
+        /// Pin to the bottom or top
+        let anchorConstraint: NSLayoutConstraint = {
+             switch (position) {
+             case .bottom:
+                 return toViewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: safeAreaOffset)
+             case .top:
+                 return toViewController.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: safeAreaOffset)
+             }
+         }()
         NSLayoutConstraint.activate([
             toViewController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             toViewController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            toViewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            anchorConstraint,
         ])
         
         /// If it's a fixed height, add that constraint
@@ -160,8 +194,9 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         containerView.layoutIfNeeded()
 
         /// Now move this view offscreen
-        let distanceToMove = toViewController.view.frame.height
-        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMove)
+        let distanceToMove = toViewController.view.frame.height + safeAreaOffset
+        let distanceToMoveWithPosition = (position == .bottom) ? distanceToMove : -distanceToMove
+        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMoveWithPosition)
         toViewController.view.transform = offScreenTransform
         
         /// Prepare the alpha animation
@@ -207,15 +242,16 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
         let containerView = transitionContext.containerView
 
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
-        guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView else { fatalError() }
-
-        let distanceToMove = fromViewController.view.frame.height
-        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMove)
+        guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView, let context = bgView.context else { fatalError() }
+        
+        let distanceToMove = fromViewController.view.frame.height + (context.offset ?? 0)
+        let distanceToMoveWithPosition = (context.position == .bottom) ? distanceToMove : -distanceToMove
+        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMoveWithPosition)
 
         /// And bring it off screen
         let animator = UIViewPropertyAnimator(duration: properties.animationDuration, dampingRatio: 1.0) {
             fromViewController.view.transform = offScreenTransform
-            fromViewController.view.alpha = self.properties.shouldAnimateNewVCAlpha ? 1 : 0
+            fromViewController.view.alpha = self.properties.shouldAnimateNewVCAlpha ? 0 : 1
             bgView.alpha = 0
         }
         animator.addCompletion { (position) in
