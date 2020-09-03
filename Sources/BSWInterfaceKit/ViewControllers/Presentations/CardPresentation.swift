@@ -33,13 +33,28 @@ public enum CardPresentation {
      These are the properties you can edit of the card-like modal presentation.
      */
     public struct AnimationProperties: Equatable {
+        /// The Kind of this animation
         public let kind: Kind
+        
+        /// The duration of this animation
         public let animationDuration: TimeInterval
+        
+        /// If true, the presented VC will be layout inside the safeArea of the presenting VC
         public let presentationInsideSafeArea: Bool
+        
+        /// The background color for the view below the presented VC
         public let backgroundColor: UIColor
+        
+        /// If true, the alpha of the VC will be animated from 0 to 1
         public let shouldAnimateNewVCAlpha: Bool
+        
+        /// Any traits to set to the presented VC
         public let overridenTraits: UITraitCollection?
+        
+        /// The corner radius for the presented VC
         public let roundCornerRadius: CGFloat?
+        
+        /// Any additional offset to add to the presentation
         public let initialYOffset: CGFloat?
 
         public enum CardHeight: Equatable { // swiftlint:disable:this nesting
