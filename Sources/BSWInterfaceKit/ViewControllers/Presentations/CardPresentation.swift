@@ -32,7 +32,7 @@ public enum CardPresentation {
     /**
      These are the properties you can edit of the card-like modal presentation.
      */
-    public struct AnimationProperties {
+    public struct AnimationProperties: Equatable {
         public let kind: Kind
         public let animationDuration: TimeInterval
         public let backgroundColor: UIColor
@@ -41,17 +41,17 @@ public enum CardPresentation {
         public let roundCornerRadius: CGFloat?
         public let initialYOffset: CGFloat?
 
-        public enum CardHeight { // swiftlint:disable:this nesting
+        public enum CardHeight: Equatable { // swiftlint:disable:this nesting
             case fixed(CGFloat)
             case intrinsicHeight
         }
 
-        public enum Position { // swiftlint:disable:this nesting
+        public enum Position: Equatable { // swiftlint:disable:this nesting
             case top
             case bottom
         }
 
-        public enum Kind { // swiftlint:disable:this nesting
+        public enum Kind: Equatable { // swiftlint:disable:this nesting
             case dismissal
             case presentation(cardHeight: CardHeight = .intrinsicHeight, position: Position = .bottom)
         }
@@ -141,11 +141,19 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         /// Override size classes if required
         toViewController.presentationController?.overrideTraitCollection = properties.overridenTraits
             
-        /// Pin to the bottom
+        /// Pin to the bottom or top
+        let anchorConstraint: NSLayoutConstraint = {
+             switch (position) {
+             case .bottom:
+                 return toViewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+             case .top:
+                 return toViewController.view.topAnchor.constraint(equalTo: containerView.topAnchor)
+             }
+         }()
         NSLayoutConstraint.activate([
             toViewController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             toViewController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            toViewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            anchorConstraint,
         ])
         
         /// If it's a fixed height, add that constraint
@@ -161,7 +169,8 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
 
         /// Now move this view offscreen
         let distanceToMove = toViewController.view.frame.height
-        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMove)
+        let distanceToMoveWithPosition = (position == .bottom) ? distanceToMove : -distanceToMove
+        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMoveWithPosition)
         toViewController.view.transform = offScreenTransform
         
         /// Prepare the alpha animation
@@ -207,10 +216,11 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
         let containerView = transitionContext.containerView
 
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
-        guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView else { fatalError() }
-
+        guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) as? PresentationBackgroundView, let position = bgView.position else { fatalError() }
+        
         let distanceToMove = fromViewController.view.frame.height
-        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMove)
+        let distanceToMoveWithPosition = (position == .bottom) ? distanceToMove : -distanceToMove
+        let offScreenTransform = CGAffineTransform(translationX: 0, y: distanceToMoveWithPosition)
 
         /// And bring it off screen
         let animator = UIViewPropertyAnimator(duration: properties.animationDuration, dampingRatio: 1.0) {
