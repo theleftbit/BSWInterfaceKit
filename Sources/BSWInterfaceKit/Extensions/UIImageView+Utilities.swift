@@ -29,9 +29,9 @@ extension UIImageView {
         }
     }
 
-    public func addBlurEffect() {
+    public func addBlurEffect(_ blurEffect: UIBlurEffect = UIBlurEffect(style: .dark)) {
         self.blurEffectView = {
-            let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+            let effectView = UIVisualEffectView(effect: blurEffect)
             self.addSubview(effectView)
             effectView.pinToSuperview()
             return effectView
