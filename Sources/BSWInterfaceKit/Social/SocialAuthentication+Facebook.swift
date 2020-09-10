@@ -1,7 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 23/02/2018.
 //
-#if os(iOS) && !targetEnvironment(macCatalyst)
+#if os(iOS)
 
 import UIKit
 
