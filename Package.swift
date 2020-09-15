@@ -7,7 +7,7 @@ let package = Package(
     name: "BSWInterfaceKit",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v11),
+        .iOS(.v12),
         .macOS(.v10_15),
         .tvOS(.v11)
     ],
