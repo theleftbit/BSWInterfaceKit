@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
           "branch": null,
-          "revision": "2fcc959a6c0dd00dfb66e9b27033e43e4fcc4221",
-          "version": "3.3.0"
+          "revision": "8aed96730259cf74c37ab849c2774beb58121d23",
+          "version": "4.0.0"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
         "state": {
           "branch": null,
-          "revision": "8d33ffd6f74b3bcfc99af759d4204c6395a3f918",
-          "version": "3.2.1"
+          "revision": "3d0ea2c0806791abcc5d7f0d9f62f1cfd4a7264d",
+          "version": "4.2.0"
         }
       },
       {
