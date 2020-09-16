@@ -11,20 +11,20 @@ import UIKit
 extension UIViewController {
     
     // MARK: - Loaders
-    public func showLoadingView(_ loadingView: UIView, animated: Bool = true, stateViewFrame: CGRect? = nil) {
-        self.addStateView(loadingView, animated: animated, stateViewFrame: stateViewFrame)
+    public func showLoadingView(_ loadingView: UIView, animated: Bool = true) {
+        self.addStateView(loadingView, animated: animated)
     }
     
     public func showLoader(stateViewFrame: CGRect? = nil, animated: Bool = true) {
-        self.showLoadingView(LoadingView(), animated: animated, stateViewFrame: stateViewFrame)
+        self.showLoadingView(LoadingView(), animated: animated)
     }
     
     public func hideLoader(stateViewFrame: CGRect? = nil, animated: Bool = true) {
         self.removeStateView(animated: animated)
     }
     
-    public func showErrorView(_ errorView: UIView, animated: Bool = true, stateViewFrame: CGRect? = nil) {
-        self.addStateView(errorView, animated: animated, stateViewFrame: stateViewFrame)
+    public func showErrorView(_ errorView: UIView, animated: Bool = true) {
+        self.addStateView(errorView, animated: animated)
     }
     
     public func showErrorMessage(_ message: String, error: Error, retryButton: ButtonConfiguration? = nil, animated: Bool = true, stateViewFrame: CGRect? = nil) {
@@ -48,7 +48,7 @@ extension UIViewController {
         self.removeStateView(animated: animated)
     }
     
-    private func addStateView(_ stateView: UIView, animated: Bool = true, stateViewFrame: CGRect?) {
+    private func addStateView(_ stateView: UIView, animated: Bool = true) {
         removeStateView(animated: animated)
         let stateVC = StateContainerViewController(
             stateView: stateView,
@@ -56,11 +56,7 @@ extension UIViewController {
         )
         addChild(stateVC)
         view.addSubview(stateVC.view)
-        if let _stateViewFrame = stateViewFrame {
-            stateVC.view.frame = _stateViewFrame
-        } else {
-            stateVC.view.pinToSuperview()
-        }
+        stateVC.view.pinToSuperviewLayoutMargins()
         stateVC.didMove(toParent: self)
         guard animated, let animator = StateContainerAppereance.transitionConfiguration?.animator else { return }
         stateVC.view.alpha = 0
