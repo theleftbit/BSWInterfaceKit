@@ -2,22 +2,23 @@
 //  Created by Pierluigi Cifani on 22/02/2018.
 //
 
- #if os(iOS) && !targetEnvironment(macCatalyst)
+ #if os(iOS)
 
 import UIKit
 import SafariServices
 import Deferred
 import Task
-
+import AuthenticationServices
+ 
 public protocol SocialAuthenticationCredentials {
     func createURLRequest(isSafariVC: Bool) -> URL
     func extractResponseFrom(URLCallback: URL) -> SocialAuthenticationManager.LoginResponse?
 }
 
-public class SocialAuthenticationManager {
+ public class SocialAuthenticationManager {
 
     static public let manager = SocialAuthenticationManager()
-    private var authSession: SFAuthenticationSession?
+    private var authSession: ASWebAuthenticationSession?
 
     public struct LoginResponse {
         public let authToken: String
@@ -49,7 +50,7 @@ public class SocialAuthenticationManager {
             return Task(deferred)
         }
 
-        let authSession = SFAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
+        let authSession = ASWebAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
             defer { self.authSession = nil }
             guard error == nil else {
                 deferred.fill(with: .failure(error!))
@@ -71,7 +72,7 @@ public class SocialAuthenticationManager {
     }
 }
 
-extension SocialAuthenticationManager {
+ extension SocialAuthenticationManager {
 
     public enum SocialAuthenticationError: Swift.Error {
         case unknownResponse

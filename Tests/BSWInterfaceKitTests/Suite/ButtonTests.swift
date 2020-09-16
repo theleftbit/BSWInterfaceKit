@@ -34,14 +34,14 @@ class ButtonTests: BSWSnapshotTest {
     }
 
     func testImageTitleButton() {
-        let title = NSAttributedString(string: "Click Me")
+        let title = TextStyler.styler.attributedString("Click Me", color: UIColor.black, forStyle: .body)
         let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
 
     func testRightImageTitleButton() {
-        let title = NSAttributedString(string: "Click Me")
+        let title = TextStyler.styler.attributedString("Click Me", color: UIColor.black, forStyle: .body)
         let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
         button.setPrefersImageOnTheRight()
         button.imageEdgeInsets = [.left : 10]

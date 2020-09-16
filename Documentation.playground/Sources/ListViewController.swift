@@ -1,16 +1,12 @@
-//
-//  Created by Pierluigi Cifani on 06/09/2019.
-//  Copyright © 2019 The Left Bit. All rights reserved.
-//
-
-import Foundation
 import UIKit
+import BSWInterfaceKit
+import Task
 
-class TableViewController: UITableViewController {
+public class ListViewController: UITableViewController {
     
-    enum Factory {
-        static func viewController() -> UIViewController {
-            return BottomContainerViewController(containedViewController: TableViewController(style: .plain), bottomViewController: AddToCartViewController())
+    public enum Factory {
+        public static func viewController() -> UIViewController {
+            return BottomContainerViewController(containedViewController: ListViewController(style: .plain), bottomViewController: AddToCartViewController())
         }
     }
 
@@ -34,15 +30,7 @@ class TableViewController: UITableViewController {
     }
 }
 
-//
-//  Created by Pierluigi Cifani on 06/09/2019.
-//  Copyright © 2019 The Left Bit. All rights reserved.
-//
-
-import UIKit
-import BSWInterfaceKit
-
-extension TableViewController {
+extension ListViewController {
 
     class AddToCartViewController: UIViewController {
         
@@ -51,7 +39,7 @@ extension TableViewController {
             b.heightAnchor.constraint(equalToConstant: 40).isActive
                 = true
             b.backgroundColor = UIColor.systemBlue
-            b.setTitle("Fuck Me", for: .normal)
+            b.setTitle("Add to Cart", for: .normal)
             return b
         }()
         
@@ -68,3 +56,5 @@ extension TableViewController {
         }
     }
 }
+
+

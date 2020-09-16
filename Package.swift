@@ -1,12 +1,13 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "BSWInterfaceKit",
+    defaultLocalization: "en",
     platforms: [
-        .iOS(.v11),
+        .iOS(.v12),
         .macOS(.v10_15),
         .tvOS(.v11)
     ],
@@ -18,7 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.7.2"),
+        .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.1"),
         .package(url: "https://github.com/theleftbit/Deferred.git", from: "4.2.0"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "3.3.0"),
         .package(url: "https://github.com/kean/Nuke.git", .exact("8.4.1")),
@@ -31,7 +32,8 @@ let package = Package(
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
-            dependencies: ["BSWInterfaceKit", "SnapshotTesting"]
+            dependencies: ["BSWInterfaceKit", "SnapshotTesting"],
+            exclude: ["Suite/__Snapshots__/"]
         ),
     ]
 )
