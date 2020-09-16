@@ -5,7 +5,6 @@ import PackageDescription
 
 let package = Package(
     name: "BSWInterfaceKit",
-    defaultLocalization: "en",
     platforms: [
         .iOS(.v12),
         .macOS(.v10_15),

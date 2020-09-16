@@ -76,7 +76,7 @@ public extension UIImage {
         if #available(iOS 13.0, tvOS 13.0, *) {
             return UIImage(systemName: name, compatibleWith: compatibleWithTraitCollection)
         } else {
-            let bundle = Bundle.module
+            let bundle = Bundle.main
             return UIImage(named: name, in: bundle, compatibleWith: compatibleWithTraitCollection)
         }
     }
