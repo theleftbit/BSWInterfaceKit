@@ -6,6 +6,7 @@
 
 import UIKit
 
+@available(iOS, introduced: 12, deprecated: 14, message: "Please use Compositional Layout instead")
 open class ColumnFlowLayout: UICollectionViewLayout {
     
     // These are used to create a factory cell to calculate the size.

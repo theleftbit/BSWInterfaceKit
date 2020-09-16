@@ -11,7 +11,7 @@ import XCTest
 
 class LocalizableTests: XCTestCase {
 
-    func _testLocalizationWorks() {
+    func testLocalizationWorks() {
         XCTAssert("add-photo-title".localized != "add-photo-title")
         XCTAssert("lastname-placeholder".localized != "lastname-placeholder")
     }
