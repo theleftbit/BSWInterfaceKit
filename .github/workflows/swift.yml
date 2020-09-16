@@ -11,4 +11,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Unit Tests
-      run: xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKit -destination 'platform=iOS Simulator,name=iPhone 11,OS=13.6' | xcpretty
+      run: xcodebuild test -workspace BSWInterfaceKit.xcworkspace -scheme BSWInterfaceKit -destination 'platform=iOS Simulator,name=iPhone 11,OS=14.0' | xcpretty
