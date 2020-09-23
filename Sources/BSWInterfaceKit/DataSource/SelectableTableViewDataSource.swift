@@ -126,6 +126,10 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     
     //MARK: UITableViewDelegate
         
+    public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+         return configuration.shouldSelectItemAtIndexPath(indexPath)
+    }
+    
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         dataStore.select(atIndex: indexPath.row)
 
