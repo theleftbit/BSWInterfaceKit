@@ -11,11 +11,18 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     public struct Configuration {
         let shouldSelectItemAtIndexPath: (IndexPath) -> Bool
         let didSelectItemAtIndexPath: (IndexPath) -> ()
+        let sectionHeader: () -> (UIView?)
         let sectionFooter: () -> (UIView?)
 
-        public init(shouldSelectItemAtIndexPath: @escaping (IndexPath) -> Bool = { _ in return true }, didSelectItemAtIndexPath: @escaping (IndexPath) -> () = { _ in }, sectionFooter: @escaping () -> (UIView?) = { nil } ) {
+        public init(
+            shouldSelectItemAtIndexPath: @escaping (IndexPath) -> Bool = { _ in return true },
+            didSelectItemAtIndexPath: @escaping (IndexPath) -> () = { _ in },
+            sectionHeader: @escaping () -> (UIView?) = { nil },
+            sectionFooter: @escaping () -> (UIView?) = { nil }) {
+            
             self.shouldSelectItemAtIndexPath = shouldSelectItemAtIndexPath
             self.didSelectItemAtIndexPath = didSelectItemAtIndexPath
+            self.sectionHeader = sectionHeader
             self.sectionFooter = sectionFooter
         }
     }
@@ -94,12 +101,24 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
         return true
     }
     
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if let _ = configuration.sectionHeader() {
+            return UITableView.automaticDimension
+        } else {
+            return 0
+        }
+    }
+    
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if let _ = configuration.sectionFooter() {
             return UITableView.automaticDimension
         } else {
             return 0
         }
+    }
+    
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return configuration.sectionHeader()
     }
 
     public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
