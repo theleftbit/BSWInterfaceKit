@@ -70,8 +70,11 @@ public extension NSAttributedString {
             if let userRange = range { return userRange }
             else { return NSRange(location: 0, length: string.length) }
         }()
-        string.removeAttribute(.font, range: range)
-        string.addAttribute(.font, value: newFont, range: range)
+        string.enumerateAttributes(in: range, options: .longestEffectiveRangeNotRequired) { (value, range, _) in
+            guard let font = value[NSAttributedString.Key.font] as? UIFont else { return }
+            let finalNewFont = font.isBold ? newFont.bolded() : newFont
+            string.addAttribute(.font, value: finalNewFont, range: range)
+        }
         return string
     }
 
@@ -98,7 +101,7 @@ public extension NSAttributedString {
         guard let font = self.attributes(at: 0, longestEffectiveRange: nil, in: nsRange)[.font] as? UIFont else {
             return self
         }
-        return modifyingFont(font.bolded, range: nsRange)
+        return modifyingFont(font.bolded(), range: nsRange)
     }
     
     func settingKern(_ kern: CGFloat) -> NSAttributedString {
