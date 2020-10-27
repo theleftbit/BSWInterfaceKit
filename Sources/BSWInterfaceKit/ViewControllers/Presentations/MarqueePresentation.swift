@@ -13,18 +13,18 @@ public enum MarqueePresentation {
         public let animationDuration: TimeInterval
         public let kind: Kind
         public let roundCornerRadius: CGFloat?
-
+        
         public enum Kind { // swiftlint:disable:this nesting
             case dismissal
             case presentation
         }
-
+        
         public enum Sizing { // swiftlint:disable:this nesting
             case insetFromPresenter(UIEdgeInsets)
             case fixedSize(CGSize)
-            case constrainingWidth(CGFloat)
+            case constrainingWidth(CGFloat, offset: CGPoint? = nil)
         }
-
+        
         public init(sizing: Sizing = .constrainingWidth(300), animationDuration: TimeInterval = 0.6, kind: Kind, roundCornerRadius: CGFloat? = nil) {
             self.sizing = sizing
             self.animationDuration = animationDuration
@@ -85,8 +85,8 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
         containerView.addSubview(bgView)
         
         // Add VC's view
-        containerView.addSubview(toViewController.view)
         let vcView = toViewController.view!
+        containerView.addSubview(vcView)
         
         if let radius = self.properties.roundCornerRadius {
             vcView.roundCorners(radius: radius)
@@ -97,10 +97,10 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
             NSLayoutConstraint.activate([
                 vcView.widthAnchor.constraint(equalToConstant: size.width),
                 vcView.heightAnchor.constraint(equalToConstant: size.height),
-                ])
+            ])
         case .insetFromPresenter(let edges):
             vcView.pinToSuperview(withEdges: edges)
-        case .constrainingWidth(let width):
+        case .constrainingWidth(let width, let offset):
             
             guard let calculable = toViewController as? IntrinsicSizeCalculable else {
                 fatalError()
@@ -110,29 +110,31 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
             // This makes sure that the height of the
             // view fits in the current context
             let height = min(intrinsicHeight, containerView.bounds.height - 20)
-
-            vcView.centerInSuperview()
             NSLayoutConstraint.activate([
                 vcView.widthAnchor.constraint(equalToConstant: width),
                 vcView.heightAnchor.constraint(equalToConstant: height),
-                ])
+                vcView.centerXAnchor.constraint(equalTo: vcView.superview!.centerXAnchor, constant: offset?.x ?? 0),
+                vcView.centerYAnchor.constraint(equalTo: vcView.superview!.centerYAnchor, constant: offset?.y ?? 0)
+            ])
+            vcView.translatesAutoresizingMaskIntoConstraints = false
         }
         
         toViewController.view.alpha = 0.0
         bgView.alpha = 0.0
         
         //Start slide up animation
-        UIView.animate(withDuration: duration,
-                       delay: 0.0,
-                       usingSpringWithDamping: 1.0,
-                       initialSpringVelocity: 0.5 / 1.0,
-                       options: [],
-                       animations: {() -> Void in
-                        toViewController.view.alpha = 1.0
-                        bgView.alpha = 1.0
-        }, completion: {(_ finished: Bool) -> Void in
-            transitionContext.completeTransition(true)
-        })
+        UIView.animate(
+            withDuration: duration,
+            delay: 0.0,
+            usingSpringWithDamping: 1.0,
+            initialSpringVelocity: 0.5 / 1.0,
+            options: [],
+            animations: {() -> Void in
+                toViewController.view.alpha = 1.0
+                bgView.alpha = 1.0
+            }, completion: {(_ finished: Bool) -> Void in
+                transitionContext.completeTransition(true)
+            })
     }
 }
 
@@ -156,18 +158,19 @@ private class MarqueeDismissController: NSObject, UIViewControllerAnimatedTransi
         guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
         guard let bgView = containerView.subviews.first(where: { $0.tag == Constants.BackgroundViewTag}) else { return }
         
-        UIView.animate(withDuration: properties.animationDuration,
-                       delay: 0.0,
-                       usingSpringWithDamping: 1.0,
-                       initialSpringVelocity: 0.5 / 1.0,
-                       options: [],
-                       animations: {() -> Void in
-                        bgView.alpha = 0.0
-                        fromViewController.view.alpha = 0.0
-        }, completion: {(_ finished: Bool) -> Void in
-            fromViewController.view.removeFromSuperview()
-            transitionContext.completeTransition(true)
-        })
+        UIView.animate(
+            withDuration: properties.animationDuration,
+            delay: 0.0,
+            usingSpringWithDamping: 1.0,
+            initialSpringVelocity: 0.5 / 1.0,
+            options: [],
+            animations: {() -> Void in
+                bgView.alpha = 0.0
+                fromViewController.view.alpha = 0.0
+            }, completion: {(_ finished: Bool) -> Void in
+                fromViewController.view.removeFromSuperview()
+                transitionContext.completeTransition(true)
+            })
     }
 }
 
