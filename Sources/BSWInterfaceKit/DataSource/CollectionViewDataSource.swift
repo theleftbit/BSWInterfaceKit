@@ -75,7 +75,7 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
     public var reorderSupport: CollectionViewReorderSupport<Cell.VM>? {
         didSet {
             guard let _ = self.reorderSupport else { return }
-            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
+            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(a345678907654(gesture:)))
             self.collectionView.addGestureRecognizer(longPressGesture)
         }
     }
@@ -314,7 +314,9 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
         })
     }
     
-    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+    /// This used to be called `handleLongPress:` but Apple is being idiotic
+    /// More info: https://i.imgur.com/eX4JQL2.jpg
+    @objc private func a345678907654(gesture: UILongPressGestureRecognizer) {
         guard let collectionView = self.collectionView else { return }
         
         switch(gesture.state) {
