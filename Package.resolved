@@ -30,11 +30,11 @@
       },
       {
         "package": "Nuke",
-        "repositoryURL": "https://github.com/kean/Nuke.git",
+        "repositoryURL": "https://github.com/theleftbit/Nuke.git",
         "state": {
           "branch": null,
-          "revision": "6001489d22e5f41a4956c1b6cd4cf7cbe8f44dff",
-          "version": "8.4.1"
+          "revision": "aa25102389a8e81632b4d79bfe58469a85a8869d",
+          "version": "8.4.2"
         }
       },
       {
