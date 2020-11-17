@@ -7,9 +7,9 @@
 import UIKit
 import Nuke
 
-public struct Photo: Equatable, Hashable {
+public struct Photo {
     
-    public enum Kind: Equatable, Hashable {
+    public enum Kind {
         case url(Foundation.URL, placeholderImage: PlaceholderImage?)
         case image(UIImage)
         case empty
@@ -100,7 +100,7 @@ public extension Photo {
 }
 
 public extension Photo {
-    struct PlaceholderImage: Equatable, Hashable {
+    struct PlaceholderImage {
         public let image: UIImage
         public let preferredContentMode: UIView.ContentMode
         public init(image: UIImage, preferredContentMode: UIView.ContentMode) {
@@ -119,4 +119,8 @@ extension Photo {
         return [photo1, photo2, photo3, photo4]
     }
 }
+
+extension Photo: Equatable, Hashable {}
+extension Photo.Kind: Equatable, Hashable {}
+extension Photo.PlaceholderImage: Equatable, Hashable {}
 #endif
