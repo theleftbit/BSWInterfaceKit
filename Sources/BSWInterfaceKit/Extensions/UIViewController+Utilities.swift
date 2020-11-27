@@ -8,6 +8,9 @@ import UIKit
 
 extension UIViewController {
 
+    @objc(bsw_enhancedErrorAlertMessage)
+    public static var enhancedErrorAlertMessage: Bool = true
+
     // MARK: - Presenting Alerts
     @objc(bsw_showAlertWithMessage:)
     public func showAlert(_ message: String) {
@@ -19,19 +22,15 @@ extension UIViewController {
     public func showErrorAlert(_ message: String, error: Error) {
         
         let errorMessage: String = {
-            #if DEBUG
-            if let localizedError = error as? LocalizedError, let description = localizedError.errorDescription {
-                return "\(message): \(description) \n\n Error code: \(error)"
+            if UIViewController.enhancedErrorAlertMessage {
+                if let localizedError = error as? LocalizedError, let description = localizedError.errorDescription {
+                    return "\(message): \(description) \n\n Error code: \(error)"
+                } else {
+                    return "\(message) \n\n Error code: \(error.localizedDescription)"
+                }
             } else {
-                return "\(message) \n\n Error code: \(error.localizedDescription)"
+                return message
             }
-            #else
-            if let localizedError = error as? LocalizedError, let description = localizedError.errorDescription {
-                return "\(message): \(description)"
-            } else {
-                return "\(message)"
-            }
-            #endif
         }()
         
         let operation = PresentAlertOperation(title: "error".localized, message: errorMessage, presentingViewController: self)
