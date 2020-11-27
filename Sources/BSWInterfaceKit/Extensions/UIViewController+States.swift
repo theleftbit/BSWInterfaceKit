@@ -35,11 +35,13 @@ extension UIViewController {
     
     public func showErrorMessage(_ message: String, error: Error, retryButton: ButtonConfiguration? = nil, animated: Bool = true, stateViewFrame: CGRect? = nil) {
         
-        #if DEBUG
-        let errorMessage = "\(message) \nError code: \(error.localizedDescription)"
-        #else
-        let errorMessage = message
-        #endif
+        let errorMessage: String = {
+            if UIViewController.enhancedErrorAlertMessage {
+                return "\(message) \nError code: \(error.localizedDescription)"
+            } else {
+                return message
+            }
+        }()
         
         let styler = TextStyler.styler
         let errorView = ErrorView(
