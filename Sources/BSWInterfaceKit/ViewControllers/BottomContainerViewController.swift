@@ -62,11 +62,21 @@ open class BottomContainerViewController: UIViewController {
         addChild(buttonContainer)
         view.addAutolayoutSubview(buttonContainer.view)
 
+        let bottomConstraint: NSLayoutConstraint = {
+            /// There is this weird layout bug on iOS apps on macOS (as of 11.0.1)
+            /// where pinning this to the bottom and adding safe area in `viewDidLayoutSubviews`
+            /// leads to recursive layout, crashing the process. This ugly workaround seems to work.
+            if isiOSAppOnMac() {
+                return containedViewController.view.bottomAnchor.constraint(equalTo: buttonContainer.view.topAnchor)
+            } else {
+                return containedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            }
+        }()
         NSLayoutConstraint.activate([
             containedViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
             containedViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             containedViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            containedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bottomConstraint,
             buttonContainer.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonContainer.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             buttonContainer.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -77,6 +87,7 @@ open class BottomContainerViewController: UIViewController {
     
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        guard !isiOSAppOnMac() else { return }
         let safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame
         let inset = safeAreaFrame.intersection(buttonContainer.view.frame).height
         containedViewController.additionalSafeAreaInsets = [
