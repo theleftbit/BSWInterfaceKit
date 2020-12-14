@@ -27,7 +27,11 @@ public extension UIImage {
      - returns: The UIImage based on the template
      */
     static func templateImage(_ template: Template) -> UIImage {
-        return UIImage.interfaceKitImageNamed(template.rawValue)!
+        if #available(iOS 13.0, tvOS 13.0, *) {
+            return UIImage.interfaceKitImageNamed(template.rawValue)!
+        } else {
+            return UIImage()
+        }
     }
 
     /**
