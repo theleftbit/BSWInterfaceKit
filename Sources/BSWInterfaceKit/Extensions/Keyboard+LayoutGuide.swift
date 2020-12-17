@@ -23,8 +23,11 @@ public extension UIView {
     
     /// A layout guide representing the inset for the keyboard.
     /// Use this layout guide’s top anchor to create constraints pinning to the top of the keyboard.
-    var keyboardLayoutGuide: KeyboardLayoutGuide {
+    var keyboardLayoutGuide: UILayoutGuide {
         get {
+            #if targetEnvironment(macCatalyst)
+            return self.safeAreaLayoutGuide
+            #else
             if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
                 return obj
             }
@@ -33,10 +36,12 @@ public extension UIView {
             new.setUp()
             objc_setAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide, new as Any, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return new
+            #endif
         }
     }
 }
 
+@available(macCatalyst, unavailable)
 open class KeyboardLayoutGuide: UILayoutGuide {
     
     public required init?(coder aDecoder: NSCoder) {
@@ -109,6 +114,7 @@ extension UILayoutGuide {
 }
 
 extension Notification {
+    @available(macCatalyst, unavailable)
     var keyboardHeight: CGFloat? {
         guard let v = userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
             return nil
