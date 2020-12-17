@@ -3,6 +3,7 @@
 
 import UIKit
 
+@available(macCatalyst, unavailable)
 extension UIDevice {
     var hasNotch: Bool {
         let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0

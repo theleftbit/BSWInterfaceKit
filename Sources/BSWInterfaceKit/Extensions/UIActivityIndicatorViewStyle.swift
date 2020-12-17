@@ -7,9 +7,11 @@ import UIKit
 
 public extension UIActivityIndicatorView.Style {
     static var defaultStyle: UIActivityIndicatorView.Style {
-        #if os(iOS)
-        return .gray
-        #endif
+        if #available(iOS 13.0, *) {
+            return .medium
+        } else {
+            return .gray
+        }
         #if os(tvOS)
         return .whiteLarge
         #endif
