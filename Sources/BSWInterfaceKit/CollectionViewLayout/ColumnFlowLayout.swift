@@ -80,7 +80,10 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         let numberOfColumns = Int(availableWidth / columnWidth)
         let cellWidth = (availableWidth - CGFloat(numberOfColumns - 1)*itemSpacing)/CGFloat(numberOfColumns)
         let numberOfItems = cv.numberOfItems(inSection: 0)
-
+        guard numberOfColumns > 0 else {
+            /// The `availableWidth` is lower than the `minColumnWidth`, giving up
+            return
+        }
         // Figure out where each column starts in X
         let xOffset: [CGFloat] = {
             var offsets: [CGFloat] = []
