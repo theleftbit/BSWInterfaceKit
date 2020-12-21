@@ -11,25 +11,17 @@ import AVFoundation
 import Task
 import Deferred
 import Photos
+import UniformTypeIdentifiers
 
 public typealias MediaHandler = ((URL?) -> Void)
 
 @available(tvOS, unavailable)
-final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     public enum Kind {
         case photo
         case video
         case thumbnail(CGSize)
-
-        func toUIKit() -> UIImagePickerController.CameraCaptureMode {
-            switch self {
-            case .photo, .thumbnail:
-                return .photo
-            case .video:
-                return .video
-            }
-        }
         
         func pathExtension() -> String {
             switch self {
@@ -39,18 +31,33 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
                 return "mov"
             }
         }
+        
+        @available(iOS 14.0, *)
+        var contentTypes: [UTType] {
+            switch self {
+            case .photo, .thumbnail:
+                return [UTType.image, UTType.jpeg, UTType.png]
+            case .video:
+                return [UTType.movie, UTType.video, UTType.quickTimeMovie]
+            }
+        }
     }
     
     public enum Source {
         case photoAlbum
         case camera
         
-        func toUIKit() -> UIImagePickerController.SourceType {
+        @available(iOS 14, *)
+        case filesApp
+        
+        var imagePickerSource: UIImagePickerController.SourceType {
             switch self {
             case .camera:
                 return .camera
             case .photoAlbum:
                 return .photoLibrary
+            case .filesApp:
+                fatalError()
             }
         }
     }
@@ -83,29 +90,15 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
             return nil
         }
         
-        guard UIImagePickerController.isSourceTypeAvailable(source.toUIKit()) else {
-            handler(nil)
-            return nil
+        switch source {
+        case .filesApp:
+            guard #available(iOS 14.0, *) else { fatalError() }
+            return handleRequestWithFilesApp(kind: kind, source: source, handler: handler)
+        case .camera, .photoAlbum:
+            return handleRequestWithImagePicker(kind: kind, source: source, handler: handler)
         }
-
-        self.currentRequest = Request(handler: handler, kind: kind)
-        
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = source.toUIKit()
-        if source == .camera {
-            imagePicker.cameraDevice = .front
-        }
-        imagePicker.delegate = self
-        switch kind {
-        case .video:
-            imagePicker.mediaTypes = [kUTTypeMovie as String]
-        case .photo, .thumbnail:
-            imagePicker.mediaTypes = [kUTTypeImage as String]
-        }
-        
-        return imagePicker
     }
-    
+
     public func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
         let deferred = Deferred<Task<URL>.Result>()
 
@@ -130,7 +123,22 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
         
         return Task(deferred)
     }
+
+    // MARK: UIDocumentPickerDelegate
     
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        defer {
+            self.currentRequest = nil
+        }
+        guard let currentRequest = self.currentRequest, let url = urls.first else { return }
+        currentRequest.handler(url)
+    }
+
+    public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        currentRequest?.handler(nil)
+        currentRequest = nil
+    }
+
     // MARK: UIImagePickerControllerDelegate
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -169,6 +177,39 @@ final public class MediaPickerBehavior: NSObject, UIImagePickerControllerDelegat
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         currentRequest?.handler(nil)
         currentRequest = nil
+    }
+
+    @available(iOS 14.0, *)
+    private func handleRequestWithFilesApp(kind: Kind, source: Source, handler: @escaping MediaHandler) -> UIViewController? {
+        let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: false)
+        vc.delegate = self
+        vc.allowsMultipleSelection = false
+        self.currentRequest = Request(handler: handler, kind: kind)
+        return vc
+    }
+    
+    private func handleRequestWithImagePicker(kind: Kind, source: Source, handler: @escaping MediaHandler) -> UIViewController? {
+        guard UIImagePickerController.isSourceTypeAvailable(source.imagePickerSource) else {
+            handler(nil)
+            return nil
+        }
+
+        self.currentRequest = Request(handler: handler, kind: kind)
+        
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = source.imagePickerSource
+        if source == .camera {
+            imagePicker.cameraDevice = .front
+        }
+        imagePicker.delegate = self
+        switch kind {
+        case .video:
+            imagePicker.mediaTypes = [kUTTypeMovie as String]
+        case .photo, .thumbnail:
+            imagePicker.mediaTypes = [kUTTypeImage as String]
+        }
+        
+        return imagePicker
     }
     
     private func cachePathForMedia(_ kind: Kind) -> URL {
