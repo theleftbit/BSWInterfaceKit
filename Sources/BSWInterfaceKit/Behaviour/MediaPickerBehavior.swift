@@ -181,7 +181,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
 
     @available(iOS 14.0, *)
     private func handleRequestWithFilesApp(kind: Kind, source: Source, handler: @escaping MediaHandler) -> UIViewController? {
-        let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: false)
+        let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: true)
         vc.delegate = self
         vc.allowsMultipleSelection = false
         self.currentRequest = Request(handler: handler, kind: kind)
