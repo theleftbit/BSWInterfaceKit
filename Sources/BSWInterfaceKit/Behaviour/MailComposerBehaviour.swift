@@ -12,13 +12,15 @@ import MessageUI
 final public class MessageComposerBehavior: NSObject, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate {
     public static let composer = MessageComposerBehavior()
         
-    public func mailViewController(email: String, contents: MailContents? = nil) -> UIViewController? {
+    public func mailViewController(email: String?, contents: MailContents? = nil) -> UIViewController? {
         guard MFMailComposeViewController.canSendMail() else {
             return nil
         }
         let mailVC = MFMailComposeViewController()
         mailVC.mailComposeDelegate = self
-        mailVC.setToRecipients([email])
+        if let email = email {
+            mailVC.setToRecipients([email])
+        }
         if let contents = contents {
             mailVC.setMessageBody(contents.body, isHTML: contents.isHTML)
         }
