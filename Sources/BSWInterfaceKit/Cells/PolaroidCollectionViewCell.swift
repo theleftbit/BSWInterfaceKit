@@ -58,7 +58,7 @@ open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
         setupImageConstraint()
         setupRoundedCorners()
-        layer.addShadow(opacity: 0.1, shadowRadius: 4)
+        addShadow(opacity: 0.1, radius: 4, offset: .zero)
     }
     
     override open func prepareForReuse() {

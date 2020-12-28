@@ -6,6 +6,7 @@
 
 import BSWFoundation
 import UIKit
+import BSWInterfaceKitObjC
 
 extension UIView {
 
@@ -32,10 +33,23 @@ extension UIView {
         removeConstraints(previousConstraints)
     }
 
-    @objc(bsw_roundCorners:)
-    public func roundCorners(radius: CGFloat = 10) {
+    /// Adds a shadow taking into account Auto Layout. You don't need to override `layoutSubviews` for this method.
+    @objc(bsw_addShadowWithOpacity:radius:offset:)
+    public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize = .zero) {
+        let shadowInfo = BSWShadowInformation()
+        shadowInfo.opacity = opacity
+        shadowInfo.radius = radius
+        shadowInfo.offset = offset
+        bsw_shadowInfo = shadowInfo
+    }
+
+    @objc(bsw_roundCorners:isContinuous:)
+    public func roundCorners(radius: CGFloat = 10, isContinuous: Bool = true) {
         layer.cornerRadius = radius
         layer.masksToBounds = true
+        if #available(iOS 13.0, *), isContinuous {
+            layer.cornerCurve = .continuous
+        }
     }
 
     @objc(bsw_getColorFromPoint:)
