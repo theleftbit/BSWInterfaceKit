@@ -6,6 +6,7 @@
 
 import BSWFoundation
 import UIKit
+import BSWInterfaceKitObjC
 
 extension UIView {
 
@@ -30,6 +31,14 @@ extension UIView {
         let previousConstraints = constraints
         NSLayoutConstraint.deactivate(previousConstraints)
         removeConstraints(previousConstraints)
+    }
+
+    public func addShadow(opacity: CGFloat = 0.5, radius: CGFloat = 10, offset: CGSize = .zero) {
+        let shadowInfo = BSWShadowInformation()
+        shadowInfo.opacity = opacity
+        shadowInfo.radius = radius
+        shadowInfo.offset = offset
+        bsw_addShadow(shadowInfo)
     }
 
     @objc(bsw_roundCorners:)
