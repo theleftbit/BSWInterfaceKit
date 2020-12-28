@@ -34,7 +34,7 @@ extension UIView {
     }
 
     @objc(bsw_addShadowWithOpacity:radius:offset:)
-    public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize) {
+    public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize = .zero) {
         let shadowInfo = BSWShadowInformation()
         shadowInfo.opacity = opacity
         shadowInfo.radius = radius

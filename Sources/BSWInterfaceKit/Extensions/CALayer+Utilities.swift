@@ -8,6 +8,7 @@ import UIKit
 
 // https://medium.com/swifty-tim/views-with-rounded-corners-and-shadows-c3adc0085182
 
+@available(*, deprecated, message: "Use UIView methods instead. Those are AutoLayout ready.")
 public extension CALayer {
     
     func addShadow(opacity: CGFloat = 0.5, shadowRadius: CGFloat = 10, offset: CGSize = .zero) {
