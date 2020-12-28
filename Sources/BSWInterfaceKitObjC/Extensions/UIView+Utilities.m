@@ -60,7 +60,7 @@
 }
 
 - (void)setBSWShadowLayer:(CALayer *)object {
-     objc_setAssociatedObject(self, @selector(associatedObject), object, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+     objc_setAssociatedObject(self, @selector(bswShadowLayer), object, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (CALayer *)bswShadowLayer {
