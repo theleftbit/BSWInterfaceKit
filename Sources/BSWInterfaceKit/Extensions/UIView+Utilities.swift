@@ -33,18 +33,22 @@ extension UIView {
         removeConstraints(previousConstraints)
     }
 
-    public func addShadow(opacity: CGFloat = 0.5, radius: CGFloat = 10, offset: CGSize = .zero) {
+    @objc(bsw_addShadowWithOpacity:radius:offset:)
+    public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize) {
         let shadowInfo = BSWShadowInformation()
         shadowInfo.opacity = opacity
         shadowInfo.radius = radius
         shadowInfo.offset = offset
-        bsw_addShadow(shadowInfo)
+        bsw_shadowInfo = shadowInfo
     }
 
     @objc(bsw_roundCorners:)
     public func roundCorners(radius: CGFloat = 10) {
         layer.cornerRadius = radius
         layer.masksToBounds = true
+        if #available(iOS 13.0, *) {
+            layer.cornerCurve = .continuous
+        }
     }
 
     @objc(bsw_getColorFromPoint:)

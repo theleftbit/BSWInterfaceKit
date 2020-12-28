@@ -15,7 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIView (Utilities)
 
 - (void)bsw_layoutSubviews;
-- (void)bsw_addShadow:(BSWShadowInformation *)shadowInfo;
+
+@property (nonatomic, nonnull) BSWShadowInformation *bsw_shadowInfo;
 
 @end
 
