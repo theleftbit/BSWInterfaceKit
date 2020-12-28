@@ -43,23 +43,30 @@
 
 - (void)bsw_layoutSubviews {
     [self bsw_layoutSubviews];
-    BSWShadowInformation *shadowInfo = [self bswShadowInfo];
-    if (shadowInfo) {
-        NSLog(@"Shadow info found");
+    CALayer *shadowLayer = [self bswShadowLayer];
+    if (shadowLayer != nil) {
+        shadowLayer.shadowPath = [[UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.layer.cornerRadius] CGPath];
     }
 }
 
 - (void)bsw_addShadow:(BSWShadowInformation *)shadowInfo {
-    [self setBSWShadowInfo:shadowInfo];
+    CALayer *shadowLayer = [CALayer new];
+    shadowLayer.shadowColor = ([[UIColor blackColor] CGColor]);
+    shadowLayer.shadowOffset = shadowInfo.offset;
+    shadowLayer.shadowOpacity = shadowInfo.opacity;
+    shadowLayer.shadowRadius = shadowInfo.radius;
+    [self.layer insertSublayer:shadowLayer atIndex:0];
+    [self setBSWShadowLayer:shadowLayer];
 }
 
-- (void)setBSWShadowInfo:(BSWShadowInformation *)object {
-     objc_setAssociatedObject(self, @selector(bswShadowInfo), object, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setBSWShadowLayer:(CALayer *)object {
+     objc_setAssociatedObject(self, @selector(associatedObject), object, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (BSWShadowInformation *)bswShadowInfo {
-    return objc_getAssociatedObject(self, @selector(bswShadowInfo));
+- (CALayer *)bswShadowLayer {
+    return objc_getAssociatedObject(self, @selector(bswShadowLayer));
 }
+
 @end
 
 @implementation BSWShadowInformation
