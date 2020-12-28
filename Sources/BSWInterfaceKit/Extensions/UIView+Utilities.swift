@@ -33,6 +33,7 @@ extension UIView {
         removeConstraints(previousConstraints)
     }
 
+    /// Adds a shadow taking into account Auto Layout. You don't need to override `layoutSubviews` for this method.
     @objc(bsw_addShadowWithOpacity:radius:offset:)
     public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize = .zero) {
         let shadowInfo = BSWShadowInformation()
@@ -42,11 +43,11 @@ extension UIView {
         bsw_shadowInfo = shadowInfo
     }
 
-    @objc(bsw_roundCorners:)
-    public func roundCorners(radius: CGFloat = 10) {
+    @objc(bsw_roundCorners:isContinuous:)
+    public func roundCorners(radius: CGFloat = 10, isContinuous: Bool = true) {
         layer.cornerRadius = radius
         layer.masksToBounds = true
-        if #available(iOS 13.0, *) {
+        if #available(iOS 13.0, *), isContinuous {
             layer.cornerCurve = .continuous
         }
     }

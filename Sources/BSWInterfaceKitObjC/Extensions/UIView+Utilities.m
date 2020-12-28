@@ -45,6 +45,12 @@
     [self bsw_layoutSubviews];
     BSWShadowInformation *shadowInfo = [self bsw_shadowInfo];
     if (shadowInfo != nil) {
+        if ([self isKindOfClass:[UICollectionViewCell class]]) {
+            /// This is to simplify use cases such as UICollectionViewCells where the rounded corners are set in the contentView
+            /// but the cell is rendered squared if the shadow is applied to the cell. More info:
+            /// https://www.robertpieta.com/uicollectionviewcell-rounded-corners-and-shadow-swift/
+            self.layer.cornerRadius = [[[(UICollectionViewCell *)self contentView] layer] cornerRadius];
+        }        
         self.layer.shadowColor = ([[UIColor blackColor] CGColor]);
         self.layer.shadowOffset = shadowInfo.offset;
         self.layer.shadowOpacity = shadowInfo.opacity;
