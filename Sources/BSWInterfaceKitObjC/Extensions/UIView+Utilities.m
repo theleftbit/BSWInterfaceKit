@@ -50,12 +50,20 @@
             /// but the cell is rendered squared if the shadow is applied to the cell. More info:
             /// https://www.robertpieta.com/uicollectionviewcell-rounded-corners-and-shadow-swift/
             self.layer.cornerRadius = [[[(UICollectionViewCell *)self contentView] layer] cornerRadius];
-        }        
-        self.layer.shadowColor = ([[UIColor blackColor] CGColor]);
-        self.layer.shadowOffset = shadowInfo.offset;
-        self.layer.shadowOpacity = shadowInfo.opacity;
-        self.layer.shadowRadius = shadowInfo.radius;
-        self.layer.shadowPath = [[UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.layer.cornerRadius] CGPath];
+        }
+        if (shadowInfo.isEmpty) {
+            self.layer.shadowColor = nil;
+            self.layer.shadowOffset = CGSizeZero;
+            self.layer.shadowOpacity = 0;
+            self.layer.shadowRadius = 0;
+            self.layer.shadowPath = nil;
+        } else {
+            self.layer.shadowColor = ([[UIColor blackColor] CGColor]);
+            self.layer.shadowOffset = shadowInfo.offset;
+            self.layer.shadowOpacity = shadowInfo.opacity;
+            self.layer.shadowRadius = shadowInfo.radius;
+            self.layer.shadowPath = [[UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.layer.cornerRadius] CGPath];
+        }
         self.layer.masksToBounds = NO;
     }
 }

@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)bsw_layoutSubviews;
 
-@property (nonatomic, nonnull) BSWShadowInformation *bsw_shadowInfo;
+@property (nonatomic, nullable) BSWShadowInformation *bsw_shadowInfo;
 
 @end
 
@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat opacity;
 @property (nonatomic, assign) CGFloat radius;
 @property (nonatomic, assign) CGSize offset;
+@property (nonatomic, assign) BOOL isEmpty;
 @end
 
 NS_ASSUME_NONNULL_END
