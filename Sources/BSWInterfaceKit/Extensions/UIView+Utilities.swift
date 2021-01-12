@@ -43,6 +43,14 @@ extension UIView {
         bsw_shadowInfo = shadowInfo
     }
 
+    /// Removes shadow added with the `addShadow` method.
+    @objc(bsw_removeShadow)
+    public func removeShadow() {
+        let shadowInfo = BSWShadowInformation()
+        shadowInfo.isEmpty = true
+        bsw_shadowInfo = shadowInfo
+    }
+
     @objc(bsw_roundCorners:isContinuous:)
     public func roundCorners(radius: CGFloat = 10, isContinuous: Bool = true) {
         layer.cornerRadius = radius
