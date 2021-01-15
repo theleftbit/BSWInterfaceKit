@@ -64,10 +64,10 @@ public extension NSAttributedString {
         self.init(attributedString: attributedString)
     }
 
-    func modifyingFont(_ newFont: UIFont, range: NSRange? = nil) -> NSAttributedString {
+    func modifyingFont(_ newFont: UIFont, onSubstring: String? = nil) -> NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
         let range: NSRange = {
-            if let userRange = range { return userRange }
+            if let substring = onSubstring, let nsRange = nsRangeFor(substring: substring) { return nsRange }
             else { return NSRange(location: 0, length: string.length) }
         }()
         string.enumerateAttributes(in: range, options: .longestEffectiveRangeNotRequired) { (value, range, _) in
@@ -78,30 +78,40 @@ public extension NSAttributedString {
         return string
     }
 
-    func modifyingColor(_ newColor: UIColor, range: NSRange? = nil) -> NSAttributedString {
+    func modifyingColor(_ newColor: UIColor, onSubstring: String? = nil) -> NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
         let range: NSRange = {
-            if let userRange = range { return userRange }
+            if let substring = onSubstring, let nsRange = nsRangeFor(substring: substring) { return nsRange }
             else { return NSRange(location: 0, length: string.length) }
         }()
         string.removeAttribute(.foregroundColor, range: range)
         string.addAttribute(.foregroundColor, value: newColor, range: range)
         return string
     }
-    
+
+    func modifyingBackgroundColor(_ newColor: UIColor, onSubstring: String? = nil) -> NSAttributedString {
+        let string = self.mutableCopy() as! NSMutableAttributedString
+        let range: NSRange = {
+            if let substring = onSubstring, let nsRange = nsRangeFor(substring: substring) { return nsRange }
+            else { return NSRange(location: 0, length: string.length) }
+        }()
+        string.removeAttribute(.backgroundColor, range: range)
+        string.addAttribute(.backgroundColor, value: newColor, range: range)
+        return string
+    }
+
     var bolded: NSAttributedString {
         return bolding(substring: self.string)
     }
 
     func bolding(substring: String) -> NSAttributedString {
-        let nsRange = (self.string as NSString).range(of: substring)
-        guard nsRange.location != NSNotFound else {
+        guard let nsRange = nsRangeFor(substring: substring) else {
             return self
         }
         guard let font = self.attributes(at: 0, longestEffectiveRange: nil, in: nsRange)[.font] as? UIFont else {
             return self
         }
-        return modifyingFont(font.bolded(), range: nsRange)
+        return modifyingFont(font.bolded(), onSubstring: substring)
     }
     
     func settingKern(_ kern: CGFloat) -> NSAttributedString {
@@ -170,13 +180,20 @@ public extension NSAttributedString {
 }
 
 
+public extension NSAttributedString {
+    func nsRangeFor(substring: String) -> NSRange? {
+        guard let range = self.string.range(of: substring) else { return nil }
+        let lowerBound = range.lowerBound.utf16Offset(in: self.string)
+        let upperBound = range.upperBound.utf16Offset(in: self.string)
+        return NSRange(location: lowerBound, length: upperBound - lowerBound)
+    }
+}
+
 public extension NSMutableAttributedString {
 
     func addAttributes(onSubstring substring: String, attrs: [NSAttributedString.Key : Any]) {
-        guard let range = self.string.range(of: substring) else { fatalError() }
-        let lowerBound = range.lowerBound.utf16Offset(in: self.string)
-        let upperBound = range.upperBound.utf16Offset(in: self.string)
-        self.addAttributes(attrs, range: NSRange(location: lowerBound, length: upperBound - lowerBound))
+        guard let range = self.nsRangeFor(substring: substring) else { fatalError() }
+        self.addAttributes(attrs, range: range)
     }
 
     func setKern(_ kern: CGFloat) {
