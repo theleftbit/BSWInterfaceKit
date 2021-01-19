@@ -11,17 +11,23 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     public struct Configuration {
         let shouldSelectItemAtIndexPath: (IndexPath) -> Bool
         let didSelectItemAtIndexPath: (IndexPath) -> ()
+        let shouldDeselectItemAtIndexPath: (IndexPath) -> Bool
+        let didDeselectItemAtIndexPath: (IndexPath) -> ()
         let sectionHeader: () -> (UIView?)
         let sectionFooter: () -> (UIView?)
 
         public init(
             shouldSelectItemAtIndexPath: @escaping (IndexPath) -> Bool = { _ in return true },
             didSelectItemAtIndexPath: @escaping (IndexPath) -> () = { _ in },
+            shouldDeselectItemAtIndexPath: @escaping (IndexPath) -> Bool = { _ in return true },
+            didDeselectItemAtIndexPath: @escaping (IndexPath) -> () = { _ in },
             sectionHeader: @escaping () -> (UIView?) = { nil },
             sectionFooter: @escaping () -> (UIView?) = { nil }) {
             
             self.shouldSelectItemAtIndexPath = shouldSelectItemAtIndexPath
             self.didSelectItemAtIndexPath = didSelectItemAtIndexPath
+            self.shouldDeselectItemAtIndexPath = shouldDeselectItemAtIndexPath
+            self.didDeselectItemAtIndexPath = didDeselectItemAtIndexPath
             self.sectionHeader = sectionHeader
             self.sectionFooter = sectionFooter
         }
@@ -145,12 +151,25 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     
     //MARK: UITableViewDelegate
         
-    public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-         return configuration.shouldSelectItemAtIndexPath(indexPath)
+    public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if configuration.shouldSelectItemAtIndexPath(indexPath) {
+            return indexPath
+        } else {
+            return nil
+        }
+    }
+    
+    public func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+        if configuration.shouldDeselectItemAtIndexPath(indexPath) {
+            return indexPath
+        } else {
+            return nil
+        }
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         dataStore.select(atIndex: indexPath.row)
+        configuration.didSelectItemAtIndexPath(indexPath)
 
         let allOtherSelected = tableView.indexPathsForSelectedRows?.filter({$0 != indexPath}) ?? []
 
@@ -160,12 +179,13 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
             }
         }, completion: { _ in
             tableView.reloadData()
-            self.configuration.didSelectItemAtIndexPath(indexPath)
         })
     }
     
     public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         dataStore.removeSelection()
+        configuration.didDeselectItemAtIndexPath(indexPath)
+
         tableView.performBatchUpdates({
             tableView.reloadRows(at: [indexPath], with: .automatic)
         }, completion: { _ in
