@@ -15,6 +15,7 @@ public enum ButtonTitle {
 
 public typealias ButtonActionHandler = () -> ()
 
+/// Describes a button look and it's `actionHandler`
 public struct ButtonConfiguration {
     public let buttonTitle: ButtonTitle
     public let tintColor: UIColor?
@@ -67,6 +68,7 @@ extension UIButton {
         static var ActionBlockWrapper = "ActionBlockWrapper"
     }
     
+    /// Initializes a `UIButton` with `.system` type and set the appropiate `ButtonConfiguration`
     public convenience init(buttonConfiguration: ButtonConfiguration) {
         self.init(type: .system)
         setButtonConfiguration(buttonConfiguration)
