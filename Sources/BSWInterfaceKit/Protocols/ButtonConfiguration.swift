@@ -63,7 +63,7 @@ extension UIButton {
     }
     
     public convenience init(buttonConfiguration: ButtonConfiguration) {
-        self.init()
+        self.init(type: .system)
         setButtonConfiguration(buttonConfiguration)
     }
     
