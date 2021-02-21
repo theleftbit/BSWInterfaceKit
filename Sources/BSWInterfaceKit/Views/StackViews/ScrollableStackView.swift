@@ -43,6 +43,10 @@ open class ScrollableStackView: UIScrollView {
         stackView.addArrangedSubview(subview)
     }
 
+    open func insertArrangedSubview(_ view: UIView, at index: Int) {
+        stackView.insertArrangedSubview(view, at: index)
+    }
+    
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -95,6 +99,10 @@ open class ScrollableStackView: UIScrollView {
         } set {
             stackView.distribution = newValue
         }
+    }
+    
+    open var arrangedSubviews: [UIView] {
+        stackView.arrangedSubviews
     }
     
     open override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
