@@ -80,7 +80,7 @@ public extension Photo {
             return image
         case .url(let url, _):
             let imageCache = Nuke.ImageCache.shared //This dependency should be removed
-            guard let request = imageCache.cachedResponse(for: ImageRequest(url: url)) else {
+            guard let request = imageCache[ImageRequest(url: url)] else {
                 return nil
             }
             return request.image
@@ -120,6 +120,12 @@ extension Photo {
     }
 }
 
+extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(width)
+        hasher.combine(height)
+    }
+}
 extension Photo: Equatable, Hashable {}
 extension Photo.Kind: Equatable, Hashable {}
 extension Photo.PlaceholderImage: Equatable, Hashable {}
