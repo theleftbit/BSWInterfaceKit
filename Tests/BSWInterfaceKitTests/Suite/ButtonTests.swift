@@ -43,7 +43,7 @@ class ButtonTests: BSWSnapshotTest {
 
     func testRightImageTitleButton() {
         let title = TextStyler.styler.attributedString("Click Me", color: UIColor.black, forStyle: .body)
-        let button = UIButton(buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
+        let button = UIButton(type: .custom, buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
         button.setPrefersImageOnTheRight()
         button.imageEdgeInsets = [.left : 10]
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
