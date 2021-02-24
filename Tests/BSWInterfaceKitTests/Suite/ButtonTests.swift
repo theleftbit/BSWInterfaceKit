@@ -20,8 +20,8 @@ class ButtonTests: BSWSnapshotTest {
     }
 
     func testImageButton() {
-        let button = UIButton(type: .custom)
-        button.setButtonConfiguration(ButtonConfiguration(buttonTitle: .image(self.sampleImage), actionHandler: {}))
+        let buttonConfig = ButtonConfiguration(buttonTitle: .image(self.sampleImage), actionHandler: {})
+        let button = UIButton(type: .custom, buttonConfiguration: buttonConfig)
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
@@ -35,7 +35,7 @@ class ButtonTests: BSWSnapshotTest {
 
     func testImageTitleButton() {
         let title = TextStyler.styler.attributedString("Click Me", color: UIColor.black, forStyle: .body)
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .custom, buttonConfiguration: ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
         button.setButtonConfiguration(ButtonConfiguration(buttonTitle: ButtonTitle.textAndImage(title, sampleImage), actionHandler: {}))
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
