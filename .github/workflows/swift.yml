@@ -10,5 +10,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Unit Tests
-      run: bundle install; bundle exec fastlane unit_tests
+    - name: Setup Environment
+      run: bundle install; bundle exec fastlane setup_environment
+    - name: Test Naturitas
+      run: bundle exec fastlane unit_tests
+    - name: Teardown Environment
+      run: bundle exec fastlane teardown_environment
