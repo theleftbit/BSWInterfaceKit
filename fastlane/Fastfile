@@ -1,17 +1,24 @@
 default_platform(:ios)
 
-before_all do |lane, options|
-  setup_jenkins(derived_data_path: "./derivedData")
-end
-
 platform :ios do
+  desc "Setup environment"
+  lane :setup_environment do
+    setup_jenkins(derived_data_path: "./derivedData")
+  end
+
+  desc "Teardown environment"
+  lane :teardown_environment do
+    clear_derived_data
+  end
+
   desc "Execute unit tests"
   lane :unit_tests do
-    run_tests(
-      workspace: "BSWInterfaceKit.xcworkspace",
+
+    xcodebuild(
+      test: true,
       scheme: "BSWInterfaceKit",
-      devices: ["iPhone 11"],
-      )
+      destination: "platform=iOS Simulator,name=iPhone 11,OS=14.4"
+    )
   end
 end
 
