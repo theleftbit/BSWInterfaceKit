@@ -7,11 +7,12 @@ end
 platform :ios do
   desc "Execute unit tests"
   lane :unit_tests do
-    run_tests(
-      workspace: "BSWInterfaceKit.xcworkspace",
+
+    xcodebuild(
+      test: true,
       scheme: "BSWInterfaceKit",
-      devices: ["iPhone 11"],
-      )
+      destination: "platform=iOS Simulator,name=iPhone 11,OS=14.4"
+    )
   end
 end
 
