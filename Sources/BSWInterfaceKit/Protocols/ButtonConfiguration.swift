@@ -68,9 +68,9 @@ extension UIButton {
         static var ActionBlockWrapper = "ActionBlockWrapper"
     }
     
-    /// Initializes a `UIButton` with `.system` type and set the appropiate `ButtonConfiguration`
-    public convenience init(buttonConfiguration: ButtonConfiguration) {
-        self.init(type: .system)
+    /// Initializes a `UIButton` with the given type and set the appropiate `ButtonConfiguration`
+    public convenience init(type: ButtonType = .system, buttonConfiguration: ButtonConfiguration) {
+        self.init(type: type)
         setButtonConfiguration(buttonConfiguration)
     }
     

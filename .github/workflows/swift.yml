@@ -10,5 +10,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Unit Tests
-      run: xcodebuild test -scheme BSWInterfaceKit -destination 'platform=iOS Simulator,name=iPhone 11,OS=14.4' | xcpretty
+    - name: Setup Environment
+      run: bundle install; bundle exec fastlane setup_environment
+    - name: Test Naturitas
+      run: bundle exec fastlane unit_tests
+    - name: Teardown Environment
+      run: bundle exec fastlane teardown_environment
