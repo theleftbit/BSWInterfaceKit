@@ -10,6 +10,7 @@
 "yes" = "Yes";
 "no" = "No";
 "error" = "Error";
+"retry" = "Retry";
 
 /**
  *  ProfilePhotoCollectionView
