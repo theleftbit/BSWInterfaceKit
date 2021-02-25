@@ -78,24 +78,25 @@ class UIViewControllerTests: BSWSnapshotTest {
     
     func testLoadingView() {
         let vc = TestViewController()
-        let loadingView: UIView = {
-            // This is a dummy black box to aid snapshot tests
-            // because since UIActivityControllers move,
-            // they're hard to unit test
-            let view = UIView()
-            view.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                view.widthAnchor.constraint(equalToConstant: 20),
-                view.heightAnchor.constraint(equalToConstant: 20),
-                ])
-            view.backgroundColor = .black
-            let containerView = UIView()
-            containerView.addSubview(view)
-            view.centerInSuperview()
-            return containerView
-        }()
-        vc.showLoadingView(loadingView)
+        vc.showLoadingView(UIViewControllerTests.loadingView())
         waitABitAndVerify(viewController: vc, testDarkMode: false)
+    }
+
+    static func loadingView() -> UIView {
+        // This is a dummy black box to aid snapshot tests
+        // because since UIActivityControllers move,
+        // they're hard to unit test
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.widthAnchor.constraint(equalToConstant: 20),
+            view.heightAnchor.constraint(equalToConstant: 20),
+            ])
+        view.backgroundColor = .black
+        let containerView = UIView()
+        containerView.addSubview(view)
+        view.centerInSuperview()
+        return containerView
     }
 }
 

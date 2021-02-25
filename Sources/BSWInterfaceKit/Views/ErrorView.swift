@@ -5,6 +5,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWFoundation
 
 @objc(BSWErrorView)
 open class ErrorView: UIStackView {
@@ -86,6 +87,14 @@ open class ErrorView: UIStackView {
     
     required public init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    static func retryView(message: String, error: Error, onRetry: @escaping VoidHandler) -> ErrorView {
+        ErrorView(
+            title: TextStyler.styler.attributedString(message),
+            message: TextStyler.styler.attributedString(error.localizedDescription),
+            buttonConfiguration: .init(title: "retry".localized, actionHandler: onRetry)
+        )
     }
 }
 #endif
