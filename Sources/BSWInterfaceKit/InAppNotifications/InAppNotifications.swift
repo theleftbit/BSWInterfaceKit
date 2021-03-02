@@ -46,6 +46,21 @@ public class InAppNotifications {
         view.setDismisTimer(delay: dismissDelay)
         view.setCompletionBlock(completion)
         
+        let bounds = UIApplication.shared.keyWindow?.bounds ?? UIScreen.main.bounds
+        let deviceWidth = min(bounds.width, bounds.height)
+        let widthFactor: CGFloat = 0.85
+        let width = deviceWidth * widthFactor
+        let height: CGFloat = {
+            let size = view.systemLayoutSizeFitting(
+                CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            return size.height
+        }()
+        view.frame = CGRect(x: 0, y: -height, width: width, height: height)
+        view.center.x = bounds.width/2
+        
         guard let window = UIApplication.shared.keyWindow else {
             print("Failed to show CRNotification. No keywindow available.")
             return nil
@@ -96,7 +111,7 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.semibold)
         label.textColor = .white
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.setContentHuggingPriority(.defaultLow, for: .vertical)
         return label
     }()
@@ -109,16 +124,7 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     required internal init?(coder aDecoder:NSCoder) { fatalError("Not implemented.") }
     
     internal init() {
-        let bounds = UIApplication.shared.keyWindow?.bounds ?? UIScreen.main.bounds
-        let deviceWidth = min(bounds.width, bounds.height)
-        let widthFactor: CGFloat = 0.85
-        let heightFactor: CGFloat = 0.2
-        
-        let width = deviceWidth * widthFactor
-        let height = width * heightFactor
-        super.init(frame: CGRect(x: 0, y: -height, width: width, height: height))
-        center.x = bounds.width/2
-        
+        super.init(frame: .zero)
         setupLayer()
         setupSubviews()
         setupTargets()
