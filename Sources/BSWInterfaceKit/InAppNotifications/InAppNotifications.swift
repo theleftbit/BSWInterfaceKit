@@ -29,14 +29,14 @@ public class InAppNotifications {
     
     /** Shows a CRNotification **/
     @discardableResult
-    public static func showNotification(backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
+    public static func showNotification(fromVC: UIViewController, backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let notificationDefinition = InAppNotificationTypeDefinition(backgroundColor: backgroundColor, image: image)
-        return showNotification(type: notificationDefinition, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
+        return showNotification(type: notificationDefinition, fromVC: fromVC, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
     }
     
     /** Shows a CRNotification from a InAppNotificationType **/
     @discardableResult
-    public static func showNotification(type: InAppNotificationType, title: NSAttributedString?, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
+    public static func showNotification(type: InAppNotificationType, fromVC: UIViewController, title: NSAttributedString?, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let view = InAppNotificationView()
         
         view.setBackgroundColor(color: type.backgroundColor)
@@ -45,8 +45,9 @@ public class InAppNotifications {
         view.setMessage(message: message)
         view.setDismisTimer(delay: dismissDelay)
         view.setCompletionBlock(completion)
+        view.prepareFrame(fromVC: fromVC)
         
-        guard let window = UIApplication.shared.keyWindow else {
+        guard let window = fromVC.view.window else {
             print("Failed to show CRNotification. No keywindow available.")
             return nil
         }
@@ -96,7 +97,7 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.semibold)
         label.textColor = .white
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.setContentHuggingPriority(.defaultLow, for: .vertical)
         return label
     }()
@@ -109,21 +110,28 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     required internal init?(coder aDecoder:NSCoder) { fatalError("Not implemented.") }
     
     internal init() {
-        let bounds = UIApplication.shared.keyWindow?.bounds ?? UIScreen.main.bounds
-        let deviceWidth = min(bounds.width, bounds.height)
-        let widthFactor: CGFloat = 0.85
-        let heightFactor: CGFloat = 0.2
-        
-        let width = deviceWidth * widthFactor
-        let height = width * heightFactor
-        super.init(frame: CGRect(x: 0, y: -height, width: width, height: height))
-        center.x = bounds.width/2
-        
+        super.init(frame: .zero)
         setupLayer()
         setupSubviews()
         setupTargets()
     }
     
+    func prepareFrame(fromVC: UIViewController) {
+        let bounds = fromVC.view.window?.bounds ?? UIScreen.main.bounds
+        let deviceWidth = min(bounds.width, bounds.height)
+        let widthFactor: CGFloat = (fromVC.view.window?.traitCollection.horizontalSizeClass == .compact) ? 0.85 : 0.5
+        let width = deviceWidth * widthFactor
+        let height: CGFloat = {
+            let size = systemLayoutSizeFitting(
+                CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            return size.height
+        }()
+        self.frame = CGRect(x: 0, y: -height, width: width, height: height)
+        self.center.x = bounds.width/2
+    }
     
     // MARK: - Setup
     
