@@ -120,7 +120,9 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     public func didTapPhotoAt(index: Int, fromView: UIView) {
-        
+        guard #available(iOS 13, *) else {
+            return
+        }
         guard let viewModel = dataProvider.peek()?.value else { return }
         
         let gallery = PhotoGalleryViewController(
@@ -136,6 +138,7 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
 
 //MARK:- PhotoGalleryViewControllerDelegate
 
+@available(iOS 13, *)
 extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int) {
         photoGallery.scrollToPhoto(atIndex: index)

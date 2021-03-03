@@ -9,7 +9,7 @@ import BSWFoundation
 
 // MARK: PhotoGalleryViewDelegate protocol
 
-public protocol PhotoGalleryViewDelegate: class {
+public protocol PhotoGalleryViewDelegate: AnyObject {
     func didTapPhotoAt(index: Int, fromView: UIView)
 }
 

@@ -165,12 +165,12 @@ extension ScrollableTabsViewController: ScrollableTabHeaderSelectionDelegate, Sc
 
 //MARK: Protocols
 
-private protocol ScrollableTabContentSelectionDelegate: class {
+private protocol ScrollableTabContentSelectionDelegate: AnyObject {
     func pagingContent(to index: Int, withVelocity: CGFloat)
     func scrollingContent(with offset: CGPoint, isDragging: Bool)
 }
 
-private protocol ScrollableTabHeaderSelectionDelegate: class {
+private protocol ScrollableTabHeaderSelectionDelegate: AnyObject {
     func titleSelected(at index: Int)
 }
 

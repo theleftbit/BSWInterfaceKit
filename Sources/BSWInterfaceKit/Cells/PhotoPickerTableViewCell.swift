@@ -5,6 +5,7 @@ import UIKit
 // MARK: Private classes
 
 @available(tvOS, unavailable)
+@available(iOS 13, *)
 open class PhotoPickerTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout {
     
     let photosCollectionView = ProfilePhotoPickerCollectionView()
