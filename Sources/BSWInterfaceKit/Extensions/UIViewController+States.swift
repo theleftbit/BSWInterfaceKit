@@ -57,11 +57,15 @@ extension UIViewController {
     }
     
     private func addStateView(_ stateView: UIView, animated: Bool = true, stateViewLayout: StateViewLayout) {
-        removeStateView(animated: animated)
         let stateVC = StateContainerViewController(
             stateView: stateView,
             backgroundColor: self.view.backgroundColor ?? .clear
         )
+        if let containerVC = self as? ContainerViewController {
+            containerVC.updateContainedViewController(stateVC)
+            return
+        }
+        removeStateView(animated: animated)
         addChild(stateVC)
         view.addSubview(stateVC.view)
         switch stateViewLayout {
