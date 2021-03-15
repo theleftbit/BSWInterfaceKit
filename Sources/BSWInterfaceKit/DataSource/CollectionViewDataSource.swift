@@ -405,8 +405,8 @@ public protocol CollectionViewInfiniteFooter: UICollectionReusableView {
 
 public struct CollectionViewInfiniteScrollSupport<Model> {
     public struct FetchResult {
-        let newDataAvailable: [Model]?
-        let shouldKeepPaging: Bool
+        public let newDataAvailable: [Model]?
+        public let shouldKeepPaging: Bool
         public init(newDataAvailable: [Model]?, shouldKeepPaging: Bool) {
             self.newDataAvailable = newDataAvailable
             self.shouldKeepPaging = shouldKeepPaging
