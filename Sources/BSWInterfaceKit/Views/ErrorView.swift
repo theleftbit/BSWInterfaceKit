@@ -34,7 +34,7 @@ open class ErrorView: UIStackView {
             self.button = button
         }
 
-        func viewRepresentation() -> UIView {
+        public func viewRepresentation() -> UIView {
             return ErrorView(config: self)
         }
     }
