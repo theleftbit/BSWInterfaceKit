@@ -5,17 +5,34 @@ import BSWInterfaceKit
 import UIKit
 
 @available(iOS 14.0, *)
-class PolaroidCollectionViewCellTests: BSWSnapshotTest {
+class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
     func testLayout() {
         let cv = MockCollectionView()
+
+        let sut = cv.diffDataSource!
+        var snapshot = sut.snapshot()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(MockCollectionView.mockData().map({ .content($0)}), toSection: .main)
+        sut.apply(snapshot, animatingDifferences: false)
+
         verify(scrollView: cv)
     }
 }
 
 @available(iOS 14.0, *)
-class MockCollectionView: UICollectionView {
+private class ViewController: UIViewController {
     
-    private var mockDataSource: CollectionViewDiffableDataSource<Section, Item>!
+    let collectionView = MockCollectionView()
+    
+    override func loadView() {
+        view = collectionView
+    }
+}
+
+@available(iOS 14.0, *)
+private class MockCollectionView: UICollectionView {
+    
+    var diffDataSource: CollectionViewDiffableDataSource<Section, Item>!
 
     init() {
         let columnLayout = ColumnFlowLayout()
@@ -23,24 +40,22 @@ class MockCollectionView: UICollectionView {
         columnLayout.minColumnWidth = 120
         columnLayout.cellFactory = { [unowned self] indexPath in
             let cell = PolaroidCollectionViewCell()
-            guard let item = self.mockDataSource.snapshot().itemIdentifiers(inSection: .main)[safe: indexPath.item], case .content(let vm) = item else {
+            guard let item = self.diffDataSource.snapshot().itemIdentifiers(inSection: .main)[safe: indexPath.item], case .content(let vm) = item else {
                 return cell
             }
             cell.configureFor(viewModel: vm)
             return cell
         }
         
-        mockDataSource = CollectionViewDiffableDataSource.init(collectionView: self, cellProvider: { (cv, index, item) -> UICollectionViewCell? in
+        diffDataSource = CollectionViewDiffableDataSource.init(collectionView: self, cellProvider: { (cv, index, item) -> UICollectionViewCell? in
             let cellRegistration = UICollectionView.CellRegistration<PolaroidCollectionViewCell, Item> { cell, indexPath, item in
                 guard case .content(let vm) = item else { fatalError() }
                 cell.configureFor(viewModel: vm)
             }
             return cv.dequeueConfiguredReusableCell(using: cellRegistration, for: index, item: item)
         })
-        var snapshot = mockDataSource.snapshot()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(MockCollectionView.mockData().map({ .content($0)}), toSection: .main)
-        mockDataSource.apply(snapshot, animatingDifferences: false)
+        
+        diffDataSource.emptyConfiguration = .init(title: TextStyler.styler.attributedString("Empty View", color: .red), message: nil, image: nil, button: nil)
 //        mockDataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport { completion in
 //            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
 //                let vm1 = PolaroidCollectionViewCell.VM(
@@ -90,23 +105,24 @@ class MockCollectionView: UICollectionView {
         
         return [vm1, vm2, vm3, vm4, vm5]
     }
+}
 
-    private enum Section { case main }
-    private enum Item: CollectionViewDiffableItemWithLoading, Hashable {
-        case loading
-        case content(PolaroidCollectionViewCell.VM)
-        var isLoading: Bool {
-            switch self {
-            case .loading:
-                return true
-            default:
-                return false
-            }
+
+private enum Section { case main }
+private enum Item: CollectionViewDiffableItemWithLoading, Hashable {
+    case loading
+    case content(PolaroidCollectionViewCell.VM)
+    var isLoading: Bool {
+        switch self {
+        case .loading:
+            return true
+        default:
+            return false
         }
-        
-        static func loadingItem() -> MockCollectionView.Item {
-            MockCollectionView.Item.loading
-        }
+    }
+    
+    static func loadingItem() -> Item {
+        Item.loading
     }
 }
 
