@@ -5,6 +5,7 @@ import UIKit
 /// - Pull to refresh
 /// - Paging ☑️
 /// - Empty View ☑️
+/// - Horizontal Scroll
 /// Reorder and SupplementaryView are handled by `UICollectionViewDiffableDataSource`
 @available(iOS 14.0, *)
 public class CollectionViewDiffableDataSource<Section: Hashable, Item: CollectionViewDiffableItemWithLoading>:
