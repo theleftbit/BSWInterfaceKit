@@ -30,20 +30,6 @@ public class CollectionViewDiffableDataSource<Section: Hashable, Item: Collectio
         self.collectionView = collectionView
     }
 
-    @objc public override func numberOfSections(in collectionView: UICollectionView) -> Int {
-
-        defer { addEmptyView() }
-        
-        return super.numberOfSections(in: collectionView)
-    }
-
-    @objc public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        defer { addEmptyView() }
-        
-        return super.collectionView(collectionView, numberOfItemsInSection: section)
-    }
-
     public var emptyConfiguration: ErrorView.Configuration? {
         didSet {
             collectionView.reloadData()
@@ -54,6 +40,20 @@ public class CollectionViewDiffableDataSource<Section: Hashable, Item: Collectio
         didSet {
             prepareForInfiniteScroll()
         }
+    }
+    
+    /// MARK: Overrides
+    /*
+     This overrides are here just to add the empty view
+     */
+    @objc public override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        defer { addEmptyView() }
+        return super.numberOfSections(in: collectionView)
+    }
+
+    @objc public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        defer { addEmptyView() }
+        return super.collectionView(collectionView, numberOfItemsInSection: section)
     }
 }
 
