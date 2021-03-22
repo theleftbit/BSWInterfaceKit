@@ -11,8 +11,8 @@ class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
 
         let sut = cv.diffDataSource!
         var snapshot = sut.snapshot()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(MockCollectionView.mockData().map({ .content($0)}), toSection: .main)
+        snapshot.appendSections([.defenders, .midfields])
+        snapshot.appendItems(MockCollectionView.mockDataDefenders().map({ .content($0)}), toSection: .defenders)
         sut.apply(snapshot, animatingDifferences: false)
 
         verify(scrollView: cv)
@@ -40,10 +40,12 @@ private class MockCollectionView: UICollectionView {
         columnLayout.minColumnWidth = 120
         columnLayout.cellFactory = { [unowned self] indexPath in
             let cell = PolaroidCollectionViewCell()
-            guard let item = self.diffDataSource.snapshot().itemIdentifiers(inSection: .main)[safe: indexPath.item], case .content(let vm) = item else {
-                return cell
+            if let item = self.diffDataSource.snapshot().itemIdentifiers(inSection: .defenders)[safe: indexPath.item], case .content(let vm) = item {
+                cell.configureFor(viewModel: vm)
             }
-            cell.configureFor(viewModel: vm)
+            if let item = self.diffDataSource.snapshot().itemIdentifiers(inSection: .midfields)[safe: indexPath.item], case .content(let vm) = item {
+                cell.configureFor(viewModel: vm)
+            }
             return cell
         }
         
@@ -56,23 +58,18 @@ private class MockCollectionView: UICollectionView {
         })
         
         diffDataSource.emptyConfiguration = .init(title: TextStyler.styler.attributedString("Empty View", color: .red), message: nil, image: nil, button: nil)
-//        mockDataSource.pullToRefreshSupport = CollectionViewPullToRefreshSupport { completion in
-//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: {
-//                let vm1 = PolaroidCollectionViewCell.VM(
-//                    cellImage: Photo.emptyPhoto(),
-//                    cellTitle: TextStyler.styler.attributedString("Francesco Totti", forStyle: .title1),
-//                    cellDetails: TextStyler.styler.attributedString("#10", forStyle: .body)
-//                )
-//                completion(CollectionViewPullToRefreshSupport<PolaroidCollectionViewCell.VM>.Behavior.insertOnTop([vm1]))
-//            })
-//        }
+        diffDataSource.pullToRefreshProvider = .init(tintColor: .blue, fetchHandler: { completion in
+            completion({ snapshot in
+                snapshot.appendItems(MockCollectionView.mockDataMidfields().map({ .content($0)}), toSection: .midfields)
+            })
+        })
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    static func mockData() -> [PolaroidCollectionViewCell.VM] {
+    static func mockDataDefenders() -> [PolaroidCollectionViewCell.VM] {
         let vm1 = PolaroidCollectionViewCell.VM(
             cellImage: Photo(url: URL(string: "https://i.imgur.com/vUMmWxu.jpg")!, size: CGSize(width: 320, height: 480)),
             cellTitle: TextStyler.styler.attributedString("Gigi Buffon", forStyle: .title1),
@@ -105,10 +102,26 @@ private class MockCollectionView: UICollectionView {
         
         return [vm1, vm2, vm3, vm4, vm5]
     }
+    
+    static func mockDataMidfields() -> [PolaroidCollectionViewCell.VM] {
+        let vm1 = PolaroidCollectionViewCell.VM(
+            cellImage: Photo(url: URL(string: "https://i.imgur.com/HTo6Xmm.jpg")!, size: CGSize(width: 320, height: 480)),
+            cellTitle: TextStyler.styler.attributedString("Gattuso", forStyle: .title1),
+            cellDetails: TextStyler.styler.attributedString("#8", forStyle: .body)
+        )
+        
+        let vm2 = PolaroidCollectionViewCell.VM(
+            cellImage: Photo(url: URL(string: "https://i.imgur.com/ZH3wAf8.jpeg")!, size: CGSize(width: 320, height: 480)),
+            cellTitle: TextStyler.styler.attributedString("Pirlo", forStyle: .title1),
+            cellDetails: TextStyler.styler.attributedString("#21", forStyle: .body)
+        )
+        
+        return [vm1, vm2]
+    }
 }
 
 
-private enum Section { case main }
+private enum Section { case defenders, midfields }
 private enum Item: CollectionViewDiffableItemWithLoading, Hashable {
     case loading
     case content(PolaroidCollectionViewCell.VM)

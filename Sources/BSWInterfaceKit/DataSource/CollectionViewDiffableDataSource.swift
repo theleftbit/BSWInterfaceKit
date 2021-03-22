@@ -2,7 +2,7 @@
 import UIKit
 
 /// TODO:
-/// - Pull to refresh
+/// - Pull to refresh ☑️
 /// - Paging ☑️
 /// - Empty View ☑️
 /// - Horizontal Scroll
@@ -36,9 +36,15 @@ public class CollectionViewDiffableDataSource<Section: Hashable, Item: Collectio
         }
     }
 
-    public var infiniteScrollSupport: InfiniteScrollSupport? {
+    public var infiniteScrollProvider: InfiniteScrollProvider? {
         didSet {
             prepareForInfiniteScroll()
+        }
+    }
+    
+    public var pullToRefreshProvider: PullToRefreshProvider? {
+        didSet {
+            prepareForPullToRefresh()
         }
     }
     
@@ -55,6 +61,13 @@ public class CollectionViewDiffableDataSource<Section: Hashable, Item: Collectio
         defer { addEmptyView() }
         return super.collectionView(collectionView, numberOfItemsInSection: section)
     }
+    
+    
+    // MARK: Actions
+    
+    @objc private func _handlePullToRefresh() {
+        handlePullToRefresh()
+    }
 }
 
 public protocol CollectionViewDiffableItemWithLoading: Hashable {
@@ -64,7 +77,7 @@ public protocol CollectionViewDiffableItemWithLoading: Hashable {
 
 @available(iOS 14, *)
 public extension CollectionViewDiffableDataSource {
-    struct InfiniteScrollSupport {
+    struct InfiniteScrollProvider {
         /// Sends the user a snapshot to perform the changes and
         /// the user must return a Bool indicating if more pages are available
         public typealias ResultHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) -> (Bool))
@@ -76,7 +89,20 @@ public extension CollectionViewDiffableDataSource {
             self.fetchHandler = fetchHandler
         }
     }
+    
+    struct PullToRefreshProvider {
+        public typealias ResultHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) -> ())
+        public typealias FetchHandler = (@escaping (ResultHandler) -> ()) -> ()
+        public let fetchHandler: FetchHandler
+        public let tintColor: UIColor?
+        
+        public init(tintColor: UIColor? = nil, fetchHandler: @escaping FetchHandler) {
+            self.tintColor = tintColor
+            self.fetchHandler = fetchHandler
+        }
+    }
 }
+
 
 @available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
@@ -114,14 +140,14 @@ private extension CollectionViewDiffableDataSource {
             emptyView.leadingAnchor.constraint(greaterThanOrEqualTo: superView.leadingAnchor, constant: spacing),
             emptyView.trailingAnchor.constraint(greaterThanOrEqualTo: superView.trailingAnchor, constant: -spacing)
         ])
-    }    
+    }
 }
 
 @available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     
     func prepareForInfiniteScroll() {
-        guard let _ = self.infiniteScrollSupport else {
+        guard let _ = self.infiniteScrollProvider else {
             offsetObserver = nil
             return
         }
@@ -157,7 +183,7 @@ private extension CollectionViewDiffableDataSource {
     }
 
     func requestNextInfiniteScrollPage() {
-        guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollSupport else { return }
+        guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
         startPaginating()
         infiniteScrollSupport.fetchHandler { [weak self] handler in
             guard let self = self else { return }
@@ -166,7 +192,7 @@ private extension CollectionViewDiffableDataSource {
             let shouldStopPaging = handler(&snapshot)
             self.apply(snapshot, animatingDifferences: true, completion: nil)
             if !shouldStopPaging {
-                self.infiniteScrollSupport = nil
+                self.infiniteScrollProvider = nil
             }
         }
     }
@@ -194,5 +220,37 @@ private extension CollectionViewDiffableDataSource {
         public required init?(coder: NSCoder) {
             fatalError("not implemented")
         }
+    }
+}
+
+//MARK: PullToRefreshProvider
+
+@available(iOS 14, *)
+private extension CollectionViewDiffableDataSource {
+    
+    func handlePullToRefresh() {
+        guard let provider = self.pullToRefreshProvider else { return }
+        provider.fetchHandler { [weak self] handler in
+            guard let self = self else { return }
+            var snapshot = self.snapshot()
+            handler(&snapshot)
+            self.collectionView.refreshControl?.endRefreshing()
+            /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
+                self.apply(snapshot, animatingDifferences: true)
+            }
+        }
+    }
+    
+    func prepareForPullToRefresh() {
+        guard let provider = self.pullToRefreshProvider else {
+            self.collectionView.refreshControl = nil
+            return
+        }
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = provider.tintColor
+        refreshControl.addTarget(self, action: #selector(_handlePullToRefresh), for: .valueChanged)
+        self.collectionView.refreshControl = refreshControl
     }
 }
