@@ -65,18 +65,8 @@ public class CollectionViewDiffableDataSource<Section: Hashable, Item: Collectio
     
     // MARK: Actions
     
-    @objc private func handlePullToRefresh() {
-        guard let provider = self.pullToRefreshProvider else { return }
-        provider.fetchHandler { [weak self] handler in
-            guard let self = self else { return }
-            var snapshot = self.snapshot()
-            handler(&snapshot)
-            self.collectionView.refreshControl?.endRefreshing()
-            /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-                self.apply(snapshot, animatingDifferences: true)
-            }
-        }
+    @objc private func _handlePullToRefresh() {
+        handlePullToRefresh()
     }
 }
 
@@ -238,6 +228,20 @@ private extension CollectionViewDiffableDataSource {
 @available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     
+    func handlePullToRefresh() {
+        guard let provider = self.pullToRefreshProvider else { return }
+        provider.fetchHandler { [weak self] handler in
+            guard let self = self else { return }
+            var snapshot = self.snapshot()
+            handler(&snapshot)
+            self.collectionView.refreshControl?.endRefreshing()
+            /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
+                self.apply(snapshot, animatingDifferences: true)
+            }
+        }
+    }
+    
     func prepareForPullToRefresh() {
         guard let provider = self.pullToRefreshProvider else {
             self.collectionView.refreshControl = nil
@@ -246,7 +250,7 @@ private extension CollectionViewDiffableDataSource {
         
         let refreshControl = UIRefreshControl()
         refreshControl.tintColor = provider.tintColor
-        refreshControl.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(_handlePullToRefresh), for: .valueChanged)
         self.collectionView.refreshControl = refreshControl
     }
 }
