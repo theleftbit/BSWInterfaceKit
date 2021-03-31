@@ -5,7 +5,7 @@ import UIKit
 /// - Pull to refresh ☑️
 /// - Paging ☑️
 /// - Empty View ☑️
-/// - Horizontal Scroll
+/// - Horizontal Scroll ☑️
 /// Reorder and SupplementaryView are handled by `UICollectionViewDiffableDataSource`
 @available(iOS 14.0, *)
 public class CollectionViewDiffableDataSource<Section: Hashable, Item: CollectionViewDiffableItemWithLoading>:
@@ -14,8 +14,10 @@ public class CollectionViewDiffableDataSource<Section: Hashable, Item: Collectio
     private weak var collectionView: UICollectionView!
     private var offsetObserver: NSKeyValueObservation?
     private var emptyView: UIView?
-
-    public override init(collectionView: UICollectionView, cellProvider: @escaping UICollectionViewDiffableDataSource<Section, Item>.CellProvider) {
+    public let scrollDirection: UICollectionView.ScrollDirection
+    
+    public init(collectionView: UICollectionView, scrollDirection: UICollectionView.ScrollDirection = .vertical, cellProvider: @escaping UICollectionViewDiffableDataSource<Section, Item>.CellProvider) {
+        self.scrollDirection = scrollDirection
         super.init(collectionView: collectionView) { (cv, indexPath, item) -> UICollectionViewCell? in
             if item.isLoading {
                 let loadingRegistration = UICollectionView.CellRegistration<LoadingCell, Item> { (cell, _, _) in
@@ -154,11 +156,23 @@ private extension CollectionViewDiffableDataSource {
     
         offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
             guard let self = self else { return }
-            let offsetY = cv.contentOffset.y
-            let contentHeight = cv.contentSize.height
-            guard offsetY > 0, contentHeight > 0 else { return }
-            if offsetY > contentHeight - cv.frame.size.height {
-                self.requestNextInfiniteScrollPage()
+            switch self.scrollDirection {
+            case .vertical:
+                let offsetY = cv.contentOffset.y
+                let contentHeight = cv.contentSize.height
+                guard offsetY > 0, contentHeight > 0 else { return }
+                if offsetY > contentHeight - cv.frame.size.height {
+                    self.requestNextInfiniteScrollPage()
+                }
+            case .horizontal:
+                let offsetX = cv.contentOffset.x
+                let contentWidth = cv.contentSize.width
+                guard offsetX > 0, contentWidth > 0 else { return }
+                if offsetX > contentWidth - cv.frame.size.width {
+                    self.requestNextInfiniteScrollPage()
+                }
+            @unknown default:
+                fatalError()
             }
         })
     }
