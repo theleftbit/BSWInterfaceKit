@@ -1,25 +1,28 @@
 
 import UIKit
 
+/**
+ This is a `CollectionViewDiffableDataSource`
+ that adds a simple way to support for infiniteScroll.
+ ```
+ dataSource.infiniteScrollProvider = .init(fetchHandler: { completion in
+    completion({ snapshot in
+        snapshot.appendItems([.foo, .bar], toSection: .main)
+        return true
+    })
+ })
+  ```
+ */
 @available(iOS 14.0, *)
-open class PagingCollectionViewDataSource<Section: Hashable, Item: PagingCollectionViewItem, LoadingCell>:
-    CollectionViewDiffableDataSource<Section, Item> where LoadingCell : InfiniteLoadingCollectionViewCell {
+open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: PagingCollectionViewItem>:
+    CollectionViewDiffableDataSource<Section, Item> {
         
     private var offsetObserver: NSKeyValueObservation?
     public let scrollDirection: UICollectionView.ScrollDirection
 
     public init(collectionView: UICollectionView, scrollDirection: UICollectionView.ScrollDirection = .vertical, cellProvider: @escaping UICollectionViewDiffableDataSource<Section, Item>.CellProvider) {
-        let loadingRegistration = UICollectionView.CellRegistration<LoadingCell, Item> { (cell, _, _) in
-            cell.startAnimating()
-        }
         self.scrollDirection = scrollDirection
-        super.init(collectionView: collectionView) { (cv, indexPath, item) -> UICollectionViewCell? in
-            if item.isLoading {
-                return cv.dequeueConfiguredReusableCell(using: loadingRegistration, for: indexPath, item: item)
-            } else {
-                return cellProvider(cv, indexPath, item)
-            }
-        }
+        super.init(collectionView: collectionView, cellProvider: cellProvider)
     }
     
     public var infiniteScrollProvider: InfiniteScrollProvider? {
@@ -29,14 +32,17 @@ open class PagingCollectionViewDataSource<Section: Hashable, Item: PagingCollect
     }
 }
 
-
+/// Represents an Item that can be represented on a
+/// `PagingCollectionViewDiffableDataSource`
+/// forcing that Item to accomodate a `loading` option,
+/// which will be displayed during paging
 public protocol PagingCollectionViewItem: Hashable {
     var isLoading: Bool { get }
     static func loadingItem() -> Self
 }
 
 @available(iOS 14, *)
-public extension PagingCollectionViewDataSource {
+public extension PagingCollectionViewDiffableDataSource {
     struct InfiniteScrollProvider {
         /// Sends the user a snapshot to perform the changes and
         /// the user must return a Bool indicating if more pages are available
@@ -49,7 +55,10 @@ public extension PagingCollectionViewDataSource {
             self.fetchHandler = fetchHandler
         }
     }
+}
 
+@available(iOS 14, *)
+private extension PagingCollectionViewDiffableDataSource {
     func prepareForInfiniteScroll() {
         guard let _ = self.infiniteScrollProvider else {
             offsetObserver = nil
