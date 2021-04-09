@@ -8,7 +8,6 @@
 import UIKit
 import BSWFoundation
 
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewCell>: NSObject, UICollectionViewDataSource {
     
     public private(set) var data: [Cell.VM]
@@ -338,7 +337,6 @@ public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewC
 
 //MARK: - Edit Support
 
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public enum CollectionViewEditActionKind<Model> {
     case insert(item: Model, atIndexPath: IndexPath)
     case remove(fromIndexPath: IndexPath)
@@ -348,7 +346,6 @@ public enum CollectionViewEditActionKind<Model> {
 
 //MARK: - Reorder Support
 
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public struct CollectionViewReorderSupport<Model> {
     public typealias DidMoveItemHandler = ((_ from: IndexPath, _ to: IndexPath, _ movedItem: Model) -> Void)
     public typealias CanMoveItemHandler = ((IndexPath) -> Bool)
@@ -365,7 +362,6 @@ public struct CollectionViewReorderSupport<Model> {
 //MARK: - Pull to Refresh Support
 
 @available(tvOS, unavailable)
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public struct CollectionViewPullToRefreshSupport<Model> {
     public enum Behavior {
         case replace([Model])
@@ -384,7 +380,6 @@ public struct CollectionViewPullToRefreshSupport<Model> {
 
 //MARK: - SupplementaryViewSupport
 
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public struct CollectionViewSupplementaryViewSupport {
     
     public typealias ConfigureHeader = (UICollectionReusableView) -> ()
@@ -404,12 +399,10 @@ public struct CollectionViewSupplementaryViewSupport {
 
 //MARK: - Infinite Scroll support
 
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public protocol CollectionViewInfiniteFooter: UICollectionReusableView {
     func startAnimating()
 }
 
-@available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to CollectionViewDiffableDataSource")
 public struct CollectionViewInfiniteScrollSupport<Model> {
     public struct FetchResult {
         public let newDataAvailable: [Model]?
