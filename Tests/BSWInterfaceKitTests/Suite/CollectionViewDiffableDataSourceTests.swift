@@ -32,7 +32,7 @@ private class ViewController: UIViewController {
 @available(iOS 14.0, *)
 private class MockCollectionView: UICollectionView {
     
-    var diffDataSource: PagingCollectionViewDataSource<Section, Item, InfiniteLoadingCollectionViewCell>!
+    var diffDataSource: CollectionViewDiffableDataSource<Section, Item>!
 
     init() {
         let columnLayout = ColumnFlowLayout()
@@ -49,7 +49,7 @@ private class MockCollectionView: UICollectionView {
             return cell
         }
         
-        diffDataSource = PagingCollectionViewDataSource.init(collectionView: self, cellProvider: { (cv, index, item) -> UICollectionViewCell? in
+        diffDataSource = CollectionViewDiffableDataSource(collectionView: self, cellProvider: { (cv, index, item) -> UICollectionViewCell? in
             let cellRegistration = UICollectionView.CellRegistration<PolaroidCollectionViewCell, Item> { cell, indexPath, item in
                 guard case .content(let vm) = item else { fatalError() }
                 cell.configureFor(viewModel: vm)
