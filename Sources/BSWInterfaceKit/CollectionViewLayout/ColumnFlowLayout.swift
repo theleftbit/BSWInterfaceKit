@@ -79,8 +79,8 @@ open class ColumnFlowLayout: UICollectionViewLayout {
         let columnWidth = (availableWidth / CGFloat(maxNumColumns)).rounded(.down)
         let numberOfColumns = Int(availableWidth / columnWidth)
         let cellWidth = (availableWidth - CGFloat(numberOfColumns - 1)*itemSpacing)/CGFloat(numberOfColumns)
-        let numberOfItems = cv.numberOfItems(inSection: 0)
-        guard numberOfColumns > 0 else {
+        let numberOfSections = cv.numberOfSections
+        guard numberOfColumns > 0, numberOfSections > 0 else {
             /// The `availableWidth` is lower than the `minColumnWidth`, giving up
             return
         }
@@ -97,7 +97,7 @@ open class ColumnFlowLayout: UICollectionViewLayout {
             }
             return offsets
         }()
-
+        let numberOfItems = cv.numberOfItems(inSection: 0)
         let shouldShowAccesoryViews: Bool = {
             if numberOfItems > 0 {
                 return true

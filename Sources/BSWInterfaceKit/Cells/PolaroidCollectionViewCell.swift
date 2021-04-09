@@ -12,7 +12,7 @@ import UIKit
 open class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
     //MARK: ViewModel
-    public struct VM {
+    public struct VM: Hashable {
         public let id: Int?
         public let cellImage: Photo
         public let cellTitle: NSAttributedString
