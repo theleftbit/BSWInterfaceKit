@@ -7,6 +7,7 @@
 import BSWInterfaceKit
 import UIKit
 
+@available(iOS 13, *)
 class ProfilePhotoPickerCollectionViewTests: BSWSnapshotTest {
 
     var photoPicker: ProfilePhotoPickerCollectionView!

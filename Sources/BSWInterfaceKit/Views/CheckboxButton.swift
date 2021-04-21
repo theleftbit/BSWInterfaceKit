@@ -7,7 +7,7 @@
 import UIKit
 
 /// Use this button on your app to add a "Checkbox" like UI.
-/// To customize it's look and feel, please use `Appereance`
+/// To customize it's look and feel, please use `Appearance`
 /// to edit the color for the unselected and selected state. You could
 /// also provide your own custom images but this is not encouraged
 /// since it's better be consistent design with the OS.
