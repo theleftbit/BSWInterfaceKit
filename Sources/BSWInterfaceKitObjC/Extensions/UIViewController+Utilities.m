@@ -92,7 +92,6 @@
     UICollectionView *collectionView = (UICollectionView *)firstView;
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         [[collectionView collectionViewLayout] invalidateLayout];
-        [collectionView reloadData];
     } completion:nil];
 }
 

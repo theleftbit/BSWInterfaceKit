@@ -94,10 +94,11 @@ extension UIImageView {
     }
     
     public static func prefetchImagesAtURL(_ urls: [URL]) {
-        preheater.startPreheating(with: urls)
+        guard ProcessInfo.processInfo.isLowPowerModeEnabled == false else { return }
+        preheater.startPrefetching(with: urls)
     }
 }
 
-private let preheater = Nuke.ImagePreheater(destination: .diskCache)
+private let preheater = Nuke.ImagePrefetcher(destination: .diskCache)
 
 #endif
