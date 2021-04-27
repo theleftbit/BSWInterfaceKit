@@ -47,13 +47,14 @@ public enum PhotoPickerViewModel {
     }
 }
 
-public protocol ProfilePhotoPickerDelegate: class {
+public protocol ProfilePhotoPickerDelegate: AnyObject {
     func userAddedProfilePicture(_ url: URL, handler: @escaping (((Progress, UIImage)?) -> Void)) -> Void
     func userDeletedProfilePictureAtIndex(_ index: Int)
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
 
 @available(tvOS, unavailable)
+@available(iOS 13, *)
 public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {
@@ -234,10 +235,12 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
     }
 }
 
-private protocol ProfilePhotoPickerCollectionViewCellDelegate: class {
+@available(iOS 13.0, *)
+private protocol ProfilePhotoPickerCollectionViewCellDelegate: AnyObject {
     func didTapOnProfilePhotoCell(_ cell: ProfilePhotoPickerCollectionViewCell)
 }
 
+@available(iOS 13.0, *)
 private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewModelReusable {
     
     enum Constants {
@@ -304,7 +307,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
             spinner.stopAnimating()
             imageView.image = nil
             imageView.backgroundColor = .lightGray
-            accesoryView.setImage(UIImage.templateImage(.plusRound), for: .normal)
+            accesoryView.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         case .uploading(_, let image):
             spinner.startAnimating()
             imageView.image = image
@@ -313,7 +316,7 @@ private class ProfilePhotoPickerCollectionViewCell: UICollectionViewCell, ViewMo
         case .filled(let photo):
             spinner.stopAnimating()
             imageView.setPhoto(photo)
-            accesoryView.setImage(UIImage.templateImage(.cancelRound), for: .normal)
+            accesoryView.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
         }
     }
     

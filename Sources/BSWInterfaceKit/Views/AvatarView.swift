@@ -7,6 +7,7 @@
 import UIKit
 
 @objc(BSWAvatarView)
+@available(iOS 13, *)
 public class AvatarView: UIView {
     
     public let size: Size
@@ -51,7 +52,7 @@ public class AvatarView: UIView {
     private var tapRecognizer: UITapGestureRecognizer?
     private let cameraImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage.templateImage(.camera).withRenderingMode(.alwaysTemplate)
+        imageView.image = UIImage.init(systemName: "camera")
         imageView.tintColor = .white
         imageView.contentMode = .scaleAspectFit
         return imageView

@@ -10,7 +10,7 @@ import Task
 
 //MARK:- Protocols
 
-public protocol ViewModelConfigurable: class {
+public protocol ViewModelConfigurable: AnyObject {
     associatedtype VM
     func configureFor(viewModel: VM)
 }

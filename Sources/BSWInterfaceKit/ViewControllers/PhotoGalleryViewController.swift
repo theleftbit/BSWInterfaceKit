@@ -6,10 +6,12 @@
 
 import UIKit
 
-public protocol PhotoGalleryViewControllerDelegate: class {
+@available(iOS 13, *)
+public protocol PhotoGalleryViewControllerDelegate: AnyObject {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }
 
+@available(iOS 13, *)
 public final class PhotoGalleryViewController: UIViewController {
     
     public enum Appearance {
@@ -55,17 +57,9 @@ public final class PhotoGalleryViewController: UIViewController {
         
         //Add the close button
         let closeButton: UIButton = {
-            if #available(iOS 13.0, tvOS 13.0, *) {
-                let closeButton = UIButton.systemButton(with: UIImage.templateImage(.close), target: self, action: #selector(onCloseButton))
-                closeButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(textStyle: .largeTitle, scale: .small), forImageIn: .normal)
-                return closeButton
-            } else {
-                let closeButton = UIButton(type: .custom)
-                closeButton.addTarget(self, action: #selector(onCloseButton), for: .touchDown)
-                let image = UIImage.templateImage(.close).withRenderingMode(.alwaysTemplate)
-                closeButton.setImage(image, for: .normal)
-                return closeButton
-            }
+            let closeButton = UIButton.systemButton(with: UIImage(systemName: "xmark")!, target: self, action: #selector(onCloseButton))
+            closeButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(textStyle: .largeTitle, scale: .small), forImageIn: .normal)
+            return closeButton
         }()
 
         closeButton.tintColor = Appearance.TintColor
@@ -110,9 +104,9 @@ public final class PhotoGalleryViewController: UIViewController {
     }
 }
 
+@available(iOS 13.0, *)
 extension PhotoGalleryViewController: UIAdaptivePresentationControllerDelegate {
     
-    @available(iOS 13.0, *)
     public func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }

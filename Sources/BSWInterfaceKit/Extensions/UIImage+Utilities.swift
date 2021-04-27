@@ -9,30 +9,6 @@ import UIKit
 import BSWInterfaceKitObjC
 
 public extension UIImage {
-    
-    enum Template: String {
-        case plusRound = "plus.circle"
-        case cancelRound = "xmark.circle"
-        case close = "xmark"
-        case camera = "camera"
-        case rectangle = "rectangle.fill"
-        case checkmark = "checkmark"
-    }
-    
-    /**
-     Generates an UIImage a template image hosted by BSWInterfaceKit
-     
-     - parameter template: The template image
-     
-     - returns: The UIImage based on the template
-     */
-    static func templateImage(_ template: Template) -> UIImage {
-        if #available(iOS 13.0, tvOS 13.0, *) {
-            return UIImage.interfaceKitImageNamed(template.rawValue)!
-        } else {
-            return UIImage()
-        }
-    }
 
     /**
      Generates an UIImage from a CAGradientLayer
@@ -76,15 +52,6 @@ public extension UIImage {
         }
     }
     
-    private class func interfaceKitImageNamed(_ name: String, compatibleWithTraitCollection: UITraitCollection? = nil) -> UIImage? {
-        if #available(iOS 13.0, tvOS 13.0, *) {
-            return UIImage(systemName: name, compatibleWith: compatibleWithTraitCollection)
-        } else {
-            let bundle = Bundle.module
-            return UIImage(named: name, in: bundle, compatibleWith: compatibleWithTraitCollection)
-        }
-    }
-
     private func modifiedImage( draw: (CGContext, CGRect) -> ()) -> UIImage {
         
         // using scale correctly preserves retina images
