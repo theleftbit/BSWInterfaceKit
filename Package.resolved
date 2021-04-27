@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
           "branch": null,
-          "revision": "31e716f0e6a9c652d813073c0f84ae00327ae837",
-          "version": "4.1.4"
+          "revision": "7fe3f7c680ca6bff93e892f40fecc4302152f7f6",
+          "version": "4.2.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/theleftbit/Deferred.git",
         "state": {
           "branch": null,
-          "revision": "736f09b1792609e5e5f494a5dfd3dc8abc6ebdeb",
-          "version": "4.2.0"
+          "revision": "8d601f0597135179a4b2f72b99fd196e6067dabe",
+          "version": "4.2.1"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess.git",
         "state": {
           "branch": null,
-          "revision": "3d0ea2c0806791abcc5d7f0d9f62f1cfd4a7264d",
-          "version": "4.2.0"
+          "revision": "84e546727d66f1adc5439debad16270d0fdd04e7",
+          "version": "4.2.2"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
           "branch": null,
-          "revision": "2fd91357e90efe82bfa6845d1e7d5bc2f5025d35",
-          "version": "1.8.1"
+          "revision": "c466812aa2e22898f27557e2e780d3aad7a27203",
+          "version": "1.8.2"
         }
       }
     ]

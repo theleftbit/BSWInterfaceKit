@@ -5,6 +5,7 @@ import UIKit
 import ObjectiveC
 import BSWFoundation
 
+@available(iOS 13.0, *)
 public extension UICollectionViewCell {
 
     enum WiggleAppearance {
@@ -35,7 +36,7 @@ public extension UICollectionViewCell {
         } set {
             if newValue {
                 startWiggling()
-                let buttonImage = WiggleAppearance.DeleteButtonImage ?? UIImage.templateImage(.cancelRound)
+                let buttonImage = WiggleAppearance.DeleteButtonImage ?? UIImage(systemName: "xmark.circle")!
                 let removeButton = UIButton(type: .custom)
                 removeButton.tag = WiggleAppearance.DeleteButtonTag
                 removeButton.addTarget(self, action: #selector(onDeleteButtonPressed), for: .touchDown)
