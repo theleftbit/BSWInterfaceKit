@@ -21,7 +21,7 @@ let package = Package(
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.2"),
         .package(name: "Deferred", url: "https://github.com/theleftbit/Deferred.git", from: "4.2.0"),
         .package(name: "BSWFoundation", url: "https://github.com/theleftbit/BSWFoundation.git", from: "4.2.0"),
-        .package(url: "https://github.com/kean/Nuke.git", from: "9.5.0"),
+        .package(name: "Nuke", url: "https://github.com/kean/Nuke.git", from: "10.2.0"),
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
