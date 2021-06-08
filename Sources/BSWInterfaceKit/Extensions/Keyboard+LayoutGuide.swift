@@ -28,19 +28,28 @@ public extension UIView {
             #if targetEnvironment(macCatalyst)
             return self.safeAreaLayoutGuide
             #else
+            #if swift(>=5.5) /// Let's assume Swift 5.5 ships with iOS 15 SDK
             if #available(iOS 15, *) {
                 return self.keyboardLayoutGuide
+            } else {
+                return self.getCustomKeybardLayoutGuide()
             }
-            if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
-                return obj
-            }
-            let new = KeyboardLayoutGuide()
-            addLayoutGuide(new)
-            new.setUp()
-            objc_setAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide, new as Any, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return new
+            #else
+            return self.getCustomKeybardLayoutGuide()
+            #endif
             #endif
         }
+    }
+    
+    private func getCustomKeybardLayoutGuide() -> UILayoutGuide {
+        if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
+            return obj
+        }
+        let new = KeyboardLayoutGuide()
+        addLayoutGuide(new)
+        new.setUp()
+        objc_setAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide, new as Any, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        return new
     }
 }
 
