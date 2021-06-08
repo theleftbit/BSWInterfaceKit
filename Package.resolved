@@ -33,12 +33,12 @@
         "repositoryURL": "https://github.com/kean/Nuke.git",
         "state": {
           "branch": null,
-          "revision": "200016df418ed8dc70ba918d52c29634f434541c",
-          "version": "9.5.0"
+          "revision": "35cd3fa3bcea8becf826d9610c1f5bba8f57b728",
+          "version": "10.2.0"
         }
       },
       {
-        "package": "SnapshotTesting",
+        "package": "swift-snapshot-testing",
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
           "branch": null,
