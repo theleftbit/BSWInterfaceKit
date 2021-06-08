@@ -23,21 +23,33 @@ public extension UIView {
     
     /// A layout guide representing the inset for the keyboard.
     /// Use this layout guide’s top anchor to create constraints pinning to the top of the keyboard.
-    var keyboardLayoutGuide: UILayoutGuide {
+    var bswKeyboardLayoutGuide: UILayoutGuide {
         get {
             #if targetEnvironment(macCatalyst)
             return self.safeAreaLayoutGuide
             #else
-            if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
-                return obj
+            #if swift(>=5.5) /// Let's assume Swift 5.5 ships with iOS 15 SDK
+            if #available(iOS 15, *) {
+                return self.keyboardLayoutGuide
+            } else {
+                return self.getCustomKeybardLayoutGuide()
             }
-            let new = KeyboardLayoutGuide()
-            addLayoutGuide(new)
-            new.setUp()
-            objc_setAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide, new as Any, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return new
+            #else
+            return self.getCustomKeybardLayoutGuide()
+            #endif
             #endif
         }
+    }
+    
+    private func getCustomKeybardLayoutGuide() -> UILayoutGuide {
+        if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
+            return obj
+        }
+        let new = KeyboardLayoutGuide()
+        addLayoutGuide(new)
+        new.setUp()
+        objc_setAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide, new as Any, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        return new
     }
 }
 
