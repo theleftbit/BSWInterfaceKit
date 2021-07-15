@@ -16,6 +16,7 @@ public enum ButtonTitle {
 public typealias ButtonActionHandler = () -> ()
 
 /// Describes a button look and it's `actionHandler`
+@available(iOSApplicationExtension, unavailable)
 public struct ButtonConfiguration {
     public let buttonTitle: ButtonTitle
     public let tintColor: UIColor?
@@ -62,6 +63,7 @@ private class ActionBlockWrapper : NSObject {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 extension UIButton {
     
     private struct AssociatedObjects {

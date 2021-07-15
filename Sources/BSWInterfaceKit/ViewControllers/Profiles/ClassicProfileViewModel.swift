@@ -6,6 +6,7 @@
 
 import UIKit
 
+@available(iOSApplicationExtension, unavailable)
 public struct ClassicProfileViewModel {
     public let photos: [Photo]
     public let titleInfo: NSAttributedString
@@ -22,6 +23,7 @@ public struct ClassicProfileViewModel {
 
 // MARK: - Photo handling
 
+@available(iOSApplicationExtension, unavailable)
 extension ClassicProfileViewModel {
     func movingPhotoAtIndex(_ index: Int, toIndex: Int) -> ClassicProfileViewModel {
         var photos = self.photos
@@ -48,6 +50,7 @@ extension ClassicProfileViewModel {
 
 // MARK: - Sample Profiles
 
+@available(iOSApplicationExtension, unavailable)
 extension ClassicProfileViewModel {
     public static func buffon() -> ClassicProfileViewModel {
         return ClassicProfileViewModel(

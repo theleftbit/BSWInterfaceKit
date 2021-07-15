@@ -2,15 +2,18 @@
 
 import UIKit
 
+@available(iOSApplicationExtension, unavailable)
 public protocol InAppNotificationType {
     var backgroundColor: UIColor { get }
     var image: UIImage? { get }
 }
 
+@available(iOSApplicationExtension, unavailable)
 public protocol InAppNotificationDismissable {
     func dismissNotification(animated: Bool)
 }
 
+@available(iOSApplicationExtension, unavailable)
 public class InAppNotifications {
     
     // MARK: - Static notification types
@@ -58,6 +61,7 @@ public class InAppNotifications {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 private struct InAppNotificationTypeDefinition: InAppNotificationType {
     var backgroundColor: UIColor
     var image: UIImage?
@@ -73,6 +77,7 @@ private extension UIColor {
 }
 
 @objc(BSWInAppNotificationView)
+@available(iOSApplicationExtension, unavailable)
 private class InAppNotificationView: UIView, InAppNotificationDismissable {
     
     private let imageView: UIImageView = {

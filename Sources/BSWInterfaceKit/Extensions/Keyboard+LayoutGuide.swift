@@ -15,6 +15,7 @@ private class Keyboard {
     var currentHeight: CGFloat = 0
 }
 
+@available(iOSApplicationExtension, unavailable)
 public extension UIView {
     
     private struct AssociatedKeys {
@@ -41,6 +42,7 @@ public extension UIView {
         }
     }
     
+    @available(macCatalyst, unavailable)
     private func getCustomKeybardLayoutGuide() -> UILayoutGuide {
         if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
             return obj
@@ -53,6 +55,7 @@ public extension UIView {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 @available(macCatalyst, unavailable)
 open class KeyboardLayoutGuide: UILayoutGuide {
     
@@ -126,6 +129,7 @@ extension UILayoutGuide {
 }
 
 extension Notification {
+    @available(iOSApplicationExtension, unavailable)
     @available(macCatalyst, unavailable)
     var keyboardHeight: CGFloat? {
         guard let v = userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {

@@ -53,8 +53,9 @@ public protocol ProfilePhotoPickerDelegate: AnyObject {
     func userChangedPhotoArrangement(fromIndex index: Int, toIndex: Int)
 }
 
-@available(tvOS, unavailable)
 @available(iOS 13, *)
+@available(tvOS, unavailable)
+@available(iOSApplicationExtension, unavailable)
 public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout, ProfilePhotoPickerCollectionViewCellDelegate {
     
     enum Constants {

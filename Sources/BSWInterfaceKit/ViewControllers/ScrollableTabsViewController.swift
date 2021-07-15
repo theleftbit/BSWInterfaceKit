@@ -7,6 +7,7 @@
 import UIKit
 
 @objc(BSWScrollableTabsViewController)
+@available(iOSApplicationExtension, unavailable)
 public class ScrollableTabsViewController: UIViewController {
     
     public enum Appearance {
@@ -116,6 +117,7 @@ public class ScrollableTabsViewController: UIViewController {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 extension ScrollableTabsViewController: ScrollableTabHeaderSelectionDelegate, ScrollableTabContentSelectionDelegate {
     
     func selectTab(at index: Int, animated: Bool = true) {
@@ -175,7 +177,7 @@ private protocol ScrollableTabHeaderSelectionDelegate: AnyObject {
 }
 
 //MARK: DataSources
-
+@available(iOSApplicationExtension, unavailable)
 extension ScrollableTabsViewController {
     
     private class ContentDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -322,6 +324,7 @@ extension ScrollableTabsViewController {
 
 //MARK: Cells
 
+@available(iOSApplicationExtension, unavailable)
 extension ScrollableTabsViewController {
     
     @objc(BSWScrollableTabsViewControllerHeaderCell)

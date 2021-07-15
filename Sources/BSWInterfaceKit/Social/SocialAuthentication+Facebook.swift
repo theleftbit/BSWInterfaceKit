@@ -5,6 +5,7 @@
 
 import UIKit
 
+@available(iOSApplicationExtension, unavailable)
 extension SocialAuthenticationManager {
     public struct FacebookCredentials {
         public let appID: String
@@ -82,6 +83,7 @@ extension SocialAuthenticationManager {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationCredentials {
 
     public func createURLRequest(isSafariVC: Bool) -> URL {
