@@ -42,10 +42,9 @@
 
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
 
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-
     UIView *containerView = [transitionContext containerView];
-
+    containerView.userInteractionEnabled = NO;
+    
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIView *fromControllerView = [transitionContext viewForKey:UITransitionContextFromViewKey];
@@ -57,7 +56,7 @@
     backgroundView.backgroundColor = _fadeColor;
     [containerView addSubview:backgroundView];
 
-    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    UIWindow *keyWindow = [containerView window];
 
     if (_type == BSWZoomTransitionTypePresenting) {
         // Make sure the "to view" has been laid out if we're presenting. This needs
@@ -172,7 +171,7 @@
                          [clipView removeFromSuperview];
                          [fadeView removeFromSuperview];
                          
-                         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                         containerView.userInteractionEnabled = YES;
                          [transitionContext completeTransition:finished];
                      }];
 }
