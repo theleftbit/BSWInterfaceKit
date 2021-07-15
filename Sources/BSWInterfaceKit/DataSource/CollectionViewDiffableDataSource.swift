@@ -4,6 +4,7 @@ import UIKit
 /// This is a `UICollectionViewDiffableDataSource` that adds a
 /// simple way to Pull to Refresh and empty views.
 @available(iOS 14.0, *)
+@available(iOSApplicationExtension, unavailable)
 open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     UICollectionViewDiffableDataSource<Section, Item>  {
     
@@ -53,6 +54,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
 }
 
 @available(iOS 14, *)
+@available(iOSApplicationExtension, unavailable)
 extension CollectionViewDiffableDataSource {
     
     public struct PullToRefreshProvider {
@@ -69,6 +71,7 @@ extension CollectionViewDiffableDataSource {
 }
     
 @available(iOS 14, *)
+@available(iOSApplicationExtension, unavailable)
 private extension CollectionViewDiffableDataSource {
     
     func handlePullToRefresh() {
@@ -99,6 +102,7 @@ private extension CollectionViewDiffableDataSource {
 }
 
 @available(iOS 14, *)
+@available(iOSApplicationExtension, unavailable)
 private extension CollectionViewDiffableDataSource {
     func addEmptyView() {
         

@@ -8,6 +8,7 @@ import UIKit
 import Task
 import BSWFoundation
 
+@available(iOSApplicationExtension, unavailable)
 public enum ClassicProfileEditKind {
     case nonEditable
     case editable(UIBarButtonItem)
@@ -22,6 +23,7 @@ public enum ClassicProfileEditKind {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 open class ClassicProfileViewController: TransparentNavBarViewController, AsyncViewModelPresenter {
 
     public init(dataProvider: Task<ClassicProfileViewModel>) {
@@ -118,6 +120,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
 
 //MARK:- PhotoGalleryViewDelegate
 
+@available(iOSApplicationExtension, unavailable)
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     public func didTapPhotoAt(index: Int, fromView: UIView) {
         guard #available(iOS 13, *) else {
@@ -139,6 +142,7 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
 //MARK:- PhotoGalleryViewControllerDelegate
 
 @available(iOS 13, *)
+@available(iOSApplicationExtension, unavailable)
 extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int) {
         photoGallery.scrollToPhoto(atIndex: index)

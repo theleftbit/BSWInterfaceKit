@@ -16,6 +16,7 @@ public protocol PhotoGalleryViewDelegate: AnyObject {
 // MARK: - PhotoGalleryView
 
 @objc(BSWPhotoGalleryView)
+@available(iOSApplicationExtension, unavailable)
 final public class PhotoGalleryView: UIView {
     
     private let imageContentMode: UIView.ContentMode
@@ -115,6 +116,7 @@ final public class PhotoGalleryView: UIView {
 
 // MARK: UICollectionViewDelegate
 
+@available(iOSApplicationExtension, unavailable)
 extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -135,6 +137,7 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 extension PhotoGalleryView: UICollectionViewDataSourcePrefetching {
     public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         let models: [URL] = indexPaths

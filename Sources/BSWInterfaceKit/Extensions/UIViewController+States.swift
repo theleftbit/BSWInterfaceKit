@@ -8,6 +8,7 @@ import UIKit
 
 // MARK: - Error and Loading
 @nonobjc
+@available(iOSApplicationExtension, unavailable)
 extension UIViewController {
     
     public enum StateViewLayout {

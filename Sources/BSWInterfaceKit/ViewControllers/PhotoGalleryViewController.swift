@@ -7,11 +7,13 @@
 import UIKit
 
 @available(iOS 13, *)
+@available(iOSApplicationExtension, unavailable)
 public protocol PhotoGalleryViewControllerDelegate: AnyObject {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }
 
 @available(iOS 13, *)
+@available(iOSApplicationExtension, unavailable)
 public final class PhotoGalleryViewController: UIViewController {
     
     public enum Appearance {
@@ -105,6 +107,7 @@ public final class PhotoGalleryViewController: UIViewController {
 }
 
 @available(iOS 13.0, *)
+@available(iOSApplicationExtension, unavailable)
 extension PhotoGalleryViewController: UIAdaptivePresentationControllerDelegate {
     
     public func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {

@@ -5,6 +5,7 @@
 
 import UIKit
 
+@available(iOSApplicationExtension, unavailable)
 extension UITextField {
     
     static func autolayoutTextFieldWith(textStyle style: UIFont.TextStyle, placeholderText: String) -> UITextField {

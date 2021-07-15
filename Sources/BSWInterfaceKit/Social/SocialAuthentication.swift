@@ -10,12 +10,14 @@ import Deferred
 import Task
 import AuthenticationServices
  
+@available(iOSApplicationExtension, unavailable)
 public protocol SocialAuthenticationCredentials {
     func createURLRequest(isSafariVC: Bool) -> URL
     func extractResponseFrom(URLCallback: URL) -> SocialAuthenticationManager.LoginResponse?
 }
 
- public class SocialAuthenticationManager {
+@available(iOSApplicationExtension, unavailable)
+public class SocialAuthenticationManager {
 
     static public let manager = SocialAuthenticationManager()
     private var authSession: ASWebAuthenticationSession?
@@ -72,8 +74,9 @@ public protocol SocialAuthenticationCredentials {
     }
 }
 
- extension SocialAuthenticationManager {
-
+@available(iOSApplicationExtension, unavailable)
+extension SocialAuthenticationManager {
+    
     public enum SocialAuthenticationError: Swift.Error {
         case unknownResponse
         case ongoingLogin

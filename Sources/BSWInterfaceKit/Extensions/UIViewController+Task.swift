@@ -7,6 +7,7 @@ import UIKit
 import Task
 import BSWFoundation
 
+@available(iOSApplicationExtension, unavailable)
 public extension UIViewController {
 
     typealias TaskGenerator<T> = () -> (Task<T>)

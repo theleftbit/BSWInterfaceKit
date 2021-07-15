@@ -5,9 +5,9 @@
         "package": "BSWFoundation",
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
-          "branch": null,
-          "revision": "7fe3f7c680ca6bff93e892f40fecc4302152f7f6",
-          "version": "4.2.0"
+          "branch": "fixes-xcode-13",
+          "revision": "89ce0af660f567dbf4026c3e8c145158f19eed89",
+          "version": null
         }
       },
       {

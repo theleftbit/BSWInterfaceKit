@@ -14,6 +14,7 @@ import UIKit
   ```
  */
 @available(iOS 14.0, *)
+@available(iOSApplicationExtension, unavailable)
 open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: PagingCollectionViewItem>:
     CollectionViewDiffableDataSource<Section, Item> {
         
@@ -42,6 +43,7 @@ public protocol PagingCollectionViewItem: Hashable {
 }
 
 @available(iOS 14, *)
+@available(iOSApplicationExtension, unavailable)
 public extension PagingCollectionViewDiffableDataSource {
     struct InfiniteScrollProvider {
         /// Sends the user a snapshot to perform the changes and
@@ -58,6 +60,8 @@ public extension PagingCollectionViewDiffableDataSource {
 }
 
 @available(iOS 14, *)
+@available(iOSApplicationExtension, unavailable)
+
 private extension PagingCollectionViewDiffableDataSource {
     func prepareForInfiniteScroll() {
         guard let _ = self.infiniteScrollProvider else {

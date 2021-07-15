@@ -8,6 +8,7 @@
 import UIKit
 import BSWFoundation
 
+@available(iOSApplicationExtension, unavailable)
 open class TextStyler {
     
     // https://gist.github.com/zacwest/916d31da5d03405809c4

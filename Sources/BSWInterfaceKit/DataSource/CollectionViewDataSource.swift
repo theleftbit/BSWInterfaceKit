@@ -8,6 +8,7 @@
 import UIKit
 import BSWFoundation
 
+@available(iOSApplicationExtension, unavailable)
 public class CollectionViewDataSource<Cell:ViewModelReusable & UICollectionViewCell>: NSObject, UICollectionViewDataSource {
     
     public private(set) var data: [Cell.VM]

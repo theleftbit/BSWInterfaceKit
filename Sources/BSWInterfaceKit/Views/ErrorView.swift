@@ -8,6 +8,7 @@ import UIKit
 import BSWFoundation
 
 @objc(BSWErrorView)
+@available(iOSApplicationExtension, unavailable)
 open class ErrorView: UIStackView {
 
     public struct Configuration {

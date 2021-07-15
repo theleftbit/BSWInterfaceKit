@@ -8,6 +8,7 @@ import UIKit
 import BSWFoundation
 import Task
 
+@available(iOSApplicationExtension, unavailable)
 open class AsyncViewModelViewController<ViewModel>: UIViewController, AsyncViewModelPresenter {
 
     public init(dataProvider: Task<ViewModel>) {
