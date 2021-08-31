@@ -112,13 +112,13 @@ private extension PagingCollectionViewDiffableDataSource {
         startPaginating()
         infiniteScrollSupport.fetchHandler { [weak self] handler in
             guard let self = self else { return }
-            self.stopPaginating()
             var snapshot = self.snapshot()
             let shouldStopPaging = handler(&snapshot)
             self.apply(snapshot, animatingDifferences: true, completion: nil)
             if !shouldStopPaging {
                 self.infiniteScrollProvider = nil
             }
+            self.stopPaginating()
         }
     }
 }
