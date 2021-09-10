@@ -79,17 +79,13 @@ open class KeyboardLayoutGuide: UILayoutGuide {
             heightAnchor.constraint(equalToConstant: Keyboard.shared.currentHeight),
             leftAnchor.constraint(equalTo: view.leftAnchor),
             rightAnchor.constraint(equalTo: view.rightAnchor),
-            ])
-        let viewBottomAnchor = view.safeAreaLayoutGuide.bottomAnchor
-        bottomAnchor.constraint(equalTo: viewBottomAnchor).isActive = true
+            bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     @objc
     private func keyboardWillChangeFrame(_ note: Notification) {
-        if var height = note.keyboardHeight {
-            if height > 0 {
-                height -= (owningView?.safeAreaInsets.bottom)!
-            }
+        if let height = note.keyboardHeight {
             heightConstraint?.constant = height
             animate(note)
             Keyboard.shared.currentHeight = height
