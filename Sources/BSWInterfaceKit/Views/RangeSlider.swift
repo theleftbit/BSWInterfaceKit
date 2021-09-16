@@ -87,12 +87,20 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
     }
     
     private var lowerValue: Double = 0.2 {
-        didSet { updateLayerFrames() }
+        didSet {
+            updateLayerFrames()
+            sendActions(for: .valueChanged)
+        }
     }
     
     private var upperValue: Double = 0.8 {
-        didSet { updateLayerFrames() }
+        didSet {
+            updateLayerFrames()
+            sendActions(for: .valueChanged)
+        }
     }
+    
+    public var shouldSnapOnUnits: Bool = false
     
     private var minimumValue: Double = 0.0 {
         didSet { updateLayerFrames() }
@@ -150,16 +158,23 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         lowerThumbLayer.setNeedsDisplay()
         
         let upperThumbCenter = CGFloat(positionForValue(upperValue)+2)
-        upperThumbLayer.frame = CGRect(x: upperThumbCenter - thumbWidth / 2.0, y: -3.0,
-                                       width: thumbWidth, height: thumbWidth)
+        upperThumbLayer.frame = CGRect(x: upperThumbCenter - thumbWidth / 2.0, y: -3.0, width: thumbWidth, height: thumbWidth)
         upperThumbLayer.setNeedsDisplay()
         
         CATransaction.commit()
     }
     
     private func positionForValue(_ value: Double) -> Double {
-        return Double(bounds.width - thumbWidth) * (value - minimumValue) /
+        let maxWidth = Double(bounds.width - thumbWidth)
+        let position = maxWidth * (value - minimumValue) /
             (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
+        if shouldSnapOnUnits {
+            let distance = maxWidth/(maximumValue - minimumValue)
+            let retval = Double(Int(position/distance)) * distance
+            return retval
+        } else {
+            return position
+        }
     }
     
     private func boundValue(value: Double, toLowerValue lowerValue: Double, upperValue: Double) -> Double {
