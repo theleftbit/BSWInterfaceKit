@@ -30,7 +30,9 @@ public extension UIView {
             #else
             #if swift(>=5.5) /// Let's assume Swift 5.5 ships with iOS 15 SDK
             if #available(iOS 15, *) {
-                return self.keyboardLayoutGuide
+                /// For now this is not working for us.
+                //return self.keyboardLayoutGuide
+                return self.getCustomKeybardLayoutGuide()
             } else {
                 return self.getCustomKeybardLayoutGuide()
             }
