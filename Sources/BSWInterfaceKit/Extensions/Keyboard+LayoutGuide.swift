@@ -28,15 +28,7 @@ public extension UIView {
             #if targetEnvironment(macCatalyst)
             return self.safeAreaLayoutGuide
             #else
-            #if swift(>=5.5) /// Let's assume Swift 5.5 ships with iOS 15 SDK
-            if #available(iOS 15, *) {
-                return self.keyboardLayoutGuide
-            } else {
-                return self.getCustomKeybardLayoutGuide()
-            }
-            #else
             return self.getCustomKeybardLayoutGuide()
-            #endif
             #endif
         }
     }
