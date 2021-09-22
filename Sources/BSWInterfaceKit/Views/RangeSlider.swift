@@ -195,6 +195,14 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         return lowerThumbLayer.highlighted || upperThumbLayer.highlighted
     }
     
+    var minSeparation: CGFloat {
+        if shouldSnapOnUnits {
+            return 1
+        } else {
+            return (maximumValue - minimumValue)/100
+        }
+    }
+    
     override public func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         let location = touch.location(in: self)
         
@@ -205,11 +213,9 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         
         // 2. Update the values
         if lowerThumbLayer.highlighted {
-            lowerValue += deltaValue
-            lowerValue = boundValue(value: lowerValue, toLowerValue: minimumValue, upperValue: upperValue)
+            lowerValue = boundValue(value: lowerValue + deltaValue, toLowerValue: minimumValue, upperValue: upperValue - minSeparation)
         } else if upperThumbLayer.highlighted {
-            upperValue += deltaValue
-            upperValue = boundValue(value: upperValue, toLowerValue: lowerValue, upperValue: maximumValue)
+            upperValue = boundValue(value: upperValue + deltaValue, toLowerValue: lowerValue + minSeparation, upperValue: maximumValue)
         }
         return true
     }
