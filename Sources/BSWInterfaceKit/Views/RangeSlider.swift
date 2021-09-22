@@ -167,13 +167,14 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
     private func positionForValue(_ value: Double) -> Double {
         let maxWidth = Double(bounds.width - thumbWidth)
         let position = maxWidth * (value - minimumValue) /
-            (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
+            (maximumValue - minimumValue)
         if shouldSnapOnUnits {
             let distance = maxWidth/(maximumValue - minimumValue)
+            /// Normalize to the closest snap value
             let retval = Double(Int(position/distance)) * distance
-            return retval
+            return retval + Double(thumbWidth / 2.0)
         } else {
-            return position
+            return position + Double(thumbWidth / 2.0)
         }
     }
     
