@@ -110,17 +110,18 @@ private extension PagingCollectionViewDiffableDataSource {
         var startPagingSnapshot = self.snapshot()
         PagingCollectionViewDiffableDataSource
             .startPaginating(snapshot: &startPagingSnapshot)
-        self.apply(startPagingSnapshot, animatingDifferences: true, completion: nil)
-        
-        infiniteScrollSupport.fetchHandler { [weak self] handler in
-            guard let self = self else { return }
-            var finishPagingSnapshot = self.snapshot()
-            let shouldStopPaging = handler(&finishPagingSnapshot)
-            PagingCollectionViewDiffableDataSource
-                .stopPaginating(snapshot: &finishPagingSnapshot)
-            self.apply(finishPagingSnapshot, animatingDifferences: true, completion: nil)
-            if !shouldStopPaging {
-                self.infiniteScrollProvider = nil
+        self.apply(startPagingSnapshot, animatingDifferences: true) {
+
+            infiniteScrollSupport.fetchHandler { [weak self] handler in
+                guard let self = self else { return }
+                var finishPagingSnapshot = self.snapshot()
+                let shouldStopPaging = handler(&finishPagingSnapshot)
+                PagingCollectionViewDiffableDataSource
+                    .stopPaginating(snapshot: &finishPagingSnapshot)
+                self.apply(finishPagingSnapshot, animatingDifferences: true, completion: nil)
+                if !shouldStopPaging {
+                    self.infiniteScrollProvider = nil
+                }
             }
         }
     }
