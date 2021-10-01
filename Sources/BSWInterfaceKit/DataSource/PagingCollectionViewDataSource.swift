@@ -88,19 +88,15 @@ private extension PagingCollectionViewDiffableDataSource {
         })
     }
     
-    func startPaginating() {
-        var snapshot = self.snapshot()
+    static func startPaginating(snapshot: inout NSDiffableDataSourceSnapshot<Section, Item>) {
         guard let lastSection = snapshot.sectionIdentifiers.last else {
             return
         }
         snapshot.appendItems([Item.loadingItem()], toSection: lastSection)
-        self.apply(snapshot, animatingDifferences: true, completion: nil)
     }
     
-    func stopPaginating() {
-        var snapshot = self.snapshot()
+    static func stopPaginating(snapshot: inout NSDiffableDataSourceSnapshot<Section, Item>) {
         snapshot.deleteItems([Item.loadingItem()])
-        self.apply(snapshot, animatingDifferences: true, completion: nil)
     }
 
     var isRequestingNextPage: Bool {
@@ -109,16 +105,23 @@ private extension PagingCollectionViewDiffableDataSource {
 
     func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
-        startPaginating()
+        
+        /// Start paging
+        var startPagingSnapshot = self.snapshot()
+        PagingCollectionViewDiffableDataSource
+            .startPaginating(snapshot: &startPagingSnapshot)
+        self.apply(startPagingSnapshot, animatingDifferences: true, completion: nil)
+        
         infiniteScrollSupport.fetchHandler { [weak self] handler in
             guard let self = self else { return }
-            var snapshot = self.snapshot()
-            let shouldStopPaging = handler(&snapshot)
-            self.apply(snapshot, animatingDifferences: true, completion: nil)
+            var finishPagingSnapshot = self.snapshot()
+            let shouldStopPaging = handler(&finishPagingSnapshot)
+            PagingCollectionViewDiffableDataSource
+                .stopPaginating(snapshot: &finishPagingSnapshot)
+            self.apply(finishPagingSnapshot, animatingDifferences: true, completion: nil)
             if !shouldStopPaging {
                 self.infiniteScrollProvider = nil
             }
-            self.stopPaginating()
         }
     }
 }
