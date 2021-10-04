@@ -77,7 +77,7 @@ open class KeyboardLayoutGuide: UILayoutGuide {
     
     @objc
     private func keyboardWillChangeFrame(_ note: Notification) {
-        if let height = note.keyboardHeight {
+        if let height = note.keyboardHeight(onWindow: owningView?.window) {
             heightConstraint?.constant = height
             animate(note)
             Keyboard.shared.currentHeight = height
@@ -115,13 +115,13 @@ extension UILayoutGuide {
 
 extension Notification {
     @available(macCatalyst, unavailable)
-    var keyboardHeight: CGFloat? {
+    func keyboardHeight(onWindow w: UIWindow?) -> CGFloat? {
         guard let v = userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
             return nil
         }
         // Weirdly enough UIKeyboardFrameEndUserInfoKey doesn't have the same behaviour
         // in ios 10 or iOS 11 so we can't rely on v.cgRectValue.width
-        let screenHeight = UIApplication.shared.keyWindow?.bounds.height ?? UIScreen.main.bounds.height
+        let screenHeight = w?.bounds.height ?? UIScreen.main.bounds.height
         return screenHeight - v.cgRectValue.minY
     }
 }

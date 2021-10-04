@@ -174,7 +174,7 @@ private class InAppNotificationView: UIView, InAppNotificationDismissable {
     
     @objc internal func didRotate() {
         UIView.animate(withDuration: 0.2) {
-            let bounds = UIApplication.shared.keyWindow?.bounds ?? UIScreen.main.bounds
+            let bounds = self.window?.bounds ?? UIScreen.main.bounds
             self.center.x = bounds.width / 2
             self.center.y = self.topInset() + 10 + self.frame.height / 2
         }
