@@ -66,14 +66,13 @@
 
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
 
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-
     UIView *containerView = [transitionContext containerView];
 
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIView *fromControllerView = [transitionContext viewForKey:UITransitionContextFromViewKey];;
     UIView *toControllerView = [transitionContext viewForKey:UITransitionContextToViewKey];
+    fromControllerView.userInteractionEnabled = NO;
 
     // Setup a background view to prevent content from peeking through while our
     // animation is in progress
@@ -81,7 +80,7 @@
     backgroundView.backgroundColor = _fadeColor;
     [containerView addSubview:backgroundView];
 
-    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    UIWindow *keyWindow = [containerView window];
 
     if (_type == BSWZoomTransitionTypePresenting) {
         // Make sure the "to view" has been laid out if we're presenting. This needs
@@ -171,7 +170,7 @@
                              [fadeView removeFromSuperview];
                              [targetSnapshot removeFromSuperview];
 
-                             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                             fromControllerView.userInteractionEnabled = YES;
                              [transitionContext completeTransition:finished];
                          }];
     }
@@ -230,8 +229,7 @@
                              [fadeView removeFromSuperview];
                              [targetSnapshot removeFromSuperview];
                              
-                             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-                             
+                             fromControllerView.userInteractionEnabled = YES;
                              [transitionContext completeTransition:finished];
                          }];
     }
