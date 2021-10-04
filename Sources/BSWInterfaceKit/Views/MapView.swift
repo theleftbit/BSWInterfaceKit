@@ -39,7 +39,7 @@ public class MapView: UIImageView {
         options.scale = UIScreen.main.scale
         options.size = self.frame.size
         options.showsBuildings = true
-        options.showsPointsOfInterest = true
+        options.pointOfInterestFilter = .includingAll
         let snapshotter = MKMapSnapshotter(options: options)
         let rect = self.bounds
         snapshotter.start { (snapshot, error) in
