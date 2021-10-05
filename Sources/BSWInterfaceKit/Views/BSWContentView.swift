@@ -29,7 +29,7 @@ open class BSWContentView<T: UIContentConfiguration>: UIView, UIContentView {
     }
 }
 
-public extension BSWContentView where T: Hashable {
+public extension BSWContentView {
     static func defaultCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewCell, T> {
         return .init { cell, _, itemIdentifier in
             cell.contentConfiguration = itemIdentifier
