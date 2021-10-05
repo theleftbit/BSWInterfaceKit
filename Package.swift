@@ -6,9 +6,9 @@ import PackageDescription
 let package = Package(
     name: "BSWInterfaceKit",
     platforms: [
-        .iOS(.v12),
-        .macOS(.v10_15),
-        .tvOS(.v11)
+        .iOS(.v14),
+        .macOS(.v11),
+        .tvOS(.v14)
     ],
     products: [
         .library(
