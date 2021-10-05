@@ -15,7 +15,7 @@ import UIKit
 
 private class ViewController: UIViewController {
 
-    var dataSource: UICollectionViewDiffableDataSource<Section, CustomCellVM>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, CustomCellContentConfiguration>!
     
     override func loadView() {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: {
@@ -46,7 +46,7 @@ private class ViewController: UIViewController {
         case main
     }
     
-    struct CustomCellVM: UIContentConfiguration, Hashable {
+    struct CustomCellContentConfiguration: UIContentConfiguration, Hashable {
         
         init(title: String, state: UICellConfigurationState? = nil) {
             self.title = title
@@ -60,7 +60,7 @@ private class ViewController: UIViewController {
             CustomCell(configuration: self)
         }
         
-        func updated(for state: UIConfigurationState) -> CustomCellVM {
+        func updated(for state: UIConfigurationState) -> CustomCellContentConfiguration {
             var mutableCopy = self
             if let cellState = state as? UICellConfigurationState {
                 mutableCopy.state =  cellState
@@ -69,12 +69,12 @@ private class ViewController: UIViewController {
         }
     }
 
-    class CustomCell: BSWContentView<CustomCellVM> {
+    class CustomCell: BSWContentView<CustomCellContentConfiguration> {
         
         let label = UILabel()
         let imageView = UIImageView(image: UIImage(systemName: "checkmark"))
 
-        override init(configuration: CustomCellVM) {
+        override init(configuration: CustomCellContentConfiguration) {
             super.init(configuration: configuration)
             backgroundColor = .systemBackground
             let stackView = UIStackView(arrangedSubviews: [
@@ -91,7 +91,7 @@ private class ViewController: UIViewController {
             fatalError("init(coder:) has not been implemented")
         }
         
-        override func configureFor(configuration: CustomCellVM) {
+        override func configureFor(configuration: CustomCellContentConfiguration) {
             label.text = configuration.title
             if let cellState = configuration.state {
                 backgroundColor = cellState.isHighlighted ? .systemGray3 : .systemBackground

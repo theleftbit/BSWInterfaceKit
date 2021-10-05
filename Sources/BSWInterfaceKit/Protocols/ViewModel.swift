@@ -10,17 +10,19 @@ import Task
 
 //MARK:- Protocols
 
-@available(*, deprecated, message: "Plase use BSWContentView instead")
+@available(*, deprecated, message: "Please use BSWContentView instead")
 public protocol ViewModelConfigurable: AnyObject {
     associatedtype VM
     func configureFor(viewModel: VM)
 }
 
+@available(*, deprecated, message: "Please use BSWContentView instead")
 public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }
 }
 
+@available(*, deprecated, message: "Please use BSWContentView instead")
 public protocol AsyncViewModelPresenter: ViewModelConfigurable {
     var dataProvider: Task<VM>! { get set }
 }
