@@ -10,6 +10,7 @@ import Task
 
 //MARK:- Protocols
 
+@available(*, deprecated, message: "Plase use BSWContentView instead")
 public protocol ViewModelConfigurable: AnyObject {
     associatedtype VM
     func configureFor(viewModel: VM)
