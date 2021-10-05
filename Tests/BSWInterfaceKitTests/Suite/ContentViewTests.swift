@@ -37,6 +37,7 @@ private class ViewController: UIViewController {
         ], toSection: .main)
         dataSource.apply(snapshot)
         
+        collectionView.selectItem(at: .init(item: 0, section: 0), animated: false, scrollPosition: .init())
         collectionView.allowsMultipleSelection = true
     }
         
