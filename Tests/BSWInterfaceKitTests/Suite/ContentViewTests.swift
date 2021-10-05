@@ -22,7 +22,7 @@ private class ViewController: UIViewController {
             config.backgroundColor = .systemGroupedBackground
             return UICollectionViewCompositionalLayout.list(using: config)
         }())
-        let cellProvider: UICollectionView.BSWDefaultCellRegistration<CustomCellVM> = .defaultRegistration()
+        let cellProvider = CustomCell.defaultCellRegistration()
         dataSource = .init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             return collectionView.dequeueConfiguredReusableCell(using: cellProvider, for: indexPath, item: itemIdentifier)
         }

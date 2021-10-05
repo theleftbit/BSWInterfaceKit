@@ -1,17 +1,6 @@
+#if canImport(UIKit)
 
 import UIKit
-
-extension UICollectionView {
-    public typealias BSWDefaultCellRegistration<Item: UIContentConfiguration> = UICollectionView.CellRegistration<UICollectionViewCell, Item>
-}
-
-extension UICollectionView.CellRegistration {
-    public static func defaultRegistration<Item: UIContentConfiguration>() -> UICollectionView.CellRegistration<UICollectionViewCell, Item> {
-        return .init { cell, _, itemIdentifier in
-            cell.contentConfiguration = itemIdentifier
-        }
-    }
-}
 
 open class BSWContentView<T: UIContentConfiguration>: UIView, UIContentView {
     
@@ -21,6 +10,7 @@ open class BSWContentView<T: UIContentConfiguration>: UIView, UIContentView {
             setNeedsLayout()
         }
     }
+    
     public var typedConfiguration: T {
         get { configuration as! T }
         set { configuration = newValue }
@@ -38,3 +28,12 @@ open class BSWContentView<T: UIContentConfiguration>: UIView, UIContentView {
         fatalError()
     }
 }
+
+public extension BSWContentView where T: Hashable {
+    static func defaultCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewCell, T> {
+        return .init { cell, _, itemIdentifier in
+            cell.contentConfiguration = itemIdentifier
+        }
+    }
+}
+#endif
