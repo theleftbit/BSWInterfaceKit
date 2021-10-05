@@ -15,7 +15,7 @@ import UIKit
 
 private class ViewController: UIViewController {
 
-    var dataSource: UICollectionViewDiffableDataSource<Section, CustomCellContentConfiguration>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, CustomCellContentConfiguration.ID>!
     
     override func loadView() {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: {
@@ -23,19 +23,24 @@ private class ViewController: UIViewController {
             config.backgroundColor = .systemGroupedBackground
             return UICollectionViewCompositionalLayout.list(using: config)
         }())
+        let items: [CustomCellContentConfiguration] = [
+            .init(id: UUID(), title: "Hello"),
+            .init(id: UUID(), title: "World"),
+            .init(id: UUID(), title: "I really like this")
+        ]
         let cellProvider = CustomCell.defaultCellRegistration()
-        dataSource = .init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
-            return collectionView.dequeueConfiguredReusableCell(using: cellProvider, for: indexPath, item: itemIdentifier)
+        dataSource = .init(collectionView: collectionView) { collectionView, indexPath, _ in
+            return collectionView.dequeueConfiguredReusableCell(
+                using: cellProvider,
+                for: indexPath,
+                item: items[indexPath.item]
+            )
         }
         view = collectionView
         
         var snapshot = dataSource.snapshot()
         snapshot.appendSections([.main])
-        snapshot.appendItems([
-            .init(title: "Hello"),
-            .init(title: "World"),
-            .init(title: "I really like this")
-        ], toSection: .main)
+        snapshot.appendItems(items.map({ $0.id }), toSection: .main)
         dataSource.apply(snapshot)
         
         collectionView.selectItem(at: .init(item: 0, section: 0), animated: false, scrollPosition: .init())
@@ -46,13 +51,15 @@ private class ViewController: UIViewController {
         case main
     }
     
-    struct CustomCellContentConfiguration: UIContentConfiguration, Hashable {
+    struct CustomCellContentConfiguration: UIContentConfiguration, Identifiable {
         
-        init(title: String, state: UICellConfigurationState? = nil) {
+        init(id: UUID, title: String, state: UICellConfigurationState? = nil) {
+            self.id = id
             self.title = title
             self.state = state
         }
         
+        let id: UUID
         let title: String
         private(set) var state: UICellConfigurationState?
         
