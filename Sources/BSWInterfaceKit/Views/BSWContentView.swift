@@ -25,7 +25,7 @@ open class BSWContentView<T: UIContentConfiguration>: UIView, UIContentView {
     required public init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     open func configureFor(configuration: T) {
-        fatalError()
+        fatalError("Subclasses must provide this implementation")
     }
 }
 
