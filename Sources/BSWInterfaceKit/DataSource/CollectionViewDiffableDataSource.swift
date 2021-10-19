@@ -72,15 +72,16 @@ extension CollectionViewDiffableDataSource {
 private extension CollectionViewDiffableDataSource {
     
     func handlePullToRefresh() {
+        /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
         guard let provider = self.pullToRefreshProvider else { return }
-        provider.fetchHandler { [weak self] handler in
-            guard let self = self else { return }
-            var snapshot = self.snapshot()
-            handler(&snapshot)
-            self.collectionView.refreshControl?.endRefreshing()
-            /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-                self.apply(snapshot, animatingDifferences: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
+            provider.fetchHandler { [weak self] handler in
+                guard let self = self else { return }
+                var snapshot = self.snapshot()
+                handler(&snapshot)
+                self.apply(snapshot, animatingDifferences: true, completion: {
+                    self.collectionView.refreshControl?.endRefreshing()
+                })
             }
         }
     }
