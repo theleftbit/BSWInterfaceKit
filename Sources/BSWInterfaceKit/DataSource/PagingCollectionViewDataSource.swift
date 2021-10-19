@@ -19,6 +19,7 @@ open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: Pagin
         
     private var offsetObserver: NSKeyValueObservation?
     public let scrollDirection: UICollectionView.ScrollDirection
+    fileprivate var isRequestingNextPage: Bool = false
 
     public init(collectionView: UICollectionView, scrollDirection: UICollectionView.ScrollDirection = .vertical, cellProvider: @escaping UICollectionViewDiffableDataSource<Section, Item>.CellProvider) {
         self.scrollDirection = scrollDirection
@@ -98,14 +99,11 @@ private extension PagingCollectionViewDiffableDataSource {
     static func stopPaginating(snapshot: inout NSDiffableDataSourceSnapshot<Section, Item>) {
         snapshot.deleteItems([Item.loadingItem()])
     }
-
-    var isRequestingNextPage: Bool {
-        self.snapshot().sectionIdentifier(containingItem: Item.loadingItem()) != nil
-    }
-
+    
     func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
         
+        isRequestingNextPage = true
         /// Start paging
         var startPagingSnapshot = self.snapshot()
         PagingCollectionViewDiffableDataSource
@@ -122,6 +120,7 @@ private extension PagingCollectionViewDiffableDataSource {
                 if !shouldStopPaging {
                     self.infiniteScrollProvider = nil
                 }
+                self.isRequestingNextPage = false
             }
         }
     }
