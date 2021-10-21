@@ -14,5 +14,9 @@ jobs:
       run: bundle install; bundle exec fastlane setup_environment
     - name: Test BSWInterfaceKit
       run: bundle exec fastlane unit_tests
+    - uses: kishikawakatsumi/xcresulttool@v1.0.3
+      with:
+        path: TestResults.xcresult
+      if: success() || failure()
     - name: Teardown Environment
       run: bundle exec fastlane teardown_environment

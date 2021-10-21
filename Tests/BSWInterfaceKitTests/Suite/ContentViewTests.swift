@@ -31,6 +31,7 @@ private class ViewController: UIViewController {
         ]
         let cellProvider = CustomCell.View.defaultCellRegistration()
         let headerProvider = CustomHeader.View.defaultHeaderRegistration(configuration: CustomHeader.Configuration(title: "Hello, it's me"))
+        
         dataSource = .init(collectionView: collectionView) { collectionView, indexPath, _ in
             return collectionView.dequeueConfiguredReusableCell(
                 using: cellProvider,
