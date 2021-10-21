@@ -10,13 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup Environment
-      run: bundle install; bundle exec fastlane setup_environment
     - name: Test BSWInterfaceKit
-      run: bundle exec fastlane unit_tests
+      run: xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=15.0" -resultBundlePath TestResults.xcresult test
+
     - uses: kishikawakatsumi/xcresulttool@v1.0.3
       with:
         path: TestResults.xcresult
       if: success() || failure()
-    - name: Teardown Environment
-      run: bundle exec fastlane teardown_environment
