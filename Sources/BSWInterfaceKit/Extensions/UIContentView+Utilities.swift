@@ -23,10 +23,6 @@ public class ContentHeaderView<T: UIContentConfiguration>: UICollectionReusableV
     
     var view: (UIContentView & UIView)!
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
     public var configuration: T! {
         didSet {
             if let prevView = view {
@@ -37,10 +33,6 @@ public class ContentHeaderView<T: UIContentConfiguration>: UICollectionReusableV
                 view.pinToSuperview()
             }
         }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
