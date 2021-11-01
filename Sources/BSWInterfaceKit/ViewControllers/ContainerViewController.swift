@@ -5,7 +5,6 @@
 #if canImport(UIKit)
 
 import UIKit
-import Task
 
 @objc(BSWRootViewController)
 final public class RootViewController: ContainerViewController {}
