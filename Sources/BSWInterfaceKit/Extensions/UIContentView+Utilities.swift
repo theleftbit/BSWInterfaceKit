@@ -3,10 +3,13 @@
 import UIKit
 
 public extension UIContentView {
-    
-    static func defaultCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewCell, UIContentConfiguration> {
+        
+    static func defaultCellRegistration(backgroundConfiguration: UIBackgroundConfiguration? = nil) -> UICollectionView.CellRegistration<UICollectionViewCell, UIContentConfiguration> {
         return .init { cell, _, itemIdentifier in
             cell.contentConfiguration = itemIdentifier
+            if let backgroundConfiguration = backgroundConfiguration {
+                cell.backgroundConfiguration = backgroundConfiguration
+            }
         }
     }
 
