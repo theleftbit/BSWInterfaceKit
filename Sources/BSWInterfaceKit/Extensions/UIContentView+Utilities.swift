@@ -2,7 +2,7 @@
 
 import UIKit
 
-public protocol WithAccessibilityLabel {
+public protocol AccessibilityLabelProvider {
     var accessibilityLabel: String? { get }
 }
 
@@ -15,7 +15,7 @@ public extension UIContentView {
                 cell.backgroundConfiguration = backgroundConfiguration
             }
             
-            if let accessibleConfiguration = itemIdentifier as? WithAccessibilityLabel {
+            if let accessibleConfiguration = itemIdentifier as? AccessibilityLabelProvider {
                 cell.accessibilityLabel = accessibleConfiguration.accessibilityLabel
             }
         }
