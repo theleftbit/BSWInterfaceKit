@@ -2,6 +2,10 @@
 
 import UIKit
 
+public protocol AccessibilityLabelProvider {
+    var accessibilityLabel: String? { get }
+}
+
 public extension UIContentView {
         
     static func defaultCellRegistration(backgroundConfiguration: UIBackgroundConfiguration? = nil) -> UICollectionView.CellRegistration<UICollectionViewCell, UIContentConfiguration> {
@@ -9,6 +13,10 @@ public extension UIContentView {
             cell.contentConfiguration = itemIdentifier
             if let backgroundConfiguration = backgroundConfiguration {
                 cell.backgroundConfiguration = backgroundConfiguration
+            }
+            
+            if let accessibleConfiguration = itemIdentifier as? AccessibilityLabelProvider {
+                cell.accessibilityLabel = accessibleConfiguration.accessibilityLabel
             }
         }
     }
