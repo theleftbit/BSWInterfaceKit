@@ -42,7 +42,9 @@ public extension UIViewController {
         return task
     }
 
+    @available(iOS 15, macOS 12, *)
     typealias SwiftConcurrencyGenerator<T> = () async throws -> (T)
+    @available(iOS 15, macOS 12, *)
     typealias SwiftConcurrencyCompletion<T> = (T) -> ()
 
     /**
@@ -56,6 +58,7 @@ public extension UIViewController {
      */
     @discardableResult
     @MainActor
+    @available(iOS 15, macOS 12, *)
     func fetchData<T>(taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool = true, errorMessage: String = "error", completion: @escaping SwiftConcurrencyCompletion<T>) -> _Concurrency.Task<(), Never> {
         let task = _Concurrency.Task(priority: .userInitiated) {
             bsw_showLoadingView(animated: animated)
@@ -82,6 +85,7 @@ public extension UIViewController {
     }
 
     @MainActor
+    @available(iOS 15, macOS 12, *)
     private func handleError<T>(_ error: Swift.Error, errorMessage: String, taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool, completion: @escaping SwiftConcurrencyCompletion<T>) {
         let localizedErrorMessage = (errorMessage == "error") ? errorMessage.localized : errorMessage
         let errorView = UIViewController.errorViewFactory(localizedErrorMessage, error) { [weak self] in
