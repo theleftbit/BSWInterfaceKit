@@ -6,14 +6,14 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ios
 
     steps:
     - uses: actions/checkout@v2
     - name: Test BSWInterfaceKit
-      run: xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=15.0" -resultBundlePath TestResults.xcresult test
+      run: arch -arm64 xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=15.0" -resultBundlePath TestResults.xcresult test
 
-    - uses: kishikawakatsumi/xcresulttool@v1.0.3
+    - uses: kishikawakatsumi/xcresulttool@v1.1.0
       with:
         path: TestResults.xcresult
       if: success() || failure()
