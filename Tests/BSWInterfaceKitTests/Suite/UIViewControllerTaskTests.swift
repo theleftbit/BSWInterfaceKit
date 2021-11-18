@@ -2,8 +2,8 @@
 import BSWInterfaceKit
 import BSWFoundation
 import XCTest
-import Task
 
+@available(iOS 15, *)
 class UIViewControllerTaskTests: BSWSnapshotTest {
     
     private var originalLoadingViewFactory: UIViewController.LoadingViewFactory!
@@ -24,9 +24,9 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     
     class MockVC: UIViewController {
         
-        let taskGenerator: (() -> Task<String>)
+        let taskGenerator: UIViewController.SwiftConcurrencyGenerator<String>
         
-        init(taskGenerator: @escaping (() -> Task<String>)) {
+        init(taskGenerator: @escaping UIViewController.SwiftConcurrencyGenerator<String>) {
             self.taskGenerator = taskGenerator
             super.init(nibName: nil, bundle: nil)
         }
@@ -47,17 +47,20 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     }
     
     func testTaskLoadingView() {
-        let vc = MockVC(taskGenerator: { .never })
+        let vc = MockVC(taskGenerator: {
+            try await Task.sleep(nanoseconds: 3_000_000_000)
+            return ""
+        })
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
     func testTaskErrorView() {
-        let vc = MockVC(taskGenerator: { .init(failure: "Some Error") })
+        let vc = MockVC(taskGenerator: { throw "Some Error" })
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
     func testTaskSuccessView() {
-        let vc = MockVC(taskGenerator: { .init(success: "Cachondo") })
+        let vc = MockVC(taskGenerator: { return "Cachondo" })
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 }
