@@ -40,25 +40,29 @@ extension UIImageView {
         Nuke.cancelRequest(for: self)
     }
     
-    enum Errors: Swift.Error {
-        case unknown
+    enum ImageDownloadError: Swift.Error {
+        case webDownloadsDisabled
     }
     
     @discardableResult
     public func setImageWithURL(_ url: URL) async throws -> UIImage {
-        guard UIImageView.webDownloadsEnabled else { throw Errors.unknown }
+        guard UIImageView.webDownloadsEnabled else {
+            throw ImageDownloadError.webDownloadsDisabled
+        }
         
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
         
         return try await withCheckedThrowingContinuation({ continuation in
-            Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
-                switch result {
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                case .success(let response):
-                    continuation.resume(returning: response.image)
+            DispatchQueue.main.async {
+                Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
+                    switch result {
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    case .success(let response):
+                        continuation.resume(returning: response.image)
+                    }
                 }
             }
         })
@@ -75,8 +79,7 @@ extension UIImageView {
             }
         }
     }
-
-    @nonobjc
+    
     public func setPhoto(_ photo: Photo) {
         if let preferredContentMode = photo.preferredContentMode {
             contentMode = preferredContentMode
@@ -90,18 +93,19 @@ extension UIImageView {
                 contentMode = placeholderImage.preferredContentMode
             }
             backgroundColor = photo.averageColor
-            setImageWithURL(url) { result in
-                switch result {
-                case .failure:
-                    if let placeholderImage = _placeholderImage {
-                        self.image = placeholderImage.image
-                        self.contentMode = placeholderImage.preferredContentMode
-                    }
-                case .success:
+            _Concurrency.Task {
+                do {
+                    try await self.setImageWithURL(url)
                     if let preferredContentMode = photo.preferredContentMode {
                         self.contentMode = preferredContentMode
                     }
                     self.backgroundColor = nil
+                } catch {
+                    if let placeholderImage = _placeholderImage {
+                        self.image = placeholderImage.image
+                        self.contentMode = placeholderImage.preferredContentMode
+                    }
+                    return
                 }
             }
         case .empty:
