@@ -39,23 +39,40 @@ extension UIImageView {
     public func cancelImageLoadFromURL() {
         Nuke.cancelRequest(for: self)
     }
-
-    @nonobjc
-    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        guard UIImageView.webDownloadsEnabled else { return }
+    
+    enum Errors: Swift.Error {
+        case unknown
+    }
+    
+    @discardableResult
+    public func setImageWithURL(_ url: URL) async throws -> UIImage {
+        guard UIImageView.webDownloadsEnabled else { throw Errors.unknown }
         
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
-        Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
-            let taskResult: Task<UIImage>.Result
-            switch result {
-            case .failure(let error):
-                taskResult = .failure(error)
-            case .success(let response):
-                taskResult = .success(response.image)
+        
+        return try await withCheckedThrowingContinuation({ continuation in
+            Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let response):
+                    continuation.resume(returning: response.image)
+                }
             }
-            completedBlock?(taskResult)
+        })
+    }
+
+    @nonobjc
+    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
+        _Concurrency.Task {
+            do {
+                let result = try await self.setImageWithURL(url)
+                completedBlock?(.success(result))
+            } catch let error {
+                completedBlock?(.failure(error))
+            }
         }
     }
 

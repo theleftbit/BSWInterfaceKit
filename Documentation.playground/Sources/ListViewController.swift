@@ -1,6 +1,5 @@
 import UIKit
 import BSWInterfaceKit
-import Task
 
 public class ListViewController: UITableViewController {
     
