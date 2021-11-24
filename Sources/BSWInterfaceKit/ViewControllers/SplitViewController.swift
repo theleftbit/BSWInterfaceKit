@@ -8,6 +8,7 @@ import UIKit
 /// viewController and it will be set as the detail (clearing out any shown detail if visible).
 /// It will automatically add all the VCs  from the detail navigation stack onto the master
 /// navigation stack when transitioning  to a compact environment.
+@available(swift, deprecated: 5.5, obsoleted: 6.0, message: "Please use UISplitViewController instead")
 @objc(BSWSplitViewController)
 open class SplitViewController: UIViewController {
     

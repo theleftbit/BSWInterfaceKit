@@ -12,6 +12,7 @@ public protocol AsyncViewModelPresenter: ViewModelConfigurable {
 // MARK: - MediaPickerBehavior
 
 public extension MediaPickerBehavior {
+    
     func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
         let deferred = Deferred<Task<URL>.Result>()
         _Concurrency.Task {
