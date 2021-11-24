@@ -6,11 +6,8 @@
 #if canImport(UIKit)
 
 import BSWFoundation
-import Task
 import Nuke
 import UIKit
-
-public typealias BSWImageCompletionBlock = (Task<UIImage>.Result) -> Void
 
 extension UIImageView {
 
@@ -70,7 +67,7 @@ extension UIImageView {
 
     @nonobjc
     public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        _Concurrency.Task {
+        Task {
             do {
                 let result = try await self.setImageWithURL(url)
                 completedBlock?(.success(result))
@@ -93,7 +90,7 @@ extension UIImageView {
                 contentMode = placeholderImage.preferredContentMode
             }
             backgroundColor = photo.averageColor
-            _Concurrency.Task {
+            Task {
                 do {
                     try await self.setImageWithURL(url)
                     if let preferredContentMode = photo.preferredContentMode {

@@ -6,25 +6,19 @@
 
 import UIKit
 import BSWFoundation
-import Task
 
 //MARK:- Protocols
 
-@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use BSWContentView instead")
+@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use UIContentConfiguration instead")
 public protocol ViewModelConfigurable: AnyObject {
     associatedtype VM
     func configureFor(viewModel: VM)
 }
 
-@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use BSWContentView instead")
+@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use UIContentConfiguration instead")
 public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }
-}
-
-@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use BSWContentView instead")
-public protocol AsyncViewModelPresenter: ViewModelConfigurable {
-    var dataProvider: Task<VM>! { get set }
 }
 
 //MARK:- Extensions
