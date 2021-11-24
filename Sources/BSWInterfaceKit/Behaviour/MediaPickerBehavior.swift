@@ -98,29 +98,46 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
             return handleRequestWithImagePicker(kind: kind, source: source, handler: handler)
         }
     }
-
-    public func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
-        let deferred = Deferred<Task<URL>.Result>()
-
+    
+    public func createVideoThumbnail(forURL videoURL: URL) async throws -> URL {
         let asset = AVAsset(url: videoURL)
         let durationSeconds = CMTimeGetSeconds(asset.duration)
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         
         let time = CMTimeMakeWithSeconds(durationSeconds/3.0, preferredTimescale: 600)
-        generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { (_, thumbnail, _, _, _) in
-            guard let thumbnail = thumbnail else {
-                return
+        return try await withCheckedThrowingContinuation { continuation in
+            generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { (_, thumbnail, _, _, error) in
+                guard let thumbnail = thumbnail else {
+                    continuation.resume(throwing: Error.unknown)
+                    return
+                }
+                guard error == nil else {
+                    continuation.resume(throwing: error!)
+                    return
+                }
+                
+                let image = UIImage(cgImage: thumbnail)
+                do {
+                    let finalURL = try self.writeToCache(image: image, kind: .photo)
+                    continuation.resume(returning: finalURL)
+                } catch let error {
+                    continuation.resume(throwing: error)
+                }
             }
-            let image = UIImage(cgImage: thumbnail)
+        }
+    }
+
+    public func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
+        let deferred = Deferred<Task<URL>.Result>()
+        _Concurrency.Task {
             do {
-                let finalURL = try self.writeToCache(image: image, kind: .photo)
-                deferred.fill(with: .success(finalURL))
+                let thumbnailURL = try await self.createVideoThumbnail(forURL: videoURL)
+                deferred.fill(with: .success(thumbnailURL))
             } catch let error {
                 deferred.fill(with: .failure(error))
             }
         }
-        
         return Task(deferred)
     }
 
