@@ -8,8 +8,6 @@ import UIKit
 import MobileCoreServices
 import ImageIO
 import AVFoundation
-import Task
-import Deferred
 import Photos
 import UniformTypeIdentifiers
 
@@ -71,18 +69,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
     private let imagePicker = UIImagePickerController()
     private let fileManager = FileManager.default
  
-    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum) -> (UIViewController?, Task<URL>) {
-        let deferred = Deferred<Task<URL>.Result>()
-        let vc = getMedia(kind, source: source) { (url) in
-            if let url = url {
-                deferred.fill(with: .success(url))
-            } else {
-                deferred.fill(with: .failure(Error.unknown))
-            }
-        }
-        return (vc, Task(deferred))
-    }
-    
     public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) -> UIViewController? {
         
         guard self.currentRequest == nil else {
@@ -128,18 +114,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         }
     }
 
-    public func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
-        let deferred = Deferred<Task<URL>.Result>()
-        _Concurrency.Task {
-            do {
-                let thumbnailURL = try await self.createVideoThumbnail(forURL: videoURL)
-                deferred.fill(with: .success(thumbnailURL))
-            } catch let error {
-                deferred.fill(with: .failure(error))
-            }
-        }
-        return Task(deferred)
-    }
+    
 
     // MARK: UIDocumentPickerDelegate
     
