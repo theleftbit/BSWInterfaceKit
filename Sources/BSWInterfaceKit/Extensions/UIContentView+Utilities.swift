@@ -3,7 +3,7 @@
 import UIKit
 
 public protocol AccessibilityLabelProvider {
-    var accessibilityLabel: String? { get }
+    var accessibilityIdentifier: String? { get }
 }
 
 public extension UIContentView {
@@ -16,7 +16,7 @@ public extension UIContentView {
             }
             
             if let accessibleConfiguration = itemIdentifier as? AccessibilityLabelProvider {
-                cell.accessibilityLabel = accessibleConfiguration.accessibilityLabel
+                cell.accessibilityIdentifier = accessibleConfiguration.accessibilityIdentifier
             }
         }
     }

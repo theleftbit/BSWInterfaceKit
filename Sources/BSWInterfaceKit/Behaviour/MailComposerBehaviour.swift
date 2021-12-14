@@ -14,6 +14,9 @@ final public class MessageComposerBehavior: NSObject, MFMailComposeViewControlle
         
     public func mailViewController(email: String?, contents: MailContents? = nil) -> UIViewController? {
         guard MFMailComposeViewController.canSendMail() else {
+            if let _email = email, let url = URL(string: "mailto:\(_email)"), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
             return nil
         }
         let mailVC = MFMailComposeViewController()
