@@ -13,9 +13,4 @@ jobs:
       with:
         lfs: true
     - name: Test BSWInterfaceKit
-      run: arch -arm64 xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=15.0" -resultBundlePath TestResults.xcresult test
-
-    - uses: kishikawakatsumi/xcresulttool@v1.1.0
-      with:
-        path: TestResults.xcresult
-      if: success() || failure()
+      run: arch -arm64 xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=15.2" -resultBundlePath TestResults.xcresult test

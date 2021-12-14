@@ -17,7 +17,7 @@ platform :ios do
     xcodebuild(
       test: true,
       scheme: "BSWInterfaceKit",
-      destination: "platform=iOS Simulator,name=iPhone 13,OS=15.0",
+      destination: "platform=iOS Simulator,name=iPhone 13,OS=15.2",
       result_bundle: "TestResult"
     )
   end

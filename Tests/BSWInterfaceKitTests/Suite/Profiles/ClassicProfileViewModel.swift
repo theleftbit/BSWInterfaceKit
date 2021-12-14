@@ -5,6 +5,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWInterfaceKit
 
 public struct ClassicProfileViewModel {
     public let photos: [Photo]

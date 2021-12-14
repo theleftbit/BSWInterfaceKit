@@ -8,8 +8,6 @@ import UIKit
 import MobileCoreServices
 import ImageIO
 import AVFoundation
-import Task
-import Deferred
 import Photos
 import UniformTypeIdentifiers
 
@@ -71,18 +69,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
     private let imagePicker = UIImagePickerController()
     private let fileManager = FileManager.default
  
-    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum) -> (UIViewController?, Task<URL>) {
-        let deferred = Deferred<Task<URL>.Result>()
-        let vc = getMedia(kind, source: source) { (url) in
-            if let url = url {
-                deferred.fill(with: .success(url))
-            } else {
-                deferred.fill(with: .failure(Error.unknown))
-            }
-        }
-        return (vc, Task(deferred))
-    }
-    
     public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) -> UIViewController? {
         
         guard self.currentRequest == nil else {
@@ -98,31 +84,37 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
             return handleRequestWithImagePicker(kind: kind, source: source, handler: handler)
         }
     }
-
-    public func createVideoThumbnail(forURL videoURL: URL) -> Task<URL> {
-        let deferred = Deferred<Task<URL>.Result>()
-
+    
+    public func createVideoThumbnail(forURL videoURL: URL) async throws -> URL {
         let asset = AVAsset(url: videoURL)
         let durationSeconds = CMTimeGetSeconds(asset.duration)
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         
         let time = CMTimeMakeWithSeconds(durationSeconds/3.0, preferredTimescale: 600)
-        generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { (_, thumbnail, _, _, _) in
-            guard let thumbnail = thumbnail else {
-                return
-            }
-            let image = UIImage(cgImage: thumbnail)
-            do {
-                let finalURL = try self.writeToCache(image: image, kind: .photo)
-                deferred.fill(with: .success(finalURL))
-            } catch let error {
-                deferred.fill(with: .failure(error))
+        return try await withCheckedThrowingContinuation { continuation in
+            generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { (_, thumbnail, _, _, error) in
+                guard let thumbnail = thumbnail else {
+                    continuation.resume(throwing: Error.unknown)
+                    return
+                }
+                guard error == nil else {
+                    continuation.resume(throwing: error!)
+                    return
+                }
+                
+                let image = UIImage(cgImage: thumbnail)
+                do {
+                    let finalURL = try self.writeToCache(image: image, kind: .photo)
+                    continuation.resume(returning: finalURL)
+                } catch let error {
+                    continuation.resume(throwing: error)
+                }
             }
         }
-        
-        return Task(deferred)
     }
+
+    
 
     // MARK: UIDocumentPickerDelegate
     

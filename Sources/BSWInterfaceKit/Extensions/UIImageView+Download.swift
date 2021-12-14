@@ -6,11 +6,8 @@
 #if canImport(UIKit)
 
 import BSWFoundation
-import Task
 import Nuke
 import UIKit
-
-public typealias BSWImageCompletionBlock = (Task<UIImage>.Result) -> Void
 
 extension UIImageView {
 
@@ -39,27 +36,47 @@ extension UIImageView {
     public func cancelImageLoadFromURL() {
         Nuke.cancelRequest(for: self)
     }
-
-    @nonobjc
-    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        guard UIImageView.webDownloadsEnabled else { return }
+    
+    enum ImageDownloadError: Swift.Error {
+        case webDownloadsDisabled
+    }
+    
+    @discardableResult
+    public func setImageWithURL(_ url: URL) async throws -> UIImage {
+        guard UIImageView.webDownloadsEnabled else {
+            throw ImageDownloadError.webDownloadsDisabled
+        }
         
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
-        Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
-            let taskResult: Task<UIImage>.Result
-            switch result {
-            case .failure(let error):
-                taskResult = .failure(error)
-            case .success(let response):
-                taskResult = .success(response.image)
+        
+        return try await withCheckedThrowingContinuation({ continuation in
+            DispatchQueue.main.async {
+                Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
+                    switch result {
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    case .success(let response):
+                        continuation.resume(returning: response.image)
+                    }
+                }
             }
-            completedBlock?(taskResult)
-        }
+        })
     }
 
     @nonobjc
+    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
+        Task {
+            do {
+                let result = try await self.setImageWithURL(url)
+                completedBlock?(.success(result))
+            } catch let error {
+                completedBlock?(.failure(error))
+            }
+        }
+    }
+    
     public func setPhoto(_ photo: Photo) {
         if let preferredContentMode = photo.preferredContentMode {
             contentMode = preferredContentMode
@@ -73,18 +90,19 @@ extension UIImageView {
                 contentMode = placeholderImage.preferredContentMode
             }
             backgroundColor = photo.averageColor
-            setImageWithURL(url) { result in
-                switch result {
-                case .failure:
-                    if let placeholderImage = _placeholderImage {
-                        self.image = placeholderImage.image
-                        self.contentMode = placeholderImage.preferredContentMode
-                    }
-                case .success:
+            Task {
+                do {
+                    try await self.setImageWithURL(url)
                     if let preferredContentMode = photo.preferredContentMode {
                         self.contentMode = preferredContentMode
                     }
                     self.backgroundColor = nil
+                } catch {
+                    if let placeholderImage = _placeholderImage {
+                        self.image = placeholderImage.image
+                        self.contentMode = placeholderImage.preferredContentMode
+                    }
+                    return
                 }
             }
         case .empty:

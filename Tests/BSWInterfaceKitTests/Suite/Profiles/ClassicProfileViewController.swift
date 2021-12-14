@@ -7,6 +7,7 @@
 import UIKit
 import Task
 import BSWFoundation
+import BSWInterfaceKit
 
 public enum ClassicProfileEditKind {
     case nonEditable
