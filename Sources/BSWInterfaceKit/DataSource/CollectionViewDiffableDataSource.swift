@@ -7,6 +7,20 @@ import UIKit
 open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     UICollectionViewDiffableDataSource<Section, Item>  {
     
+    public enum EmptyConfiguration {
+        case view(UIView)
+        case configuration(ErrorView.Configuration)
+        case none
+        
+        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
+            self = .configuration(.init(title: title, message: message, image: image, buttonConfiguration: buttonConfiguration))
+        }
+        
+        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, button: UIButton? = nil) {
+            self = .configuration(.init(title: title, message: message, image: image, button: button))
+        }
+    }
+    
     public weak var collectionView: UICollectionView!
     private var offsetObserver: NSKeyValueObservation?
     private var emptyView: UIView?
@@ -18,7 +32,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         self.collectionView = collectionView
     }
 
-    public var emptyConfiguration: ErrorView.Configuration? {
+    public var emptyConfiguration: EmptyConfiguration = .none {
         didSet {
             collectionView.reloadData()
         }
@@ -103,17 +117,20 @@ private extension CollectionViewDiffableDataSource {
 private extension CollectionViewDiffableDataSource {
     func addEmptyView() {
         
-        guard let emptyConfiguration = self.emptyConfiguration else {
+        switch emptyConfiguration {
+        case .none:
             return
-        }
-        
-        self.emptyView?.removeFromSuperview()
-        
-        let currentSnapshot = self.snapshot()
-        if currentSnapshot.sectionIdentifiers.count == 0 || currentSnapshot.itemIdentifiers.count == 0 {
-            emptyView = emptyConfiguration.viewRepresentation()
-        } else {
-            emptyView = nil
+        case .view(let view):
+            self.emptyView = view
+        case .configuration(let config):
+            self.emptyView?.removeFromSuperview()
+            
+            let currentSnapshot = self.snapshot()
+            if currentSnapshot.sectionIdentifiers.count == 0 || currentSnapshot.itemIdentifiers.count == 0 {
+                emptyView = config.viewRepresentation()
+            } else {
+                emptyView = nil
+            }
         }
         
         guard let emptyView = self.emptyView, let collectionView = self.collectionView else { return }
