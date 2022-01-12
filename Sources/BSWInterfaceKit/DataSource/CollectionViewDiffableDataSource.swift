@@ -31,6 +31,13 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         }
         self.collectionView = collectionView
     }
+    
+    deinit {
+        guard let emptyView = emptyView else {
+            return
+        }
+        emptyView.removeFromSuperview()
+    }
 
     public var emptyConfiguration: EmptyConfiguration = .none {
         didSet {
@@ -116,24 +123,23 @@ private extension CollectionViewDiffableDataSource {
 @available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     func addEmptyView() {
+        self.emptyView?.removeFromSuperview()
+        let currentSnapshot = self.snapshot()
+        let isListEmpty = currentSnapshot.sectionIdentifiers.isEmpty || currentSnapshot.itemIdentifiers.isEmpty
+        guard let collectionView = self.collectionView,
+              isListEmpty,
+              let emptyView: UIView = {
+                  switch emptyConfiguration {
+                  case .none:
+                      return nil
+                  case .view(let view):
+                      return view
+                  case .configuration(let config):
+                      return config.viewRepresentation()
+                  }
+              }()
+        else { return }
         
-        switch emptyConfiguration {
-        case .none:
-            return
-        case .view(let view):
-            self.emptyView = view
-        case .configuration(let config):
-            self.emptyView?.removeFromSuperview()
-            
-            let currentSnapshot = self.snapshot()
-            if currentSnapshot.sectionIdentifiers.count == 0 || currentSnapshot.itemIdentifiers.count == 0 {
-                emptyView = config.viewRepresentation()
-            } else {
-                emptyView = nil
-            }
-        }
-        
-        guard let emptyView = self.emptyView, let collectionView = self.collectionView else { return }
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         let superView: UIView = {
             if let hostView = collectionView.superview {
@@ -152,5 +158,7 @@ private extension CollectionViewDiffableDataSource {
             emptyView.leadingAnchor.constraint(greaterThanOrEqualTo: superView.leadingAnchor, constant: spacing),
             emptyView.trailingAnchor.constraint(greaterThanOrEqualTo: superView.trailingAnchor, constant: -spacing)
         ])
+        
+        self.emptyView = emptyView
     }
 }
