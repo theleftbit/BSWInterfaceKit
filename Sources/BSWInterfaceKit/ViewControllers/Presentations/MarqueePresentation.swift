@@ -12,6 +12,7 @@ public enum MarqueePresentation {
         public let sizing: Sizing
         public let animationDuration: TimeInterval
         public let kind: Kind
+        public let backgroundColor: UIColor
         public let roundCornerRadius: CGFloat?
         
         public enum Kind { // swiftlint:disable:this nesting
@@ -25,10 +26,11 @@ public enum MarqueePresentation {
             case constrainingWidth(CGFloat, offset: CGPoint? = nil)
         }
         
-        public init(sizing: Sizing = .constrainingWidth(300), animationDuration: TimeInterval = 0.6, kind: Kind, roundCornerRadius: CGFloat? = nil) {
+        public init(sizing: Sizing = .constrainingWidth(300), animationDuration: TimeInterval = 0.6, kind: Kind, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.7), roundCornerRadius: CGFloat? = nil) {
             self.sizing = sizing
             self.animationDuration = animationDuration
             self.kind = kind
+            self.backgroundColor = backgroundColor
             self.roundCornerRadius = roundCornerRadius
         }
     }
@@ -80,6 +82,7 @@ private class MarqueePresentationController: NSObject, UIViewControllerAnimatedT
         
         // Add background view
         let bgView = PresentationBackgroundView(frame: containerView.bounds)
+        bgView.backgroundColor = properties.backgroundColor
         bgView.context = .init(parentViewController: toViewController, position: nil, offset: nil) 
         bgView.tag = Constants.BackgroundViewTag
         containerView.addSubview(bgView)
