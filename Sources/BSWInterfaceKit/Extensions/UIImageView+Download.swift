@@ -50,8 +50,7 @@ extension UIImageView {
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
-        
-        return try await withCheckedThrowingContinuation({ continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.main.async {
                 Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
                     switch result {
@@ -62,7 +61,7 @@ extension UIImageView {
                     }
                 }
             }
-        })
+        }
     }
 
     @nonobjc
@@ -85,24 +84,28 @@ extension UIImageView {
         case .image(let image):
             self.image = image
         case .url(let url, let _placeholderImage):
+            let setImageFromURLTask = Task {
+                try await self.setImageWithURL(url)
+            }
             if let placeholderImage = _placeholderImage {
                 image = placeholderImage.image
                 contentMode = placeholderImage.preferredContentMode
             }
             backgroundColor = photo.averageColor
             Task {
-                do {
-                    try await self.setImageWithURL(url)
-                    if let preferredContentMode = photo.preferredContentMode {
-                        self.contentMode = preferredContentMode
-                    }
-                    self.backgroundColor = nil
-                } catch {
-                    if let placeholderImage = _placeholderImage {
+                let result = await setImageFromURLTask.result
+                await MainActor.run {
+                    switch result {
+                    case .success:
+                        if let preferredContentMode = photo.preferredContentMode {
+                            self.contentMode = preferredContentMode
+                        }
+                        self.backgroundColor = nil
+                    case .failure:
+                        guard let placeholderImage = _placeholderImage else { return }
                         self.image = placeholderImage.image
                         self.contentMode = placeholderImage.preferredContentMode
                     }
-                    return
                 }
             }
         case .empty:
