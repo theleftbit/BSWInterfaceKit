@@ -50,7 +50,7 @@ extension UIImageView {
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withUnsafeThrowingContinuation { continuation in
             DispatchQueue.main.async {
                 Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
                     switch result {
