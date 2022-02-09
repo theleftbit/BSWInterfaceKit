@@ -41,38 +41,22 @@ extension UIImageView {
         case webDownloadsDisabled
     }
     
-    @discardableResult
-    public func setImageWithURL(_ url: URL) async throws -> UIImage {
-        guard UIImageView.webDownloadsEnabled else {
-            throw ImageDownloadError.webDownloadsDisabled
-        }
+    @nonobjc
+    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
+        guard UIImageView.webDownloadsEnabled else { return }
         
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
-        return try await withUnsafeThrowingContinuation { continuation in
-            DispatchQueue.main.async {
-                Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
-                    switch result {
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    case .success(let response):
-                        continuation.resume(returning: response.image)
-                    }
-                }
+        Nuke.loadImage(with: url, options: options, into: self, progress: nil) { (result) in
+            let taskResult: Swift.Result<UIImage, Swift.Error>
+            switch result {
+            case .failure(let error):
+                taskResult = .failure(error)
+            case .success(let response):
+                taskResult = .success(response.image)
             }
-        }
-    }
-
-    @nonobjc
-    public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        Task {
-            do {
-                let result = try await self.setImageWithURL(url)
-                completedBlock?(.success(result))
-            } catch let error {
-                completedBlock?(.failure(error))
-            }
+            completedBlock?(taskResult)
         }
     }
     
@@ -84,28 +68,23 @@ extension UIImageView {
         case .image(let image):
             self.image = image
         case .url(let url, let _placeholderImage):
-            let setImageFromURLTask = Task {
-                try await self.setImageWithURL(url)
-            }
             if let placeholderImage = _placeholderImage {
                 image = placeholderImage.image
                 contentMode = placeholderImage.preferredContentMode
             }
             backgroundColor = photo.averageColor
-            Task {
-                let result = await setImageFromURLTask.result
-                await MainActor.run {
-                    switch result {
-                    case .success:
-                        if let preferredContentMode = photo.preferredContentMode {
-                            self.contentMode = preferredContentMode
-                        }
-                        self.backgroundColor = nil
-                    case .failure:
-                        guard let placeholderImage = _placeholderImage else { return }
+            setImageWithURL(url) { result in
+                switch result {
+                case .failure:
+                    if let placeholderImage = _placeholderImage {
                         self.image = placeholderImage.image
                         self.contentMode = placeholderImage.preferredContentMode
                     }
+                case .success:
+                    if let preferredContentMode = photo.preferredContentMode {
+                        self.contentMode = preferredContentMode
+                    }
+                    self.backgroundColor = nil
                 }
             }
         case .empty:
