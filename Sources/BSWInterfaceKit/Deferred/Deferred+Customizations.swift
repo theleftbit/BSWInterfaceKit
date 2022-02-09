@@ -41,7 +41,7 @@ public extension MediaPickerBehavior {
 
 //MARK: - UIImageView
 
-public typealias BSWImageCompletionBlock = (Task<UIImage>.Result) -> Void
+public typealias BSWImageCompletionBlock = (Swift.Result<UIImage, Swift.Error>) -> Void
 
 
 // MARK: - UIViewController
