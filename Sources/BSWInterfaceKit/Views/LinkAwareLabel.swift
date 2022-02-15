@@ -75,6 +75,7 @@ open class LinkAwareLabel: UILabel {
     }
     
     private func handleTapOnLink(_ url: URL) {
+        guard UIApplication.shared.canOpenURL(url) else { return }
         if let handler = didTapOnURL {
             handler(url)
         } else {
