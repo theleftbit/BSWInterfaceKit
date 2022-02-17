@@ -2,24 +2,24 @@
 //  Created by Pierluigi Cifani on 22/02/2018.
 //
 
- #if os(iOS)
+#if os(iOS)
 
 import UIKit
 import SafariServices
 import Deferred
-import Task
 import AuthenticationServices
- 
+
 public protocol SocialAuthenticationCredentials {
     func createURLRequest(isSafariVC: Bool) -> URL
     func extractResponseFrom(URLCallback: URL) -> SocialAuthenticationManager.LoginResponse?
 }
 
- public class SocialAuthenticationManager {
-
+public class SocialAuthenticationManager: NSObject {
+    
     static public let manager = SocialAuthenticationManager()
     private var authSession: ASWebAuthenticationSession?
-
+    private weak var fromViewController: UIViewController?
+    
     public struct LoginResponse {
         public let authToken: String
         public let approvedPermissions: Set<String>
@@ -30,50 +30,50 @@ public protocol SocialAuthenticationCredentials {
             self.rejectedPermissions = rejectedPermissions
         }
     }
-
+    
     /**
      Performs O-Auth login using the provided credentials. The framework
      provides FB support, but you can extend it as you wish.
-
+     
      - parameter credentials: The credentials used to login
-
+     
      - returns: A Task with the response from the O-Auth service
      */
-    public func loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
-        return safariAuthSession_loginWith(credentials: credentials)
-    }
-
-    private func safariAuthSession_loginWith(credentials: SocialAuthenticationCredentials) -> Task<LoginResponse> {
-        let deferred = Deferred<Task<LoginResponse>.Result>()
+    public func loginWith(credentials: SocialAuthenticationCredentials, fromVC: UIViewController) async throws -> LoginResponse {
         guard self.authSession == nil else {
-            deferred.fill(with: .failure(SocialAuthenticationError.ongoingLogin))
-            return Task(deferred)
+            throw SocialAuthenticationError.ongoingLogin
         }
-
-        let authSession = ASWebAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
-            defer { self.authSession = nil }
-            guard error == nil else {
-                deferred.fill(with: .failure(error!))
-                return
+        
+        return try await withCheckedThrowingContinuation { cont in
+            let authSession = ASWebAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
+                defer { self.authSession = nil }
+                guard error == nil else {
+                    cont.resume(throwing: error!)
+                    return
+                }
+                
+                guard let url = url, let response = credentials.extractResponseFrom(URLCallback: url) else {
+                    cont.resume(throwing: SocialAuthenticationError.unknownResponse)
+                    return
+                }
+                
+                cont.resume(returning: response)
             }
-
-            guard let url = url, let response = credentials.extractResponseFrom(URLCallback: url) else {
-                deferred.fill(with: .failure(SocialAuthenticationError.unknownResponse))
-                return
-            }
-            
-            deferred.fill(with: .success(response))
-        }
-
-        authSession.start()
-
-        self.authSession = authSession
-        return Task(deferred)
+            authSession.presentationContextProvider = self
+            authSession.start()
+            self.authSession = authSession
+       }
     }
 }
 
- extension SocialAuthenticationManager {
+extension SocialAuthenticationManager: ASWebAuthenticationPresentationContextProviding {
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        fromViewController?.view.window ?? UIWindow()
+    }
+}
 
+extension SocialAuthenticationManager {
+    
     public enum SocialAuthenticationError: Swift.Error {
         case unknownResponse
         case ongoingLogin
