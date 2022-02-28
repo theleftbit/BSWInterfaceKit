@@ -6,7 +6,6 @@
 
 import UIKit
 import SafariServices
-import Deferred
 import AuthenticationServices
 
 public protocol SocialAuthenticationCredentials {
