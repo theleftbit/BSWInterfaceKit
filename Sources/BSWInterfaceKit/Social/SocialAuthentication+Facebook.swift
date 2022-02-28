@@ -19,7 +19,7 @@ extension SocialAuthenticationManager {
 
         static public func scopeFrom(strings: Set<String>) -> Scope {
             var scope = Scope()
-            if strings.contains("public_profile") {
+            if strings.contains("openid") {
                 scope.insert(.publicProfile)
             }
             if strings.contains("email") {
@@ -43,7 +43,7 @@ extension SocialAuthenticationManager {
         static public func printableScope(_ scope: Scope) -> Set<String> {
             var allScopes = Set<String>()
             if scope.contains(.publicProfile) {
-                allScopes.insert("public_profile")
+                allScopes.insert("openid")
             }
             if scope.contains(.email) {
                 allScopes.insert("email")
