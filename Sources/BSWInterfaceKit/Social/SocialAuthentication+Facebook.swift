@@ -150,4 +150,24 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
     }
 }
 
+public extension SocialAuthenticationManager.FacebookCredentials {
+    static func requestEmail(fromToken token: String) async throws -> String? {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "graph.facebook.com"
+        components.path = "/me"
+        components.queryItems = [
+            URLQueryItem(name: "fields", value: "email"),
+            URLQueryItem(name: "access_token", value: token),
+        ]
+        let url = components.url!
+        let result = try await URLSession.shared.fetchData(with: URLRequest(url: url))
+        guard let json = try JSONSerialization.jsonObject(with: result.data, options: []) as? [String:String],
+            let email = json["email"] else {
+            return nil
+        }
+        return email
+    }
+}
+
 #endif
