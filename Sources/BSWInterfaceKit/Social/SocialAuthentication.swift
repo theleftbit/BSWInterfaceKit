@@ -83,6 +83,7 @@ extension SocialAuthenticationManager {
         case unknownResponse
         case ongoingLogin
         case userCanceled
+        case emailNotProvided
     }
 }
 
