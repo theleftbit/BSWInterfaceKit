@@ -151,20 +151,25 @@ extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationC
 }
 
 public extension SocialAuthenticationManager.FacebookCredentials {
-    static func requestEmail(fromToken token: String) async throws -> String? {
+    static func requestEmail(fromCredentials credentials: SocialAuthenticationManager.LoginResponse) async throws -> String {
+        guard credentials.approvedPermissions.contains("email") else {
+            throw SocialAuthenticationManager.SocialAuthenticationError.emailNotProvided
+        }
+        
         var components = URLComponents()
         components.scheme = "https"
         components.host = "graph.facebook.com"
         components.path = "/me"
         components.queryItems = [
             URLQueryItem(name: "fields", value: "email"),
-            URLQueryItem(name: "access_token", value: token),
+            URLQueryItem(name: "access_token", value: credentials.authToken),
         ]
         let url = components.url!
-        let result = try await URLSession.shared.fetchData(with: URLRequest(url: url))
-        guard let json = try JSONSerialization.jsonObject(with: result.data, options: []) as? [String:String],
+        
+        guard let result = try? await URLSession.shared.fetchData(with: URLRequest(url: url)),
+            let json = try? JSONSerialization.jsonObject(with: result.data, options: []) as? [String:String],
             let email = json["email"] else {
-            return nil
+                throw SocialAuthenticationManager.SocialAuthenticationError.emailNotProvided
         }
         return email
     }

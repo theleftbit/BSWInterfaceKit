@@ -47,6 +47,12 @@ public class SocialAuthenticationManager: NSObject {
             let authSession = ASWebAuthenticationSession(url: credentials.createURLRequest(isSafariVC: false), callbackURLScheme: nil) { (url, error) in
                 defer { self.authSession = nil }
                 guard error == nil else {
+                    if let asWebError = error as? ASWebAuthenticationSessionError,
+                       asWebError.errorCode == ASWebAuthenticationSessionError.Code.canceledLogin.rawValue {
+                        cont.resume(throwing: SocialAuthenticationError.userCanceled)
+                        return
+                    }
+                    
                     cont.resume(throwing: error!)
                     return
                 }
@@ -76,6 +82,8 @@ extension SocialAuthenticationManager {
     public enum SocialAuthenticationError: Swift.Error {
         case unknownResponse
         case ongoingLogin
+        case userCanceled
+        case emailNotProvided
     }
 }
 
