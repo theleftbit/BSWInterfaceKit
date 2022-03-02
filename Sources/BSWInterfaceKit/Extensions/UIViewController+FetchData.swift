@@ -29,8 +29,8 @@ public extension UIViewController {
     @MainActor
     @available(iOS 13, macOS 12, *)
     func fetchData<T>(taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool = true, errorMessage: String = "error", completion: @escaping SwiftConcurrencyCompletion<T>) -> Task<(), Never> {
+        bsw_showLoadingView(animated: animated)
         let task = Task(priority: .userInitiated) {
-            bsw_showLoadingView(animated: animated)
             do {
                 let value = try await taskGenerator()
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
