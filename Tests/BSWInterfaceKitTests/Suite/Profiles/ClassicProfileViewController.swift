@@ -70,7 +70,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController {
         NSLayoutConstraint.activate([
             photoGallery.heightAnchor.constraint(equalTo: photoGallery.widthAnchor, multiplier: Constants.PhotoGalleryRatio),
             photoGallery.widthAnchor.constraint(equalTo: scrollableStackView.widthAnchor)
-            ])
+        ])
         
         scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: Constants.LayoutMargins)
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: Constants.LayoutMargins)

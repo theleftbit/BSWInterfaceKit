@@ -6,17 +6,8 @@
         "repositoryURL": "https://github.com/theleftbit/BSWFoundation.git",
         "state": {
           "branch": null,
-          "revision": "30fc62a32bade10947e1f5c31d0052f60a8bd737",
-          "version": "5.0.0"
-        }
-      },
-      {
-        "package": "Deferred",
-        "repositoryURL": "https://github.com/theleftbit/Deferred.git",
-        "state": {
-          "branch": null,
-          "revision": "8d601f0597135179a4b2f72b99fd196e6067dabe",
-          "version": "4.2.1"
+          "revision": "f8c4cbb6b9d4878afc3eeafac28bd097834f37e9",
+          "version": "5.1.0"
         }
       },
       {
