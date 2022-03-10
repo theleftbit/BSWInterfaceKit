@@ -9,13 +9,13 @@ import BSWFoundation
 
 //MARK:- Protocols
 
-@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use UIContentConfiguration instead")
+@available(swift, deprecated: 6.0, obsoleted: 6.1, message: "Please use UIContentConfiguration instead")
 public protocol ViewModelConfigurable: AnyObject {
     associatedtype VM
     func configureFor(viewModel: VM)
 }
 
-@available(swift, deprecated: 5.6, obsoleted: 6.0, message: "Please use UIContentConfiguration instead")
+@available(swift, deprecated: 6.0, obsoleted: 6.1, message: "Please use UIContentConfiguration instead")
 public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }
     static var reuseIdentifier: String { get }

@@ -5,7 +5,6 @@
 #if canImport(UIKit)
 
 import UIKit
-import Task
 import BSWFoundation
 import BSWInterfaceKit
 
@@ -23,15 +22,15 @@ public enum ClassicProfileEditKind {
     }
 }
 
-open class ClassicProfileViewController: TransparentNavBarViewController, AsyncViewModelPresenter {
+open class ClassicProfileViewController: TransparentNavBarViewController {
 
-    public init(dataProvider: Task<ClassicProfileViewModel>) {
+    public init(dataProvider: Task<ClassicProfileViewModel, Swift.Error>) {
         self.dataProvider = dataProvider
         super.init(nibName:nil, bundle:nil)
     }
     
     public init(viewModel: ClassicProfileViewModel) {
-        self.dataProvider = Task(success: viewModel)
+        self.dataProvider = Task(operation: { return viewModel })
         super.init(nibName:nil, bundle:nil)
     }
     
@@ -45,7 +44,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
         static let PhotoGalleryRatio = CGFloat(0.78)
     }
     
-    public var dataProvider: Task<ClassicProfileViewModel>!
+    public var dataProvider: Task<ClassicProfileViewModel, Swift.Error>!
     open var editKind: ClassicProfileEditKind = .nonEditable
     
     private let photoGallery = PhotoGalleryView()
@@ -71,7 +70,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
         NSLayoutConstraint.activate([
             photoGallery.heightAnchor.constraint(equalTo: photoGallery.widthAnchor, multiplier: Constants.PhotoGalleryRatio),
             photoGallery.widthAnchor.constraint(equalTo: scrollableStackView.widthAnchor)
-            ])
+        ])
         
         scrollableStackView.addArrangedSubview(titleLabel, layoutMargins: Constants.LayoutMargins)
         scrollableStackView.addArrangedSubview(detailsLabel, layoutMargins: Constants.LayoutMargins)
@@ -96,17 +95,11 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
     //MARK:- Private
     
     open func fetchData() {
-        showLoader()
-        dataProvider.upon(.main) { [weak self] result in
-            guard let strongSelf = self else { return }
-            strongSelf.hideLoader()
-            switch result {
-            case .failure(let error):
-                strongSelf.showErrorMessage("Error fetching data", error: error)
-            case .success(let viewModel):
-                strongSelf.configureFor(viewModel: viewModel)
-            }
-        }
+        fetchData(
+            taskGenerator: { try await self.dataProvider.value },
+            completion: {
+                self.configureFor(viewModel: $0)
+            })
     }
     
     open func configureFor(viewModel: ClassicProfileViewModel) {
@@ -121,19 +114,17 @@ open class ClassicProfileViewController: TransparentNavBarViewController, AsyncV
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     public func didTapPhotoAt(index: Int, fromView: UIView) {
-        guard #available(iOS 13, *) else {
-            return
+        Task { @MainActor in
+            let viewModel = try await dataProvider.value
+            let gallery = PhotoGalleryViewController(
+                photos: viewModel.photos,
+                initialPageIndex: index,
+                allowShare: false
+            )
+            gallery.modalPresentationStyle = .overFullScreen
+            gallery.delegate = self
+            present(gallery, animated: true, completion: nil)
         }
-        guard let viewModel = dataProvider.peek()?.value else { return }
-        
-        let gallery = PhotoGalleryViewController(
-            photos: viewModel.photos,
-            initialPageIndex: index,
-            allowShare: false
-        )
-        gallery.modalPresentationStyle = .overFullScreen
-        gallery.delegate = self
-        present(gallery, animated: true, completion: nil)
     }
 }
 
