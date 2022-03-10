@@ -14,6 +14,8 @@ extension UIImageView {
     public static var fadeImageDuration: TimeInterval? = nil
 
     private static var webDownloadsEnabled = true
+    
+    public typealias BSWImageCompletionBlock = (Swift.Result<UIImage, Swift.Error>) -> Void
 
     @objc(bsw_disableWebDownloads)
     static public func disableWebDownloads() {
@@ -40,7 +42,7 @@ extension UIImageView {
     enum ImageDownloadError: Swift.Error {
         case webDownloadsDisabled
     }
-    
+
     @nonobjc
     public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
         guard UIImageView.webDownloadsEnabled else { return }
