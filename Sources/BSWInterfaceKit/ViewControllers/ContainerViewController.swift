@@ -58,7 +58,7 @@ open class ContainerViewController: UIViewController {
         }
     }
 
-    open func updateContainedViewController(_ newVC: UIViewController) {
+    open func updateContainedViewController(_ newVC: UIViewController, animated: Bool = true) {
         
         guard newVC != containedViewController else { return }
         
@@ -88,20 +88,28 @@ open class ContainerViewController: UIViewController {
         }
         newVC.didMove(toParent: self)
         
-        newVC.view.alpha = 0
-        animator.addAnimations {
-            oldVC.view.alpha = 0
-            newVC.view.alpha = 1
-        }
-        
-        animator.addCompletion { (_) in
+        let completion = {
             oldVC.view.removeFromSuperview()
             oldVC.removeFromParent()
             self.setNeedsStatusBarAppearanceUpdate()
             self.setNeedsUpdateOfHomeIndicatorAutoHidden()
             self.setNeedsUpdateOfScreenEdgesDeferringSystemGestures()
         }
-        animator.startAnimation()
+        
+        if (animated) {
+            newVC.view.alpha = 0
+            animator.addAnimations {
+                oldVC.view.alpha = 0
+                newVC.view.alpha = 1
+            }
+            
+            animator.addCompletion { _ in
+                completion()
+            }
+            animator.startAnimation()
+        } else {
+            completion()
+        }
         
         /// This is a workaround for an issue where the `containedViewController`'s navigationItem wasn't
         /// being correctly synced with the contents of the navigation bar. This will make sure to force an update to
