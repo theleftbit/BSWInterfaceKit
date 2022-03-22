@@ -14,7 +14,7 @@ public extension UIViewController {
     @available(iOS 13, macOS 12, *)
     typealias SwiftConcurrencyGenerator<T> = () async throws -> (T)
     @available(iOS 13, macOS 12, *)
-    typealias SwiftConcurrencyCompletion<T> = (T) -> ()
+    typealias SwiftConcurrencyCompletion<T> = (T) async -> ()
 
     /**
      Allows you to show a loading/error/success state in any `UIViewController`.
@@ -34,7 +34,7 @@ public extension UIViewController {
             do {
                 let value = try await taskGenerator()
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
-                completion(value)
+                await completion(value)
             } catch {
                 if error.isURLCancelled { /* Don't show the error in case it's a search */ return }
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
