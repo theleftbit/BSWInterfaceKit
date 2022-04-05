@@ -26,11 +26,34 @@ public extension UIContentView {
             supplementaryView.configuration = configuration
         }
     }
+    
+    static func defaultFooterRegistration<T: UIContentConfiguration>(configuration: T) -> UICollectionView.SupplementaryRegistration<ContentFooterView<T>> {
+        return .init(elementKind: UICollectionView.SupplementaryViewKind.footer.toUIKit()) { supplementaryView, elementKind, indexPath in
+            supplementaryView.configuration = configuration
+        }
+    }
 }
 
 /// MARK: Auxiliary views
 
 public class ContentHeaderView<T: UIContentConfiguration>: UICollectionReusableView {
+    
+    var view: (UIContentView & UIView)!
+    
+    public var configuration: T! {
+        didSet {
+            if let prevView = view {
+                prevView.configuration = configuration
+            } else {
+                view = configuration.makeContentView()
+                addSubview(view)
+                view.pinToSuperview()
+            }
+        }
+    }
+}
+
+public class ContentFooterView<T: UIContentConfiguration>: UICollectionReusableView {
     
     var view: (UIContentView & UIView)!
     
