@@ -21,8 +21,14 @@ public extension UIContentView {
         }
     }
 
-    static func defaultHeaderRegistration<T: UIContentConfiguration>(configuration: T) -> UICollectionView.SupplementaryRegistration<ContentHeaderView<T>> {
+    static func defaultHeaderRegistration<T: UIContentConfiguration>(configuration: T) -> UICollectionView.SupplementaryRegistration<ContentReusableView<T>> {
         return .init(elementKind: UICollectionView.SupplementaryViewKind.header.toUIKit()) { supplementaryView, elementKind, indexPath in
+            supplementaryView.configuration = configuration
+        }
+    }
+    
+    static func defaultFooterRegistration<T: UIContentConfiguration>(configuration: T) -> UICollectionView.SupplementaryRegistration<ContentReusableView<T>> {
+        return .init(elementKind: UICollectionView.SupplementaryViewKind.footer.toUIKit()) { supplementaryView, elementKind, indexPath in
             supplementaryView.configuration = configuration
         }
     }
@@ -30,7 +36,7 @@ public extension UIContentView {
 
 /// MARK: Auxiliary views
 
-public class ContentHeaderView<T: UIContentConfiguration>: UICollectionReusableView {
+public class ContentReusableView<T: UIContentConfiguration>: UICollectionReusableView {
     
     var view: (UIContentView & UIView)!
     
