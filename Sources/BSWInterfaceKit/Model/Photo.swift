@@ -51,15 +51,15 @@ public enum RandomColorFactory {
     public static var isOn: Bool = true
     public static var defaultColor = UIColor.init(r: 255, g: 149, b: 0)
     
+    
+    /// Generates a random pastel color
+    /// - Returns: a UIColor
     public static func randomColor() -> UIColor {
         guard isOn else {
             return defaultColor
         }
-
-        let randomRed:CGFloat = CGFloat(drand48())
-        let randomGreen:CGFloat = CGFloat(drand48())
-        let randomBlue:CGFloat = CGFloat(drand48())
-        return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
+        /// Source: https://twitter.com/manuelmaly/status/1523335860258705408
+        return UIColor(hue: .random(in: 0.1...1.0), saturation: .random(in: 0.2...0.55), brightness: 0.9, alpha: 1)
     }
 }
 
