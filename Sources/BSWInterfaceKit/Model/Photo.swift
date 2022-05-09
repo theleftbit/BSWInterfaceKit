@@ -59,7 +59,12 @@ public enum RandomColorFactory {
             return defaultColor
         }
         /// Source: https://twitter.com/manuelmaly/status/1523335860258705408
-        return UIColor(hue: .random(in: 0.1...1.0), saturation: .random(in: 0.2...0.55), brightness: 0.9, alpha: 1)
+        return UIColor(
+            hue: .random(in: 0.0...1.0),
+            saturation: .random(in: 0.2...0.55),
+            brightness: 0.9,
+            alpha: 1
+        )
     }
 }
 
