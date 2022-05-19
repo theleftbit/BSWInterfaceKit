@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 
 import UIKit
 
@@ -126,3 +127,4 @@ private extension PagingCollectionViewDiffableDataSource {
         }
     }
 }
+#endif

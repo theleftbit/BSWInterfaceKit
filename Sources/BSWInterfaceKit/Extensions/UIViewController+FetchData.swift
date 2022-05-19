@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 19/08/2019.
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
+#if canImport(UIKit)
 
 import UIKit
 import BSWFoundation
@@ -80,3 +81,5 @@ public extension UIViewController {
     static var loadingViewFactory: LoadingViewFactory = { LoadingView() }
     static var errorViewFactory: ErrorViewFactory = { ErrorView.retryView(message: $0, error: $1, onRetry: $2) }
 }
+
+#endif

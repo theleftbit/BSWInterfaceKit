@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 
 import UIKit
 
@@ -162,3 +163,4 @@ private extension CollectionViewDiffableDataSource {
         self.emptyView = emptyView
     }
 }
+#endif
