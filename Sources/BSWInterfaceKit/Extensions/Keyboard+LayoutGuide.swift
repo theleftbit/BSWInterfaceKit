@@ -33,6 +33,8 @@ public extension UIView {
         }
     }
     
+#if targetEnvironment(macCatalyst)
+#else
     private func getCustomKeybardLayoutGuide() -> UILayoutGuide {
         if let obj = objc_getAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide) as? KeyboardLayoutGuide {
             return obj
@@ -43,6 +45,7 @@ public extension UIView {
         objc_setAssociatedObject(self, &AssociatedKeys.keyboardLayoutGuide, new as Any, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return new
     }
+#endif
 }
 
 @available(macCatalyst, unavailable)
