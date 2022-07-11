@@ -4,7 +4,6 @@
 import BSWInterfaceKit
 import UIKit
 
-@available(iOS 14.0, *)
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
     func testLayout() {
         let cv = MockCollectionView()
@@ -17,7 +16,6 @@ class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
     }
 }
 
-@available(iOS 14.0, *)
 private class ViewController: UIViewController {
     
     let collectionView = MockCollectionView()
@@ -27,7 +25,6 @@ private class ViewController: UIViewController {
     }
 }
 
-@available(iOS 14.0, *)
 private class MockCollectionView: UICollectionView {
     
     var diffDataSource: CollectionViewDiffableDataSource<Section, Item>!
