@@ -30,7 +30,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
             }
         }
         
-        @available(iOS 14.0, *)
         var contentTypes: [UTType] {
             switch self {
             case .photo, .thumbnail:
@@ -44,8 +43,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
     public enum Source {
         case photoAlbum
         case camera
-        
-        @available(iOS 14, *)
         case filesApp
         
         var imagePickerSource: UIImagePickerController.SourceType {
@@ -78,7 +75,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         
         switch source {
         case .filesApp:
-            guard #available(iOS 14.0, *) else { fatalError() }
             return handleRequestWithFilesApp(kind: kind, source: source, handler: handler)
         case .camera, .photoAlbum:
             return handleRequestWithImagePicker(kind: kind, source: source, handler: handler)
@@ -135,11 +131,11 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
+        guard let currentRequest = self.currentRequest else { return }
+        
         defer {
             self.currentRequest = nil
         }
-        
-        guard let currentRequest = self.currentRequest else { return }
         
         let validMedia: Bool = {
             guard let mediaTypeString = info[.mediaType] as? String else { return false }
@@ -171,7 +167,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         currentRequest = nil
     }
 
-    @available(iOS 14.0, *)
     private func handleRequestWithFilesApp(kind: Kind, source: Source, handler: @escaping MediaHandler) -> UIViewController? {
         let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: true)
         vc.delegate = self
@@ -216,10 +211,12 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
             let options = PHVideoRequestOptions()
             options.version = .original
             PHImageManager.default().requestAVAsset(forVideo: asset, options: options, resultHandler: {(asset, _, _) -> Void in
-                if let urlAsset = asset as? AVURLAsset {
-                    request.handler(urlAsset.url)
-                } else {
-                    request.handler(nil)
+                DispatchQueue.main.async {
+                    if let urlAsset = asset as? AVURLAsset {
+                        request.handler(urlAsset.url)
+                    } else {
+                        request.handler(nil)
+                    }
                 }
             })
 

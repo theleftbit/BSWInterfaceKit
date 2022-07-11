@@ -4,7 +4,6 @@ import UIKit
 
 /// This is a `UICollectionViewDiffableDataSource` that adds a
 /// simple way to Pull to Refresh and empty views.
-@available(iOS 14.0, *)
 open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     UICollectionViewDiffableDataSource<Section, Item>  {
     

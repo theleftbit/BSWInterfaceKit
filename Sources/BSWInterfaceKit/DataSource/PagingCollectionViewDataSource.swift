@@ -14,7 +14,6 @@ import UIKit
  })
   ```
  */
-@available(iOS 14.0, *)
 open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: PagingCollectionViewItem>:
     CollectionViewDiffableDataSource<Section, Item> {
         
