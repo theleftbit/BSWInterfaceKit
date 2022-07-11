@@ -45,17 +45,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case photoAlbum
         case camera
         case filesApp
-        
-        var imagePickerSource: UIImagePickerController.SourceType {
-            switch self {
-            case .camera:
-                return .camera
-            case .photoAlbum:
-                return .photoLibrary
-            case .filesApp:
-                fatalError()
-            }
-        }
     }
 
     private struct Request {
@@ -176,10 +165,20 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             self.currentRequest = nil
         }
         itemProvider.loadFileRepresentation(forTypeIdentifier: currentRequest.kind.contentTypes.first!.identifier) { url, error in
-            DispatchQueue.main.async {
-                if let url = url {
-                    currentRequest.handler(url)
-                } else {
+            guard let url = url else {
+                DispatchQueue.main.async {
+                    currentRequest.handler(nil)
+                }
+                return
+            }
+            let targetURL = Self.createFileURL(input: currentRequest.kind)
+            do {
+                try FileManager.default.moveItem(at: url, to: targetURL)
+                DispatchQueue.main.async {
+                    currentRequest.handler(targetURL)
+                }
+            } catch {
+                DispatchQueue.main.async {
                     currentRequest.handler(nil)
                 }
             }
@@ -341,6 +340,11 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case jpegCompressionFailed
         case diskWriteFailed
         case unknown
+    }
+    
+    public static func createFileURL(input: Kind) -> URL {
+        let cachesPath = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        return cachesPath.appendingPathComponent("\(UUID().uuidString).\(input.pathExtension())")
     }
 }
 #endif
