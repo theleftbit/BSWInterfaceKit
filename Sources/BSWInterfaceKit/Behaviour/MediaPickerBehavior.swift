@@ -10,11 +10,12 @@ import ImageIO
 import AVFoundation
 import Photos
 import UniformTypeIdentifiers
+import PhotosUI
 
 public typealias MediaHandler = ((URL?) -> Void)
 
 @available(tvOS, unavailable)
-final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     public enum Kind {
         case photo
@@ -44,40 +45,45 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         case photoAlbum
         case camera
         case filesApp
-        
-        var imagePickerSource: UIImagePickerController.SourceType {
-            switch self {
-            case .camera:
-                return .camera
-            case .photoAlbum:
-                return .photoLibrary
-            case .filesApp:
-                fatalError()
-            }
-        }
     }
 
     private struct Request {
-        let handler: MediaHandler
         let kind: Kind
+        let fromVC: UIViewController
+        let cont: CheckedContinuation<URL?, Never>
+        
+        @MainActor
+        func finishRequest(withURL url: URL?, shouldDismissVC: Bool = true) {
+            cont.resume(returning: url)
+            if shouldDismissVC {
+                fromVC.dismiss(animated: true)
+            }
+        }
     }
     
     private var currentRequest: Request?
-    private let imagePicker = UIImagePickerController()
     private let fileManager = FileManager.default
  
-    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) -> UIViewController? {
+    public func getMedia(fromVC: UIViewController, kind: Kind = .photo, source: Source = .photoAlbum) async -> URL? {
         
         guard self.currentRequest == nil else {
-            handler(nil)
             return nil
         }
         
-        switch source {
-        case .filesApp:
-            return handleRequestWithFilesApp(kind: kind, source: source, handler: handler)
-        case .camera, .photoAlbum:
-            return handleRequestWithImagePicker(kind: kind, source: source, handler: handler)
+        let vc: UIViewController? = {
+            switch source {
+            case .filesApp:
+                return handleFilesAppRequest(kind: kind)
+            case .camera:
+                return handleCameraRequest(kind: kind)
+            case .photoAlbum:
+                return handlePhotoPickerRequest(kind: kind)
+            }
+        }()
+        guard let vc = vc else { return nil }
+        fromVC.present(vc, animated: true)
+        return await withCheckedContinuation { cont in
+            self.currentRequest = Request(kind: kind, fromVC: fromVC, cont: cont)
         }
     }
     
@@ -110,8 +116,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         }
     }
 
-    
-
     // MARK: UIDocumentPickerDelegate
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
@@ -119,18 +123,23 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
             self.currentRequest = nil
         }
         guard let currentRequest = self.currentRequest, let url = urls.first else { return }
-        currentRequest.handler(url)
+        let targetURL = cachePathForMedia(currentRequest.kind)
+        do {
+            try self.fileManager.moveItem(at: url, to: targetURL)
+            currentRequest.finishRequest(withURL: targetURL, shouldDismissVC: false)
+        } catch {
+            currentRequest.finishRequest(withURL: nil, shouldDismissVC: false)
+        }
     }
 
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        currentRequest?.handler(nil)
+        currentRequest?.finishRequest(withURL: nil, shouldDismissVC: false)
         currentRequest = nil
     }
 
     // MARK: UIImagePickerControllerDelegate
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
         guard let currentRequest = self.currentRequest else { return }
         
         defer {
@@ -148,7 +157,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         }()
         
         guard validMedia else {
-            self.currentRequest?.handler(nil)
+            currentRequest.finishRequest(withURL: nil)
             return
         }
         
@@ -161,42 +170,84 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
             handleThumbnailRequest(info: info, request: currentRequest)
         }
     }
-    
+        
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        currentRequest?.handler(nil)
+        currentRequest?.finishRequest(withURL: nil)
         currentRequest = nil
     }
 
-    private func handleRequestWithFilesApp(kind: Kind, source: Source, handler: @escaping MediaHandler) -> UIViewController? {
+    // MARK: PHPickerViewControllerDelegate
+    
+    public func picker(_ p: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        guard let currentRequest = self.currentRequest else { return }
+        defer {
+            self.currentRequest = nil
+        }
+        if let itemProvider = results.first?.itemProvider, let contentType = currentRequest.kind.contentTypes.first {
+            itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, error in
+                guard let url = url else {
+                    currentRequest.finishRequest(withURL: nil)
+                    return
+                }
+                let targetURL = self.cachePathForMedia(currentRequest.kind)
+                let didSucceed: Bool = {
+                    do {
+                        try self.fileManager.moveItem(at: url, to: targetURL)
+                        return true
+                    } catch {
+                        return false
+                    }
+                }()
+                Task { @MainActor in
+                    currentRequest.finishRequest(withURL: didSucceed ? targetURL : nil)
+                }
+
+            }
+        } else {
+            currentRequest.finishRequest(withURL: nil)
+        }
+    }
+    
+    // MARK: Private
+
+    private func handleFilesAppRequest(kind: Kind) -> UIViewController? {
         let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: true)
         vc.delegate = self
         vc.allowsMultipleSelection = false
-        self.currentRequest = Request(handler: handler, kind: kind)
         return vc
     }
-    
-    private func handleRequestWithImagePicker(kind: Kind, source: Source, handler: @escaping MediaHandler) -> UIViewController? {
-        guard UIImagePickerController.isSourceTypeAvailable(source.imagePickerSource) else {
-            handler(nil)
+
+    private func handleCameraRequest(kind: Kind) -> UIViewController? {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return nil
         }
-
-        self.currentRequest = Request(handler: handler, kind: kind)
-        
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = source.imagePickerSource
-        if source == .camera {
-            imagePicker.cameraDevice = .front
-        }
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .camera
         imagePicker.delegate = self
+        imagePicker.cameraDevice = .front
         switch kind {
         case .video:
             imagePicker.mediaTypes = [kUTTypeMovie as String]
         case .photo, .thumbnail:
             imagePicker.mediaTypes = [kUTTypeImage as String]
         }
-        
         return imagePicker
+    }
+    
+    private func handlePhotoPickerRequest(kind: Kind) -> UIViewController? {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        switch kind {
+        case .photo:
+            configuration.filter = .any(of: [.livePhotos, .images])
+        case .thumbnail:
+            configuration.filter = .images
+        case .video:
+            configuration.filter = .videos
+        }
+        let vc = PHPickerViewController(configuration: configuration)
+        vc.delegate = self
+        return vc
     }
     
     private func cachePathForMedia(_ kind: Kind) -> URL {
@@ -206,37 +257,37 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
     
     private func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         if let videoURL = info[.mediaURL] as? URL {
-            request.handler(videoURL)
+            request.finishRequest(withURL: videoURL)
         } else if let asset = info[.phAsset] as? PHAsset {
             let options = PHVideoRequestOptions()
             options.version = .original
             PHImageManager.default().requestAVAsset(forVideo: asset, options: options, resultHandler: {(asset, _, _) -> Void in
-                DispatchQueue.main.async {
+                Task {
                     if let urlAsset = asset as? AVURLAsset {
-                        request.handler(urlAsset.url)
+                        request.finishRequest(withURL: urlAsset.url)
                     } else {
-                        request.handler(nil)
+                        request.finishRequest(withURL: nil)
                     }
                 }
             })
 
         } else {
-            request.handler(nil)
+            request.finishRequest(withURL: nil)
         }
     }
 
     private func handlePhotoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         
         guard let image = info[.originalImage] as? UIImage else {
-            self.currentRequest?.handler(nil)
+            self.currentRequest?.finishRequest(withURL: nil)
             return
         }
         
         do {
             let finalURL = try writeToCache(image: image, kind: request.kind)
-            self.currentRequest?.handler(finalURL)
+            self.currentRequest?.finishRequest(withURL: finalURL)
         } catch {
-            self.currentRequest?.handler(nil)
+            self.currentRequest?.finishRequest(withURL: nil)
         }
     }
     
@@ -271,15 +322,15 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, UIIm
         }()
         
         guard let image = _image else {
-            request.handler(nil)
+            request.cont.resume(returning: nil)
             return
         }
         
         do {
             let url = try writeToCache(image: image, kind: request.kind)
-            request.handler(url)
+            request.cont.resume(returning: url)
         } catch {
-            request.handler(nil)
+            request.cont.resume(returning: nil)
         }
 
     }
