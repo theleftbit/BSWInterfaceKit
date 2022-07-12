@@ -139,15 +139,17 @@ public class ProfilePhotoPickerCollectionView: UICollectionView, UICollectionVie
         guard let presentingVC = self.presentingViewController else {
             return
         }
-        guard let vc = self.mediaPicker.getMedia(source: source, handler: self.userAddedProfilePicture) else {
-            return
+        
+        Task { @MainActor in
+            guard let url = await self.mediaPicker.getMedia(fromVC: presentingVC, source: source) else {
+                return
+            }
+            userAddedProfilePicture(url)
         }
-        presentingVC.present(vc, animated: true, completion: nil)
     }
     
-    private func userAddedProfilePicture(_ url: URL?) {
+    private func userAddedProfilePicture(_ url: URL) {
         let photos = self.photosDataSource.data
-        guard let url = url else { return }
         guard let index = photos.firstIndex(where: { return $0.isEmpty() }) else { return }
         profilePhotoDelegate?.userAddedProfilePicture(url) {
             guard let tuple = $0 else { return }

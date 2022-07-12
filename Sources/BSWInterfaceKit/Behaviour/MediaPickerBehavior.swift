@@ -48,29 +48,42 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     }
 
     private struct Request {
-        let handler: MediaHandler
         let kind: Kind
+        let fromVC: UIViewController
+        let cont: CheckedContinuation<URL?, Never>
+        
+        @MainActor
+        func finishRequest(withURL url: URL?, shouldDismissVC: Bool = true) {
+            cont.resume(returning: url)
+            if shouldDismissVC {
+                fromVC.dismiss(animated: true)
+            }
+        }
     }
     
     private var currentRequest: Request?
     private let fileManager = FileManager.default
  
-    public func getMedia(_ kind: Kind = .photo, source: Source = .photoAlbum, handler: @escaping MediaHandler) -> UIViewController? {
+    public func getMedia(fromVC: UIViewController, kind: Kind = .photo, source: Source = .photoAlbum) async -> URL? {
         
         guard self.currentRequest == nil else {
-            handler(nil)
             return nil
         }
         
-        self.currentRequest = Request(handler: handler, kind: kind)
-
-        switch source {
-        case .filesApp:
-            return handleFilesAppRequest(kind: kind, handler: handler)
-        case .camera:
-            return handleCameraRequest(kind: kind, handler: handler)
-        case .photoAlbum:
-            return handleImagePickerRequest(kind: kind, handler: handler)
+        let vc: UIViewController? = {
+            switch source {
+            case .filesApp:
+                return handleFilesAppRequest(kind: kind)
+            case .camera:
+                return handleCameraRequest(kind: kind)
+            case .photoAlbum:
+                return handlePhotoPickerRequest(kind: kind)
+            }
+        }()
+        guard let vc = vc else { return nil }
+        fromVC.present(vc, animated: true)
+        return await withCheckedContinuation { cont in
+            self.currentRequest = Request(kind: kind, fromVC: fromVC, cont: cont)
         }
     }
     
@@ -110,11 +123,17 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             self.currentRequest = nil
         }
         guard let currentRequest = self.currentRequest, let url = urls.first else { return }
-        currentRequest.handler(url)
+        let targetURL = cachePathForMedia(currentRequest.kind)
+        do {
+            try self.fileManager.moveItem(at: url, to: targetURL)
+            currentRequest.finishRequest(withURL: targetURL, shouldDismissVC: false)
+        } catch {
+            currentRequest.finishRequest(withURL: nil, shouldDismissVC: false)
+        }
     }
 
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        currentRequest?.handler(nil)
+        currentRequest?.finishRequest(withURL: nil, shouldDismissVC: false)
         currentRequest = nil
     }
 
@@ -138,7 +157,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }()
         
         guard validMedia else {
-            self.currentRequest?.handler(nil)
+            currentRequest.finishRequest(withURL: nil)
             return
         }
         
@@ -153,50 +172,53 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     }
         
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        currentRequest?.handler(nil)
+        currentRequest?.finishRequest(withURL: nil)
         currentRequest = nil
     }
 
     // MARK: PHPickerViewControllerDelegate
     
     public func picker(_ p: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        guard let currentRequest = self.currentRequest, let itemProvider = results.first?.itemProvider else { return }
+        guard let currentRequest = self.currentRequest else { return }
         defer {
             self.currentRequest = nil
         }
-        itemProvider.loadFileRepresentation(forTypeIdentifier: currentRequest.kind.contentTypes.first!.identifier) { url, error in
-            guard let url = url else {
-                DispatchQueue.main.async {
-                    currentRequest.handler(nil)
+        if let itemProvider = results.first?.itemProvider, let contentType = currentRequest.kind.contentTypes.first {
+            itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, error in
+                guard let url = url else {
+                    currentRequest.finishRequest(withURL: nil)
+                    return
                 }
-                return
+                let targetURL = self.cachePathForMedia(currentRequest.kind)
+                let didSucceed: Bool = {
+                    do {
+                        try self.fileManager.moveItem(at: url, to: targetURL)
+                        return true
+                    } catch {
+                        return false
+                    }
+                }()
+                Task { @MainActor in
+                    currentRequest.finishRequest(withURL: didSucceed ? targetURL : nil)
+                }
+
             }
-            let targetURL = Self.createFileURL(input: currentRequest.kind)
-            do {
-                try FileManager.default.moveItem(at: url, to: targetURL)
-                DispatchQueue.main.async {
-                    currentRequest.handler(targetURL)
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    currentRequest.handler(nil)
-                }
-            }
+        } else {
+            currentRequest.finishRequest(withURL: nil)
         }
     }
     
     // MARK: Private
 
-    private func handleFilesAppRequest(kind: Kind, handler: @escaping MediaHandler) -> UIViewController? {
+    private func handleFilesAppRequest(kind: Kind) -> UIViewController? {
         let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: true)
         vc.delegate = self
         vc.allowsMultipleSelection = false
         return vc
     }
 
-    private func handleCameraRequest(kind: Kind, handler: @escaping MediaHandler) -> UIViewController? {
+    private func handleCameraRequest(kind: Kind) -> UIViewController? {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            handler(nil)
             return nil
         }
         let imagePicker = UIImagePickerController()
@@ -212,7 +234,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         return imagePicker
     }
     
-    private func handleImagePickerRequest(kind: Kind, handler: @escaping MediaHandler) -> UIViewController? {
+    private func handlePhotoPickerRequest(kind: Kind) -> UIViewController? {
         var configuration = PHPickerConfiguration()
         configuration.selectionLimit = 1
         switch kind {
@@ -226,9 +248,9 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             }
         case .video:
             if #available(iOS 15.0, *) {
-                configuration.filter = .any(of: [.screenRecordings, .videos, .livePhotos])
+                configuration.filter = .any(of: [.screenRecordings, .videos])
             } else {
-                configuration.filter = .any(of: [.videos, .livePhotos])
+                configuration.filter = .any(of: [.videos])
             }
         }
         let vc = PHPickerViewController(configuration: configuration)
@@ -243,37 +265,37 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     
     private func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         if let videoURL = info[.mediaURL] as? URL {
-            request.handler(videoURL)
+            request.finishRequest(withURL: videoURL)
         } else if let asset = info[.phAsset] as? PHAsset {
             let options = PHVideoRequestOptions()
             options.version = .original
             PHImageManager.default().requestAVAsset(forVideo: asset, options: options, resultHandler: {(asset, _, _) -> Void in
-                DispatchQueue.main.async {
+                Task {
                     if let urlAsset = asset as? AVURLAsset {
-                        request.handler(urlAsset.url)
+                        request.finishRequest(withURL: urlAsset.url)
                     } else {
-                        request.handler(nil)
+                        request.finishRequest(withURL: nil)
                     }
                 }
             })
 
         } else {
-            request.handler(nil)
+            request.finishRequest(withURL: nil)
         }
     }
 
     private func handlePhotoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         
         guard let image = info[.originalImage] as? UIImage else {
-            self.currentRequest?.handler(nil)
+            self.currentRequest?.finishRequest(withURL: nil)
             return
         }
         
         do {
             let finalURL = try writeToCache(image: image, kind: request.kind)
-            self.currentRequest?.handler(finalURL)
+            self.currentRequest?.finishRequest(withURL: finalURL)
         } catch {
-            self.currentRequest?.handler(nil)
+            self.currentRequest?.finishRequest(withURL: nil)
         }
     }
     
@@ -308,15 +330,15 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }()
         
         guard let image = _image else {
-            request.handler(nil)
+            request.cont.resume(returning: nil)
             return
         }
         
         do {
             let url = try writeToCache(image: image, kind: request.kind)
-            request.handler(url)
+            request.cont.resume(returning: url)
         } catch {
-            request.handler(nil)
+            request.cont.resume(returning: nil)
         }
 
     }
@@ -340,11 +362,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case jpegCompressionFailed
         case diskWriteFailed
         case unknown
-    }
-    
-    public static func createFileURL(input: Kind) -> URL {
-        let cachesPath = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        return cachesPath.appendingPathComponent("\(UUID().uuidString).\(input.pathExtension())")
     }
 }
 #endif
