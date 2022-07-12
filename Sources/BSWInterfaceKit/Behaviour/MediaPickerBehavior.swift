@@ -241,25 +241,9 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case .photo:
             configuration.filter = .any(of: [.livePhotos, .images])
         case .thumbnail:
-#if swift(>=5.6)
-            if #available(iOS 15.0, *) {
-                configuration.filter = .any(of: [.images, .screenshots])
-            } else {
-                configuration.filter = .images
-            }
-#else
             configuration.filter = .images
-#endif
         case .video:
-#if swift(>=5.6)
-            if #available(iOS 15.0, *) {
-                configuration.filter = .any(of: [.screenRecordings, .videos])
-            } else {
-                configuration.filter = .videos
-            }
-#else
             configuration.filter = .videos
-#endif
         }
         let vc = PHPickerViewController(configuration: configuration)
         vc.delegate = self
