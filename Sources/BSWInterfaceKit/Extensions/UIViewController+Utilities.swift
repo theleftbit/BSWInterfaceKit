@@ -91,7 +91,24 @@ extension UIViewController {
         vc.view.removeFromSuperview()
         vc.removeFromParent()
     }
-    
+}
+
+public extension UIViewController {
+    func deselectCollectionView(_ collectionView: UICollectionView) {
+        if let indexPath = collectionView.indexPathsForSelectedItems?.first {
+            if let coordinator = transitionCoordinator {
+                coordinator.animate(alongsideTransition: { _ in
+                    collectionView.deselectItem(at: indexPath, animated: true)
+                }, completion: { context in
+                    if context.isCancelled {
+                        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                    }
+                })
+            } else {
+                collectionView.deselectItem(at: indexPath, animated: true)
+            }
+        }
+    }
 }
 
 // MARK: Private
