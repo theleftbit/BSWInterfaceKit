@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 
 import UIKit
 
@@ -38,3 +39,4 @@ public enum TextFieldAlertController {
         return alertVC
     }
 }
+#endif
