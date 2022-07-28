@@ -204,7 +204,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             }()
             currentRequest.finishRequest(withURL: didSucceed ? targetURL : nil)
         }
-        let vc = UIHostingController(rootView: TranscodeProgressView(progress: progress))
+        let vc = TranscodeProgressView(progress: progress).asViewController()
         if #available(iOS 15.0, *) {
             vc.sheetPresentationController?.detents = [.medium()]
         }
