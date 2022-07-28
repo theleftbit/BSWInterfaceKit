@@ -52,11 +52,12 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         let fromVC: UIViewController
         let cont: CheckedContinuation<URL?, Never>
         
-        @MainActor
         func finishRequest(withURL url: URL?, shouldDismissVC: Bool = true) {
             cont.resume(returning: url)
             if shouldDismissVC {
-                fromVC.dismiss(animated: true)
+                DispatchQueue.main.async {
+                    fromVC.dismiss(animated: true)
+                }
             }
         }
     }
@@ -183,29 +184,31 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         defer {
             self.currentRequest = nil
         }
-        if let itemProvider = results.first?.itemProvider, let contentType = currentRequest.kind.contentTypes.first {
-            itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, error in
-                guard let url = url else {
-                    currentRequest.finishRequest(withURL: nil)
-                    return
-                }
-                let targetURL = self.cachePathForMedia(currentRequest.kind)
-                let didSucceed: Bool = {
-                    do {
-                        try self.fileManager.moveItem(at: url, to: targetURL)
-                        return true
-                    } catch {
-                        return false
-                    }
-                }()
-                Task { @MainActor in
-                    currentRequest.finishRequest(withURL: didSucceed ? targetURL : nil)
-                }
-
-            }
-        } else {
+        guard let itemProvider = results.first?.itemProvider, let contentType = currentRequest.kind.contentTypes.first else {
             currentRequest.finishRequest(withURL: nil)
+            return
         }
+        let progress = itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, _ in
+            guard let url = url else {
+                currentRequest.finishRequest(withURL: nil)
+                return
+            }
+            let targetURL = self.cachePathForMedia(currentRequest.kind)
+            let didSucceed: Bool = {
+                do {
+                    try self.fileManager.moveItem(at: url, to: targetURL)
+                    return true
+                } catch {
+                    return false
+                }
+            }()
+            currentRequest.finishRequest(withURL: didSucceed ? targetURL : nil)
+        }
+        let vc = TranscodeProgressView(progress: progress).asViewController()
+        if #available(iOS 15.0, *) {
+            vc.sheetPresentationController?.detents = [.medium()]
+        }
+        p.present(vc, animated: true)
     }
     
     // MARK: Private
@@ -356,4 +359,34 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case unknown
     }
 }
+
+import SwiftUI
+
+private struct TranscodeProgressView: SwiftUI.View {
+    let progress: Progress
+    @State private var progressCount: Double = 0
+
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("Preparing for upload:")
+                    .font(.title2)
+                Spacer()
+            }
+            ProgressView(value: progressCount, total: 1)
+            Button {
+                progress.cancel()
+            } label: {
+                Text("Cancel")
+            }
+        }
+        .padding()
+        .onReceive(progress.publisher(for: \.fractionCompleted).receive(on: RunLoop.main)) { value in
+            withAnimation {
+                progressCount = value
+            }
+        }
+    }
+}
+
 #endif

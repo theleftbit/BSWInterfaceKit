@@ -11,7 +11,7 @@ public protocol PlaceholderDataProvider {
 /// Use it like this:
 ///
 ///     var body: some View {
-///         AsyncStateView(dataGenerator: {
+///         AsyncStateView(id: "Da Antonio", dataGenerator: {
 ///             ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
 ///         }, hostedViewGenerator: {
 ///             RecipeListView(contents: $0)
@@ -28,19 +28,6 @@ public protocol PlaceholderDataProvider {
 ///
 /// The generator is an `async throws` function which takes no params and gives a `HostedView.Data` result.
 /// It gets called using `.task` on the `.loading` state, so it will fire only when shown.
-///
-/// **Tip**: If you need to force reload the view each time some particular upstream data changes, add the `id` modifier to
-/// the view, so that SwiftUI can know that it has changed and recreate it properly (hence returning to the `.loading` state).
-/// Like this:
-///
-///     var body: some View {
-///         AsyncStateView(dataGenerator: {
-///             ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
-///         }, hostedViewGenerator: {
-///             RecipeListView(contents: $0)
-///         })
-///         .id(someID)
-///     }
 ///
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
@@ -61,6 +48,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     public typealias LoadingViewGenerator = () -> LoadingView
     public typealias OnRetryHandler = () -> ()
     
+    let id: String
     let dataGenerator: DataGenerator
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
@@ -69,14 +57,18 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
+    ///   - id: An identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded.
+    ///   For this value you can use the remote ID of the object being loaded.
     ///   - dataGenerator: The function that generates the data that is required for your `HostedView`
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.
     ///   - loadingViewGenerator: The function that creates the `LoadingView`.
-    public init(dataGenerator: @escaping DataGenerator,
+    public init(id: String,
+                dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
                 @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
+        self.id = id
         self.dataGenerator = dataGenerator
         self.hostedViewGenerator = hostedViewGenerator
         self.errorViewGenerator = errorViewGenerator
@@ -90,6 +82,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 .task { await fetchData() }
         case .loaded(let data):
             hostedViewGenerator(data)
+                .id(id)
         case .error(let error):
             errorViewGenerator(error, {
                 self.state = .loading
@@ -102,19 +95,25 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     private func fetchData() async {
         do {
             let data = try await dataGenerator()
-            self.state = .loaded(data)
+            withAnimation {
+                self.state = .loaded(data)
+            }
         } catch {
-            self.state = .error(error)
+            withAnimation {
+                self.state = .error(error)
+            }
         }
     }
 }
 
 @available(iOS 15.0, macOS 12.0, *)
 public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
-    init(dataGenerator: @escaping DataGenerator,
+    init(id: String,
+         dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
          loadingViewGenerator: @escaping LoadingViewGenerator) {
         self.init(
+            id: id,
             dataGenerator: dataGenerator,
             hostedViewGenerator: hostedViewGenerator,
             errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1)},
@@ -125,12 +124,14 @@ public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
 
 @available(iOS 15.0, macOS 12.0, *)
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data {
-    init(dataGenerator: @escaping DataGenerator,
+    init(id: String,
+         dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
          errorViewGenerator: @escaping ErrorViewGenerator) {
         let placeholderData = HostedView.generatePlaceholderData()
         let placeholderView = hostedViewGenerator(placeholderData)
         self.init(
+            id: id,
             dataGenerator: dataGenerator,
             hostedViewGenerator: hostedViewGenerator,
             errorViewGenerator: errorViewGenerator,
@@ -141,11 +142,13 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
 
 @available(iOS 15.0, macOS 12.0, *)
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data, ErrorView == AsyncStatePlainErrorView {
-    init(dataGenerator: @escaping DataGenerator,
+    init(id: String,
+         dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator) {
         let placeholderData = HostedView.generatePlaceholderData()
         let placeholderView = hostedViewGenerator(placeholderData)
         self.init(
+            id: id,
             dataGenerator: dataGenerator,
             hostedViewGenerator: hostedViewGenerator,
             errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1) },
