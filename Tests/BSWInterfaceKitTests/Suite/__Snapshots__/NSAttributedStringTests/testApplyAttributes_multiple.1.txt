@@ -1,0 +1,21 @@
+- Que {
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+}me{
+    NSBackgroundColor = "<UIDynamicCatalogSystemColor; name = systemRedColor>";
+    NSColor = "UIExtendedGrayColorSpace 1 1";
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+} muerda, que {
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+}me{
+    NSBackgroundColor = "<UIDynamicCatalogSystemColor; name = systemRedColor>";
+    NSColor = "UIExtendedGrayColorSpace 1 1";
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+} aruñes, que {
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+}me{
+    NSBackgroundColor = "<UIDynamicCatalogSystemColor; name = systemRedColor>";
+    NSColor = "UIExtendedGrayColorSpace 1 1";
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+} marque{
+    NSFont = "<UICTFont> font-family: \"UICTFontTextStyleBody\"; font-weight: normal; font-style: normal; font-size: 17.00pt";
+}
