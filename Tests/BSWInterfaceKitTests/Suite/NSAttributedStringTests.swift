@@ -17,6 +17,24 @@ class NSAttributedStringTests: XCTestCase {
         assertSnapshot(matching: boldingJungle, as: .dump)
     }
 
+    func testApplyAttributes() {
+        if #available(iOS 16, *) {} else {
+            XCTExpectFailure()
+        }
+        let attributedString = TextStyler.styler.attributedString("Welcome to the jungle")
+        let boldingJungle = attributedString.applyAttributes([.backgroundColor: UIColor.systemRed, .foregroundColor: UIColor.white])
+        assertSnapshot(matching: boldingJungle, as: .dump)
+    }
+
+    func testApplyAttributes_multiple() {
+        if #available(iOS 16, *) {} else {
+            XCTExpectFailure()
+        }
+        let attributedString = TextStyler.styler.attributedString("Que me muerda, que me aruñes, que me marque")
+        let boldingJungle = attributedString.applyAttributes([.backgroundColor: UIColor.systemRed, .foregroundColor: UIColor.white], searchText: "me")
+        assertSnapshot(matching: boldingJungle, as: .dump)
+    }
+
     func testLineHeightMultiplier() {
         let attributedString = TextStyler.styler.attributedString("Welcome to the jungle\nwe've got fun and games").settingLineHeightMultiplier(1.2)
         assertSnapshot(matching: attributedString, as: .dump)

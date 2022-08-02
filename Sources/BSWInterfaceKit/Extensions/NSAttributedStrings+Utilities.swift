@@ -100,6 +100,31 @@ public extension NSAttributedString {
         return string
     }
 
+    /// Applies the desired `attributes` to all contents matching `searchText`
+    /// - Parameters:
+    ///   - attributes: The attributes you want to apply
+    ///   - searchText: What substring to apply them. Pass nil if you want it applied to the whole `NSAttributedString`
+    /// - Returns: An attributed string with everything the attributes applied
+    func applyAttributes(_ attributes: [NSAttributedString.Key: Any], searchText: String? = nil) -> NSAttributedString {
+        let mutableCopy = self.mutableCopy() as! NSMutableAttributedString
+        let actualSearchString: String = {
+            if let searchText = searchText {
+                return searchText
+            } else {
+                return mutableCopy.string
+            }
+        }()
+        let ranges = mutableCopy.string.lowercased().nsRanges(of: actualSearchString.lowercased())
+        for range in ranges {
+            mutableCopy.enumerateAttributes(in: range, options: .longestEffectiveRangeNotRequired) { (value, range, _) in
+                attributes.forEach { (key, value) in
+                    mutableCopy.addAttribute(key, value: value, range: range)
+                }
+            }
+        }
+        return mutableCopy
+    }
+
     var bolded: NSAttributedString {
         return bolding(substring: self.string)
     }
@@ -223,6 +248,26 @@ public extension NSMutableAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = multiplier
         setParagraphStyle(paragraphStyle)
+    }
+}
+
+private extension String {
+    func indices(of occurrence: String) -> [Int] {
+        var indices = [Int]()
+        var position = startIndex
+        while let range = range(of: occurrence, range: position..<endIndex) {
+            let i = distance(from: startIndex, to: range.lowerBound)
+            indices.append(i)
+            let offset = occurrence.distance(from: occurrence.startIndex, to: occurrence.endIndex) - 1
+            guard let after = index(range.lowerBound, offsetBy: offset, limitedBy: endIndex) else { break }
+            position = index(after: after)
+        }
+        return indices
+    }
+    func nsRanges(of searchString: String) -> [NSRange] {
+        let _indices = indices(of: searchString)
+        let count = searchString.count
+        return _indices.map({ NSRange(index(startIndex, offsetBy: $0)..<index(startIndex, offsetBy: $0+count), in: self) })
     }
 }
 
