@@ -10,7 +10,7 @@ public class SeparatorView: UIView {
         addAutolayoutSubview(separatorView)
         separatorView.pinToSuperview()
         NSLayoutConstraint.activate([
-            separatorView.heightAnchor.constraint(equalToConstant: 1),
+            separatorView.heightAnchor.constraint(equalToConstant: 0.5),
         ])
     }
     
