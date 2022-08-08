@@ -6,7 +6,6 @@ import XCTest
 class SeparatorViewTests: BSWSnapshotTest {
     
     func testLayout() throws {
-        return
         let separatorView = SeparatorView()
         let contentView = UIView(frame: .init(x: 0, y: 0, width: 100, height: 100))
         contentView.backgroundColor = .white
