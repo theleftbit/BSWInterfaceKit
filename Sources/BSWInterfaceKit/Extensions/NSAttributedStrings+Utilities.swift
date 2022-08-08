@@ -38,7 +38,7 @@ public extension Collection where Iterator.Element : NSAttributedString {
             }
         }
         
-        return extraDetailsString!
+        return extraDetailsString ?? NSAttributedString()
     }
 }
 
