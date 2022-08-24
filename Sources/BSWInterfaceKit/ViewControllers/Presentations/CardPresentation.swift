@@ -84,6 +84,8 @@ public enum CardPresentation {
         }
     }
 
+    public static let FixedHeightConstraintIdentifier = "CardPresentationFixedHeightConstraintIdentifier"
+    
     /**
      This method will return a `UIViewControllerAnimatedTransitioning` with default `AnimationProperties`
      for the given `Kind`
@@ -185,7 +187,9 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         /// If it's a fixed height, add that constraint
         switch cardHeight {
         case .fixed(let height):
-            toViewController.view.heightAnchor.constraint(equalToConstant: height).isActive = true
+            let heightConstraint = toViewController.view.heightAnchor.constraint(equalToConstant: height)
+            heightConstraint.identifier = CardPresentation.FixedHeightConstraintIdentifier
+            heightConstraint.isActive = true
         case .intrinsicHeight:
             break
         }
