@@ -179,7 +179,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             self.finishRequest(withURL: nil)
             return
         }
-        let progress = itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, _ in
+        let _ = itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, _ in
             guard let url = url else {
                 self.finishRequest(withURL: nil)
                 return
@@ -195,11 +195,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             }()
             self.finishRequest(withURL: didSucceed ? targetURL : nil)
         }
-        let vc = TranscodeProgressView(progress: progress).asViewController()
-        if #available(iOS 15.0, *) {
-            vc.sheetPresentationController?.detents = [.medium()]
-        }
-        p.present(vc, animated: true)
     }
     
     // MARK: Private
@@ -238,6 +233,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             configuration.filter = .images
         case .video:
             configuration.filter = .videos
+            configuration.preferredAssetRepresentationMode = .current
         }
         let vc = PHPickerViewController(configuration: configuration)
         vc.delegate = self
@@ -362,34 +358,4 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case unknown
     }
 }
-
-import SwiftUI
-
-private struct TranscodeProgressView: SwiftUI.View {
-    let progress: Progress
-    @State private var progressCount: Double = 0
-
-    var body: some View {
-        VStack(spacing: 16) {
-            HStack {
-                Text("Preparing for upload:")
-                    .font(.title2)
-                Spacer()
-            }
-            ProgressView(value: progressCount, total: 1)
-            Button {
-                progress.cancel()
-            } label: {
-                Text("Cancel")
-            }
-        }
-        .padding()
-        .onReceive(progress.publisher(for: \.fractionCompleted).receive(on: RunLoop.main)) { value in
-            withAnimation {
-                progressCount = value
-            }
-        }
-    }
-}
-
 #endif
