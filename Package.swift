@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version: 5.6
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -16,17 +16,23 @@ let package = Package(
             name: "BSWInterfaceKit",
             targets: ["BSWInterfaceKit", "BSWInterfaceKitObjC"]
         ),
+        
     ],
     dependencies: [
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.2"),
         .package(name: "BSWFoundation", url: "https://github.com/theleftbit/BSWFoundation.git", from: "5.1.0"),
-        .package(name: "Nuke", url: "https://github.com/kean/Nuke.git", from: "10.7.1"),
+        .package(url: "https://github.com/kean/Nuke.git", from: "11.2.1"),
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
         .target(
             name: "BSWInterfaceKit",
-            dependencies: ["Nuke", "BSWInterfaceKitObjC", "BSWFoundation"]
+            dependencies: [
+                "Nuke",
+                .product(name: "NukeUI", package: "Nuke"),
+                "BSWInterfaceKitObjC",
+                "BSWFoundation"
+            ]
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
