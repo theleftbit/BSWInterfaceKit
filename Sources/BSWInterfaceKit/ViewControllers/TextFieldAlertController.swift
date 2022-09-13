@@ -4,7 +4,17 @@ import UIKit
 
 public enum TextFieldAlertController {
 
-    public static func controllerWith(title: String, subtitle: String? = nil, actionTitle: String, cancelTitle: String, placeholder: String? = nil, initialValue: String? = nil, onAction: @escaping (String?) -> (), onCancelAction: (() -> ())? = nil) -> UIViewController {
+    public static func controllerWith(
+        title: String,
+        subtitle: String? = nil,
+        actionTitle: String,
+        cancelTitle: String,
+        placeholder: String? = nil,
+        initialValue: String? = nil,
+        textContentType: UITextContentType? = nil,
+        actionValidator: @escaping ((String) -> Bool) = { $0.count > 0 },
+        onAction: @escaping (String?) -> (),
+        onCancelAction: (() -> ())? = nil) -> UIViewController {
         let alertVC = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
 
         var observation: NSObjectProtocol!
@@ -29,10 +39,11 @@ public enum TextFieldAlertController {
             guard observation == nil else { return }
             $0.text = initialValue
             $0.placeholder = placeholder
+            $0.textContentType = textContentType
             observation = NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: $0, queue: OperationQueue.main) { [weak action] (note) in
                 guard let t = note.object as? UITextField else { return }
                 textField = t
-                action?.isEnabled = (t.text?.count ?? 0) > 0
+                action?.isEnabled = actionValidator(t.text ?? "")
             }
         }
 
