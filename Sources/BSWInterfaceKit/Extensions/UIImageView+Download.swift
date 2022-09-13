@@ -11,8 +11,6 @@ import UIKit
 
 extension UIImageView {
 
-//    public static var fadeImageDuration: TimeInterval? = nil
-
     private static var webDownloadsEnabled = true
 
     @objc(bsw_disableWebDownloads)
@@ -44,8 +42,8 @@ extension UIImageView {
     }
 
     @nonobjc
-    public func setImageWithURL(_ url: URL) async throws {
-        guard UIImageView.webDownloadsEnabled else { return }
+    public func setImageWithURL(_ url: URL) async throws -> Bool {
+        guard UIImageView.webDownloadsEnabled else { return false }
         
         let request = ImageRequest(
             url: url,
@@ -55,6 +53,7 @@ extension UIImageView {
         )
         let response = try await ImagePipeline.shared.image(for: request)
         self.image = response.image
+        return true
     }
     
     public func setPhoto(_ photo: Photo) {
@@ -72,7 +71,8 @@ extension UIImageView {
             backgroundColor = photo.averageColor
             Task {
                 do {
-                    try await setImageWithURL(url)
+                    let isCompleted = try await setImageWithURL(url)
+                    guard isCompleted else { return }
                     if let preferredContentMode = photo.preferredContentMode {
                         self.contentMode = preferredContentMode
                     }
