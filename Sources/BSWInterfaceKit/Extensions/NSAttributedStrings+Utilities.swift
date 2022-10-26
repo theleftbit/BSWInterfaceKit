@@ -217,7 +217,13 @@ public extension NSAttributedString {
 public extension NSMutableAttributedString {
 
     func addAttributes(onSubstring substring: String, attrs: [NSAttributedString.Key : Any]) {
-        guard let range = self.nsRangeFor(substring: substring) else { fatalError() }
+        guard let range = self.nsRangeFor(substring: substring) else {
+            #if DEBUG
+            fatalError()
+            #else
+            return
+            #endif
+        }
         self.addAttributes(attrs, range: range)
     }
 
