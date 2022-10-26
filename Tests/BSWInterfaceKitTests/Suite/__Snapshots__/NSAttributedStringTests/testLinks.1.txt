@@ -1,5 +1,5 @@
 - Welcome to the {
 }jungle{
     NSAttachment = "https://www.youtube.com/watch?v=o1tj2zJ2Wvg";
-    NSColor = "<UIDynamicSystemColor; name = systemBlueColor>";
+    NSColor = "<UIDynamicCatalogSystemColor; name = systemBlueColor>";
 }
