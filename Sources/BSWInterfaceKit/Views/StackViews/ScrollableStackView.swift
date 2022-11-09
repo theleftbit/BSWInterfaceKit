@@ -54,7 +54,11 @@ open class ScrollableStackView: UIScrollView {
     open override class var requiresConstraintBasedLayout : Bool {
         return true
     }
-
+    
+    open func setCustomSpacing(_ spacing: CGFloat, after arrangedSubview: UIView) {
+        stackView.setCustomSpacing(spacing, after: arrangedSubview)
+    }
+    
     open func viewAtIndex(_ index: Int) -> UIView? {
         return stackView.arrangedSubviews[safe: index]
     }
