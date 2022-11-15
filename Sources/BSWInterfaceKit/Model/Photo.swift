@@ -84,7 +84,8 @@ public extension Photo {
         case .image(let image):
             return image
         case .url(let url, _):
-            let imageCache = Nuke.ImageCache.shared //This dependency should be removed
+            // This dependency should be removed
+            let imageCache = ImagePipeline.shared.cache
             guard let request = imageCache[ImageRequest(url: url)] else {
                 return nil
             }
