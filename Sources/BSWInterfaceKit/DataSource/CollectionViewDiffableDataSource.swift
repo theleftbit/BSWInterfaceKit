@@ -75,10 +75,9 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
 
 @available(iOS 14, *)
 extension CollectionViewDiffableDataSource {
-    
+
     public struct PullToRefreshProvider {
-        public typealias ResultHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) -> ())
-        public typealias FetchHandler = (@escaping (ResultHandler) -> ()) -> ()
+        public typealias FetchHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) async -> ())
         public let fetchHandler: FetchHandler
         public let tintColor: UIColor?
         
@@ -93,17 +92,21 @@ extension CollectionViewDiffableDataSource {
 private extension CollectionViewDiffableDataSource {
     
     func handlePullToRefresh() {
-        /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
         guard let provider = self.pullToRefreshProvider else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-            provider.fetchHandler { [weak self] handler in
-                guard let self = self else { return }
-                var snapshot = self.snapshot()
-                handler(&snapshot)
-                self.apply(snapshot, animatingDifferences: true, completion: {
-                    self.collectionView.refreshControl?.endRefreshing()
-                })
+        Task { @MainActor in
+            /// This is here to fix a glitch when the refreshControl ends refreshing and the collectionView animates the new contents
+            async let waitSleep: () = Task.sleep(nanoseconds: 300_000_000)
+            var snapshot = self.snapshot()
+            await provider.fetchHandler(&snapshot)
+            if #available(iOS 15.0, *) {
+                snapshot.reconfigureItems(snapshot.itemIdentifiers)
+            } else {
+                snapshot.reloadItems(snapshot.itemIdentifiers)
             }
+            try? await waitSleep
+            self.apply(snapshot, animatingDifferences: true, completion: {
+                self.collectionView.refreshControl?.endRefreshing()
+            })
         }
     }
     

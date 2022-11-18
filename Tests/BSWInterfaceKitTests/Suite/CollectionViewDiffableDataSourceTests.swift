@@ -53,10 +53,8 @@ private class MockCollectionView: UICollectionView {
         })
         
         diffDataSource.emptyConfiguration = .init(title: TextStyler.styler.attributedString("Empty View", color: .red), message: nil, image: nil, button: nil)
-        diffDataSource.pullToRefreshProvider = .init(tintColor: .blue, fetchHandler: { completion in
-            completion({ snapshot in
-                snapshot.appendItems(MockCollectionView.mockDataMidfields().map({ .content($0)}), toSection: .midfields)
-            })
+        diffDataSource.pullToRefreshProvider = .init(tintColor: .blue, fetchHandler: { snapshot in
+            snapshot.appendItems(MockCollectionView.mockDataMidfields().map({ .content($0)}), toSection: .midfields)
         })
     }
     
