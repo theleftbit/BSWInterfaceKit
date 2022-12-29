@@ -55,7 +55,7 @@ extension UIView {
     public func roundCorners(radius: CGFloat = 10, isContinuous: Bool = true) {
         layer.cornerRadius = radius
         layer.masksToBounds = true
-        if #available(iOS 13.0, *), isContinuous {
+        if isContinuous {
             layer.cornerCurve = .continuous
         }
     }
