@@ -31,7 +31,7 @@ public extension UIColor {
     /// For example: on a `UIUserInterfaceStyle.light`, for
     /// `UIColor.systemBackground`  it'll return black.
     func invertedForUserInterfaceStyle() -> UIColor {
-        UIColor { traitCollection in
+        UIColor { [unowned self] traitCollection in
             switch traitCollection.userInterfaceStyle {
             case .dark:
                 return self.resolvedColor(with: .init(userInterfaceStyle: .light))
