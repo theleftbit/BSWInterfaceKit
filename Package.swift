@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -18,9 +18,9 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.2"),
-        .package(name: "BSWFoundation", url: "https://github.com/theleftbit/BSWFoundation.git", from: "5.1.0"),
-        .package(name: "Nuke", url: "https://github.com/kean/Nuke.git", from: "11.3.1"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.2"),
+        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "5.1.0"),
+        .package(url: "https://github.com/kean/Nuke.git", from: "11.3.1"),
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
@@ -35,7 +35,7 @@ let package = Package(
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
-            dependencies: ["BSWInterfaceKit", "SnapshotTesting"],
+            dependencies: ["BSWInterfaceKit", .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
             exclude: ["Suite/__Snapshots__/"]
         ),
     ]
