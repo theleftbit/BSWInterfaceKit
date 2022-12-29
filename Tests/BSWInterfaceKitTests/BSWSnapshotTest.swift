@@ -75,7 +75,7 @@ open class BSWSnapshotTest: XCTestCase {
             let screenSize = UIScreen.main.bounds
             let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
             assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            if #available(iOS 13.0, *), testDarkMode {
+            if testDarkMode {
                 viewController.overrideUserInterfaceStyle = .dark
                 assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
             }

@@ -17,17 +17,31 @@ public extension UIColor {
      - parameter dark: The version of the color to use with `UIUserInterfaceStyle.dark`.
      */
     convenience init(light: UIColor, dark: UIColor) {
-        if #available(iOS 13.0, *) {
-            self.init(dynamicProvider: { traitCollection in
-                switch traitCollection.userInterfaceStyle {
-                case .dark:
-                    return dark
-                default:
-                    return light
-                }
-            })
-        } else {
-            self.init(cgColor: light.cgColor)
+        self.init(dynamicProvider: { traitCollection in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return dark
+            default:
+                return light
+            }
+        })
+    }
+
+    /// Returns the opposed color for the current interface style
+    /// For example: on a `UIUserInterfaceStyle.light`, for
+    /// `UIColor.systemBackground`  it'll return black.
+    func invertedForUserInterfaceStyle() -> UIColor {
+        UIColor { [unowned self] traitCollection in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return self.resolvedColor(with: .init(userInterfaceStyle: .light))
+            case .light:
+                return self.resolvedColor(with: .init(userInterfaceStyle: .dark))
+            case .unspecified:
+                fallthrough
+            @unknown default:
+                return self
+            }
         }
     }
 
