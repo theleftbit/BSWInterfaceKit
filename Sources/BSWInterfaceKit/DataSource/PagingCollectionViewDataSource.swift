@@ -6,11 +6,10 @@ import UIKit
  This is a `CollectionViewDiffableDataSource`
  that adds a simple way to support for infiniteScroll.
  ```
- dataSource.infiniteScrollProvider = .init(fetchHandler: { completion in
-    completion({ snapshot in
-        snapshot.appendItems([.foo, .bar], toSection: .main)
-        return true
-    })
+ dataSource.infiniteScrollProvider = .init(fetchHandler: { snapshot in
+     let items = try await fetchTheItems()
+     snapshot.appendItems(items, toSection: .main)
+     return true
  })
   ```
  */
@@ -62,10 +61,6 @@ private extension PagingCollectionViewDiffableDataSource {
             offsetObserver = nil
             return
         }
-        guard #available(iOS 15, *) else {
-            print("Infinite Scroll is only available on iOS 15 or later")
-            return
-        }
         
         offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
             guard let self = self else { return }
@@ -101,27 +96,33 @@ private extension PagingCollectionViewDiffableDataSource {
         snapshot.deleteItems([Item.loadingItem()])
     }
     
-    @available(iOS 15, *)
     func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
         isRequestingNextPage = true
-        Task { @MainActor in
-            /// Start paging
-            var startPagingSnapshot = self.snapshot()
-            PagingCollectionViewDiffableDataSource
-                .startPaginating(snapshot: &startPagingSnapshot)
-            await self.apply(startPagingSnapshot, animatingDifferences: true)
-            
-            var changesSnapshot = self.snapshot()
-            let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
-            PagingCollectionViewDiffableDataSource
-                .stopPaginating(snapshot: &changesSnapshot)
-            await self.apply(changesSnapshot, animatingDifferences: true)
+        /// Start paging
+        var startPagingSnapshot = self.snapshot()
+        PagingCollectionViewDiffableDataSource
+            .startPaginating(snapshot: &startPagingSnapshot)
+        
+        /// For some reason, using the async/await versions of apply
+        /// throw a warning about using this on different queues. This
+        /// seems to work without warnings, so we're using this crappy
+        /// way of doing things.
+        self.apply(startPagingSnapshot, animatingDifferences: true) {
 
-            if !morePagesAvailable {
-                self.infiniteScrollProvider = nil
+            Task { @MainActor in
+                
+                var changesSnapshot = self.snapshot()
+                let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
+                PagingCollectionViewDiffableDataSource
+                    .stopPaginating(snapshot: &changesSnapshot)
+                self.apply(changesSnapshot, animatingDifferences: true)
+
+                if !morePagesAvailable {
+                    self.infiniteScrollProvider = nil
+                }
+                self.isRequestingNextPage = false
             }
-            self.isRequestingNextPage = false
         }
     }
 }
