@@ -42,13 +42,11 @@ public protocol PagingCollectionViewItem: Hashable {
     static func loadingItem() -> Self
 }
 
-@available(iOS 14, *)
 public extension PagingCollectionViewDiffableDataSource {
     struct InfiniteScrollProvider {
         /// Sends the user a snapshot to perform the changes and
         /// the user must return a Bool indicating if more pages are available
-        public typealias ResultHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) -> (Bool))
-        public typealias FetchHandler = (@escaping (ResultHandler) -> ()) -> ()
+        public typealias FetchHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) async -> (Bool))
 
         public let fetchHandler: FetchHandler
         
@@ -58,14 +56,17 @@ public extension PagingCollectionViewDiffableDataSource {
     }
 }
 
-@available(iOS 14, *)
 private extension PagingCollectionViewDiffableDataSource {
     func prepareForInfiniteScroll() {
         guard let _ = self.infiniteScrollProvider else {
             offsetObserver = nil
             return
         }
-    
+        guard #available(iOS 15, *) else {
+            print("Infinite Scroll is only available on iOS 15 or later")
+            return
+        }
+        
         offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
             guard let self = self else { return }
             switch self.scrollDirection {
@@ -100,29 +101,27 @@ private extension PagingCollectionViewDiffableDataSource {
         snapshot.deleteItems([Item.loadingItem()])
     }
     
+    @available(iOS 15, *)
     func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
-        
         isRequestingNextPage = true
-        /// Start paging
-        var startPagingSnapshot = self.snapshot()
-        PagingCollectionViewDiffableDataSource
-            .startPaginating(snapshot: &startPagingSnapshot)
-        self.apply(startPagingSnapshot, animatingDifferences: true) {
+        Task { @MainActor in
+            /// Start paging
+            var startPagingSnapshot = self.snapshot()
+            PagingCollectionViewDiffableDataSource
+                .startPaginating(snapshot: &startPagingSnapshot)
+            await self.apply(startPagingSnapshot, animatingDifferences: true)
+            
+            var changesSnapshot = self.snapshot()
+            let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
+            PagingCollectionViewDiffableDataSource
+                .stopPaginating(snapshot: &changesSnapshot)
+            await self.apply(changesSnapshot, animatingDifferences: true)
 
-            infiniteScrollSupport.fetchHandler { [weak self] handler in
-                guard let self = self else { return }
-                var finishPagingSnapshot = self.snapshot()
-                let morePagesAvailable = handler(&finishPagingSnapshot)
-                PagingCollectionViewDiffableDataSource
-                    .stopPaginating(snapshot: &finishPagingSnapshot)
-                self.apply(finishPagingSnapshot, animatingDifferences: true) {
-                    if !morePagesAvailable {
-                        self.infiniteScrollProvider = nil
-                    }
-                    self.isRequestingNextPage = false
-                }
+            if !morePagesAvailable {
+                self.infiniteScrollProvider = nil
             }
+            self.isRequestingNextPage = false
         }
     }
 }
