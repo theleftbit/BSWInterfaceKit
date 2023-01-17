@@ -27,8 +27,23 @@ class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
 
 private class ViewController: UIViewController {
     
-    var dataSource: CollectionViewDataSource<PageCell>!
+    enum Section: Hashable {
+        case main
+    }
+    
+    enum Item: Hashable {
+        case cell(PageCell.Configuration)
+    }
+    
+    var diffDataSource: CollectionViewDiffableDataSource<Section, Item>!
     private let layout: HorizontalPagedCollectionViewLayout
+    var collectionView: UICollectionView!
+    
+    let mockData = [Photo](
+        repeating: Photo.emptyPhoto(),
+        count: 10
+    )
+
     
     init(layout: HorizontalPagedCollectionViewLayout) {
         self.layout = layout
@@ -40,13 +55,6 @@ private class ViewController: UIViewController {
     }
     
     override func loadView() {
-        
-        // Prepare the layout
-        let mockData = [Photo](
-            repeating: Photo.emptyPhoto(),
-            count: 10
-        )
-
         // Configure the SUT
         let horizontalLayout = layout
         horizontalLayout.minimumLineSpacing = ModuleConstants.Spacing
@@ -54,9 +62,9 @@ private class ViewController: UIViewController {
 
         view = UIView()
         view.backgroundColor = .lightGray
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: horizontalLayout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: horizontalLayout)
+        createDataSource()
         collectionView.backgroundColor = .black
-        dataSource = CollectionViewDataSource(data: mockData, collectionView: collectionView)
         view.addAutolayoutSubview(collectionView)
         NSLayoutConstraint.activate([
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -65,6 +73,25 @@ private class ViewController: UIViewController {
             collectionView.heightAnchor.constraint(equalToConstant: 300),
             ])
     }
+    
+    private func createDataSource() {
+        let cellRegistration = PageCell.View.defaultCellRegistration()
+        
+        diffDataSource = .init(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            switch itemIdentifier {
+            case .cell(let configuration):
+                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: configuration)
+            }
+        })
+        
+        var snapshot = diffDataSource.snapshot()
+        snapshot.appendSections([.main])
+        mockData.forEach { photo in
+            let configuration = PageCell.Configuration.init(photo: photo)
+            snapshot.appendItems([.cell(configuration)])
+        }
+        diffDataSource.apply(snapshot)
+    }
 }
 
 private enum ModuleConstants {
@@ -72,31 +99,58 @@ private enum ModuleConstants {
     static let MedSpacing: CGFloat = 30
 }
 
-private class PageCell: UICollectionViewCell, ViewModelReusable {
-    
-    let imageView = UIImageView()
-    let colorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.purple.withAlphaComponent(0.85)
-        return view
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        imageView.contentMode = .scaleAspectFill
-        contentView.addAutolayoutSubview(imageView)
-        imageView.pinToSuperview()
-        imageView.addAutolayoutSubview(colorView)
-        colorView.pinToSuperview()
-        contentView.roundCorners(radius: 22)
+private enum PageCell {
+    struct Configuration: UIContentConfiguration, Hashable {
+        
+        let photo: Photo
+        
+        var state: UICellConfigurationState?
+        
+        func makeContentView() -> UIView & UIContentView {
+            View(configuration: self)
+        }
+        
+        func updated(for state: UIConfigurationState) -> PageCell.Configuration {
+            var mutableCopy = self
+            if let cellState = state as? UICellConfigurationState {
+                mutableCopy.state =  cellState
+            }
+            return mutableCopy
+        }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureFor(viewModel: Photo) {
-        imageView.setPhoto(viewModel)
+    class View: UIView, UIContentView {
+        
+        let imageView = UIImageView()
+        let colorView: UIView = {
+            let view = UIView()
+            view.backgroundColor = UIColor.purple.withAlphaComponent(0.85)
+            return view
+        }()
+        
+        var configuration: UIContentConfiguration
+        
+        init(configuration: Configuration) {
+            self.configuration = configuration
+            super.init(frame: .zero)
+            
+            imageView.contentMode = .scaleAspectFill
+            addAutolayoutSubview(imageView)
+            imageView.pinToSuperview()
+            imageView.addAutolayoutSubview(colorView)
+            colorView.pinToSuperview()
+            roundCorners(radius: 22)
+            
+            configureFor(configuration: configuration)
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        func configureFor(configuration: Configuration) {
+            imageView.setPhoto(configuration.photo)
+        }
     }
 }
 
@@ -137,30 +191,56 @@ class PlanSelectorViewController: UIViewController {
         .lightContent
     }
     
-    class Cell: UICollectionViewCell, ViewModelReusable {
-    
-        struct VM {
+    enum Cell {
+        struct Configuration: UIContentConfiguration, Hashable {
             
-        }
-        
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            contentView.backgroundColor = .white
-            contentView.layer.cornerRadius = 10
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
-        func configureFor(viewModel: VM) {
+            var state: UICellConfigurationState?
             
+            func makeContentView() -> UIView & UIContentView {
+                View(configuration: self)
+            }
+            
+            func updated(for state: UIConfigurationState) -> PlanSelectorViewController.Cell.Configuration {
+                var mutableCopy = self
+                if let cellState = state as? UICellConfigurationState {
+                    mutableCopy.state =  cellState
+                }
+                return mutableCopy
+            }
+        }
+        
+        class View: UIView, UIContentView {
+            var configuration: UIContentConfiguration
+            
+            init(configuration: Configuration) {
+                self.configuration = configuration
+                super.init(frame: .zero)
+                
+                backgroundColor = .white
+                layer.cornerRadius = 10
+                
+                configureFor(configuration: configuration)
+            }
+            
+            required init?(coder: NSCoder) {
+                fatalError("init(coder:) has not been implemented")
+            }
+            
+            func configureFor(configuration: Configuration) { }
         }
     }
 
     class CollectionView: UICollectionView, UICollectionViewDelegateFlowLayout {
 
-        var collectionViewDataSource: CollectionViewDataSource<Cell>!
+        enum Section: Hashable {
+            case main
+        }
+        
+        enum Item: Hashable {
+            case cell
+        }
+        
+        var diffDataSouce: CollectionViewDiffableDataSource<Section, Item>!
         
         init() {
             let flowLayout = HorizontalPagedCollectionViewLayout(
@@ -170,11 +250,29 @@ class PlanSelectorViewController: UIViewController {
             flowLayout.minimumLineSpacing = 16
             super.init(frame: .zero, collectionViewLayout: flowLayout)
             delegate = self
-            collectionViewDataSource = .init(data: [.init(), .init(), .init(), .init(), .init(), .init()], collectionView: self)
+            createDataSource()
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        private func createDataSource() {
+            let cellRegistration = Cell.View.defaultCellRegistration()
+            
+            diffDataSouce = .init(collectionView: self, cellProvider: { collectionView, indexPath, itemIdentifier in
+                switch itemIdentifier {
+                case .cell:
+                    return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: Cell.Configuration())
+                }
+            })
+            
+            var snapshot = diffDataSouce.snapshot()
+            snapshot.appendSections([.main])
+            for _ in 0...6 {
+                snapshot.appendItems([.cell])
+            }
+            diffDataSouce.apply(snapshot)
         }
     }
     

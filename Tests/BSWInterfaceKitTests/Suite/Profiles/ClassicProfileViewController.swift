@@ -113,7 +113,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController {
 //MARK:- PhotoGalleryViewDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
-    public func didTapPhotoAt(index: Int, fromView: UIView) {
+    public func didTapPhotoAt(index: Int) {
         Task { @MainActor in
             let viewModel = try await dataProvider.value
             let gallery = PhotoGalleryViewController(
