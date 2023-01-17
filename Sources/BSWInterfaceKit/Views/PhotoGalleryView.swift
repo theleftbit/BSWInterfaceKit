@@ -18,9 +18,18 @@ public protocol PhotoGalleryViewDelegate: AnyObject {
 @objc(BSWPhotoGalleryView)
 final public class PhotoGalleryView: UIView {
     
+    enum Section: Hashable {
+        case main
+    }
+    
+    enum Item: Hashable {
+        case photo(PhotoCollectionViewCell.Configuration)
+    }
+    
+
     private let imageContentMode: UIView.ContentMode
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private var collectionViewDataSource: CollectionViewDataSource<PhotoCollectionViewCell>!
+    private var diffDataSource: CollectionViewDiffableDataSource<Section, Item>!
     private var collectionViewLayout: UICollectionViewFlowLayout {
         return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
     }
@@ -33,7 +42,6 @@ final public class PhotoGalleryView: UIView {
     
     public var photos = [Photo]() {
         didSet {
-            collectionViewDataSource.updateData(photos)
             pageControl.numberOfPages = photos.count
         }
     }
@@ -81,17 +89,35 @@ final public class PhotoGalleryView: UIView {
         scrollToPhoto(atIndex: pageControl.currentPage)
     }
 
+    // MARK: Private
+    
+    private func createDataSource() {
+        
+        let cellRegistration = PhotoCollectionViewCell.View.defaultCellRegistration()
+        
+        diffDataSource = .init(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            switch itemIdentifier {
+            case .photo(let configuration):
+                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: configuration)
+            }
+        })
+        
+        var snapshot = diffDataSource.snapshot()
+        snapshot.appendSections([.main])
+        self.photos.forEach { photo in
+            let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
+            snapshot.appendItems([.photo(configuration)])
+        }
+        diffDataSource.apply(snapshot)
+    }
+    
     private func setup() {
         translatesAutoresizingMaskIntoConstraints = false
 
         // CollectionView
         addSubview(collectionView)
         collectionView.isPagingEnabled = true
-        collectionViewDataSource = CollectionViewDataSource(
-            data: photos,
-            collectionView: collectionView
-        )
-        collectionView.dataSource = collectionViewDataSource
+        createDataSource()
         collectionView.delegate = self
         collectionView.prefetchDataSource = self
         collectionView.showsHorizontalScrollIndicator = false
@@ -117,12 +143,6 @@ final public class PhotoGalleryView: UIView {
 
 extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let photoCell = cell as? PhotoCollectionViewCell else { return }
-        photoCell.scrollView.cellImageView.contentMode = self.imageContentMode
-        photoCell.scrollView.isUserInteractionEnabled = zoomEnabled
-    }
-
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) else {
             return
@@ -138,7 +158,7 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 extension PhotoGalleryView: UICollectionViewDataSourcePrefetching {
     public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         let models: [URL] = indexPaths
-            .compactMap({ self.collectionViewDataSource.data[safe: $0.item] })
+            .compactMap({ self.photos[safe: $0.item] })
             .compactMap({
                 switch $0.kind {
                 case .url(let url, _):
