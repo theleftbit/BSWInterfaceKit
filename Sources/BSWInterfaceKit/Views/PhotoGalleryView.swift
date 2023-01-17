@@ -10,7 +10,7 @@ import BSWFoundation
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: AnyObject {
-    func didTapPhotoAt(index: Int, fromView: UIView)
+    func didTapPhotoAt(index: Int)
 }
 
 // MARK: - PhotoGalleryView
@@ -25,7 +25,6 @@ final public class PhotoGalleryView: UIView {
     enum Item: Hashable {
         case photo(PhotoCollectionViewCell.Configuration)
     }
-    
 
     private let imageContentMode: UIView.ContentMode
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -42,6 +41,7 @@ final public class PhotoGalleryView: UIView {
     
     public var photos = [Photo]() {
         didSet {
+            createDataSource()
             pageControl.numberOfPages = photos.count
         }
     }
@@ -80,6 +80,7 @@ final public class PhotoGalleryView: UIView {
     }    
 
     public func scrollToPhoto(atIndex index: Int, animated: Bool = false) {
+        createDataSource()
         collectionView.scrollToItem(at: IndexPath(item: Int(index), section: 0), at: .centeredHorizontally, animated: animated)
     }
 
@@ -117,7 +118,6 @@ final public class PhotoGalleryView: UIView {
         // CollectionView
         addSubview(collectionView)
         collectionView.isPagingEnabled = true
-        createDataSource()
         collectionView.delegate = self
         collectionView.prefetchDataSource = self
         collectionView.showsHorizontalScrollIndicator = false
@@ -141,14 +141,13 @@ final public class PhotoGalleryView: UIView {
 
 // MARK: UICollectionViewDelegate
 
-extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
-
+extension PhotoGalleryView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) else {
-            return
-        }
-        delegate?.didTapPhotoAt(index: indexPath.item, fromView: cell)
+        delegate?.didTapPhotoAt(index: indexPath.item)
     }
+}
+
+extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return self.safeAreaLayoutGuide.layoutFrame.size

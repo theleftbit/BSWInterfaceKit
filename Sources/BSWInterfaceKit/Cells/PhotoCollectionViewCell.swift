@@ -29,6 +29,7 @@ public enum PhotoCollectionViewCell {
         }
     }
     
+    @objc(PhotoCollectionView)
     class View: UIView, UIContentView {
         let scrollView = PhotoScrollView()
         
