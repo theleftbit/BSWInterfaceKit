@@ -102,6 +102,7 @@ private enum ModuleConstants {
 private enum PageCell {
     struct Configuration: UIContentConfiguration, Hashable {
         
+        let id = UUID().uuidString
         let photo: Photo
         
         var state: UICellConfigurationState?
@@ -193,6 +194,8 @@ class PlanSelectorViewController: UIViewController {
     
     enum Cell {
         struct Configuration: UIContentConfiguration, Hashable {
+            
+            let id = UUID().uuidString
             
             var state: UICellConfigurationState?
             
