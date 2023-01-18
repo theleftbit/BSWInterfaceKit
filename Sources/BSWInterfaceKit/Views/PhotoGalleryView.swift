@@ -80,7 +80,6 @@ final public class PhotoGalleryView: UIView {
     }    
 
     public func scrollToPhoto(atIndex index: Int, animated: Bool = false) {
-        createDataSource()
         collectionView.scrollToItem(at: IndexPath(item: Int(index), section: 0), at: .centeredHorizontally, animated: animated)
     }
 
@@ -125,7 +124,8 @@ final public class PhotoGalleryView: UIView {
         collectionViewLayout.scrollDirection = .horizontal
         collectionViewLayout.minimumInteritemSpacing = 0
         collectionViewLayout.minimumLineSpacing = 0
-
+        createDataSource()
+        
         // Page control
         addAutolayoutSubview(pageControl)
         pageControl.numberOfPages = photos.count
