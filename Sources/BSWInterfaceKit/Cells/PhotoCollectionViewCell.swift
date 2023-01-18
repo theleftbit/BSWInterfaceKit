@@ -6,22 +6,62 @@
 
 import UIKit
 
-public class PhotoCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
-    let scrollView = PhotoScrollView()
-
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        contentView.addSubview(scrollView)
-        scrollView.pinToSuperview()
-    }
-
-    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-    public func configureFor(viewModel: Photo) {
-        scrollView.cellImageView.setPhoto(viewModel)
+public enum PhotoCollectionViewCell {
+    struct Configuration: UIContentConfiguration, Hashable {
+        
+        let photo: Photo
+        let imageContentMode: UIView.ContentMode
+        let zoomEnabled: Bool
+        
+        var state: UICellConfigurationState?
+        
+        func makeContentView() -> UIView & UIContentView {
+            View(configuration: self)
+        }
+        
+        func updated(for state: UIConfigurationState) -> PhotoCollectionViewCell.Configuration {
+            var mutableCopy = self
+            if let cellState = state as? UICellConfigurationState {
+                mutableCopy.state =  cellState
+            }
+            return mutableCopy
+        }
     }
     
+    @objc(PhotoCollectionView)
+    class View: UIView, UIContentView {
+        let scrollView = PhotoScrollView()
+        
+        var configuration: UIContentConfiguration {
+            didSet {
+                guard let config = configuration as? Configuration,
+                      let oldValue = oldValue as? Configuration,
+                      oldValue != config else  { return }
+                configureFor(configuration: config)
+            }
+        }
+        
+        init(configuration: Configuration) {
+            self.configuration = configuration
+            super.init(frame: .zero)
+            
+            addSubview(scrollView)
+            scrollView.pinToSuperview()
+            
+            configureFor(configuration: configuration)
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        func configureFor(configuration: Configuration) {
+            scrollView.cellImageView.setPhoto(configuration.photo)
+            scrollView.cellImageView.contentMode = configuration.imageContentMode
+            scrollView.isUserInteractionEnabled = configuration.zoomEnabled
+        }
+    }
 }
 
 class PhotoScrollView: UIScrollView, UIScrollViewDelegate {
