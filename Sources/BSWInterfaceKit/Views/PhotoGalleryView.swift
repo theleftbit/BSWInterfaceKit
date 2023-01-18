@@ -10,7 +10,7 @@ import BSWFoundation
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: AnyObject {
-    func didTapPhotoAt(index: Int)
+    func didTapPhotoAt(index: Int, fromView: UIView)
 }
 
 // MARK: - PhotoGalleryView
@@ -143,7 +143,8 @@ final public class PhotoGalleryView: UIView {
 
 extension PhotoGalleryView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didTapPhotoAt(index: indexPath.item)
+        guard let cell = collectionView.cellForItem(at: indexPath), let view = cell.contentView as? PhotoCollectionViewCell.View else { return }
+        delegate?.didTapPhotoAt(index: indexPath.item, fromView: view)
     }
 }
 
