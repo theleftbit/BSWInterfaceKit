@@ -16,28 +16,28 @@ class ClassicProfileViewControllerTests: BSWSnapshotTest {
     }
 }
 
-public enum ClassicProfileEditKind {
-    case nonEditable
-    case editable(UIBarButtonItem)
-    
-    public var isEditable: Bool {
-        switch self {
-        case .editable(_):
-            return true
-        default:
-            return false
+private class ClassicProfileViewController: UIViewController {
+
+    enum ClassicProfileEditKind {
+        case nonEditable
+        case editable(UIBarButtonItem)
+        
+        public var isEditable: Bool {
+            switch self {
+            case .editable(_):
+                return true
+            default:
+                return false
+            }
         }
     }
-}
 
-open class ClassicProfileViewController: TransparentNavBarViewController {
-
-    public init(dataProvider: Task<ClassicProfileViewModel, Swift.Error>) {
+    init(dataProvider: Task<ClassicProfileViewModel, Swift.Error>) {
         self.dataProvider = dataProvider
         super.init(nibName:nil, bundle:nil)
     }
     
-    public init(viewModel: ClassicProfileViewModel) {
+    init(viewModel: ClassicProfileViewModel) {
         self.dataProvider = Task(operation: { return viewModel })
         super.init(nibName:nil, bundle:nil)
     }
@@ -55,6 +55,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController {
     public var dataProvider: Task<ClassicProfileViewModel, Swift.Error>!
     open var editKind: ClassicProfileEditKind = .nonEditable
     
+    private let scrollableStackView = ScrollableStackView()
     private let photoGallery = PhotoGalleryView()
     private let titleLabel = UILabel.unlimitedLinesLabel()
     private let detailsLabel = UILabel.unlimitedLinesLabel()
@@ -145,4 +146,5 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
         dismiss(animated: true, completion: nil)
     }
 }
+
 #endif
