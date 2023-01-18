@@ -61,7 +61,9 @@ extension ClassicProfileViewModel {
             extraInfo: [
                 TextStyler.styler.attributedString("1 World Cup 2006", forStyle: .body),
                 TextStyler.styler.attributedString("7 Serie A titles", forStyle: .body),
-                TextStyler.styler.attributedString("3 Coppa Italia", forStyle: .body),
+                TextStyler.styler.attributedString("Ligue 1 Champion", forStyle: .body),
+                TextStyler.styler.attributedString("6 Coppa Italia", forStyle: .body),
+                TextStyler.styler.attributedString("6 Supercoppa Italiana", forStyle: .body),
                 TextStyler.styler.attributedString("1 Uefa Cup", forStyle: .body)
             ]
         )

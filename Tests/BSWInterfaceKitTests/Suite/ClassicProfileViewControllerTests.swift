@@ -6,11 +6,14 @@
 import BSWInterfaceKit
 import UIKit
 
+/// This test is here because it tests several underlying subsystems
+/// of BSWInterfaceKit so it works as some kind of "smoke test"
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
     func testSampleLayout() {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
+        detailVC.editKind = .editable(.init(title: "Edit", style: .plain, target: nil, action: nil))
         let navController = UINavigationController(rootViewController: detailVC)
         waitABitAndVerify(viewController: navController, testDarkMode: false)
     }
@@ -72,7 +75,10 @@ private class ClassicProfileViewController: UIViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = .systemBackground
+        view.addSubview(scrollableStackView)
+        scrollableStackView.pinToSuperview()
+
         //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
@@ -122,7 +128,7 @@ private class ClassicProfileViewController: UIViewController {
 //MARK:- PhotoGalleryViewDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
-    public func didTapPhotoAt(index: Int) {
+    public func didTapPhotoAt(index: Int, fromView: UIView) {
         Task { @MainActor in
             let viewModel = try await dataProvider.value
             let gallery = PhotoGalleryViewController(
