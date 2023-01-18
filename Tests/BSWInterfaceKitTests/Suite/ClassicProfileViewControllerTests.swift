@@ -6,38 +6,41 @@
 import BSWInterfaceKit
 import UIKit
 
+/// This test is here because it tests several underlying subsystems
+/// of BSWInterfaceKit so it works as some kind of "smoke test"
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
     func testSampleLayout() {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
+        detailVC.editKind = .editable(.init(title: "Edit", style: .plain, target: nil, action: nil))
         let navController = UINavigationController(rootViewController: detailVC)
         waitABitAndVerify(viewController: navController, testDarkMode: false)
     }
 }
 
-public enum ClassicProfileEditKind {
-    case nonEditable
-    case editable(UIBarButtonItem)
-    
-    public var isEditable: Bool {
-        switch self {
-        case .editable(_):
-            return true
-        default:
-            return false
+private class ClassicProfileViewController: UIViewController {
+
+    enum ClassicProfileEditKind {
+        case nonEditable
+        case editable(UIBarButtonItem)
+        
+        public var isEditable: Bool {
+            switch self {
+            case .editable(_):
+                return true
+            default:
+                return false
+            }
         }
     }
-}
 
-open class ClassicProfileViewController: TransparentNavBarViewController {
-
-    public init(dataProvider: Task<ClassicProfileViewModel, Swift.Error>) {
+    init(dataProvider: Task<ClassicProfileViewModel, Swift.Error>) {
         self.dataProvider = dataProvider
         super.init(nibName:nil, bundle:nil)
     }
     
-    public init(viewModel: ClassicProfileViewModel) {
+    init(viewModel: ClassicProfileViewModel) {
         self.dataProvider = Task(operation: { return viewModel })
         super.init(nibName:nil, bundle:nil)
     }
@@ -55,6 +58,7 @@ open class ClassicProfileViewController: TransparentNavBarViewController {
     public var dataProvider: Task<ClassicProfileViewModel, Swift.Error>!
     open var editKind: ClassicProfileEditKind = .nonEditable
     
+    private let scrollableStackView = ScrollableStackView()
     private let photoGallery = PhotoGalleryView()
     private let titleLabel = UILabel.unlimitedLinesLabel()
     private let detailsLabel = UILabel.unlimitedLinesLabel()
@@ -71,7 +75,10 @@ open class ClassicProfileViewController: TransparentNavBarViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = .systemBackground
+        view.addSubview(scrollableStackView)
+        scrollableStackView.pinToSuperview()
+
         //Add the photoGallery
         photoGallery.delegate = self
         scrollableStackView.addArrangedSubview(photoGallery)
@@ -145,4 +152,5 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
         dismiss(animated: true, completion: nil)
     }
 }
+
 #endif
