@@ -65,6 +65,11 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         return super.collectionView(collectionView, numberOfItemsInSection: section)
     }
     
+    @MainActor
+    public override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true) async {
+        super.apply(snapshot, animatingDifferences: animatingDifferences)
+    }
+    
     
     // MARK: Actions
     

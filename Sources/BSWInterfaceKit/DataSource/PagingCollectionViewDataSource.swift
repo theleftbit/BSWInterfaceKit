@@ -116,7 +116,7 @@ private extension PagingCollectionViewDiffableDataSource {
                 let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
                 PagingCollectionViewDiffableDataSource
                     .stopPaginating(snapshot: &changesSnapshot)
-                self.apply(changesSnapshot, animatingDifferences: true)
+                await self.apply(changesSnapshot, animatingDifferences: true)
 
                 if !morePagesAvailable {
                     self.infiniteScrollProvider = nil
