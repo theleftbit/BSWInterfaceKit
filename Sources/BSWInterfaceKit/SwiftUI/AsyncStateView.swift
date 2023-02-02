@@ -177,6 +177,11 @@ public struct AsyncStatePlainErrorView: View {
 
 @available(iOS 15.0, macOS 12.0, *)
 public struct AsyncStatePlainLoadingView<T: View>: View {
+    
+    public init(contentView: T) {
+        self.contentView = contentView
+    }
+    
     let contentView: T
     public var body: some View {
         contentView
