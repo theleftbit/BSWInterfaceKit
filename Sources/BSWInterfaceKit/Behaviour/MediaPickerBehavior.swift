@@ -237,6 +237,10 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }
         let vc = PHPickerViewController(configuration: configuration)
         vc.delegate = self
+        ///To set the current request to nil when we dismiss the picker,
+        ///it's only possible from the cancel button, so we force it to
+        ///be the only option with a full screen
+        vc.modalPresentationStyle = .fullScreen
         return vc
     }
     
