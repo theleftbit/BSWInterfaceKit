@@ -237,6 +237,13 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }
         let vc = PHPickerViewController(configuration: configuration)
         vc.delegate = self
+        /// As of iOS 16.3, `PHPickerViewController` doesn't
+        /// call the delegate when it's interactively dismissed and seems
+        /// to ignore `isModalInPresentation`.
+        /// The best workaround we've found so far is making this presentation
+        /// `fullScreen` so it can't be dismised interactively.
+        /// Please revisit in iOS 17.
+        vc.modalPresentationStyle = .fullScreen
         return vc
     }
     
