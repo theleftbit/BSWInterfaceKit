@@ -27,7 +27,7 @@ private struct ContentView: View {
     }
 }
 
-struct IntrinsicHeightDetentView_Previews: PreviewProvider {
+struct DynamicHeightSheetView_Previews: PreviewProvider {
     static var previews: some View {
         DemoView()
     }
