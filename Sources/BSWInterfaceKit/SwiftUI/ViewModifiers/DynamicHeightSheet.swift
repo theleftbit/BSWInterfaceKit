@@ -7,7 +7,8 @@ public extension SwiftUI.View {
         IntrinsicHeightDetentView(
             hostView: self,
             contentView: content,
-            presentSheet: isPresented
+            isPresented: isPresented,
+            onDismiss: onDismiss
         )
     }
 }
@@ -25,12 +26,13 @@ private struct IntrinsicHeightDetentView<Host: View, Content: View>: View {
     
     let hostView: Host
     let contentView: () -> Content
-    @Binding var presentSheet: Bool
+    @Binding var isPresented: Bool
+    let onDismiss: (() -> Void)?
     @State private var sheetHeight: CGFloat = .zero
 
     var body: some View {
         hostView
-        .sheet(isPresented: $presentSheet) {
+        .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
                 .overlay {
                     GeometryReader { geometry in
