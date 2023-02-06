@@ -3,7 +3,7 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 public extension SwiftUI.View {
-    func dynamicHeightSheet<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
+    func intrinsicHeightSheet<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
         IntrinsicHeightDetentView_ForBool(
             hostView: self,
             contentView: content,
@@ -12,7 +12,7 @@ public extension SwiftUI.View {
         )
     }
     
-    func dynamicHeightSheet<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil, content: @escaping (Item) -> Content) -> some View {
+    func intrinsicHeightSheet<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil, content: @escaping (Item) -> Content) -> some View {
         IntrinsicHeightDetentView_ForItems(
             hostView: self,
             contentView: content,

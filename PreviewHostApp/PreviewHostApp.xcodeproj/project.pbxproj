@@ -10,7 +10,7 @@
 		F5B36E2A29911FCB00F1F408 /* PreviewHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B36E2929911FCB00F1F408 /* PreviewHostAppApp.swift */; };
 		F5B36E2E29911FCC00F1F408 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B36E2D29911FCC00F1F408 /* Assets.xcassets */; };
 		F5B36E3129911FCC00F1F408 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B36E3029911FCC00F1F408 /* Preview Assets.xcassets */; };
-		F5B36E3A29911FFD00F1F408 /* DynamicHeightSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B36E3929911FFD00F1F408 /* DynamicHeightSheet.swift */; };
+		F5B36E3A29911FFD00F1F408 /* IntrinsicHeightSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B36E3929911FFD00F1F408 /* IntrinsicHeightSheet.swift */; };
 		F5B36E3D2991202D00F1F408 /* BSWInterfaceKit in Frameworks */ = {isa = PBXBuildFile; productRef = F5B36E3C2991202D00F1F408 /* BSWInterfaceKit */; };
 /* End PBXBuildFile section */
 
@@ -20,7 +20,7 @@
 		F5B36E2D29911FCC00F1F408 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5B36E3029911FCC00F1F408 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5B36E3729911FD700F1F408 /* BSWInterfaceKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BSWInterfaceKit; path = ..; sourceTree = "<group>"; };
-		F5B36E3929911FFD00F1F408 /* DynamicHeightSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicHeightSheet.swift; sourceTree = "<group>"; };
+		F5B36E3929911FFD00F1F408 /* IntrinsicHeightSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrinsicHeightSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +75,7 @@
 		F5B36E3829911FF100F1F408 /* Previews */ = {
 			isa = PBXGroup;
 			children = (
-				F5B36E3929911FFD00F1F408 /* DynamicHeightSheet.swift */,
+				F5B36E3929911FFD00F1F408 /* IntrinsicHeightSheet.swift */,
 			);
 			path = Previews;
 			sourceTree = "<group>";
@@ -160,7 +160,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5B36E3A29911FFD00F1F408 /* DynamicHeightSheet.swift in Sources */,
+				F5B36E3A29911FFD00F1F408 /* IntrinsicHeightSheet.swift in Sources */,
 				F5B36E2A29911FCB00F1F408 /* PreviewHostAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
