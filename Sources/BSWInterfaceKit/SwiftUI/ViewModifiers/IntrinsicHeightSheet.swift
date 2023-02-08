@@ -3,6 +3,13 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 public extension SwiftUI.View {
+    
+    /// Presents a sheet where the sheet's height is the contained view's intrinsic height
+    /// **Note:** It doesn't work if `Content` is embedded in a `NavigationView`
+    /// - Parameters:
+    ///   - isPresented: the Binding that controls the presentation
+    ///   - onDismiss: a callback to be called on dismissal
+    ///   - content: the content to be presented
     func intrinsicHeightSheet<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
         IntrinsicHeightDetentView_ForBool(
             hostView: self,
@@ -12,6 +19,12 @@ public extension SwiftUI.View {
         )
     }
     
+    /// Presents a sheet where the sheet's height is the contained view's intrinsic height
+    /// **Note:** It doesn't work if `Content` is embedded in a `NavigationView`
+    /// - Parameters:
+    ///   - item: the Binding to the Item being presented
+    ///   - onDismiss: a callback to be called on dismissal
+    ///   - content: the content to be presented
     func intrinsicHeightSheet<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil, content: @escaping (Item) -> Content) -> some View {
         IntrinsicHeightDetentView_ForItems(
             hostView: self,
