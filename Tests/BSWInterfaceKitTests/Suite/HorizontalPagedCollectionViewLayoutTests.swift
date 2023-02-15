@@ -71,7 +71,7 @@ private class ViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 300),
-            ])
+        ])
     }
     
     private func createDataSource() {
@@ -84,13 +84,15 @@ private class ViewController: UIViewController {
             }
         })
         
-        var snapshot = diffDataSource.snapshot()
-        snapshot.appendSections([.main])
-        mockData.forEach { photo in
-            let configuration = PageCell.Configuration.init(photo: photo)
-            snapshot.appendItems([.cell(configuration)])
+        Task {
+            var snapshot = diffDataSource.snapshot()
+            snapshot.appendSections([.main])
+            mockData.forEach { photo in
+                let configuration = PageCell.Configuration.init(photo: photo)
+                snapshot.appendItems([.cell(configuration)])
+            }
+            await diffDataSource.apply(snapshot)
         }
-        diffDataSource.apply(snapshot)
     }
 }
 

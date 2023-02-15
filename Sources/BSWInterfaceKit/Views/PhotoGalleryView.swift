@@ -102,13 +102,15 @@ final public class PhotoGalleryView: UIView {
             }
         })
         
-        var snapshot = diffDataSource.snapshot()
-        snapshot.appendSections([.main])
-        self.photos.forEach { photo in
-            let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
-            snapshot.appendItems([.photo(configuration)])
+        Task {
+            var snapshot = diffDataSource.snapshot()
+            snapshot.appendSections([.main])
+            self.photos.forEach { photo in
+                let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
+                snapshot.appendItems([.photo(configuration)])
+            }
+            await diffDataSource.apply(snapshot)
         }
-        diffDataSource.apply(snapshot)
     }
     
     private func setup() {

@@ -64,12 +64,11 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         defer { addEmptyView() }
         return super.collectionView(collectionView, numberOfItemsInSection: section)
     }
-    
-    @MainActor
-    public override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true) async {
-        super.apply(snapshot, animatingDifferences: animatingDifferences)
+
+    @available(iOS, deprecated: 15, obsoleted: 16, message: "Do not use this one")
+    open override nonisolated func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true, completion: (() -> Void)? = nil) {
+        super.apply(snapshot, animatingDifferences: animatingDifferences, completion: completion)
     }
-    
     
     // MARK: Actions
     
@@ -103,15 +102,10 @@ private extension CollectionViewDiffableDataSource {
             async let waitSleep: () = Task.sleep(nanoseconds: 300_000_000)
             var snapshot = self.snapshot()
             await provider.fetchHandler(&snapshot)
-            if #available(iOS 15.0, *) {
-                snapshot.reconfigureItems(snapshot.itemIdentifiers)
-            } else {
-                snapshot.reloadItems(snapshot.itemIdentifiers)
-            }
+            snapshot.reconfigureItems(snapshot.itemIdentifiers)
             try? await waitSleep
-            self.apply(snapshot, animatingDifferences: true, completion: {
-                self.collectionView.refreshControl?.endRefreshing()
-            })
+            await self.apply(snapshot, animatingDifferences: true)
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     

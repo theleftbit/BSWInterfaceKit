@@ -5,13 +5,15 @@ import BSWInterfaceKit
 import UIKit
 
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
-    func testLayout() {
+    
+    @MainActor
+    func testLayout() async {
         let cv = MockCollectionView()
         let sut = cv.diffDataSource!
         var snapshot = sut.snapshot()
         snapshot.appendSections([.defenders, .midfields])
         snapshot.appendItems(MockCollectionView.mockDataDefenders().map({ .content($0)}), toSection: .defenders)
-        sut.apply(snapshot, animatingDifferences: false)
+        await sut.apply(snapshot, animatingDifferences: false)
         verify(scrollView: cv)
     }
 }
