@@ -146,9 +146,9 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             guard let mediaTypeString = info[.mediaType] as? String else { return false }
             switch currentRequest.kind {
             case .video:
-                return mediaTypeString == kUTTypeMovie as String
+                return mediaTypeString == UTType.movie.identifier
             case .photo, .thumbnail:
-                return mediaTypeString == kUTTypeImage as String
+                return mediaTypeString == UTType.image.identifier
             }
         }()
         
@@ -216,9 +216,9 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         imagePicker.cameraDevice = .front
         switch kind {
         case .video:
-            imagePicker.mediaTypes = [kUTTypeMovie as String]
+            imagePicker.mediaTypes = [UTType.movie.identifier]
         case .photo, .thumbnail:
-            imagePicker.mediaTypes = [kUTTypeImage as String]
+            imagePicker.mediaTypes = [UTType.image.identifier]
         }
         return imagePicker
     }

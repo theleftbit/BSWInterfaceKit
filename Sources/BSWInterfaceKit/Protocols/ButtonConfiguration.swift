@@ -16,6 +16,8 @@ public enum ButtonTitle {
 public typealias ButtonActionHandler = () -> ()
 
 /// Describes a button look and it's `actionHandler`
+
+@available(iOS, deprecated: 15, obsoleted: 16, message: "Do not use this one")
 public struct ButtonConfiguration {
     public let buttonTitle: ButtonTitle
     public let tintColor: UIColor?
