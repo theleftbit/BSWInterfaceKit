@@ -68,7 +68,7 @@ open class BSWSnapshotTest: XCTestCase {
         rootViewController = viewController
         
         let exp = expectation(description: "verify view")
-        let deadlineTime = DispatchTime.now() + .milliseconds(500)
+        let deadlineTime = DispatchTime.now() + .milliseconds(50)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
             self.rootViewController = nil
             

@@ -63,7 +63,6 @@ private class ViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .lightGray
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: horizontalLayout)
-        createDataSource()
         collectionView.backgroundColor = .black
         view.addAutolayoutSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -72,23 +71,24 @@ private class ViewController: UIViewController {
             collectionView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 300),
         ])
-    }
-    
-    private func createDataSource() {
         let cellRegistration = PageCell.View.defaultCellRegistration()
-        
         diffDataSource = .init(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .cell(let configuration):
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: configuration)
             }
         })
-        
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        /// Insert stuff
         Task {
             var snapshot = diffDataSource.snapshot()
             snapshot.appendSections([.main])
             mockData.forEach { photo in
-                let configuration = PageCell.Configuration.init(photo: photo)
+                let configuration = PageCell.Configuration(photo: photo)
                 snapshot.appendItems([.cell(configuration)])
             }
             await diffDataSource.apply(snapshot)
@@ -242,7 +242,7 @@ class PlanSelectorViewController: UIViewController {
         }
         
         enum Item: Hashable {
-            case cell
+            case cell(UUID)
         }
         
         var diffDataSouce: CollectionViewDiffableDataSource<Section, Item>!
@@ -272,12 +272,14 @@ class PlanSelectorViewController: UIViewController {
                 }
             })
             
-            var snapshot = diffDataSouce.snapshot()
-            snapshot.appendSections([.main])
-            for _ in 0...6 {
-                snapshot.appendItems([.cell])
+            Task {
+                var snapshot = diffDataSouce.snapshot()
+                snapshot.appendSections([.main])
+                for _ in 0...6 {
+                    snapshot.appendItems([.cell(UUID.init())])
+                }
+                await diffDataSouce.apply(snapshot)
             }
-            diffDataSouce.apply(snapshot)
         }
     }
     

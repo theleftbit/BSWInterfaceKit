@@ -46,11 +46,11 @@ private class MockCollectionView: UICollectionView {
             return cell
         }
         
+        let cellRegistration = UICollectionView.CellRegistration<PolaroidCollectionViewCell, Item> { cell, indexPath, item in
+            guard case .content(let vm) = item else { fatalError() }
+            cell.configureFor(viewModel: vm)
+        }
         diffDataSource = CollectionViewDiffableDataSource(collectionView: self, cellProvider: { (cv, index, item) -> UICollectionViewCell? in
-            let cellRegistration = UICollectionView.CellRegistration<PolaroidCollectionViewCell, Item> { cell, indexPath, item in
-                guard case .content(let vm) = item else { fatalError() }
-                cell.configureFor(viewModel: vm)
-            }
             return cv.dequeueConfiguredReusableCell(using: cellRegistration, for: index, item: item)
         })
         
