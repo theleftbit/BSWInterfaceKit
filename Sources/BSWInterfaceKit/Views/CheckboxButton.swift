@@ -34,20 +34,25 @@ open class CheckboxButton: UIButton {
     
     public init() {
         super.init(frame: .zero)
-        self.configuration = .plain()
         isSelected = false
+        self.configuration = .plain()
+        self.configuration?.baseBackgroundColor = .clear
+        
+        let handler: UIButton.ConfigurationUpdateHandler = { [weak self] button in
+            switch button.state {
+            case .selected:
+                button.configuration?.image = self?.images.selectedImage
+                button.configuration?.baseForegroundColor = Appearance.checkTintColor
+            default:
+                button.configuration?.image = self?.images.nonSelectedImage
+                button.configuration?.baseForegroundColor = Appearance.backgroundTintColor
+            }
+        }
+        self.configurationUpdateHandler = handler
         addTarget(self, action: #selector(toggleSelected), for: .touchUpInside)
     }
     required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-    
-    public override var isSelected: Bool {
-        didSet {
-            self.configuration?.image = isSelected ? images.selectedImage : images.nonSelectedImage
-            self.configuration?.baseForegroundColor = isSelected ? Appearance.checkTintColor : Appearance.backgroundTintColor
-            self.configuration?.baseBackgroundColor = .clear
-        }
-    }
-    
+        
     @objc private func toggleSelected() {
         isSelected.toggle()
     }
