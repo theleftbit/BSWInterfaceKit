@@ -123,6 +123,7 @@ func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) 
     config.title = "Send Wink"
     config.baseForegroundColor = .white
     config.baseBackgroundColor = .red
+    config.background.cornerRadius = 0
     let button = UIButton(configuration: config)
     button.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
     return BottomContainerViewController(containedViewController: containedViewController, button: button, margins: margins)
