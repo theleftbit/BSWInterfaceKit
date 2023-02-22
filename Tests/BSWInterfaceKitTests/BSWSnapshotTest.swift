@@ -14,7 +14,7 @@ open class BSWSnapshotTest: XCTestCase {
 
     open override func setUp() {
         super.setUp()
-
+        
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
         RandomColorFactory.isOn = false
