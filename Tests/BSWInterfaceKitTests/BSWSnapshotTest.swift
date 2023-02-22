@@ -10,7 +10,8 @@ open class BSWSnapshotTest: XCTestCase {
     public let waiter = XCTWaiter()
     public let defaultWidth: CGFloat = 375
     public var recordMode = false
-    
+    let defaultPerceptualPrecision: Float = 0.997
+
     open override func setUp() {
         super.setUp()
 
@@ -67,6 +68,11 @@ open class BSWSnapshotTest: XCTestCase {
     public func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #file, testName: String = #function) {
         rootViewController = viewController
         
+        let strategy: Snapshotting = .image(
+            on: UIScreen.main.currentDevice,
+            perceptualPrecision: defaultPerceptualPrecision
+        )
+
         let exp = expectation(description: "verify view")
         let deadlineTime = DispatchTime.now() + .milliseconds(50)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
@@ -74,10 +80,10 @@ open class BSWSnapshotTest: XCTestCase {
             
             let screenSize = UIScreen.main.bounds
             let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
-            assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+            assertSnapshot(matching: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
             if testDarkMode {
                 viewController.overrideUserInterfaceStyle = .dark
-                assertSnapshot(matching: viewController, as: .image(on: UIScreen.main.currentDevice), named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+                assertSnapshot(matching: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
             }
             exp.fulfill()
         }
