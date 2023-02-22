@@ -3,7 +3,6 @@
 import XCTest
 import BSWInterfaceKit
 
-@available(iOS 13, *)
 class ButtonTests: BSWSnapshotTest {
 
     var button: UIButton!

@@ -5,7 +5,6 @@ import UIKit
 import ObjectiveC
 import BSWFoundation
 
-@available(iOS 13.0, *)
 public extension UICollectionViewCell {
 
     enum WiggleAppearance {

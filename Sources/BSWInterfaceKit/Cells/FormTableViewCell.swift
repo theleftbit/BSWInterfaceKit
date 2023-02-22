@@ -63,7 +63,6 @@ public enum FormTableViewCellAppearance {
 
 // MARK: Standard input Views
 
-@available(iOS 10.0, *)
 open class FormTextField: UITextField, ViewModelConfigurable {
     
     public enum TextType {

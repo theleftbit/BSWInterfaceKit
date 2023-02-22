@@ -77,7 +77,6 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     }
 }
 
-@available(iOS 14, *)
 extension CollectionViewDiffableDataSource {
 
     public struct PullToRefreshProvider {
@@ -92,7 +91,6 @@ extension CollectionViewDiffableDataSource {
     }
 }
     
-@available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     
     func handlePullToRefresh() {
@@ -122,7 +120,6 @@ private extension CollectionViewDiffableDataSource {
     }
 }
 
-@available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     func addEmptyView() {
         self.emptyView?.removeFromSuperview()

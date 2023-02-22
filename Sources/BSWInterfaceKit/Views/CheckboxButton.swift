@@ -12,7 +12,6 @@ import UIKit
 /// also provide your own custom images but this is not encouraged
 /// since it's better be consistent design with the OS.
 @objc(BSWCheckboxButton)
-@available(iOS 13, *)
 open class CheckboxButton: UIButton {
     
     public enum Appearance {

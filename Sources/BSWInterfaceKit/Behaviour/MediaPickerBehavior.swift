@@ -79,7 +79,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }
     }
     
-    @available(iOS 15, *)
     public func createVideoThumbnail(forURL videoURL: URL) async throws -> URL {
         let asset = AVAsset(url: videoURL)
         let durationSeconds = CMTimeGetSeconds(asset.duration)
