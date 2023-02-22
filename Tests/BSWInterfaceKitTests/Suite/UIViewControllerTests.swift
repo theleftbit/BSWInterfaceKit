@@ -69,9 +69,8 @@ class UIViewControllerTests: BSWSnapshotTest {
     
     func testErrorView() {
         let vc = TestViewController()
-        let buttonConfig = ButtonConfiguration(title: "Retry", titleColor: .blue) {
-            
-        }
+        var buttonConfig = UIButton.Configuration.plain()
+        buttonConfig.title = "Retry"
         vc.showErrorMessage("Something Failed", error: "Some Error", retryButton: buttonConfig)
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
@@ -120,8 +119,11 @@ private class TestViewController: UIViewController {
 
 func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) -> BottomContainerViewController {
     let containedViewController = TestViewController()
-    let config = ButtonConfiguration(title: "Send Wink", titleColor: .white, backgroundColor: .red, contentInset: .zero) { }
-    let button = UIButton(buttonConfiguration: config)
+    var config = UIButton.Configuration.filled()
+    config.title = "Send Wink"
+    config.baseForegroundColor = .white
+    config.baseBackgroundColor = .red
+    let button = UIButton(configuration: config)
     button.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
     return BottomContainerViewController(containedViewController: containedViewController, button: button, margins: margins)
 }
@@ -147,16 +149,19 @@ func bottomViewControllerContainer() -> BottomContainerViewController {
             stackView.layoutMargins = UIEdgeInsets(top: 10, left: 30, bottom: 10, right: 30)
             stackView.isLayoutMarginsRelativeArrangement = true
             stackView.addArrangedSubview({
-                let config = ButtonConfiguration(title: "❤️", contentInset: .zero) { }
-                return UIButton(buttonConfiguration: config)
+                var config = UIButton.Configuration.plain()
+                config.title = "❤️"
+                return UIButton(configuration: config)
             }())
             stackView.addArrangedSubview({
-                let config = ButtonConfiguration(title: "🇪🇸", contentInset: .zero) { }
-                return UIButton(buttonConfiguration: config)
+                var config = UIButton.Configuration.plain()
+                config.title = "🇪🇸"
+                return UIButton(configuration: config)
                 }())
             stackView.addArrangedSubview({
-                let config = ButtonConfiguration(title: "🚀", contentInset: .zero) { }
-                return UIButton(buttonConfiguration: config)
+                var config = UIButton.Configuration.plain()
+                config.title = "🚀"
+                return UIButton(configuration: config)
                 }())
             view.addAutolayoutSubview(stackView)
             stackView.pinToSuperview()

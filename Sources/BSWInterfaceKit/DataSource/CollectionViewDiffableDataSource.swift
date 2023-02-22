@@ -1,6 +1,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWFoundation
 
 /// This is a `UICollectionViewDiffableDataSource` that adds a
 /// simple way to Pull to Refresh and empty views.
@@ -12,8 +13,8 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         case configuration(ErrorView.Configuration)
         case none
         
-        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
-            self = .configuration(.init(title: title, message: message, image: image, buttonConfiguration: buttonConfiguration))
+        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: UIButton.Configuration? = nil, handler: VoidHandler?) {
+            self = .configuration(.init(title: title, message: message, image: image, buttonConfiguration: buttonConfiguration, handler: handler))
         }
         
         public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, button: UIButton? = nil) {

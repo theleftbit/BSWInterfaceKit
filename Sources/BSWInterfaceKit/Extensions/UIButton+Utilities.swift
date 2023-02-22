@@ -4,8 +4,16 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWFoundation
 
 public extension UIButton {
+    convenience init(configuration: UIButton.Configuration, handler: VoidHandler?) {
+        let primaryAction = UIAction(title: configuration.title ?? "") { _ in
+            handler?()
+        }
+        self.init(configuration: configuration, primaryAction: primaryAction)
+    }
+    
     func setPrefersImageOnTheRight() {
         semanticContentAttribute = .forceRightToLeft
     }
