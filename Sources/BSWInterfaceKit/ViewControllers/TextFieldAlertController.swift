@@ -40,6 +40,7 @@ public enum TextFieldAlertController {
             $0.text = initialValue
             $0.placeholder = placeholder
             $0.textContentType = textContentType
+            $0.isSecureTextEntry = (textContentType == .password)
             observation = NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: $0, queue: OperationQueue.main) { [weak action] (note) in
                 guard let t = note.object as? UITextField else { return }
                 textField = t
