@@ -94,6 +94,7 @@ final public class PhotoGalleryView: UIView {
     private func performPhotoInsertion() {
         Task {
             var snapshot = diffDataSource.snapshot()
+            snapshot.deleteAllItems()
             snapshot.appendSections([.main])
             self.photos.forEach { photo in
                 let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
