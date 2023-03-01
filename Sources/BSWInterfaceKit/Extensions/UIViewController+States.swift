@@ -33,7 +33,7 @@ extension UIViewController {
         self.addStateView(errorView, animated: animated, stateViewLayout: stateViewLayout)
     }
     
-    public func showErrorMessage(_ message: String, error: Error, retryButton: ButtonConfiguration? = nil, animated: Bool = true, stateViewFrame: CGRect? = nil) {
+    public func showErrorMessage(_ message: String, error: Error, retryButton: UIButton? = nil, animated: Bool = true, stateViewFrame: CGRect? = nil) {
         
         let errorMessage: String = {
             if UIViewController.enhancedErrorAlertMessage {
@@ -47,7 +47,7 @@ extension UIViewController {
         let errorView = ErrorView(
             title: styler.attributedString("Error").bolded,
             message: styler.attributedString(errorMessage),
-            buttonConfiguration: retryButton
+            button: retryButton
         )
         showErrorView(errorView, animated: animated)
     }

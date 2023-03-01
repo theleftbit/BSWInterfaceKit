@@ -42,6 +42,14 @@ open class TextStyler {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
     
+    open func attributedStringConfiguration(_ string: String, color: UIColor? = nil, forStyle style: UIFont.TextStyle = .body) -> AttributedString {
+     
+        var attributedString = AttributedString(string)
+        attributedString.font = fontForStyle(style)
+        attributedString.foregroundColor = color
+        return attributedString
+    }
+    
     open func fontForStyle(_ style: UIFont.TextStyle) -> UIFont {
     
         // Make sure the trait collection we apply

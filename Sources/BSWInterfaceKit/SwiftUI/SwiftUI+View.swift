@@ -12,7 +12,6 @@ public extension SwiftUI.View {
 #endif
 
 
-@available(iOS 15.0, *)
 public extension View {
     func errorAlert(error: Binding<Error?>, buttonTitle: String = "OK") -> some View {
         let localizedAlertError = LocalizedAlertError(error: error.wrappedValue)
@@ -26,7 +25,6 @@ public extension View {
     }
 }
 
-@available(iOS 15.0, *)
 private struct LocalizedAlertError: LocalizedError {
     let underlyingError: LocalizedError
     var errorDescription: String? {

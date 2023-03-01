@@ -15,17 +15,6 @@ open class ErrorView: UIStackView {
         public let message: NSAttributedString?
         public let image: UIImage?
         public let button: UIButton?
-        
-        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
-            self.title = title
-            self.message = message
-            self.image = image
-            if let buttonConfiguration = buttonConfiguration {
-                self.button = UIButton(buttonConfiguration: buttonConfiguration)
-            } else {
-                self.button = nil
-            }
-        }
 
         public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, button: UIButton? = nil) {
             self.title = title
@@ -45,14 +34,6 @@ open class ErrorView: UIStackView {
 
     public convenience init(config: Configuration) {
         self.init(title: config.title, message: config.message, image: config.image, button: config.button)
-    }
-
-    public convenience init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
-        if let buttonConfiguration = buttonConfiguration {
-            self.init(title: title, message: message, image: image, button: UIButton(buttonConfiguration: buttonConfiguration))
-        } else {
-            self.init(title: title, message: message, image: image, button: nil)
-        }
     }
     
     public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, button: UIButton? = nil) {
@@ -90,10 +71,18 @@ open class ErrorView: UIStackView {
     }
     
     static func retryView(message: String, error: Error, onRetry: @escaping VoidHandler) -> ErrorView {
-        ErrorView(
+        let button: UIButton = {
+            var config = UIButton.Configuration.plain()
+            config.attributedTitle = TextStyler.styler.attributedStringConfiguration("retry".localized)
+            config.contentInsets = .init(uniform: 5)
+            return .init(configuration: config, primaryAction: UIAction(handler: { action in
+                onRetry()
+            }))
+        }()
+        return ErrorView(
             title: TextStyler.styler.attributedString(message),
             message: TextStyler.styler.attributedString(error.localizedDescription),
-            buttonConfiguration: .init(title: "retry".localized, actionHandler: onRetry)
+            button: button
         )
     }
 }

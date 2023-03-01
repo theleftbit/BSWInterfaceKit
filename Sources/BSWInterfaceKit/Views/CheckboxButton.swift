@@ -36,10 +36,17 @@ open class CheckboxButton: UIButton {
                 return CheckboxButton.generateImages()
             }
         }()
-        self.setImage(images.nonSelectedImage, for: .normal)
-        self.setImage(images.selectedImage, for: .selected)
-        self.titleEdgeInsets = [.right: -Appearance.Padding, .left: Appearance.Padding]
-        self.contentEdgeInsets = [.right: Appearance.Padding]
+        var config = UIButton.Configuration.plain()
+        config.imagePadding = Appearance.Padding
+        config.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: Appearance.Padding)
+        configuration = config
+        configurationUpdateHandler = { button in
+            if button.state.contains(.selected) {
+                config.image = images.selectedImage
+            } else {
+                config.image = images.nonSelectedImage
+            }
+        }
         addTarget(self, action: #selector(toggleSelected), for: .touchUpInside)
         isSelected = false
     }

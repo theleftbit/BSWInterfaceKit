@@ -12,10 +12,6 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         case configuration(ErrorView.Configuration)
         case none
         
-        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
-            self = .configuration(.init(title: title, message: message, image: image, buttonConfiguration: buttonConfiguration))
-        }
-        
         public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, button: UIButton? = nil) {
             self = .configuration(.init(title: title, message: message, image: image, button: button))
         }
@@ -67,7 +63,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     
     @MainActor
     public override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true) async {
-        super.apply(snapshot, animatingDifferences: animatingDifferences)
+        await super.apply(snapshot, animatingDifferences: animatingDifferences)
     }
     
     
@@ -103,11 +99,7 @@ private extension CollectionViewDiffableDataSource {
             async let waitSleep: () = Task.sleep(nanoseconds: 300_000_000)
             var snapshot = self.snapshot()
             await provider.fetchHandler(&snapshot)
-            if #available(iOS 15.0, *) {
-                snapshot.reconfigureItems(snapshot.itemIdentifiers)
-            } else {
-                snapshot.reloadItems(snapshot.itemIdentifiers)
-            }
+            snapshot.reconfigureItems(snapshot.itemIdentifiers)
             try? await waitSleep
             self.apply(snapshot, animatingDifferences: true, completion: {
                 self.collectionView.refreshControl?.endRefreshing()

@@ -165,11 +165,9 @@ public extension SocialAuthenticationManager.FacebookCredentials {
             URLQueryItem(name: "access_token", value: credentials.authToken),
         ]
         let url = components.url!
-        
-        guard let result = try? await URLSession.shared.fetchData(with: URLRequest(url: url)),
-            let json = try? JSONSerialization.jsonObject(with: result.data, options: []) as? [String:String],
-            let email = json["email"] else {
-                throw SocialAuthenticationManager.SocialAuthenticationError.emailNotProvided
+        let (data, _) = try await URLSession.shared.data(for: URLRequest(url: url))
+        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:String], let email = json["email"] else {
+            throw SocialAuthenticationManager.SocialAuthenticationError.emailNotProvided
         }
         return email
     }
