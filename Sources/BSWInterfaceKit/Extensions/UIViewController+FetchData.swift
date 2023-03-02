@@ -36,12 +36,34 @@ public extension UIViewController {
             } catch {
                 if error.isURLCancelled { /* Don't show the error in case it's a search */ return }
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
-                handleError(error, errorMessage: errorMessage, taskGenerator: taskGenerator, animated: defaultAnimationFlag, completion: completion)
+                handleError(
+                    error,
+                    errorMessage: errorMessage,
+                    taskGenerator: taskGenerator,
+                    animated: defaultAnimationFlag,
+                    completion: completion
+                )
             }
+            self.fetchTask = nil
         }
+        self.fetchTask = task
         return task
     }
 
+    var fetchTask: Task<(), Never>? {
+        get {
+            let object = objc_getAssociatedObject(self, #function) as? TaskWrapper
+            return object?.fetchTask
+        } set {
+            if let task = newValue {
+                let object = TaskWrapper(fetchTask: task)
+                objc_setAssociatedObject(self, #function, object, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            } else {
+                objc_setAssociatedObject(self, #function, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            }
+        }
+    }
+    
     @MainActor
     func handleError<T>(_ error: Swift.Error, errorMessage: String, taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool, completion: @escaping SwiftConcurrencyCompletion<T>) {
         let localizedErrorMessage = (errorMessage == "error") ? errorMessage.localized : errorMessage
@@ -76,6 +98,14 @@ public extension UIViewController {
     
     static var loadingViewFactory: LoadingViewFactory = { LoadingView() }
     static var errorViewFactory: ErrorViewFactory = { ErrorView.retryView(message: $0, error: $1, onRetry: $2) }
+}
+
+private class TaskWrapper: NSObject {
+    let fetchTask: Task<(), Never>
+    init(fetchTask: Task<(), Never>) {
+        self.fetchTask = fetchTask
+        super.init()
+    }
 }
 
 #endif
