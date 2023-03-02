@@ -52,17 +52,17 @@ public extension UIViewController {
         self.fetchTask = task
         return task
     }
-
+    
     var fetchTask: Task<(), Never>? {
         get {
-            let object = objc_getAssociatedObject(self, #function) as? TaskWrapper
+            let object = objc_getAssociatedObject(self, &taskAssociateKey) as? TaskWrapper
             return object?.fetchTask
         } set {
             if let task = newValue {
                 let object = TaskWrapper(fetchTask: task)
-                objc_setAssociatedObject(self, #function, object, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                objc_setAssociatedObject(self, &taskAssociateKey, object, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             } else {
-                objc_setAssociatedObject(self, #function, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                objc_setAssociatedObject(self, &taskAssociateKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
         }
     }
@@ -110,5 +110,7 @@ private class TaskWrapper: NSObject {
         super.init()
     }
 }
+
+private var taskAssociateKey: Void?
 
 #endif
