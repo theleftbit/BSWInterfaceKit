@@ -32,7 +32,10 @@ public extension UIViewController {
             do {
                 let value = try await taskGenerator()
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
+                try Task.checkCancellation()
                 await completion(value)
+            } catch is CancellationError {
+                
             } catch {
                 if error.isURLCancelled { /* Don't show the error in case it's a search */ return }
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
