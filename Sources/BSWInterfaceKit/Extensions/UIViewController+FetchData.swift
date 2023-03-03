@@ -35,7 +35,7 @@ public extension UIViewController {
                 try Task.checkCancellation()
                 await completion(value)
             } catch is CancellationError {
-                
+
             } catch {
                 if error.isURLCancelled { /* Don't show the error in case it's a search */ return }
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
@@ -47,26 +47,39 @@ public extension UIViewController {
                     completion: completion
                 )
             }
-            self.fetchTask = nil
+            self.bswFetchTask = nil
         }
-        self.fetchTask = task
+        self.bswFetchTask = task
         return task
     }
 
-    var fetchTask: Task<(), Never>? {
-        get {
-            let object = objc_getAssociatedObject(self, #function) as? TaskWrapper
-            return object?.fetchTask
-        } set {
-            if let task = newValue {
-                let object = TaskWrapper(fetchTask: task)
-                objc_setAssociatedObject(self, #function, object, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            } else {
-                objc_setAssociatedObject(self, #function, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            }
+    private enum AssociatedKeys {
+        static var FetchTask = "BSWFetchTask"
+    }
+    
+    @MainActor
+    var closestBSWFetchTask: Task<(), Never>? {
+        if let bswFetchTask {
+            return bswFetchTask
+        } else {
+            return children.compactMap { $0.bswFetchTask }.first
         }
     }
     
+    @MainActor
+    private var bswFetchTask: Task<(), Never>? {
+        get {
+            return (objc_getAssociatedObject(self, &AssociatedKeys.FetchTask) as? TaskWrapper)?.fetchTask
+        } set {
+            if let task = newValue {
+                let taskWrapper = TaskWrapper(fetchTask: task)
+                objc_setAssociatedObject(self, &AssociatedKeys.FetchTask, taskWrapper, .OBJC_ASSOCIATION_RETAIN)
+            } else {
+                objc_setAssociatedObject(self, &AssociatedKeys.FetchTask, nil, .OBJC_ASSOCIATION_RETAIN)
+            }
+        }
+    }
+        
     @MainActor
     func handleError<T>(_ error: Swift.Error, errorMessage: String, taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool, completion: @escaping SwiftConcurrencyCompletion<T>) {
         let localizedErrorMessage = (errorMessage == "error") ? errorMessage.localized : errorMessage
@@ -104,6 +117,7 @@ public extension UIViewController {
 }
 
 private class TaskWrapper: NSObject {
+    
     let fetchTask: Task<(), Never>
     init(fetchTask: Task<(), Never>) {
         self.fetchTask = fetchTask

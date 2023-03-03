@@ -5,6 +5,7 @@ import SnapshotTesting
 import BSWInterfaceKit
 
 /// XCTestCase subclass to ease snapshot testing
+@MainActor
 open class BSWSnapshotTest: XCTestCase {
 
     public let waiter = XCTWaiter()
@@ -34,6 +35,8 @@ open class BSWSnapshotTest: XCTestCase {
         set(newRootViewController) {
             currentWindow.rootViewController = newRootViewController
             currentWindow.makeKeyAndVisible()
+            currentWindow.setNeedsLayout()
+            currentWindow.layoutIfNeeded()
         }
     }
 
@@ -66,17 +69,15 @@ open class BSWSnapshotTest: XCTestCase {
     @MainActor
     public func waitTaskAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #file, testName: String = #function) async {
         rootViewController = viewController
-        
+
         let strategy: Snapshotting = .image(
             on: UIScreen.main.currentDevice,
             perceptualPrecision: defaultPerceptualPrecision
         )
 
-        guard let task = viewController.fetchTask else {
-            XCTFail()
-            return
+        if let task = viewController.closestBSWFetchTask {
+            await task.value
         }
-        await task.value
         let screenSize = UIScreen.main.bounds
         let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
         assertSnapshot(matching: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
@@ -217,5 +218,6 @@ extension Snapshotting where Value == NSAttributedString, Format == UIImage {
         return label
     }
 }
+
 
 #endif

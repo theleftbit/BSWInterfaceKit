@@ -39,13 +39,7 @@ final public class PhotoGalleryView: UIView {
         return pageControl
     }()
     
-    public var photos = [Photo]() {
-        didSet {
-            performPhotoInsertion()
-            pageControl.numberOfPages = photos.count
-        }
-    }
-    
+    public private(set) var photos = [Photo]()
     private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     public weak var delegate: PhotoGalleryViewDelegate?
@@ -88,20 +82,24 @@ final public class PhotoGalleryView: UIView {
         collectionView.setNeedsLayout()
         scrollToPhoto(atIndex: pageControl.currentPage)
     }
+    
+    public func setPhotos(_ photos: [Photo]) async {
+        self.photos = photos
+        pageControl.numberOfPages = photos.count
+        await performPhotoInsertion()
+    }
 
     // MARK: Private
     
-    private func performPhotoInsertion() {
-        Task {
-            var snapshot = diffDataSource.snapshot()
-            snapshot.deleteAllItems()
-            snapshot.appendSections([.main])
-            self.photos.forEach { photo in
-                let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
-                snapshot.appendItems([.photo(configuration)])
-            }
-            await diffDataSource.apply(snapshot)
+    private func performPhotoInsertion() async {
+        var snapshot = diffDataSource.snapshot()
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.main])
+        self.photos.forEach { photo in
+            let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
+            snapshot.appendItems([.photo(configuration)])
         }
+        await diffDataSource.apply(snapshot)
     }
     
     private func setup() {
