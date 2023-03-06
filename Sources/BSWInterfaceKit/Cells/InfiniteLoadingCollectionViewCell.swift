@@ -3,7 +3,6 @@
 
 import UIKit
 
-@available(iOS 14, *)
 open class InfiniteLoadingCollectionViewCell: UICollectionViewListCell {
 
     public let Margins: UIEdgeInsets = .init(uniform: 8)

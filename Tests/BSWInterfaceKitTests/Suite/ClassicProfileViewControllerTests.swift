@@ -107,7 +107,7 @@ private class ClassicProfileViewController: UIViewController {
         return .lightContent
     }
     
-    //MARK:- Private
+    //MARK: Private
     
     open func fetchData() {
         fetchData(
@@ -125,7 +125,7 @@ private class ClassicProfileViewController: UIViewController {
     }
 }
 
-//MARK:- PhotoGalleryViewDelegate
+//MARK: PhotoGalleryViewDelegate
 
 extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     public func didTapPhotoAt(index: Int, fromView: UIView) {
@@ -143,9 +143,8 @@ extension ClassicProfileViewController: PhotoGalleryViewDelegate {
     }
 }
 
-//MARK:- PhotoGalleryViewControllerDelegate
+// MARK: PhotoGalleryViewControllerDelegate
 
-@available(iOS 13, *)
 extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     public func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int) {
         photoGallery.scrollToPhoto(atIndex: index)

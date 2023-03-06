@@ -41,7 +41,7 @@ final public class PhotoGalleryView: UIView {
     
     public var photos = [Photo]() {
         didSet {
-            createDataSource()
+            performPhotoInsertion()
             pageControl.numberOfPages = photos.count
         }
     }
@@ -71,7 +71,7 @@ final public class PhotoGalleryView: UIView {
         self.photos = photos
         self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
-        super.init(frame: CGRect.zero)
+        super.init(frame: .zero)
         setup()
     }
     
@@ -91,24 +91,17 @@ final public class PhotoGalleryView: UIView {
 
     // MARK: Private
     
-    private func createDataSource() {
-        
-        let cellRegistration = PhotoCollectionViewCell.View.defaultCellRegistration()
-        
-        diffDataSource = .init(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
-            switch itemIdentifier {
-            case .photo(let configuration):
-                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: configuration)
+    private func performPhotoInsertion() {
+        Task {
+            var snapshot = diffDataSource.snapshot()
+            snapshot.deleteAllItems()
+            snapshot.appendSections([.main])
+            self.photos.forEach { photo in
+                let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
+                snapshot.appendItems([.photo(configuration)])
             }
-        })
-        
-        var snapshot = diffDataSource.snapshot()
-        snapshot.appendSections([.main])
-        self.photos.forEach { photo in
-            let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
-            snapshot.appendItems([.photo(configuration)])
+            await diffDataSource.apply(snapshot)
         }
-        diffDataSource.apply(snapshot)
     }
     
     private func setup() {
@@ -124,7 +117,6 @@ final public class PhotoGalleryView: UIView {
         collectionViewLayout.scrollDirection = .horizontal
         collectionViewLayout.minimumInteritemSpacing = 0
         collectionViewLayout.minimumLineSpacing = 0
-        createDataSource()
         
         // Page control
         addAutolayoutSubview(pageControl)
@@ -135,7 +127,14 @@ final public class PhotoGalleryView: UIView {
         NSLayoutConstraint.activate([
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
             pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -4)
-            ])
+        ])
+        let cellRegistration = PhotoCollectionViewCell.View.defaultCellRegistration()
+        diffDataSource = .init(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            switch itemIdentifier {
+            case .photo(let configuration):
+                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: configuration)
+            }
+        })
     }
 }
 

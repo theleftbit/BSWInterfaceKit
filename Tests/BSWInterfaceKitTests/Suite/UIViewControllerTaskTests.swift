@@ -4,7 +4,6 @@ import BSWInterfaceKit
 import BSWFoundation
 import XCTest
 
-@available(iOS 15, *)
 class UIViewControllerTaskTests: BSWSnapshotTest {
     
     private var originalLoadingViewFactory: UIViewController.LoadingViewFactory!

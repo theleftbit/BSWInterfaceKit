@@ -49,7 +49,6 @@ open class ContainerViewController: UIViewController {
     open override var navigationItem: UINavigationItem {
         return containedViewController.navigationItem
     }
-    @available(iOS 13.0, *)
     open override var isModalInPresentation: Bool {
         get {
             containedViewController.isModalInPresentation

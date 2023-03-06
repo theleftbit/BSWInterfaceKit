@@ -1,6 +1,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import BSWFoundation
 
 /// This is a `UICollectionViewDiffableDataSource` that adds a
 /// simple way to Pull to Refresh and empty views.
@@ -12,8 +13,8 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         case configuration(ErrorView.Configuration)
         case none
         
-        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
-            self = .configuration(.init(title: title, message: message, image: image, buttonConfiguration: buttonConfiguration))
+        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: UIButton.Configuration? = nil, handler: VoidHandler?) {
+            self = .configuration(.init(title: title, message: message, image: image, buttonConfiguration: buttonConfiguration, handler: handler))
         }
         
         public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, button: UIButton? = nil) {
@@ -64,12 +65,11 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         defer { addEmptyView() }
         return super.collectionView(collectionView, numberOfItemsInSection: section)
     }
-    
-    @MainActor
-    public override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true) async {
-        super.apply(snapshot, animatingDifferences: animatingDifferences)
+
+    @available(iOS, deprecated: 15, obsoleted: 16, message: "Do not use this one")
+    open override nonisolated func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true, completion: (() -> Void)? = nil) {
+        super.apply(snapshot, animatingDifferences: animatingDifferences, completion: completion)
     }
-    
     
     // MARK: Actions
     
@@ -78,7 +78,6 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     }
 }
 
-@available(iOS 14, *)
 extension CollectionViewDiffableDataSource {
 
     public struct PullToRefreshProvider {
@@ -93,7 +92,6 @@ extension CollectionViewDiffableDataSource {
     }
 }
     
-@available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     
     func handlePullToRefresh() {
@@ -103,15 +101,10 @@ private extension CollectionViewDiffableDataSource {
             async let waitSleep: () = Task.sleep(nanoseconds: 300_000_000)
             var snapshot = self.snapshot()
             await provider.fetchHandler(&snapshot)
-            if #available(iOS 15.0, *) {
-                snapshot.reconfigureItems(snapshot.itemIdentifiers)
-            } else {
-                snapshot.reloadItems(snapshot.itemIdentifiers)
-            }
+            snapshot.reconfigureItems(snapshot.itemIdentifiers)
             try? await waitSleep
-            self.apply(snapshot, animatingDifferences: true, completion: {
-                self.collectionView.refreshControl?.endRefreshing()
-            })
+            await self.apply(snapshot, animatingDifferences: true)
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
@@ -128,7 +121,6 @@ private extension CollectionViewDiffableDataSource {
     }
 }
 
-@available(iOS 14, *)
 private extension CollectionViewDiffableDataSource {
     func addEmptyView() {
         self.emptyView?.removeFromSuperview()

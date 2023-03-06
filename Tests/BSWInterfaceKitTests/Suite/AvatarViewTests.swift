@@ -3,7 +3,6 @@
 import BSWInterfaceKit
 import XCTest
 
-@available(iOS 13, *)
 class AvatarViewTests: BSWSnapshotTest {
 
     override func setUp() {

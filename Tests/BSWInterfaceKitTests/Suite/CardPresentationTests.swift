@@ -19,11 +19,13 @@ private class SampleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        let button = UIButton(buttonConfiguration: .init(title: "Try Me", actionHandler: { [unowned self] in
+        var config = UIButton.Configuration.plain()
+        config.title = "Try Me"
+        let button = UIButton(configuration: config, handler: { [unowned self] in
             let vc = FooVC()
             vc.transitioningDelegate = self
             self.present(vc, animated: true, completion: nil)
-        }))
+        })
         view.addAutolayoutSubview(button)
         button.centerInSuperview()
     }

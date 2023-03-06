@@ -4,7 +4,6 @@ import BSWInterfaceKit
 import BSWFoundation
 import XCTest
 
-@available(iOS 15, *)
 class UIColorTests: BSWSnapshotTest {
     func testInvertColors() {
         let testColor = UIColor.systemBackground

@@ -6,12 +6,10 @@
 
 import UIKit
 
-@available(iOS 13, *)
 public protocol PhotoGalleryViewControllerDelegate: AnyObject {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }
 
-@available(iOS 13, *)
 public final class PhotoGalleryViewController: UIViewController {
     
     public enum Appearance {
@@ -104,7 +102,6 @@ public final class PhotoGalleryViewController: UIViewController {
     }
 }
 
-@available(iOS 13.0, *)
 extension PhotoGalleryViewController: UIAdaptivePresentationControllerDelegate {
     
     public func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {

@@ -7,7 +7,6 @@
 import UIKit
 
 @objc(BSWAvatarView)
-@available(iOS 13, *)
 public class AvatarView: UIView {
     
     public let size: Size
