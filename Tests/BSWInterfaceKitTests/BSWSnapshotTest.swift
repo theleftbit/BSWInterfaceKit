@@ -5,6 +5,7 @@ import SnapshotTesting
 import BSWInterfaceKit
 
 /// XCTestCase subclass to ease snapshot testing
+@MainActor
 open class BSWSnapshotTest: XCTestCase {
 
     public let waiter = XCTWaiter()
@@ -34,6 +35,8 @@ open class BSWSnapshotTest: XCTestCase {
         set(newRootViewController) {
             currentWindow.rootViewController = newRootViewController
             currentWindow.makeKeyAndVisible()
+            currentWindow.setNeedsLayout()
+            currentWindow.layoutIfNeeded()
         }
     }
 
@@ -61,6 +64,27 @@ open class BSWSnapshotTest: XCTestCase {
             exp.fulfill()
         })
         let _ = waiter.wait(for: [exp], timeout: 10)
+    }
+    
+    @MainActor
+    public func waitTaskAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #file, testName: String = #function) async {
+        rootViewController = viewController
+
+        let strategy: Snapshotting = .image(
+            on: UIScreen.main.currentDevice,
+            perceptualPrecision: defaultPerceptualPrecision
+        )
+
+        if let task = viewController.closestBSWFetchTask {
+            await task.value
+        }
+        let screenSize = UIScreen.main.bounds
+        let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
+        assertSnapshot(matching: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+        if testDarkMode {
+            viewController.overrideUserInterfaceStyle = .dark
+            assertSnapshot(matching: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+        }
     }
 
     /// Sets this VC as the rootVC of the current window and snapshots it after some time.
@@ -167,8 +191,10 @@ private extension UIScreen {
             return .iPhone8Plus
         case CGSize(width: 375, height: 812):
             return .iPhoneX
+        case CGSize(width: 390, height: 844):
+            return .iPhone12
         case CGSize(width: 414, height: 896):
-            return .iPhoneXsMax
+            return .iPhoneXr
         case CGSize(width: 768, height: 1024):
             return .iPadMini(.portrait)
         default:
@@ -192,5 +218,6 @@ extension Snapshotting where Value == NSAttributedString, Format == UIImage {
         return label
     }
 }
+
 
 #endif

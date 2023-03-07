@@ -10,12 +10,12 @@ import UIKit
 /// of BSWInterfaceKit so it works as some kind of "smoke test"
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
-    func testSampleLayout() {
+    func testSampleLayout() async {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
         detailVC.editKind = .editable(.init(title: "Edit", style: .plain, target: nil, action: nil))
         let navController = UINavigationController(rootViewController: detailVC)
-        waitABitAndVerify(viewController: navController, testDarkMode: false)
+        await waitTaskAndVerify(viewController: navController, testDarkMode: false)
     }
 }
 
@@ -113,12 +113,12 @@ private class ClassicProfileViewController: UIViewController {
         fetchData(
             taskGenerator: { try await self.dataProvider.value },
             completion: {
-                self.configureFor(viewModel: $0)
+                await self.configureFor(viewModel: $0)
             })
     }
     
-    open func configureFor(viewModel: ClassicProfileViewModel) {
-        photoGallery.photos = viewModel.photos
+    open func configureFor(viewModel: ClassicProfileViewModel) async {
+        await photoGallery.setPhotos(viewModel.photos) 
         titleLabel.attributedText = viewModel.titleInfo
         detailsLabel.attributedText = viewModel.detailsInfo
         extraDetailsLabel.attributedText = viewModel.extraInfo.joinedStrings()
