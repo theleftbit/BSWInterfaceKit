@@ -10,6 +10,24 @@ extension UIViewController {
 
     @objc(bsw_enhancedErrorAlertMessage)
     public static var enhancedErrorAlertMessage: Bool = true
+    
+    public func prepareForIntrinsicModalSheetPresentation() {
+        if #available(iOS 16.0, *) {
+            sheetPresentationController?.detents = [.custom(resolver: { [weak self] context in
+                guard let self else {
+                    return 0
+                }
+                let estimatedSize = self.view.systemLayoutSizeFitting(
+                    CGSize(width: UIScreen.main.bounds.width, height: UIView.layoutFittingCompressedSize.height),
+                    withHorizontalFittingPriority: .required,
+                    verticalFittingPriority: .fittingSizeLevel
+                )
+                return estimatedSize.height
+            })]
+        } else {
+            sheetPresentationController?.detents = [.medium()]
+        }
+    }
 
     // MARK: - Presenting Alerts
     @objc(bsw_showAlertWithMessage:)
