@@ -12,9 +12,7 @@ public extension UIViewController {
     typealias LoadingViewFactory = () -> (UIView)
     typealias ErrorViewFactory = (String, Error, @escaping VoidHandler) -> (UIView)
 
-    @available(iOS 13, macOS 12, *)
     typealias SwiftConcurrencyGenerator<T> = () async throws -> (T)
-    @available(iOS 13, macOS 12, *)
     typealias SwiftConcurrencyCompletion<T> = (T) async -> ()
 
     /**
@@ -28,25 +26,61 @@ public extension UIViewController {
      */
     @discardableResult
     @MainActor
-    @available(iOS 13, macOS 12, *)
     func fetchData<T>(taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool = true, errorMessage: String = "error", completion: @escaping SwiftConcurrencyCompletion<T>) -> Task<(), Never> {
         bsw_showLoadingView(animated: animated)
         let task = Task(priority: .userInitiated) {
             do {
                 let value = try await taskGenerator()
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
+                try Task.checkCancellation()
                 await completion(value)
+            } catch is CancellationError {
+
             } catch {
                 if error.isURLCancelled { /* Don't show the error in case it's a search */ return }
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
-                handleError(error, errorMessage: errorMessage, taskGenerator: taskGenerator, animated: defaultAnimationFlag, completion: completion)
+                handleError(
+                    error,
+                    errorMessage: errorMessage,
+                    taskGenerator: taskGenerator,
+                    animated: defaultAnimationFlag,
+                    completion: completion
+                )
             }
+            self.bswFetchTask = nil
         }
+        self.bswFetchTask = task
         return task
     }
 
+    private enum AssociatedKeys {
+        static var FetchTask = "BSWFetchTask"
+    }
+    
     @MainActor
-    @available(iOS 13, macOS 12, *)
+    var closestBSWFetchTask: Task<(), Never>? {
+        if let bswFetchTask {
+            return bswFetchTask
+        } else {
+            return children.compactMap { $0.bswFetchTask }.first
+        }
+    }
+    
+    @MainActor
+    private var bswFetchTask: Task<(), Never>? {
+        get {
+            return (objc_getAssociatedObject(self, &AssociatedKeys.FetchTask) as? TaskWrapper)?.fetchTask
+        } set {
+            if let task = newValue {
+                let taskWrapper = TaskWrapper(fetchTask: task)
+                objc_setAssociatedObject(self, &AssociatedKeys.FetchTask, taskWrapper, .OBJC_ASSOCIATION_RETAIN)
+            } else {
+                objc_setAssociatedObject(self, &AssociatedKeys.FetchTask, nil, .OBJC_ASSOCIATION_RETAIN)
+            }
+        }
+    }
+        
+    @MainActor
     func handleError<T>(_ error: Swift.Error, errorMessage: String, taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool, completion: @escaping SwiftConcurrencyCompletion<T>) {
         let localizedErrorMessage = (errorMessage == "error") ? errorMessage.localized : errorMessage
         let errorView = UIViewController.errorViewFactory(localizedErrorMessage, error) { [weak self] in
@@ -80,6 +114,15 @@ public extension UIViewController {
     
     static var loadingViewFactory: LoadingViewFactory = { LoadingView() }
     static var errorViewFactory: ErrorViewFactory = { ErrorView.retryView(message: $0, error: $1, onRetry: $2) }
+}
+
+private class TaskWrapper: NSObject {
+    
+    let fetchTask: Task<(), Never>
+    init(fetchTask: Task<(), Never>) {
+        self.fetchTask = fetchTask
+        super.init()
+    }
 }
 
 #endif

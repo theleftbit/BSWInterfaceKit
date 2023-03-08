@@ -32,7 +32,6 @@ public protocol PlaceholderDataProvider {
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
 ///
-@available(iOS 15.0, macOS 12.0, *)
 public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View>: View {
     
     /// Represents the state of this view
@@ -106,7 +105,6 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     }
 }
 
-@available(iOS 15.0, macOS 12.0, *)
 public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
     init(id: String,
          dataGenerator: @escaping DataGenerator,
@@ -122,7 +120,6 @@ public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
     }
 }
 
-@available(iOS 15.0, macOS 12.0, *)
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data {
     init(id: String,
          dataGenerator: @escaping DataGenerator,
@@ -140,7 +137,6 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
     }
 }
 
-@available(iOS 15.0, macOS 12.0, *)
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data, ErrorView == AsyncStatePlainErrorView {
     init(id: String,
          dataGenerator: @escaping DataGenerator,
@@ -157,7 +153,6 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
     }
 }
 
-@available(iOS 15.0, macOS 12.0, *)
 public struct AsyncStatePlainErrorView: View {
 
     let error: Swift.Error
@@ -175,7 +170,6 @@ public struct AsyncStatePlainErrorView: View {
     }
 }
 
-@available(iOS 15.0, macOS 12.0, *)
 public struct AsyncStatePlainLoadingView<T: View>: View {
     
     public init(contentView: T) {

@@ -5,13 +5,15 @@ import BSWInterfaceKit
 import UIKit
 
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
-    func testLayout() {
+    
+    @MainActor
+    func testLayout() async {
         let cv = MockCollectionView()
         let sut = cv.diffDataSource!
         var snapshot = sut.snapshot()
         snapshot.appendSections([.defenders, .midfields])
         snapshot.appendItems(MockCollectionView.mockDataDefenders().map({ .content($0)}), toSection: .defenders)
-        sut.apply(snapshot, animatingDifferences: false)
+        await sut.apply(snapshot, animatingDifferences: false)
         verify(scrollView: cv)
     }
 }
@@ -44,11 +46,11 @@ private class MockCollectionView: UICollectionView {
             return cell
         }
         
+        let cellRegistration = UICollectionView.CellRegistration<PolaroidCollectionViewCell, Item> { cell, indexPath, item in
+            guard case .content(let vm) = item else { fatalError() }
+            cell.configureFor(viewModel: vm)
+        }
         diffDataSource = CollectionViewDiffableDataSource(collectionView: self, cellProvider: { (cv, index, item) -> UICollectionViewCell? in
-            let cellRegistration = UICollectionView.CellRegistration<PolaroidCollectionViewCell, Item> { cell, indexPath, item in
-                guard case .content(let vm) = item else { fatalError() }
-                cell.configureFor(viewModel: vm)
-            }
             return cv.dequeueConfiguredReusableCell(using: cellRegistration, for: index, item: item)
         })
         

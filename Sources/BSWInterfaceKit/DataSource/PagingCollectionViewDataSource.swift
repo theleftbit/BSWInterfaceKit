@@ -100,29 +100,24 @@ private extension PagingCollectionViewDiffableDataSource {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
         isRequestingNextPage = true
         /// Start paging
-        var startPagingSnapshot = self.snapshot()
-        PagingCollectionViewDiffableDataSource
-            .startPaginating(snapshot: &startPagingSnapshot)
         
-        /// For some reason, using the async/await versions of apply
-        /// throw a warning about using this on different queues. This
-        /// seems to work without warnings, so we're using this crappy
-        /// way of doing things.
-        self.apply(startPagingSnapshot, animatingDifferences: true) {
+        Task {
+            var startPagingSnapshot = self.snapshot()
+            PagingCollectionViewDiffableDataSource
+                .startPaginating(snapshot: &startPagingSnapshot)
+            await self.apply(startPagingSnapshot, animatingDifferences: true)
+            
+            var changesSnapshot = self.snapshot()
+            let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
+            PagingCollectionViewDiffableDataSource
+                .stopPaginating(snapshot: &changesSnapshot)
+            await self.apply(changesSnapshot, animatingDifferences: true)
 
-            Task { @MainActor in
-                
-                var changesSnapshot = self.snapshot()
-                let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
-                PagingCollectionViewDiffableDataSource
-                    .stopPaginating(snapshot: &changesSnapshot)
-                await self.apply(changesSnapshot, animatingDifferences: true)
-
-                if !morePagesAvailable {
-                    self.infiniteScrollProvider = nil
-                }
-                self.isRequestingNextPage = false
+            if !morePagesAvailable {
+                self.infiniteScrollProvider = nil
             }
+            self.isRequestingNextPage = false
+
         }
     }
 }

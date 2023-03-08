@@ -16,12 +16,12 @@ open class ErrorView: UIStackView {
         public let image: UIImage?
         public let button: UIButton?
         
-        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
+        public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: UIButton.Configuration? = nil, handler: VoidHandler? = nil) {
             self.title = title
             self.message = message
             self.image = image
             if let buttonConfiguration = buttonConfiguration {
-                self.button = UIButton(buttonConfiguration: buttonConfiguration)
+                self.button = UIButton(configuration: buttonConfiguration, handler: handler)
             } else {
                 self.button = nil
             }
@@ -47,9 +47,9 @@ open class ErrorView: UIStackView {
         self.init(title: config.title, message: config.message, image: config.image, button: config.button)
     }
 
-    public convenience init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: ButtonConfiguration? = nil) {
+    public convenience init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: UIButton.Configuration? = nil, handler: VoidHandler? = nil) {
         if let buttonConfiguration = buttonConfiguration {
-            self.init(title: title, message: message, image: image, button: UIButton(buttonConfiguration: buttonConfiguration))
+            self.init(title: title, message: message, image: image, button: UIButton(configuration: buttonConfiguration, handler: handler))
         } else {
             self.init(title: title, message: message, image: image, button: nil)
         }
@@ -90,10 +90,14 @@ open class ErrorView: UIStackView {
     }
     
     static func retryView(message: String, error: Error, onRetry: @escaping VoidHandler) -> ErrorView {
-        ErrorView(
+        var buttonConfiguration = UIButton.Configuration.plain()
+        buttonConfiguration.title = "retry".localized
+        
+        return ErrorView(
             title: TextStyler.styler.attributedString(message),
             message: TextStyler.styler.attributedString(error.localizedDescription),
-            buttonConfiguration: .init(title: "retry".localized, actionHandler: onRetry)
+            buttonConfiguration: buttonConfiguration,
+            handler: onRetry
         )
     }
 }

@@ -12,7 +12,6 @@ import UIKit
 /// also provide your own custom images but this is not encouraged
 /// since it's better be consistent design with the OS.
 @objc(BSWCheckboxButton)
-@available(iOS 13, *)
 open class CheckboxButton: UIButton {
     
     public enum Appearance {
@@ -23,42 +22,42 @@ open class CheckboxButton: UIButton {
             return .opaqueSeparator
         }()
         public static var images: (nonSelectedImage: UIImage, selectedImage: UIImage)? = nil
-        public static var Padding = CGFloat(10)
+    }
+    
+    private var images: (nonSelectedImage: UIImage, selectedImage: UIImage) {
+        if let updatedImages = Appearance.images {
+            return updatedImages
+        } else {
+            return CheckboxButton.generateImages()
+        }
     }
     
     public init() {
         super.init(frame: .zero)
-        
-        let images: (nonSelectedImage: UIImage, selectedImage: UIImage) = {
-            if let updatedImages = Appearance.images {
-                return updatedImages
-            } else {
-                return CheckboxButton.generateImages()
-            }
-        }()
-        self.setImage(images.nonSelectedImage, for: .normal)
-        self.setImage(images.selectedImage, for: .selected)
-        self.titleEdgeInsets = [.right: -Appearance.Padding, .left: Appearance.Padding]
-        self.contentEdgeInsets = [.right: Appearance.Padding]
-        addTarget(self, action: #selector(toggleSelected), for: .touchUpInside)
         isSelected = false
+        self.configuration = .plain()
+        self.configuration?.baseBackgroundColor = .clear
+        
+        let handler: UIButton.ConfigurationUpdateHandler = { [weak self] button in
+            switch button.state {
+            case .selected:
+                button.configuration?.image = self?.images.selectedImage
+                button.configuration?.baseForegroundColor = Appearance.checkTintColor
+            default:
+                button.configuration?.image = self?.images.nonSelectedImage
+                button.configuration?.baseForegroundColor = Appearance.backgroundTintColor
+            }
+        }
+        self.configurationUpdateHandler = handler
+        addTarget(self, action: #selector(toggleSelected), for: .touchUpInside)
     }
-    
+    required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+        
     @objc private func toggleSelected() {
         isSelected.toggle()
     }
     
-    public override var isSelected: Bool {
-        didSet {
-            tintColor = isSelected ? Appearance.checkTintColor : Appearance.backgroundTintColor
-        }
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    static private func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
+    static fileprivate func generateImages() -> (nonSelectedImage: UIImage, selectedImage: UIImage) {
         let config = UIImage.SymbolConfiguration(scale: .large)
         let backgroundImage: UIImage = {
             return UIImage.init(systemName: "circle", withConfiguration: config)!

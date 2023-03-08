@@ -41,16 +41,6 @@ public extension UIImage {
         UIGraphicsEndImageContext()
         return newImage ?? self
     }
-
-    @available(iOS, deprecated: 13.0, obsoleted: 14.0, message: "This will be removed in iOS 14; please migrate to a different API.")
-    func tint(_ tintColor: UIColor) -> UIImage {
-        return modifiedImage { context, rect in
-            context.setBlendMode(.multiply)
-            context.clip(to: rect, mask: self.cgImage!)
-            tintColor.setFill()
-            context.fill(rect)
-        }
-    }
     
     private func modifiedImage( draw: (CGContext, CGRect) -> ()) -> UIImage {
         

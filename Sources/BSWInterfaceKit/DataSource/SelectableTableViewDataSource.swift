@@ -87,6 +87,11 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
         dataStore.appendOption(item, andSelectIt: true)
         tableView.reloadData()
     }
+    
+    public func updateElementAt(_ index: Int, with newItem: Cell.VM) {
+        dataStore.updateOption(atIndex: index, option: newItem)
+        tableView.reloadData()
+    }
 
     //MARK: UITableViewDataSource
 
@@ -96,8 +101,8 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: Cell = tableView.dequeueReusableCell(indexPath: indexPath)
-        cell.configureFor(viewModel: dataStore.options[indexPath.row])
-        if let selectedIndex = dataStore.selectedIndex, selectedIndex == indexPath.row {
+        cell.configureFor(viewModel: dataStore.options[indexPath.item])
+        if let selectedIndex = dataStore.selectedIndex, selectedIndex == indexPath.item {
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         }
         return cell
@@ -168,7 +173,7 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        dataStore.select(atIndex: indexPath.row)
+        dataStore.select(atIndex: indexPath.item)
         configuration.didSelectItemAtIndexPath(indexPath)
 
         let allOtherSelected = tableView.indexPathsForSelectedRows?.filter({$0 != indexPath}) ?? []
