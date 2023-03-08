@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "bswfoundation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/theleftbit/BSWFoundation.git",
+      "state" : {
+        "revision" : "439907294cb1b0570010a4ff461a966fcb042cf8",
+        "version" : "5.3.6"
+      }
+    },
+    {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess.git",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
+      }
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke.git",
+      "state" : {
+        "revision" : "3ed0597082b40932481fb8971af8813a4284203c",
+        "version" : "11.6.1"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing.git",
+      "state" : {
+        "revision" : "cef5b3f6f11781dd4591bdd1dd0a3d22bd609334",
+        "version" : "1.11.0"
+      }
+    }
+  ],
+  "version" : 2
+}
