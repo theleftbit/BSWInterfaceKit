@@ -39,7 +39,7 @@ final public class PhotoGalleryView: UIView {
         return pageControl
     }()
     
-    public private(set) var photos = [Photo]()
+    var photos = [Photo]()
     private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     public weak var delegate: PhotoGalleryViewDelegate?
@@ -62,11 +62,11 @@ final public class PhotoGalleryView: UIView {
     // MARK: Initialization
     
     public init(photos: [Photo] = [], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
-        self.photos = photos
         self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
         super.init(frame: .zero)
         setup()
+        setPhotos(photos)
     }
     
     required public init?(coder aDecoder: NSCoder) {
