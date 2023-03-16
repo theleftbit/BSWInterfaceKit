@@ -28,7 +28,7 @@ final public class PhotoGalleryView: UIView {
 
     private let imageContentMode: UIView.ContentMode
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private var diffDataSource: CollectionViewDiffableDataSource<Section, Item>!
+    private var diffDataSource: UICollectionViewDiffableDataSource<Section, Item>!
     private var collectionViewLayout: UICollectionViewFlowLayout {
         return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
     }
@@ -39,7 +39,7 @@ final public class PhotoGalleryView: UIView {
         return pageControl
     }()
     
-    public private(set) var photos = [Photo]()
+    var photos = [Photo]()
     private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
     public weak var delegate: PhotoGalleryViewDelegate?
@@ -62,11 +62,11 @@ final public class PhotoGalleryView: UIView {
     // MARK: Initialization
     
     public init(photos: [Photo] = [], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
-        self.photos = photos
         self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
         super.init(frame: .zero)
         setup()
+        setPhotos(photos)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -83,15 +83,15 @@ final public class PhotoGalleryView: UIView {
         scrollToPhoto(atIndex: pageControl.currentPage)
     }
     
-    public func setPhotos(_ photos: [Photo]) async {
+    public func setPhotos(_ photos: [Photo]) {
         self.photos = photos
         pageControl.numberOfPages = photos.count
-        await performPhotoInsertion()
+        performPhotoInsertion()
     }
 
     // MARK: Private
     
-    private func performPhotoInsertion() async {
+    private func performPhotoInsertion() {
         var snapshot = diffDataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
@@ -99,7 +99,7 @@ final public class PhotoGalleryView: UIView {
             let configuration = PhotoCollectionViewCell.Configuration(photo: photo, imageContentMode: self.imageContentMode, zoomEnabled: self.zoomEnabled)
             snapshot.appendItems([.photo(configuration)])
         }
-        await diffDataSource.apply(snapshot)
+        diffDataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func setup() {

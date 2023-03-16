@@ -21,7 +21,7 @@ public final class PhotoGalleryViewController: UIViewController {
     public var allowShare: Bool
     public weak var delegate: PhotoGalleryViewControllerDelegate?
     public var currentPage: Int = 0
-    public var photos: [Photo] {
+    private var photos: [Photo] {
         return photosGallery.photos
     }
 
@@ -38,7 +38,6 @@ public final class PhotoGalleryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     public override var prefersStatusBarHidden : Bool {
         return true
     }
@@ -50,7 +49,7 @@ public final class PhotoGalleryViewController: UIViewController {
         photosGallery.zoomEnabled = true
 
         //Set up the Gallery
-        view.addSubview(photosGallery)
+        view.addAutolayoutSubview(photosGallery)
         photosGallery.pinToSuperview()
         
         //Add the close button
