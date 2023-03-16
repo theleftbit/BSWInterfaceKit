@@ -113,12 +113,12 @@ private class ClassicProfileViewController: UIViewController {
         fetchData(
             taskGenerator: { try await self.dataProvider.value },
             completion: {
-                await self.configureFor(viewModel: $0)
+                self.configureFor(viewModel: $0)
             })
     }
     
-    open func configureFor(viewModel: ClassicProfileViewModel) async {
-        await photoGallery.setPhotos(viewModel.photos) 
+    open func configureFor(viewModel: ClassicProfileViewModel) {
+        photoGallery.setPhotos(viewModel.photos)
         titleLabel.attributedText = viewModel.titleInfo
         detailsLabel.attributedText = viewModel.detailsInfo
         extraDetailsLabel.attributedText = viewModel.extraInfo.joinedStrings()
