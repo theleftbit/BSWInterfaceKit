@@ -31,11 +31,11 @@ public extension UIViewController {
         let task = Task(priority: .userInitiated) {
             do {
                 let value = try await taskGenerator()
-                bsw_hideLoadingView(animated: self.defaultAnimationFlag)
                 try Task.checkCancellation()
                 await completion(value)
+                bsw_hideLoadingView(animated: self.defaultAnimationFlag)
             } catch is CancellationError {
-
+                bsw_hideLoadingView(animated: self.defaultAnimationFlag)
             } catch {
                 if error.isURLCancelled { /* Don't show the error in case it's a search */ return }
                 bsw_hideLoadingView(animated: self.defaultAnimationFlag)
