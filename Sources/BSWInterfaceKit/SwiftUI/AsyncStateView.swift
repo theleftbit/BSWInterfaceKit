@@ -78,10 +78,9 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
         switch state {
         case .loading:
             loadingView
-                .task { await fetchData() }
+                .task(id: id) { await fetchData() }
         case .loaded(let data):
             hostedViewGenerator(data)
-                .id(id)
         case .error(let error):
             errorViewGenerator(error, {
                 self.state = .loading
