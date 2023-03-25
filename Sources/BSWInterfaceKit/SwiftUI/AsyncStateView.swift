@@ -56,8 +56,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
-    ///   - id: An identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded.
-    ///   For this value you can use the remote ID of the object being loaded.
+    ///   - id: An identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded. For this value you can use the remote ID of the object being loaded.
     ///   - dataGenerator: The function that generates the data that is required for your `HostedView`
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.
@@ -75,17 +74,21 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     }
     
     public var body: some View {
-        switch state {
-        case .loading:
-            loadingView
-                .task(id: id) { await fetchData() }
-        case .loaded(let data):
-            hostedViewGenerator(data)
-        case .error(let error):
-            errorViewGenerator(error, {
-                self.state = .loading
-            })
+        Group {
+            switch state {
+            case .loading:
+                loadingView
+                    .task { await fetchData() }
+            case .loaded(let data):
+                hostedViewGenerator(data)
+            case .error(let error):
+                errorViewGenerator(error, {
+                    self.state = .loading
+                })
+            }
         }
+        /// Whenever the ID changes, rerender the whole View
+        .id(id)
     }
     
     //MARK: Private
