@@ -87,8 +87,14 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 })
             }
         }
-        /// Whenever the ID changes, rerender the whole View
+        /// Whenever the ID changes, rerender the whole `View`
         .id(id)
+        /// If when we appear the state is an error because
+        /// of a cancellation, we should retry the operation
+        .onAppear {
+            guard state.isCancelledError else { return }
+            self.state = .loading
+        }
     }
     
     //MARK: Private
@@ -186,4 +192,16 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
             .shimmering()
     }
 }
+
+extension AsyncStateView.AsyncState {
+    var isCancelledError: Bool {
+        switch self {
+        case .error(let error):
+            return error.isURLCancelled || error is CancellationError
+        default:
+            return false
+        }
+    }
+}
+
 #endif
