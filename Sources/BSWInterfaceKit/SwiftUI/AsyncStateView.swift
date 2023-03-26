@@ -47,7 +47,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     public typealias LoadingViewGenerator = () -> LoadingView
     public typealias OnRetryHandler = () -> ()
     
-    let id: String
+    @Binding var id: String
     let dataGenerator: DataGenerator
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
@@ -61,18 +61,26 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.
     ///   - loadingViewGenerator: The function that creates the `LoadingView`.
-    public init(id: String,
+    public init(id: Binding<String>,
                 dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
                 @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
-        self.id = id
+        self._id = id
         self.dataGenerator = dataGenerator
         self.hostedViewGenerator = hostedViewGenerator
         self.errorViewGenerator = errorViewGenerator
         self.loadingView = loadingViewGenerator()
     }
-    
+
+    public init(id: String,
+                dataGenerator: @escaping DataGenerator,
+                @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
+                @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
+                @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
+        self.init(id: .constant(id), dataGenerator: dataGenerator, hostedViewGenerator: hostedViewGenerator, errorViewGenerator: errorViewGenerator, loadingViewGenerator: loadingViewGenerator)
+    }
+
     public var body: some View {
         Group {
             switch state {
@@ -87,8 +95,10 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 })
             }
         }
-        /// Whenever the ID changes, rerender the whole `View`
-        .id(id)
+        /// Whenever the ID changes, start a new fetch operation
+        .onChange(of: id) { _ in
+            self.state = .loading
+        }
         /// If when we appear the state is an error because
         /// of a cancellation, we should retry the operation
         .onAppear {
@@ -114,6 +124,19 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
 }
 
 public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
+    init(id: Binding<String>,
+         dataGenerator: @escaping DataGenerator,
+         hostedViewGenerator: @escaping HostedViewGenerator,
+         loadingViewGenerator: @escaping LoadingViewGenerator) {
+        self.init(
+            id: id,
+            dataGenerator: dataGenerator,
+            hostedViewGenerator: hostedViewGenerator,
+            errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1)},
+            loadingViewGenerator: loadingViewGenerator
+        )
+    }
+
     init(id: String,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
@@ -129,6 +152,21 @@ public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
 }
 
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data {
+    init(id: Binding<String>,
+         dataGenerator: @escaping DataGenerator,
+         hostedViewGenerator: @escaping HostedViewGenerator,
+         errorViewGenerator: @escaping ErrorViewGenerator) {
+        let placeholderData = HostedView.generatePlaceholderData()
+        let placeholderView = hostedViewGenerator(placeholderData)
+        self.init(
+            id: id,
+            dataGenerator: dataGenerator,
+            hostedViewGenerator: hostedViewGenerator,
+            errorViewGenerator: errorViewGenerator,
+            loadingViewGenerator: { AsyncStatePlainLoadingView(contentView: placeholderView) }
+        )
+    }
+
     init(id: String,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
@@ -146,6 +184,20 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
 }
 
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data, ErrorView == AsyncStatePlainErrorView {
+    init(id: Binding<String>,
+         dataGenerator: @escaping DataGenerator,
+         hostedViewGenerator: @escaping HostedViewGenerator) {
+        let placeholderData = HostedView.generatePlaceholderData()
+        let placeholderView = hostedViewGenerator(placeholderData)
+        self.init(
+            id: id,
+            dataGenerator: dataGenerator,
+            hostedViewGenerator: hostedViewGenerator,
+            errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1) },
+            loadingViewGenerator: { AsyncStatePlainLoadingView(contentView: placeholderView) }
+        )
+    }
+    
     init(id: String,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator) {
