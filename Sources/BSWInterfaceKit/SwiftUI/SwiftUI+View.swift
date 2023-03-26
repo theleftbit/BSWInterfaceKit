@@ -11,30 +11,40 @@ public extension SwiftUI.View {
 
 #endif
 
-public extension View {
-    func errorAlert(error: Binding<Error?>, buttonTitle: String = "OK") -> some View {
-        let localizedAlertError = LocalizedAlertError(error: error.wrappedValue)
-        return alert(isPresented: .constant(localizedAlertError != nil), error: localizedAlertError) { _ in
-            Button(buttonTitle) {
-                error.wrappedValue = nil
-            }
-        } message: { error in
-            Text(error.recoverySuggestion ?? "")
-        }
+extension View {
+    func errorAlert(error: Binding<Error?>) -> some View {
+        ErrorAwareView(errorBinding: error, content: self)
     }
 }
 
-private struct LocalizedAlertError: LocalizedError {
-    let underlyingError: LocalizedError
-    var errorDescription: String? {
-        underlyingError.errorDescription
-    }
-    var recoverySuggestion: String? {
-        underlyingError.recoverySuggestion
-    }
+private struct ErrorAwareView<T: View>: View {
+    
+    let errorBinding: Binding<Error?>
+    let content: T
 
-    init?(error: Error?) {
-        guard let localizedError = error as? LocalizedError else { return nil }
-        underlyingError = localizedError
+    var body: some View {
+        content
+            .alert(
+                "error".localized,
+                isPresented: .init(get: {
+                    errorBinding.wrappedValue != nil
+                }, set: { value in
+                    if value == false {
+                        errorBinding.wrappedValue = nil
+                    }
+                }),
+                presenting: errorBinding.wrappedValue,
+                actions: { error in
+                    Button("dismiss".localized, action: { })
+                }, message: {
+                    if let localizedError = $0 as? LocalizedError,
+                       let failureReason = localizedError.errorDescription {
+                        Text(failureReason)
+                    } else {
+                        Text("Something went wrong")
+                    }
+                }
+            )
     }
+    
 }
