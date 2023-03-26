@@ -11,7 +11,7 @@ public extension SwiftUI.View {
 
 #endif
 
-extension View {
+public extension View {
     func errorAlert(error: Binding<Error?>) -> some View {
         ErrorAwareView(errorBinding: error, content: self)
     }
