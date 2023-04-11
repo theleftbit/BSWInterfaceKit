@@ -18,8 +18,11 @@ open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: Pagin
         
     private var offsetObserver: NSKeyValueObservation?
     public let scrollDirection: UICollectionView.ScrollDirection
-    fileprivate var isRequestingNextPage: Bool = false
-
+    public var currentFetch: Task<Bool, Never>?
+    private var isRequestingNextPage: Bool {
+        currentFetch != nil
+    }
+    
     public init(collectionView: UICollectionView, scrollDirection: UICollectionView.ScrollDirection = .vertical, cellProvider: @escaping UICollectionViewDiffableDataSource<Section, Item>.CellProvider) {
         self.scrollDirection = scrollDirection
         super.init(collectionView: collectionView, cellProvider: cellProvider)
@@ -98,26 +101,31 @@ private extension PagingCollectionViewDiffableDataSource {
     
     func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
-        isRequestingNextPage = true
-        /// Start paging
         
-        Task {
-            var startPagingSnapshot = self.snapshot()
-            PagingCollectionViewDiffableDataSource
-                .startPaginating(snapshot: &startPagingSnapshot)
-            await self.apply(startPagingSnapshot, animatingDifferences: true)
-            
+        let currentFetch = Task.detached { @MainActor in
+            print("Changes snapshot")
             var changesSnapshot = self.snapshot()
             let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
             PagingCollectionViewDiffableDataSource
                 .stopPaginating(snapshot: &changesSnapshot)
             await self.apply(changesSnapshot, animatingDifferences: true)
+            return morePagesAvailable
+        }
+        self.currentFetch = currentFetch
+
+        Task { @MainActor in
+            print("Animation snapshot")
+            var startPagingSnapshot = self.snapshot()
+            PagingCollectionViewDiffableDataSource
+                .startPaginating(snapshot: &startPagingSnapshot)
+            await apply(startPagingSnapshot, animatingDifferences: true)
+
+            let morePagesAvailable = await currentFetch.value
 
             if !morePagesAvailable {
                 self.infiniteScrollProvider = nil
             }
-            self.isRequestingNextPage = false
-
+            self.currentFetch = nil
         }
     }
 }
