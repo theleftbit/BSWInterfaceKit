@@ -7,7 +7,6 @@ import XCTest
 class SelectableTableViewDataSourceTests: BSWSnapshotTest {
     
     func testLayout() throws {
-        try XCTSkipIf(true)
         let vc = SelectableTableViewController()
         var vm = SelectableArray(options: [
             Cell.VM(text: "Title1"),
@@ -21,7 +20,7 @@ class SelectableTableViewDataSourceTests: BSWSnapshotTest {
 }
 
 private class SelectableTableViewController: UIViewController, ViewModelConfigurable {
-    let tableView = FixedHeightTableView()
+    let tableView = UITableView()
     var dataSource: SelectableTableViewDataSource<Cell>!
     
     override func loadView() {
