@@ -101,17 +101,6 @@ private extension PagingCollectionViewDiffableDataSource {
     
     func requestNextInfiniteScrollPage() {
         guard !isRequestingNextPage, let infiniteScrollSupport = self.infiniteScrollProvider else { return }
-        
-        let currentFetch = Task.detached { @MainActor in
-            print("Changes snapshot")
-            var changesSnapshot = self.snapshot()
-            let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
-            PagingCollectionViewDiffableDataSource
-                .stopPaginating(snapshot: &changesSnapshot)
-            await self.apply(changesSnapshot, animatingDifferences: true)
-            return morePagesAvailable
-        }
-        self.currentFetch = currentFetch
 
         Task { @MainActor in
             print("Animation snapshot")
@@ -120,12 +109,22 @@ private extension PagingCollectionViewDiffableDataSource {
                 .startPaginating(snapshot: &startPagingSnapshot)
             await apply(startPagingSnapshot, animatingDifferences: true)
 
-            let morePagesAvailable = await currentFetch.value
+            let morePagesAvailable = (await self.currentFetch?.value) ?? true
 
             if !morePagesAvailable {
                 self.infiniteScrollProvider = nil
             }
             self.currentFetch = nil
+        }
+        
+        self.currentFetch = Task { @MainActor in
+            print("Changes snapshot")
+            var changesSnapshot = self.snapshot()
+            let morePagesAvailable = await infiniteScrollSupport.fetchHandler(&changesSnapshot)
+            PagingCollectionViewDiffableDataSource
+                .stopPaginating(snapshot: &changesSnapshot)
+            await self.apply(changesSnapshot, animatingDifferences: true)
+            return morePagesAvailable
         }
     }
 }
