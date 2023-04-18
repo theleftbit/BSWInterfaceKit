@@ -14,8 +14,8 @@ class SelectableTableViewDataSourceTests: BSWSnapshotTest {
             Cell.VM(text: "Title3")
         ])
         vm.select(atIndex: 0)
-        
-        verify(viewController: vc, vm: vm)
+        vc.configureFor(viewModel: vm)
+        waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 }
 
