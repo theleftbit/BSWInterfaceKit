@@ -7,7 +7,7 @@ import NukeUI
 
 public struct PhotoView: View {
     
-    public init(photo: Photo, configuration: PhotoView.Configuration = .init(placeholder: .init(shape: .rectangle))) {
+    public init(photo: Photo, configuration: PhotoView.Configuration = .init()) {
         self.photo = photo
         self.configuration = configuration
     }
@@ -62,7 +62,7 @@ extension PhotoView {
         let aspectRatio: CGFloat?
         let contentMode: ContentMode
         
-        public init(placeholder: Placeholder, aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit) {
+        public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit) {
             self.placeholder = placeholder
             self.aspectRatio = aspectRatio
             self.contentMode = contentMode
