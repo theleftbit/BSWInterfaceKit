@@ -41,6 +41,7 @@ public struct PhotoView: View {
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
                 if let image = state.image {
                     image
+                        .resizable()
                 } else {
                     placeholder
                 }
