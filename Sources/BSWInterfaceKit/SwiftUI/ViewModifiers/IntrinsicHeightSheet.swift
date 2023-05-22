@@ -36,35 +36,21 @@ public extension SwiftUI.View {
 }
 
 @available(iOS 16.0, *)
-private struct InnerHeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = .zero
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
-@available(iOS 16.0, *)
 private struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     
     let hostView: Host
     let contentView: () -> Content
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
-    @State private var sheetHeight: CGFloat = .zero
+    @State private var sheetSize: CGSize = .zero
 
     var body: some View {
         hostView
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
-                .overlay {
-                    GeometryReader { geometry in
-                        Color.clear.preference(key: InnerHeightPreferenceKey.self, value: geometry.size.height)
-                    }
-                }
-                .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
-                    sheetHeight = newHeight
-                }
-                .presentationDetents([.height(sheetHeight)])
+                .fixedSize(horizontal: false, vertical: true)
+                .getCGSize($sheetSize)
+                .presentationDetents([.height(sheetSize.height)])
         }
     }
 }
@@ -76,21 +62,15 @@ private struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Ite
     let contentView: (Item) -> Content
     @Binding var isPresented: Item?
     let onDismiss: (() -> Void)?
-    @State private var sheetHeight: CGFloat = .zero
+    @State private var sheetSize: CGSize = .zero
 
     var body: some View {
         hostView
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
-                    .overlay {
-                        GeometryReader { geometry in
-                            Color.clear.preference(key: InnerHeightPreferenceKey.self, value: geometry.size.height)
-                        }
-                    }
-                    .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
-                        sheetHeight = newHeight
-                    }
-                    .presentationDetents([.height(sheetHeight)])
+                    .fixedSize(horizontal: false, vertical: true)
+                    .getCGSize($sheetSize)
+                    .presentationDetents([.height(sheetSize.height)])
             }
     }
 }

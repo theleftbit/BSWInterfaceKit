@@ -38,14 +38,14 @@ public struct PhotoView: View {
     private var photoView: some View {
         switch photo.kind {
         case .url(let url, _):
-            LazyImage(url: url) { state in
+            LazyImage(url: url, transaction: .init(animation: .default)) { state in
                 if let image = state.image {
                     image
+                        .resizable()
                 } else {
                     placeholder
                 }
             }
-            .animation(.default)
         case .image(let image):
             Image(uiImage: image)
                 .resizable()

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "revision" : "439907294cb1b0570010a4ff461a966fcb042cf8",
-        "version" : "5.3.6"
+        "revision" : "d977a4c872be2cefd371d627b7b428c7cd7adb4f",
+        "version" : "5.3.8"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Nuke.git",
       "state" : {
-        "revision" : "3ed0597082b40932481fb8971af8813a4284203c",
-        "version" : "11.6.1"
+        "revision" : "f4d9b95788679d0654c032961f73e7e9c16ca6b4",
+        "version" : "12.1.0"
       }
     },
     {

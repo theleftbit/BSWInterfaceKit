@@ -13,15 +13,18 @@ struct DemoView: View {
         .intrinsicHeightSheet(isPresented: $presentSheet) {
             ContentView()
         }
+        .task {
+            presentSheet = true
+        }
+
     }
 
     struct ContentView: View {
         var body: some View {
             VStack {
                 Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac bibendum est. Donec tincidunt ligula sit amet ipsum vehicula vehicula. Vestibulum ultrices arcu sit amet aliquam dictum.")
-                    .fixedSize(horizontal: false, vertical: true)
             }
-                .padding()
+            .padding()
         }
     }
 }
