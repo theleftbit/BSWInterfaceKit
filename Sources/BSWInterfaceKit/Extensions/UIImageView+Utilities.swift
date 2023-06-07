@@ -9,7 +9,7 @@ import UIKit
 extension UIImageView {
     
     private struct AssociatedKeys {
-        static var BlurEffectViewKey = "BlurEffectViewKey"
+        static var BlurEffectViewKey: UInt8 = 0
     }
 
     public var blurEffectView: UIVisualEffectView? {

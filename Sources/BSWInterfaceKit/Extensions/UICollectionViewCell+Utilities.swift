@@ -17,7 +17,7 @@ public extension UICollectionViewCell {
     }
 
     private enum AssociatedBlockHost {
-        static var handlerHost = "handlerHost"
+        static var handlerHost: UInt8 = 0
     }
 
     @objc var bsw_onDelete: VoidHandler? {
