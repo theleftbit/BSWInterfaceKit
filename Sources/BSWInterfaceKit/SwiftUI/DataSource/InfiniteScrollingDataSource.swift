@@ -7,7 +7,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
-    private let itemFetcher: ItemFetcher
+    private var itemFetcher: ItemFetcher
     
     public enum State: Equatable {
         case noMorePages
@@ -36,6 +36,13 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
                 try await loadMoreContent()
             }
         }
+    }
+    
+    public func resetItemFecher(currentPage: Int, itemFetcher: @escaping ItemFetcher) async throws {
+        self.items = []
+        self.itemFetcher = itemFetcher
+        self.state = State.canLoadMorePages(currentPage: currentPage)
+        try await loadMoreContent()
     }
     
     /// MARK: Private
