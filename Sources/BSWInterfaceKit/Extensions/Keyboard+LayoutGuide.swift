@@ -18,7 +18,7 @@ private class Keyboard {
 public extension UIView {
     
     private struct AssociatedKeys {
-        static var keyboardLayoutGuide = "keyboardLayoutGuide"
+        static var keyboardLayoutGuide: UInt8 = 0
     }
     
     /// A layout guide representing the inset for the keyboard.

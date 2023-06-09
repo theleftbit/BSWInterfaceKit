@@ -54,7 +54,7 @@ public extension UIViewController {
     }
 
     private enum AssociatedKeys {
-        static var FetchTask = "BSWFetchTask"
+        static var FetchTask: UInt8 = 0
     }
     
     @MainActor
