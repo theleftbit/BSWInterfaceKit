@@ -7,6 +7,8 @@
 import UIKit
 import BSWInterfaceKitObjC
 
+
+/// This `UIViewController` subclass allows you to write the common UI pattern where the "Top" VC is the content and at the bottom you have a button-
 @objc(BSWBottomContainerViewController)
 open class BottomContainerViewController: UIViewController {
     
@@ -31,12 +33,21 @@ open class BottomContainerViewController: UIViewController {
         case controller(UIViewController)
     }
     
+    /// Creates a `BottomContainerViewController`
+    /// - Parameters:
+    ///   - containedViewController: the `UIViewController` that will have the role of being the main (or top) `viewController`
+    ///   - button: The `UIButton` that will be at the bottom.
+    ///   - margins: The margins shown around the button
     public init(containedViewController: UIViewController, button: UIButton, margins: UIEdgeInsets = .zero) {
         self.containedViewController = containedViewController
         self.bottomViewKind = .button(button, margins)
         super.init(nibName: nil, bundle: nil)
     }
     
+    /// Creates a `BottomContainerViewController`
+    /// - Parameters:
+    ///   - containedViewController: the `UIViewController` that will have the role of being the main (or top) `viewController`
+    ///   - bottomViewController: the `UIViewController` that will have the role of being the secondary (or bottom) `viewController`
     public init(containedViewController: UIViewController, bottomViewController: UIViewController) {
         self.containedViewController = containedViewController
         self.bottomViewKind = .controller(bottomViewController)

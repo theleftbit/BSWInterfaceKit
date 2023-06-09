@@ -10,6 +10,7 @@ public protocol PhotoGalleryViewControllerDelegate: AnyObject {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }
 
+/// A `UIViewController` subclass that shows full-screen photos.
 public final class PhotoGalleryViewController: UIViewController {
     
     public enum Appearance {

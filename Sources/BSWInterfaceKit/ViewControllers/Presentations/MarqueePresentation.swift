@@ -6,6 +6,10 @@
 
 import UIKit
 
+/**
+ This abstraction will create the appropiate `UIViewControllerAnimatedTransitioning`
+ instance for a alert modal animation.
+ */
 public enum MarqueePresentation {
     
     public struct AnimationProperties {

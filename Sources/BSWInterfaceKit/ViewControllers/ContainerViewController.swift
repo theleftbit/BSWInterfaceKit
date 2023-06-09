@@ -6,12 +6,15 @@
 
 import UIKit
 
+/// Use this `UIViewController` subclass as the `rootViewController` of your `UIWindow` in order to transition between states of your app with more ease.
 @objc(BSWRootViewController)
 final public class RootViewController: ContainerViewController {}
 
+/// Use this `UIViewController` in order to transition between states of your view with more ease.
 @objc(BSWContainerViewController)
 open class ContainerViewController: UIViewController {
     
+    /// Describes how the `containedViewController` will be layed out.
     public enum LayoutMode {
         case pinToSuperview
         case pinToSafeArea
@@ -25,10 +28,12 @@ open class ContainerViewController: UIViewController {
     private let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut)
     public var layoutMode = LayoutMode.pinToSuperview
     
+    /// Initializes this class with an empty `UIViewController`
     public convenience init() {
         self.init(containedViewController: UIViewController())
     }
     
+    /// Initializes this class with the given `UIViewController`
     public init(containedViewController: UIViewController) {
         self.containedViewController = containedViewController
         super.init(nibName: nil, bundle: nil)
@@ -57,6 +62,10 @@ open class ContainerViewController: UIViewController {
         }
     }
 
+    /// Changes the displayed `UIViewController`.
+    /// - Parameters:
+    ///   - newVC: The new `UIViewController` to display
+    ///   - animated: If the change should be animated
     open func updateContainedViewController(_ newVC: UIViewController, animated: Bool = true) {
         
         guard newVC != containedViewController else { return }

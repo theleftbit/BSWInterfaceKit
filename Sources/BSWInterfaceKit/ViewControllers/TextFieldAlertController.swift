@@ -3,7 +3,20 @@
 import UIKit
 
 public enum TextFieldAlertController {
-
+    
+    /// Creates an alert with a `UITextField` to capture user input.
+    /// - Parameters:
+    ///   - title: The title of the alert
+    ///   - subtitle: The subtitle of the alert
+    ///   - actionTitle: The title of the action to be performed
+    ///   - cancelTitle: The title for cancelling the action to be performed
+    ///   - placeholder: The placeholder of the `UITextField`
+    ///   - initialValue: The initial value of the `UITextField`
+    ///   - textContentType: The `UITextContentType` of the `UITextField`
+    ///   - actionValidator: A block that validates the current user's input and enables the Action button.
+    ///   - onAction: The handler to be executed when the user presses the Action button
+    ///   - onCancelAction: The handler to be executed when the user presses the Cancel button
+    /// - Returns: A `UIViewController` to be presented
     public static func controllerWith(
         title: String,
         subtitle: String? = nil,
