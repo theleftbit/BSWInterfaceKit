@@ -3,14 +3,18 @@
 import UIKit
 import BSWFoundation
 
-/// This is a `UICollectionViewDiffableDataSource` that adds a
-/// simple way to Pull to Refresh and empty views.
+/// This `UICollectionViewDiffableDataSource` subclass adds a
+/// simple way to handle Pull to Refresh and empty views.
 open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     UICollectionViewDiffableDataSource<Section, Item>  {
     
+    /// This type describes what to do when the `dataSource` is empty.
     public enum EmptyConfiguration {
+        /// Displays the given `UIView`
         case view(UIView)
+        /// Displays the view described in `ErrorView.Configuration`
         case configuration(ErrorView.Configuration)
+        /// Does nothing.
         case none
         
         public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: UIButton.Configuration? = nil, handler: VoidHandler?) {
@@ -26,6 +30,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     private var offsetObserver: NSKeyValueObservation?
     private var emptyView: UIView?
     
+    /// Initializes a `CollectionViewDiffableDataSource` with a given `collectionView` and a `cellProvider`
     public override init(collectionView: UICollectionView, cellProvider: @escaping UICollectionViewDiffableDataSource<Section, Item>.CellProvider) {
         super.init(collectionView: collectionView) { (cv, indexPath, item) -> UICollectionViewCell? in
             return cellProvider(cv, indexPath, item)
@@ -39,13 +44,15 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         }
         emptyView.removeFromSuperview()
     }
-
+    
+    /// Specifies what to do when the `dataSource` is empty.
     public var emptyConfiguration: EmptyConfiguration = .none {
         didSet {
             collectionView.reloadData()
         }
     }
     
+    /// Specifies how a Pull to Refresh will be handled.
     public var pullToRefreshProvider: PullToRefreshProvider? {
         didSet {
             prepareForPullToRefresh()
@@ -79,7 +86,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
 }
 
 extension CollectionViewDiffableDataSource {
-
+    
     public struct PullToRefreshProvider {
         public typealias FetchHandler = ((inout NSDiffableDataSourceSnapshot<Section, Item>) async -> ())
         public let fetchHandler: FetchHandler

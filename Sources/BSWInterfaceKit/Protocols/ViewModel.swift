@@ -9,12 +9,14 @@ import BSWFoundation
 
 //MARK:- Protocols
 
+/// Describes an object that can be configured with given data.
 @available(swift, deprecated: 6.0, obsoleted: 6.1, message: "Please use UIContentConfiguration instead")
 public protocol ViewModelConfigurable: AnyObject {
     associatedtype VM
     func configureFor(viewModel: VM)
 }
 
+/// Describes an object that can be reused and configured with given data.
 @available(swift, deprecated: 6.0, obsoleted: 6.1, message: "Please use UIContentConfiguration instead")
 public protocol ViewModelReusable: ViewModelConfigurable {
     static var reuseType: ReuseType { get }

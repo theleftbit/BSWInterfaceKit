@@ -6,6 +6,10 @@ import BSWFoundation
 
 //MARK: SelectableTableViewDataSource
 
+/**
+ Use this dataSource if you want a simple way to create a UI
+ that resembles a tableView with selection
+*/
 public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReusable>: NSObject, UITableViewDelegate, UITableViewDataSource {
     
     public struct Configuration {
@@ -38,9 +42,6 @@ public class SelectableTableViewDataSource<Cell: UITableViewCell & ViewModelReus
     private let configuration: Configuration
     
     /**
-    Use this datasource if you want a simple way to create a UI
-    that resembles a tableView with selection
-
     - Parameter tableView: the `UITableView` where the content will be layed out.
     - Parameter dataStore: the `SelectableArray` that represents the data.
     - Parameter configuration: Customizations for this class.
