@@ -8,14 +8,22 @@ import UIKit
 import BSWFoundation
 
 @objc(BSWErrorView)
+/// A simple view that represents an error state in your app.
 open class ErrorView: UIStackView {
-
+    
+    /// The configuration that will be used to generate an `ErrorView`
     public struct Configuration {
         public let title: NSAttributedString
         public let message: NSAttributedString?
         public let image: UIImage?
         public let button: UIButton?
         
+        /// - Parameters:
+        ///   - title: The title for this error state.
+        ///   - message: An optional message for this state.
+        ///   - image: An optional image for this state.
+        ///   - buttonConfiguration: An optional UIButton.Configuration to allow users to retry the operation.
+        ///   - handler: A handler that will be called when the button is tapped.
         public init(title: NSAttributedString, message: NSAttributedString? = nil, image: UIImage? = nil, buttonConfiguration: UIButton.Configuration? = nil, handler: VoidHandler? = nil) {
             self.title = title
             self.message = message
@@ -33,7 +41,8 @@ open class ErrorView: UIStackView {
             self.image = image
             self.button = button
         }
-
+        
+        /// Generates the `UIView` for this `Configuration`
         public func viewRepresentation() -> UIView {
             return ErrorView(config: self)
         }

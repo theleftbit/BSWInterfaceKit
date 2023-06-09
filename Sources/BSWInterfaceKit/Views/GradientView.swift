@@ -5,6 +5,14 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    return GradientView(kind: .colors([.systemBlue, .systemRed]))
+}
+#endif
+#endif
+
 @objc(BSWGradientView)
 open class GradientView: UIImageView {
     
