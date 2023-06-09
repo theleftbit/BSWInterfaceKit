@@ -5,6 +5,7 @@
 import SwiftUI
 import NukeUI
 
+/// Displays a `Photo` in `SwiftUI`
 public struct PhotoView: View {
     
     public init(photo: Photo, configuration: PhotoView.Configuration = .init()) {

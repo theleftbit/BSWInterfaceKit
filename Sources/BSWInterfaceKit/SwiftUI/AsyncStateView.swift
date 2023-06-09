@@ -2,12 +2,36 @@
 
 import SwiftUI
 
-public protocol PlaceholderDataProvider {
-    associatedtype Data
-    static func generatePlaceholderData() -> Data
+#if DEBUG
+struct RecipeListView: View, PlaceholderDataProvider {
+    
+    let recipes: [String]
+    var body: some View {
+        Form {
+            ForEach(recipes, id: \.self) {
+                Text($0)
+            }
+        }
+    }
+    
+    static func generatePlaceholderData() -> [String] {
+        ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
+    }
 }
+#if compiler(>=5.9)
+#Preview {
+    AsyncStateView(id: "some-id", dataGenerator: {
+        try await Task.sleep(for: .seconds(1))
+        return ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
+    }, hostedViewGenerator: {
+        RecipeListView(recipes: $0)
+    })
+}
+#endif
+#endif
 
 /// A SwiftUI View with an async state.
+///
 /// Use it like this:
 ///
 ///     var body: some View {
@@ -26,7 +50,7 @@ public protocol PlaceholderDataProvider {
 ///         case error(Swift.Error)
 ///     }
 ///
-/// The generator is an `async throws` function which takes no params and gives a `HostedView.Data` result.
+/// The generator is an `async throws` function which takes no params and returns a `HostedView.Data`.
 /// It gets called using `.task` on the `.loading` state, so it will fire only when shown.
 ///
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
@@ -56,7 +80,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
-    ///   - id: An identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded. For this value you can use the remote ID of the object being loaded.
+    ///   - id: A `Binding` to the identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded. For this value you can use the remote ID of the object being loaded.
     ///   - dataGenerator: The function that generates the data that is required for your `HostedView`
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.

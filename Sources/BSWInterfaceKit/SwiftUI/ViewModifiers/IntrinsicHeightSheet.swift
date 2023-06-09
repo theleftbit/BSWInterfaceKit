@@ -1,6 +1,41 @@
 
 import SwiftUI
 
+#if DEBUG
+#if compiler(>=5.9)
+@available(iOS 16.0, *)
+struct DemoView: View {
+    
+    @State var presentSheet = false
+    
+    var body: some View {
+        Button("Present Sheet") {
+            presentSheet = true
+        }
+        .intrinsicHeightSheet(isPresented: $presentSheet) {
+            ContentView()
+        }
+        .task {
+            presentSheet = true
+        }
+
+    }
+
+    struct ContentView: View {
+        var body: some View {
+            VStack {
+                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac bibendum est. Donec tincidunt ligula sit amet ipsum vehicula vehicula. Vestibulum ultrices arcu sit amet aliquam dictum.")
+            }
+            .padding()
+        }
+    }
+}
+#Preview {
+    DemoView()
+}
+#endif
+#endif
+
 @available(iOS 16.0, *)
 public extension SwiftUI.View {
     
