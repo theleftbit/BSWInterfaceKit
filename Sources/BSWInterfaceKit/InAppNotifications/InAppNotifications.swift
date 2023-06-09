@@ -2,8 +2,11 @@
 
 import UIKit
 
+/// Describes the type of notification shown.
 public protocol InAppNotificationType {
+    /// The background color for the notification
     var backgroundColor: UIColor { get }
+    /// An optional image (please use an icon)
     var image: UIImage? { get }
 }
 
@@ -11,30 +14,35 @@ public protocol InAppNotificationDismissable {
     func dismissNotification(animated: Bool)
 }
 
-public class InAppNotifications {
-    
-    // MARK: - Static notification types
-    
-    public static let success: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatGreen, image: UIImage(named: "success", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
-    public static let error: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatRed, image: UIImage(named: "error", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
-    public static let info: InAppNotificationType = InAppNotificationTypeDefinition(backgroundColor: UIColor.flatGray, image: UIImage(named: "info", in: Bundle(for: InAppNotifications.self), compatibleWith: nil))
-    
-    
-    // MARK: - Init
-    
-    public init(){}
-    
+public enum InAppNotifications {
     
     // MARK: - Helpers
     
-    /** Shows a CRNotification **/
+    /// Creates an in-app notification, to let the user know that something has happened
+    /// - Parameters:
+    ///   - fromVC: What `viewController` this will be presented on.
+    ///   - backgroundColor: The background color for the notification.
+    ///   - image: An optional image (please use an icon)
+    ///   - title: A title.
+    ///   - message: An optional message.
+    ///   - dismissDelay: How long before it'll be dismissed
+    ///   - completion: A completion handler when the notification is dismissed.
+    /// - Returns: The notification.
     @discardableResult
     public static func showNotification(fromVC: UIViewController, backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let notificationDefinition = InAppNotificationTypeDefinition(backgroundColor: backgroundColor, image: image)
         return showNotification(type: notificationDefinition, fromVC: fromVC, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
     }
     
-    /** Shows a CRNotification from a InAppNotificationType **/
+    /// Creates an in-app notification, to let the user know that something has happened
+    /// - Parameters:
+    ///   - type: The type of notification shown
+    ///   - fromVC: What `viewController` this will be presented on.
+    ///   - title: A title.
+    ///   - message: An optional message.
+    ///   - dismissDelay: How long before it'll be dismissed
+    ///   - completion: A completion handler when the notification is dismissed.
+    /// - Returns: The notification.
     @discardableResult
     public static func showNotification(type: InAppNotificationType, fromVC: UIViewController, title: NSAttributedString?, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
         let view = InAppNotificationView()
@@ -61,15 +69,6 @@ public class InAppNotifications {
 private struct InAppNotificationTypeDefinition: InAppNotificationType {
     var backgroundColor: UIColor
     var image: UIImage?
-}
-
-private extension UIColor {
-    
-    /// Flat Colors
-    static let flatGreen = UIColor(red: 46/255, green: 204/255, blue: 113/255, alpha: 1.0)
-    static let flatRed = UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1.0)
-    static let flatGray = UIColor(red: 149/255, green: 165/255, blue: 166/255, alpha: 1.0)
-    
 }
 
 @objc(BSWInAppNotificationView)
