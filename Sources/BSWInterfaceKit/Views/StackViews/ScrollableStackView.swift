@@ -6,7 +6,6 @@
 
 import UIKit
 
-@objc(BSWScrollableStackView)
 /**
  This scrollView subclass creates a stackView that scrolls along the specified axis.
 
@@ -26,6 +25,7 @@ import UIKit
  }
  ```
 */
+@objc(BSWScrollableStackView)
 open class ScrollableStackView: UIScrollView {
     
     private let stackView = UIStackView()
