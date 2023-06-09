@@ -8,7 +8,7 @@ import UIKit
 import BSWInterfaceKitObjC
 
 
-/// This `UIViewController` subclass allows you to write the common UI pattern where the "Top" VC is the content and at the bottom you have a button-
+/// This `UIViewController` subclass allows you to write the common UI pattern where the "Top" VC is the content and at the bottom you have a button.
 @objc(BSWBottomContainerViewController)
 open class BottomContainerViewController: UIViewController {
     
