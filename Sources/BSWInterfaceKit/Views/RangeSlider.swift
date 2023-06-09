@@ -10,8 +10,20 @@
 import UIKit
 import QuartzCore
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    let v = RangeSlider(configuration: RangeSlider.Configuration(range: .init(uncheckedBounds: (0, 10)), trackTintColor: .systemGray, trackHighlightTintColor: .systemBlue, thumbTintColor: .white))
+    v.configureFor(viewModel: .init(selectedRange: .init(uncheckedBounds: (4,8))))
+    return v
+}
+#endif
+#endif
+
+/// Creates a `UIControl` that allows the user to select a Range.
 public class RangeSlider: UIControl, ViewModelConfigurable {
     
+    /// All the properties that can be configured
     public struct Configuration {
         public let range: Range<Double>
         public let trackTintColor: UIColor

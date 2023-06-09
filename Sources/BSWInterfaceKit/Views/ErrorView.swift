@@ -7,8 +7,8 @@
 import UIKit
 import BSWFoundation
 
-@objc(BSWErrorView)
 /// A simple view that represents an error state in your app.
+@objc(BSWErrorView)
 open class ErrorView: UIStackView {
     
     /// The configuration that will be used to generate an `ErrorView`

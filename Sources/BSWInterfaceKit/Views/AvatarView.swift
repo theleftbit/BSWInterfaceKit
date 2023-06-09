@@ -6,6 +6,14 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    return AvatarView(size: .big, photo: .emptyPhoto())
+}
+#endif
+#endif
+
 /// This subclass of `UIView` displays it's `Photo` as a round image, perfect for showing avatars.
 @objc(BSWAvatarView)
 public class AvatarView: UIView {

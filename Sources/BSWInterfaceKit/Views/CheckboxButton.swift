@@ -6,6 +6,17 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    let b = CheckboxButton()
+    b.configuration?.imagePadding = 8
+    b.configuration?.title = "Hello World"
+    return b
+}
+#endif
+#endif
+
 /// Use this button on your app to add a "Checkbox" like UI.
 /// To customize it's look and feel, please use `Appearance`
 /// to edit the color for the unselected and selected state. You could

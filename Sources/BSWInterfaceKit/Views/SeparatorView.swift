@@ -2,6 +2,15 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    return SeparatorView()
+}
+#endif
+#endif
+
+/// This `UIView` subclass can be used as a horizontal separator to divide logical parts of your view.
 public class SeparatorView: UIView {
     public init(color: UIColor = .separator) {
         super.init(frame: .zero)
