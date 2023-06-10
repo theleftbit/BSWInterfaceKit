@@ -1,7 +1,9 @@
 
+import SwiftUI
+
 #if canImport(UIKit)
 
-import SwiftUI
+import UIKit
 
 public extension SwiftUI.View {
     /// Generates a `UIViewController` from this `SwiftUI.View`
