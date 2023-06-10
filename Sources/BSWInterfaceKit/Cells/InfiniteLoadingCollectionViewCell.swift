@@ -3,7 +3,7 @@
 
 import UIKit
 
-/// This `UICollectionViewListCell` is usefull when paginating infinite lists.
+/// This `UICollectionViewListCell` is useful when paginating infinite lists.
 open class InfiniteLoadingCollectionViewCell: UICollectionViewListCell {
 
     public let Margins: UIEdgeInsets = .init(uniform: 8)

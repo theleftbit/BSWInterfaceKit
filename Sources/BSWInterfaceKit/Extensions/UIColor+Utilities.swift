@@ -10,8 +10,7 @@ import UIKit
 public extension UIColor {
     
     /**
-     Initializes and returns a color given the current trait environment, but if,
-     iOS 13 is not available it'll return the light color.
+     Initializes and returns a color given the current trait environment.
      
      - parameter light: The version of the color to use with `UIUserInterfaceStyle.light`.
      - parameter dark: The version of the color to use with `UIUserInterfaceStyle.dark`.
@@ -89,7 +88,9 @@ public extension UIColor {
             alpha: alphaVal
         )
     }
-
+    
+    /// Creates a random color using `RandomColorFactory`
+    /// - Returns: a `UIColor`
     class func randomColor() -> UIColor {
         return RandomColorFactory.randomColor()
     }
