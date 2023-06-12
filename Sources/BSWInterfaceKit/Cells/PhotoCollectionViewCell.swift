@@ -6,7 +6,7 @@
 
 import UIKit
 
-
+/// This View displays `Photo`s in a `UIScrollView` using `UIContentConfiguration` and `UIContentView`
 public enum PhotoCollectionViewCell {
     struct Configuration: UIContentConfiguration, Hashable {
         

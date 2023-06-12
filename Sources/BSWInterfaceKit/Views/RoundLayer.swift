@@ -6,6 +6,8 @@
 #if canImport(UIKit)
 
 import UIKit
+
+/// This `CALayer` subclass will ensure that the `UIView` backed by this layer will always be rounded.
 public class RoundLayer: CALayer {
     
     override init() {

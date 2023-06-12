@@ -81,7 +81,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     
     public func createVideoThumbnail(forURL videoURL: URL) async throws -> URL {
         let asset = AVAsset(url: videoURL)
-        let durationSeconds = CMTimeGetSeconds(asset.duration)
+        let durationSeconds = try await asset.load(.duration).seconds
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
         

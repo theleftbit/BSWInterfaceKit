@@ -7,6 +7,18 @@
 import UIKit
 import BSWFoundation
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    PhotoGalleryView(photos: [
+        .init(url: .init(string: "https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")!),
+        .init(url: .init(string: "https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")!),
+        .init(url: .init(string: "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")!),
+    ])
+}
+#endif
+#endif
+
 // MARK: PhotoGalleryViewDelegate protocol
 
 public protocol PhotoGalleryViewDelegate: AnyObject {
@@ -15,6 +27,7 @@ public protocol PhotoGalleryViewDelegate: AnyObject {
 
 // MARK: - PhotoGalleryView
 
+/// This `UIView` subclass shows photos in a "gallery mode" much like you'd find in the details of a product of an e-commerce.
 @objc(BSWPhotoGalleryView)
 final public class PhotoGalleryView: UIView {
     
@@ -42,13 +55,17 @@ final public class PhotoGalleryView: UIView {
     var photos = [Photo]()
     private let updatePageControlOnScrollBehavior: UpdatePageControlOnScrollBehavior
     
+    /// Sets the delegate for this object, in order to be notified of interactions.
     public weak var delegate: PhotoGalleryViewDelegate?
+    
+    /// Enables or disables the zoom for the photos.
     public var zoomEnabled = false {
         didSet {
             collectionView.reloadData()
         }
     }
     
+    /// Returns the current page.
     public var currentPage: Int {
         return pageControl.currentPage
     }
@@ -61,6 +78,10 @@ final public class PhotoGalleryView: UIView {
     
     // MARK: Initialization
     
+    /// Initializes this class with a given set of `Photos` and contentMode for it's images.
+    /// - Parameters:
+    ///   - photos: The photos to display
+    ///   - imageContentMode: The contentMode for this images.
     public init(photos: [Photo] = [], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
         self.imageContentMode = imageContentMode
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
@@ -73,6 +94,7 @@ final public class PhotoGalleryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }    
 
+    /// Programatically scrolls to a given photo index.
     public func scrollToPhoto(atIndex index: Int, animated: Bool = false) {
         collectionView.scrollToItem(at: IndexPath(item: Int(index), section: 0), at: .centeredHorizontally, animated: animated)
     }
@@ -83,6 +105,7 @@ final public class PhotoGalleryView: UIView {
         scrollToPhoto(atIndex: pageControl.currentPage)
     }
     
+    /// Changes the photos displayed by this view.
     public func setPhotos(_ photos: [Photo]) {
         self.photos = photos
         pageControl.numberOfPages = photos.count

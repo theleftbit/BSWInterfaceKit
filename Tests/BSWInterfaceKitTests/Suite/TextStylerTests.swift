@@ -11,8 +11,7 @@ class TextStylerTests: BSWSnapshotTest {
     var sut: TextStyler!
     override func setUp() {
         super.setUp()
-        sut = TextStyler()
-        sut.fontDescriptor = .init(name: "ChalkboardSE-Light", size: 0)
+        sut = TextStyler(fontDescriptor: .init(name: "ChalkboardSE-Light", size: 0))
     }
 
     func testTitle() {
@@ -36,7 +35,7 @@ class TextStylerTests: BSWSnapshotTest {
     }
 
     func testBoldedString() {
-        sut.fontDescriptor = nil
+        sut = TextStyler()
         let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded
         verify(attributedString: string)
     }

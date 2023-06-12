@@ -1,9 +1,12 @@
 
-#if canImport(UIKit)
-
 import SwiftUI
 
+#if canImport(UIKit)
+
+import UIKit
+
 public extension SwiftUI.View {
+    /// Generates a `UIViewController` from this `SwiftUI.View`
     func asViewController() -> UIViewController {
         return UIHostingController(rootView: self)
     }

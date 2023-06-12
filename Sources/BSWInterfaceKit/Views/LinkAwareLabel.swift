@@ -6,6 +6,23 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    let l = LinkAwareLabel()
+    l.didTapOnURL = {
+        print($0)
+    }
+    let link = "https://www.theleftbit.com"
+    let string = String(format: "Hello %@", arguments: [link])
+    l.attributedText = TextStyler.styler
+        .attributedString(string)
+        .addingLink(onSubstring: link, linkURL: URL(string: "link")!, linkColor: .systemBlue)
+    return l
+}
+#endif
+#endif
+
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
 /// if it's a URL, executes the `didTapOnURL` handler
@@ -31,10 +48,11 @@ open class LinkAwareLabel: UILabel {
         super.touchesBegan(touches, with: event)
     }
     
-    /// This method is public so you can use it from any other `UILabel` subclass. Make sure to override `touchesBegan`
-    /// and set it's `isUserInteractionEnabled` to `true`. You can also use this from a `UIButton` subclass like this:
-    /*
-     ````
+    /**
+     
+     This method is public so you can use it from any other `UILabel` subclass. Make sure to override `touchesBegan` and set it's `isUserInteractionEnabled` to `true`. You can also use this from a `UIButton` subclass like this:
+     
+     ```
      class SomeFancyButton: UIButton {
          
          override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -55,7 +73,7 @@ open class LinkAwareLabel: UILabel {
             // do your thang
         }
      }
-     ````
+     ```
      */
     public static func extractURLsFrom(touches: Set<UITouch>, inLabel label: UILabel) -> [URL] {
         guard

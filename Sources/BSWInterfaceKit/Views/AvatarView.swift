@@ -6,11 +6,21 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    return AvatarView(size: .big, photo: .emptyPhoto())
+}
+#endif
+#endif
+
+/// This subclass of `UIView` displays it's `Photo` as a round image, perfect for showing avatars.
 @objc(BSWAvatarView)
 public class AvatarView: UIView {
     
     public let size: Size
     
+    /// The `Photo` of the avatar displayed
     public var photo: Photo {
         didSet {
             updateImage()
@@ -23,6 +33,7 @@ public class AvatarView: UIView {
         return imageView
     }()
     
+    /// A handler called whenever the user touches on this view.
     public var onTapOnAvatar: AvatarTouchHandler? {
         didSet {
             if let tapRecognizer = self.tapRecognizer {
@@ -59,6 +70,11 @@ public class AvatarView: UIView {
 
     // MARK: Initialization
     
+    
+    /// Initializes this view with a `Size` and a `Photo`
+    /// - Parameters:
+    ///   - size: The `Size`
+    ///   - photo: The `Photo`
     public init(size: Size, photo: Photo) {
         self.size = size
         self.photo = photo
@@ -100,12 +116,13 @@ public class AvatarView: UIView {
     
     // MARK: TapReco
     
-    @objc func onTap() {
+    @objc private func onTap() {
         onTapOnAvatar?(self)
     }
     
     // MARK: Types
     
+    /// This type represents the size that the `AvatarView` will be shown at.
     public enum Size: CGFloat {
         case smallest = 44
         case normal = 60

@@ -4,6 +4,10 @@
 
 This framework will allow you to build *better* iOS apps *faster* since it leverages battle tested classes for various common use cases in modern apps
 
-## Playground
+## Documentation
 
-This also ships with a Playground so you can test the bundled classes easier.
+Please checkout [the documentation](https://www.theleftbit.com/BSWInterfaceKit/documentation/bswinterfacekit/) generated with DocC using:
+
+```
+xcodebuild docbuild -scheme BSWInterfaceKit -destination generic/platform=iOS DOCC_HOSTING_BASE_PATH='BSWInterfaceKit'
+```

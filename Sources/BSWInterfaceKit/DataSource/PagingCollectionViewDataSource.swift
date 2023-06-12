@@ -3,8 +3,9 @@
 import UIKit
 
 /**
- This is a `CollectionViewDiffableDataSource`
- that adds a simple way to support for infiniteScroll.
+ This `CollectionViewDiffableDataSource` subclass adds a simple way to support for infiniteScroll.
+ 
+ In order to configure it:
  ```
  dataSource.infiniteScrollProvider = .init(fetchHandler: { snapshot in
      let items = try await fetchTheItems()

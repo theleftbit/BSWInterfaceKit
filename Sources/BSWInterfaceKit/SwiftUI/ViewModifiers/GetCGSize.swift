@@ -8,6 +8,9 @@ private struct CGSizeKey: PreferenceKey {
 }
 
 public extension View {
+    /// Sets the `View`'s size to the passed `Binding`
+    /// - Parameter viewSize: The `Binding` where to store the value
+    /// - Returns: a `SwiftUI.View`.
     func getCGSize(_ viewSize: Binding<CGSize>) -> some View {
         background(
             GeometryReader { proxy in

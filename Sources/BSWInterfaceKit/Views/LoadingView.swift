@@ -6,6 +6,15 @@
 
 import UIKit
 
+#if DEBUG
+#if compiler(>=5.9)
+#Preview {
+    return LoadingView(loadingMessage: nil, activityIndicatorStyle: .large)
+}
+#endif
+#endif
+
+/// A simple view that represents the loading state in your app.
 @objc(BSWLoadingView)
 public class LoadingView: UIView {
     private let stackView: UIStackView = {

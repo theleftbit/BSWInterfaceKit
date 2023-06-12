@@ -7,17 +7,34 @@
 import UIKit
 import Nuke
 
+/// This represents an image to be displayed in the app.
+///
+/// Please do not use this to represent Symbols, but rather large Bitmaps.
 public struct Photo {
     
+    
+    /// The source of the Photo.
     public enum Kind {
+        /// The Photo is in a remote URL and there's an Optional `PlaceholderImage` to be shown while the Photo is loading.
         case url(Foundation.URL, placeholderImage: PlaceholderImage?)
+        
+        /// There's a `UIImage` representing this Photo.
         case image(UIImage)
+        
+        /// Just an empty Photo.
         case empty
     }
     
+    /// The source of the Photo
     public let kind: Kind
+    
+    /// The averageColor of the `Photo`. Will be shown during loading if appropiate.
     public let averageColor: UIColor
+    
+    /// The size of the image if known
     public let size: CGSize?
+    
+    /// The `UIView.ContentMode` that will be used to display the `Photo`
     public let preferredContentMode: UIView.ContentMode?
 
     public init(kind: Kind, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil, preferredContentMode: UIView.ContentMode? = nil) {
