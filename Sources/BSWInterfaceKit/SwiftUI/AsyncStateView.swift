@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-#if DEBUG
+#if compiler(>=5.9)
 struct RecipeListView: View, PlaceholderDataProvider {
     
     let recipes: [String]
@@ -18,16 +18,18 @@ struct RecipeListView: View, PlaceholderDataProvider {
         ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
     }
 }
-#if compiler(>=5.9)
 #Preview {
-    AsyncStateView(id: "some-id", dataGenerator: {
-        try await Task.sleep(for: .seconds(1))
-        return ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
-    }, hostedViewGenerator: {
-        RecipeListView(recipes: $0)
-    })
+    if #available(iOS 16, *) {
+        AsyncStateView(id: "some-id", dataGenerator: {
+            try await Task.sleep(for: .seconds(1))
+            return ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
+        }, hostedViewGenerator: {
+            RecipeListView(recipes: $0)
+        })
+    } else {
+        EmptyView()
+    }
 }
-#endif
 #endif
 
 /// A SwiftUI View with an async state.
