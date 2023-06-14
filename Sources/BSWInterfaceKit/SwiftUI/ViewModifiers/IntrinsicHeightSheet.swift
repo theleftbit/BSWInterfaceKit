@@ -30,7 +30,11 @@ struct DemoView: View {
     }
 }
 #Preview {
-    DemoView()
+    if #available(iOS 16, *) {
+        DemoView()
+    } else {
+        EmptyView()
+    }
 }
 #endif
 
