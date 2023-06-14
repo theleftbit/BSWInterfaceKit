@@ -6,7 +6,6 @@
 
 import UIKit
 
-#if DEBUG
 #if compiler(>=5.9)
 #Preview {
     let l = LinkAwareLabel()
@@ -20,7 +19,6 @@ import UIKit
         .addingLink(onSubstring: link, linkURL: URL(string: "link")!, linkColor: .systemBlue)
     return l
 }
-#endif
 #endif
 
 /// `UILabel` subclass that when touched, iterates

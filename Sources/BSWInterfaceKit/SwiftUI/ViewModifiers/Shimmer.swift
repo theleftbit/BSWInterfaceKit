@@ -1,8 +1,6 @@
 
 import SwiftUI
 
-
-#if DEBUG
 #if compiler(>=5.9)
 
 struct ExampleView: View {
@@ -17,7 +15,6 @@ struct ExampleView: View {
 #Preview {
     ExampleView()
 }
-#endif
 #endif
 
 public extension View {

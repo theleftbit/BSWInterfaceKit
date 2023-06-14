@@ -6,7 +6,6 @@
 
 import UIKit
 
-#if DEBUG
 #if compiler(>=5.9)
 #Preview {
     let b = CheckboxButton()
@@ -14,7 +13,6 @@ import UIKit
     b.configuration?.title = "Hello World"
     return b
 }
-#endif
 #endif
 
 /// Use this button on your app to add a "Checkbox" like UI.

@@ -1,7 +1,6 @@
 
 import SwiftUI
 
-#if DEBUG
 #if compiler(>=5.9)
 @available(iOS 16.0, *)
 struct DemoView: View {
@@ -33,7 +32,6 @@ struct DemoView: View {
 #Preview {
     DemoView()
 }
-#endif
 #endif
 
 @available(iOS 16.0, *)
