@@ -61,9 +61,9 @@ struct RecipeListView: View, PlaceholderDataProvider {
 public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View>: View {
     
     /// Represents the state of this view
-    enum AsyncState<T> {
+    enum AsyncState {
         case loading
-        case loaded(T)
+        case loaded(Data)
         case error(Swift.Error)
     }
 
@@ -78,7 +78,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @State private var state: AsyncState<Data> = .loading
+    @State private var state: AsyncState = .loading
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
