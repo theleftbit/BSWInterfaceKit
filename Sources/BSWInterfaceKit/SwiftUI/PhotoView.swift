@@ -19,13 +19,23 @@ public struct PhotoView: View {
     
     public var body: some View {
         Group {
-            if reasons.isEmpty {
-                photoView
-            } else {
+            if shouldShowPlaceholder {
                 placeholder
+            } else {
+                photoView
             }
         }
         .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+    }
+    
+    private var shouldShowPlaceholder: Bool {
+        if UIApplication.shared.isRunningTests {
+            return true
+        } else if reasons.isEmpty == false {
+            return true
+        } else {
+            return false
+        }
     }
     
     @ViewBuilder
