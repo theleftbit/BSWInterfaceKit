@@ -134,7 +134,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
 
     @MainActor
     private func fetchData() async {
-        guard reasons.isEmpty else {
+        if reasons.contains(.placeholder) {
             /// Make sure no request is fired in case that this view
             /// is used to compose a sub-section of the view hierarchy.
             return
