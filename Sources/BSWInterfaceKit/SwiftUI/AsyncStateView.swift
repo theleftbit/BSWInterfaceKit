@@ -143,32 +143,18 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
             self.state = .loading
         }
         do {
-            async let data = dataGenerator()
-            async let animationDelay: () = performAnimationDelay()
-            /// If `dataGenerator` returns too fast, then the animation will glitch
-            /// or worse, leave the UI with an inconsistent state. Here we're wating
-            /// an amount of seconds before continuing with the procedure.
-            let finalData = try await data
-            _ = try await animationDelay
+            let finalData = try await dataGenerator()
             withAnimation {
                 self.state = .loaded(finalData)
             }
+        } catch is CancellationError {
+            /// Do nothing as we handle this `.onAppear`
         } catch {
             withAnimation {
                 self.state = .error(error)
             }
         }
     }
-    
-    private func performAnimationDelay() async throws {
-        let duration: Double = 0.6
-        if #available(iOS 16.0, *) {
-            try await Task.sleep(for: .seconds(duration))
-        } else {
-            try await Task.sleep(nanoseconds: UInt64(1_000_000_000 * duration))
-        }
-    }
-
 }
 
 public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
