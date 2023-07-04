@@ -114,14 +114,20 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
         }
         /// Whenever the ID changes, start a new fetch operation
         .task(id: id) {
+            /// Turns out `.task(id:)` is called also
+            /// when the view appears so if we're already
+            /// loaded do not schedule a new fetch operation.
+            if state.isLoaded { return }
+            
+            /// If the `Task` has failed for non-cancelling reasons,
+            /// then we should not retry the operation automatically
+            /// and give the user chance to retry it using the UI.
+            if state.isNonCancelledError { return }
+            
+            /// If we we are on the right state, let's perform the fetch.
             await fetchData()
         }
-        /// If when we appear the state is an error because
-        /// of a cancellation, we should retry the operation
-        .onAppear {
-            guard state.isCancelledError else { return }
-            fetchData()
-        }
+        .id(id)
     }
     
     //MARK: Private
@@ -241,10 +247,21 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
 }
 
 extension AsyncStateView.AsyncState {
-    var isCancelledError: Bool {
+    
+    var isNonCancelledError: Bool {
         switch self {
         case .error(let error):
-            return error.isURLCancelled || error is CancellationError
+            let isCancelledError = (error.isURLCancelled || error is CancellationError)
+            return !isCancelledError
+        default:
+            return false
+        }
+    }
+
+    var isLoaded: Bool {
+        switch self {
+        case .loaded:
+            return true
         default:
             return false
         }
