@@ -1,6 +1,8 @@
 #if DEBUG
 
 /// Example of how to use `InfiniteScrollingDataSource`
+/// Note: as of Xcode 14.3.1 this code is not transitioning to .loaded
+/// but if you copy/paste the code in an app, it'll work correctly
 import SwiftUI
 
 @available(iOS 16.0, *)
@@ -8,6 +10,18 @@ struct InfiniteDataSource_Previews: PreviewProvider {
     
     static var previews: some View {
         AsyncItemListView()
+    }
+    
+    struct AsyncItemListView: View {
+        var body: some View {
+            AsyncStateView(id: "mock-items") {
+                try await ItemInfiniteDataSource()
+            } hostedViewGenerator: {
+                ItemListView(dataSource: $0)
+            } loadingViewGenerator: {
+                ProgressView()
+            }
+        }
     }
 
     class ItemInfiniteDataSource: InfiniteScrollingDataSource<Item> {
@@ -28,18 +42,6 @@ struct InfiniteDataSource_Previews: PreviewProvider {
                 ]
                 let areThereMorePages = true
                 return (products, areThereMorePages)
-            }
-        }
-    }
-
-    struct AsyncItemListView: View {
-        var body: some View {
-            AsyncStateView(id: "mock-items") {
-                try await ItemInfiniteDataSource()
-            } hostedViewGenerator: {
-                ItemListView(dataSource: $0)
-            } loadingViewGenerator: {
-                Text("Loading...")
             }
         }
     }
@@ -65,13 +67,15 @@ struct InfiniteDataSource_Previews: PreviewProvider {
 
         struct FooterView: View {
 
-            @ObservedObject var dataSource: InfiniteScrollingDataSource<Item>
+            @ObservedObject var dataSource: ItemInfiniteDataSource
 
             var body: some View {
                 HStack(spacing: 8) {
                     Text("Products count: \(dataSource.items.count)")
                     if dataSource.state == .loading {
-                        ProgressView()
+                        Text("🔄")
+                    } else {
+                        Text("✅")
                     }
                 }
             }
@@ -82,6 +86,7 @@ struct InfiniteDataSource_Previews: PreviewProvider {
         let name: String
         var id: String { name }
     }
+
 }
 
 #endif
