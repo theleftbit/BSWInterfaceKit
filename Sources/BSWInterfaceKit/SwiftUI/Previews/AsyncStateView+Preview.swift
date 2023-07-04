@@ -31,7 +31,7 @@ private struct AsyncContentView: View {
             AsyncStateView(
                 id: asyncViewID,
                 dataGenerator: {
-                    await Self.generateData(forQuery: asyncViewID)
+                    await generateData(forQuery: asyncViewID)
                 },
                 hostedViewGenerator: {
                     ContentView(data: $0)
@@ -39,8 +39,8 @@ private struct AsyncContentView: View {
             )
         }
     }
-    
-    static func generateData(forQuery query: String) async -> String {
+
+    func generateData(forQuery query: String) async -> String {
         /// On a real app, this method will call a Web Server to fetch
         /// real data, but here we're mocking what to return in
         /// depending on the supplied ID. This is just mock logic.
@@ -53,7 +53,7 @@ private struct AsyncContentView: View {
         case "swap-2":
             return "Nam vel nunc ipsum. Nunc in magna sed nisi dapibus feugiat in vel elit"
         default:
-            return ContentView.generatePlaceholderData()
+            return AsyncContentView.ContentView.generatePlaceholderData()
         }
     }
 
