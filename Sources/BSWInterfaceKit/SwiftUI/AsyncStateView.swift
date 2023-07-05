@@ -44,41 +44,34 @@ struct RecipeListView: View, PlaceholderDataProvider {
 ///         })
 ///     }
 ///
-/// This view has an associated state depending on the state of the fetch:
+/// This view represents the phase of the fetch with the following type:
 ///
-///     enum AsyncState<T> {
+///     enum Operation.Phase {
 ///         case loading
-///         case loaded(T)
+///         case loaded(Data)
 ///         case error(Swift.Error)
 ///     }
 ///
-/// The generator is an `async throws` function which takes no params and returns a `HostedView.Data`.
-/// It gets called using `.task` on the `.loading` state, so it will fire only when shown.
+/// The `dataGenerator` parameter is an `async throws` function which takes no params and
+/// returns a `HostedView.Data`.  It gets called using `.task` on the `.loading` phase, so it
+/// will fire only when shown or `id` changes.
 ///
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
 ///
 public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View>: View {
     
-    /// Represents the state of this view
-    enum AsyncState {
-        case loading
-        case loaded(Data)
-        case error(Swift.Error)
-    }
-
     public typealias DataGenerator = () async throws -> Data
     public typealias HostedViewGenerator = (Data) -> HostedView
     public typealias ErrorViewGenerator = (Swift.Error, @escaping OnRetryHandler) -> ErrorView
     public typealias LoadingViewGenerator = () -> LoadingView
     public typealias OnRetryHandler = () -> ()
     
-    let id: String
     let dataGenerator: DataGenerator
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @State private var state: AsyncState = .loading
+    @ObservedObject private var operation: Operation
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
@@ -92,7 +85,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
                 @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
-        self.id = id
+        self._operation = .init(wrappedValue: .init(id: id, phase: .loading))
         self.dataGenerator = dataGenerator
         self.hostedViewGenerator = hostedViewGenerator
         self.errorViewGenerator = errorViewGenerator
@@ -101,7 +94,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     
     public var body: some View {
         Group {
-            switch state {
+            switch operation.phase {
             case .loading:
                 loadingView
             case .loaded(let data):
@@ -113,14 +106,19 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
             }
         }
         /// Whenever the ID changes, start a new fetch operation
-        .task(id: id) {
+        .task(id: operation.id) {
+            /// Turns out `.task(id:)` is called also
+            /// when the view appears so if we're already
+            /// loaded do not schedule a new fetch operation.
+            if operation.isLoaded { return }
+            
+            /// If the previous fetch has failed for non-cancelling reasons,
+            /// then we should not retry the operation automatically
+            /// and give the user chance to retry it using the UI.
+            if operation.isNonCancelledError { return }
+            
+            /// If we we are on the right state, let's perform the fetch.
             await fetchData()
-        }
-        /// If when we appear the state is an error because
-        /// of a cancellation, we should retry the operation
-        .onAppear {
-            guard state.isCancelledError else { return }
-            fetchData()
         }
     }
     
@@ -140,18 +138,18 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
             return
         }
         withAnimation {
-            self.state = .loading
+            self.operation.phase = .loading
         }
         do {
             let finalData = try await dataGenerator()
             withAnimation {
-                self.state = .loaded(finalData)
+                self.operation.phase = .loaded(finalData)
             }
         } catch is CancellationError {
             /// Do nothing as we handle this `.onAppear`
         } catch {
             withAnimation {
-                self.state = .error(error)
+                self.operation.phase = .error(error)
             }
         }
     }
@@ -240,13 +238,42 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
     }
 }
 
-extension AsyncStateView.AsyncState {
-    var isCancelledError: Bool {
-        switch self {
-        case .error(let error):
-            return error.isURLCancelled || error is CancellationError
-        default:
-            return false
+private extension AsyncStateView {
+    
+    /// Represents the state of this view
+    class Operation: ObservableObject {
+        
+        let id: String
+        @Published var phase: Phase
+        
+        enum Phase {
+            case loading
+            case loaded(Data)
+            case error(Swift.Error)
+        }
+
+        init(id: String, phase: AsyncStateView<Data, HostedView, ErrorView, LoadingView>.Operation.Phase) {
+            self.id = id
+            self.phase = phase
+        }
+
+        var isNonCancelledError: Bool {
+            switch self.phase {
+            case .error(let error):
+                let isCancelledError = (error.isURLCancelled || error is CancellationError)
+                return !isCancelledError
+            default:
+                return false
+            }
+        }
+
+        var isLoaded: Bool {
+            switch self.phase {
+            case .loaded:
+                return true
+            default:
+                return false
+            }
         }
     }
 }
