@@ -44,58 +44,74 @@ struct RecipeListView: View, PlaceholderDataProvider {
 ///         })
 ///     }
 ///
-/// This view represents the phase of the fetch with the following type:
+/// This view has an associated state depending on the state of the fetch:
 ///
-///     enum Operation.Phase {
+///     enum AsyncState<T> {
 ///         case loading
-///         case loaded(Data)
+///         case loaded(T)
 ///         case error(Swift.Error)
 ///     }
 ///
-/// The `dataGenerator` parameter is an `async throws` function which takes no params and
-/// returns a `HostedView.Data`.  It gets called using `.task` on the `.loading` phase, so it
-/// will fire only when shown or `id` changes.
+/// The generator is an `async throws` function which takes no params and returns a `HostedView.Data`.
+/// It gets called using `.task` on the `.loading` state, so it will fire only when shown.
 ///
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
 ///
 public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View>: View {
     
+    /// Represents the state of this view
+    enum Phase {
+        case idle
+        case loading(Task<(), Never>)
+        case loaded(Data)
+        case error(Swift.Error)
+    }
+
     public typealias DataGenerator = () async throws -> Data
     public typealias HostedViewGenerator = (Data) -> HostedView
     public typealias ErrorViewGenerator = (Swift.Error, @escaping OnRetryHandler) -> ErrorView
     public typealias LoadingViewGenerator = () -> LoadingView
     public typealias OnRetryHandler = () -> ()
     
+    @Binding var id: String
     let dataGenerator: DataGenerator
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @ObservedObject private var operation: Operation
+    @State private var phase = Phase.idle
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
-    ///   - id: The identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded. For this value you can use the remote ID of the object being loaded.
+    ///   - id: A `Binding` to the identifier for this view. This allows SwiftUI to unequivocally know what's being rendered when the view is loaded. For this value you can use the remote ID of the object being loaded.
     ///   - dataGenerator: The function that generates the data that is required for your `HostedView`
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.
     ///   - loadingViewGenerator: The function that creates the `LoadingView`.
-    public init(id: String,
+    public init(id: Binding<String>,
                 dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
                 @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
-        self._operation = .init(wrappedValue: .init(id: id, phase: .loading))
+        self._id = id
         self.dataGenerator = dataGenerator
         self.hostedViewGenerator = hostedViewGenerator
         self.errorViewGenerator = errorViewGenerator
         self.loadingView = loadingViewGenerator()
     }
-    
+
+    public init(id: String,
+                dataGenerator: @escaping DataGenerator,
+                @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
+                @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
+                @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
+        self.init(id: .constant(id), dataGenerator: dataGenerator, hostedViewGenerator: hostedViewGenerator, errorViewGenerator: errorViewGenerator, loadingViewGenerator: loadingViewGenerator)
+    }
+
     public var body: some View {
         Group {
-            switch operation.phase {
-            case .loading:
+            switch phase {
+            case .idle, .loading:
                 loadingView
             case .loaded(let data):
                 hostedViewGenerator(data)
@@ -106,56 +122,75 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
             }
         }
         /// Whenever the ID changes, start a new fetch operation
-        .task(id: operation.id) {
-            /// Turns out `.task(id:)` is called also
+        .onChange(of: id) { _ in
+            fetchData()
+        }
+        .task {
+            /// Turns out `.task { }` is called also
             /// when the view appears so if we're already
             /// loaded do not schedule a new fetch operation.
-            if operation.isLoaded { return }
+            if phase.isLoaded { return }
             
             /// If the previous fetch has failed for non-cancelling reasons,
             /// then we should not retry the operation automatically
             /// and give the user chance to retry it using the UI.
-            if operation.isNonCancelledError { return }
+            if phase.isNonCancelledError { return }
             
             /// If we we are on the right state, let's perform the fetch.
-            await fetchData()
+            fetchData()
         }
     }
     
     //MARK: Private
-
+    
     @Environment(\.redactionReasons) private var reasons
 
     private func fetchData() {
-        Task { await fetchData() }
-    }
-
-    @MainActor
-    private func fetchData() async {
         if reasons.contains(.placeholder) {
             /// Make sure no request is fired in case that this view
             /// is used to compose a sub-section of the view hierarchy.
             return
         }
-        withAnimation {
-            self.operation.phase = .loading
+        
+        phase.cancelCurrentTaskIfPossible()
+
+        let task = Task { @MainActor in
+            do {
+                let finalData = try await dataGenerator()
+                withAnimation {
+                    self.phase = .loaded(finalData)
+                }
+            } catch is CancellationError {
+                /// Do nothing as we handle this `.task`
+            } catch {
+                if error.isURLCancelled {
+                    /// Do nothing as we handle this `.task`
+                    return
+                }
+                withAnimation {
+                    self.phase = .error(error)
+                }
+            }
         }
-        do {
-            let finalData = try await dataGenerator()
-            withAnimation {
-                self.operation.phase = .loaded(finalData)
-            }
-        } catch is CancellationError {
-            /// Do nothing as we handle this `.onAppear`
-        } catch {
-            withAnimation {
-                self.operation.phase = .error(error)
-            }
+        withAnimation {
+            self.phase = .loading(task)
         }
     }
 }
 
 public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
+    init(id: Binding<String>,
+         dataGenerator: @escaping DataGenerator,
+         hostedViewGenerator: @escaping HostedViewGenerator,
+         loadingViewGenerator: @escaping LoadingViewGenerator) {
+        self.init(
+            id: id,
+            dataGenerator: dataGenerator,
+            hostedViewGenerator: hostedViewGenerator,
+            errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1)},
+            loadingViewGenerator: loadingViewGenerator
+        )
+    }
 
     init(id: String,
          dataGenerator: @escaping DataGenerator,
@@ -172,6 +207,20 @@ public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
 }
 
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data {
+    init(id: Binding<String>,
+         dataGenerator: @escaping DataGenerator,
+         hostedViewGenerator: @escaping HostedViewGenerator,
+         errorViewGenerator: @escaping ErrorViewGenerator) {
+        let placeholderData = HostedView.generatePlaceholderData()
+        let placeholderView = hostedViewGenerator(placeholderData)
+        self.init(
+            id: id,
+            dataGenerator: dataGenerator,
+            hostedViewGenerator: hostedViewGenerator,
+            errorViewGenerator: errorViewGenerator,
+            loadingViewGenerator: { AsyncStatePlainLoadingView(contentView: placeholderView) }
+        )
+    }
 
     init(id: String,
          dataGenerator: @escaping DataGenerator,
@@ -190,6 +239,19 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
 }
 
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data, ErrorView == AsyncStatePlainErrorView {
+    init(id: Binding<String>,
+         dataGenerator: @escaping DataGenerator,
+         hostedViewGenerator: @escaping HostedViewGenerator) {
+        let placeholderData = HostedView.generatePlaceholderData()
+        let placeholderView = hostedViewGenerator(placeholderData)
+        self.init(
+            id: id,
+            dataGenerator: dataGenerator,
+            hostedViewGenerator: hostedViewGenerator,
+            errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1) },
+            loadingViewGenerator: { AsyncStatePlainLoadingView(contentView: placeholderView) }
+        )
+    }
     
     init(id: String,
          dataGenerator: @escaping DataGenerator,
@@ -238,42 +300,41 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
     }
 }
 
-private extension AsyncStateView {
+extension AsyncStateView.Phase {
     
-    /// Represents the state of this view
-    class Operation: ObservableObject {
-        
-        let id: String
-        @Published var phase: Phase
-        
-        enum Phase {
-            case loading
-            case loaded(Data)
-            case error(Swift.Error)
+    func cancelCurrentTaskIfPossible() {
+        switch self {
+        case .loading(let task):
+            task.cancel()
+        default:
+            break
         }
-
-        init(id: String, phase: AsyncStateView<Data, HostedView, ErrorView, LoadingView>.Operation.Phase) {
-            self.id = id
-            self.phase = phase
+    }
+    var isCancelledError: Bool {
+        switch self {
+        case .error(let error):
+            return error.isURLCancelled || error is CancellationError
+        default:
+            return false
         }
-
-        var isNonCancelledError: Bool {
-            switch self.phase {
-            case .error(let error):
-                let isCancelledError = (error.isURLCancelled || error is CancellationError)
-                return !isCancelledError
-            default:
-                return false
-            }
+    }
+    
+    var isNonCancelledError: Bool {
+        switch self {
+        case .error(let error):
+            let isCancelledError = (error.isURLCancelled || error is CancellationError)
+            return !isCancelledError
+        default:
+            return false
         }
+    }
 
-        var isLoaded: Bool {
-            switch self.phase {
-            case .loaded:
-                return true
-            default:
-                return false
-            }
+    var isLoaded: Bool {
+        switch self {
+        case .loaded:
+            return true
+        default:
+            return false
         }
     }
 }
