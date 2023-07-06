@@ -44,16 +44,18 @@ struct RecipeListView: View, PlaceholderDataProvider {
 ///         })
 ///     }
 ///
-/// This view has an associated state depending on the state of the fetch:
+/// This view represents the phase of the fetch with the following type:
 ///
-///     enum AsyncState<T> {
+///     enum Operation.Phase {
+///         case idle
 ///         case loading
-///         case loaded(T)
+///         case loaded(Data)
 ///         case error(Swift.Error)
 ///     }
 ///
-/// The generator is an `async throws` function which takes no params and returns a `HostedView.Data`.
-/// It gets called using `.task` on the `.loading` state, so it will fire only when shown.
+/// The `dataGenerator` parameter is an `async throws` function which takes no params and
+/// returns a `HostedView.Data`.  It gets called using `.task` on the `.loading` phase, so it
+/// will fire only when shown or `id` changes.
 ///
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
