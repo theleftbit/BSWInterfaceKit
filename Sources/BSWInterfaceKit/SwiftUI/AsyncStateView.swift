@@ -302,7 +302,7 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
     }
 }
 
-extension AsyncStateView.Operation {
+private extension AsyncStateView.Operation {
     
     func isNonCancelledError(forID id: String) -> Bool {
         guard self.id == id else { return false }
