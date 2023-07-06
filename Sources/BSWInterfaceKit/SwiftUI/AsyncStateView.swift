@@ -61,13 +61,19 @@ struct RecipeListView: View, PlaceholderDataProvider {
 public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View>: View {
     
     /// Represents the state of this view
-    enum Phase {
-        case idle
-        case loading(Task<(), Never>)
-        case loaded(Data)
-        case error(Swift.Error)
+    struct Operation {
+        
+        var id: String
+        var phase: Phase
+        
+        enum Phase {
+            case idle
+            case loading
+            case loaded(Data)
+            case error(Swift.Error)
+        }
     }
-
+    
     public typealias DataGenerator = () async throws -> Data
     public typealias HostedViewGenerator = (Data) -> HostedView
     public typealias ErrorViewGenerator = (Swift.Error, @escaping OnRetryHandler) -> ErrorView
@@ -79,7 +85,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @State private var phase = Phase.idle
+    @State private var operation: Operation
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
@@ -94,6 +100,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
                 @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
         self._id = id
+        self._operation = .init(initialValue: .init(id: id.wrappedValue, phase: .idle))
         self.dataGenerator = dataGenerator
         self.hostedViewGenerator = hostedViewGenerator
         self.errorViewGenerator = errorViewGenerator
@@ -110,7 +117,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
 
     public var body: some View {
         Group {
-            switch phase {
+            switch operation.phase {
             case .idle, .loading:
                 loadingView
             case .loaded(let data):
@@ -121,59 +128,52 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 })
             }
         }
-        /// Whenever the ID changes, start a new fetch operation
-        .onChange(of: id) { _ in
-            fetchData()
-        }
-        .task {
-            /// Turns out `.task { }` is called also
-            /// when the view appears so if we're already
-            /// loaded do not schedule a new fetch operation.
-            if phase.isLoaded { return }
-            
-            /// If the previous fetch has failed for non-cancelling reasons,
-            /// then we should not retry the operation automatically
-            /// and give the user chance to retry it using the UI.
-            if phase.isNonCancelledError { return }
-            
-            /// If we we are on the right state, let's perform the fetch.
-            fetchData()
+        .task(id: id) {
+            await fetchData()
         }
     }
     
     //MARK: Private
     
     @Environment(\.redactionReasons) private var reasons
-
+    
     private func fetchData() {
+        Task { await fetchData() }
+    }
+
+    @MainActor
+    private func fetchData() async {
         if reasons.contains(.placeholder) {
             /// Make sure no request is fired in case that this view
             /// is used to compose a sub-section of the view hierarchy.
             return
         }
+        /// Turns out `.task { }` is called also
+        /// when the view appears so if we're already
+        /// loaded do not schedule a new fetch operation.
+        if operation.isLoaded(forID: id) { return }
         
-        phase.cancelCurrentTaskIfPossible()
-
-        let task = Task { @MainActor in
-            do {
-                let finalData = try await dataGenerator()
-                withAnimation {
-                    self.phase = .loaded(finalData)
-                }
-            } catch is CancellationError {
-                /// Do nothing as we handle this `.task`
-            } catch {
-                if error.isURLCancelled {
-                    /// Do nothing as we handle this `.task`
-                    return
-                }
-                withAnimation {
-                    self.phase = .error(error)
-                }
-            }
-        }
+        /// If the previous fetch has failed for non-cancelling reasons,
+        /// then we should not retry the operation automatically
+        /// and give the user chance to retry it using the UI.
+        if operation.isNonCancelledError(forID: id) { return }
+        
+        /// If we we are on the right state, let's perform the fetch.
         withAnimation {
-            self.phase = .loading(task)
+            self.operation.id = id
+            self.operation.phase = .loading
+        }
+        do {
+            let finalData = try await dataGenerator()
+            withAnimation {
+                self.operation.phase = .loaded(finalData)
+            }
+        } catch is CancellationError {
+            /// Do nothing as we handle this `.onAppear`
+        } catch {
+            withAnimation {
+                self.operation.phase = .error(error)
+            }
         }
     }
 }
@@ -300,27 +300,11 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
     }
 }
 
-extension AsyncStateView.Phase {
+extension AsyncStateView.Operation {
     
-    func cancelCurrentTaskIfPossible() {
-        switch self {
-        case .loading(let task):
-            task.cancel()
-        default:
-            break
-        }
-    }
-    var isCancelledError: Bool {
-        switch self {
-        case .error(let error):
-            return error.isURLCancelled || error is CancellationError
-        default:
-            return false
-        }
-    }
-    
-    var isNonCancelledError: Bool {
-        switch self {
+    func isNonCancelledError(forID id: String) -> Bool {
+        guard self.id == id else { return false }
+        switch self.phase {
         case .error(let error):
             let isCancelledError = (error.isURLCancelled || error is CancellationError)
             return !isCancelledError
@@ -329,8 +313,9 @@ extension AsyncStateView.Phase {
         }
     }
 
-    var isLoaded: Bool {
-        switch self {
+    func isLoaded(forID id: String) -> Bool {
+        guard self.id == id else { return false }
+        switch self.phase {
         case .loaded:
             return true
         default:
