@@ -161,20 +161,20 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
         if operation.isNonCancelledError(forID: id) { return }
         
         /// If we we are on the right state, let's perform the fetch.
+        operation.id = id
         withAnimation {
-            self.operation.id = id
-            self.operation.phase = .loading
+            operation.phase = .loading
         }
         do {
             let finalData = try await dataGenerator()
             withAnimation {
-                self.operation.phase = .loaded(finalData)
+                operation.phase = .loaded(finalData)
             }
         } catch is CancellationError {
             /// Do nothing as we handle this `.onAppear`
         } catch {
             withAnimation {
-                self.operation.phase = .error(error)
+                operation.phase = .error(error)
             }
         }
     }
