@@ -29,7 +29,7 @@ private struct AsyncContentView: View {
             }
             Spacer()
             AsyncStateView(
-                id: asyncViewID,
+                id: $asyncViewID,
                 dataGenerator: {
                     await generateData(forQuery: asyncViewID)
                 },
@@ -37,6 +37,7 @@ private struct AsyncContentView: View {
                     ContentView(data: $0)
                 }
             )
+            .border(Color.red)
         }
     }
 
@@ -44,7 +45,7 @@ private struct AsyncContentView: View {
         /// On a real app, this method will call a Web Server to fetch
         /// real data, but here we're mocking what to return in
         /// depending on the supplied ID. This is just mock logic.
-        try? await Task.sleep(for: .milliseconds(300))
+        try? await Task.sleep(for: .milliseconds(600))
         switch query {
         case "default-value":
             return "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
