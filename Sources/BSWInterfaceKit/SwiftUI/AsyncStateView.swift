@@ -87,7 +87,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @State private var operation: Operation
+    @State private var currentOperation: Operation
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
@@ -102,7 +102,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
                 @ViewBuilder loadingViewGenerator: LoadingViewGenerator) {
         self._id = id
-        self._operation = .init(initialValue: .init(id: id.wrappedValue, phase: .idle))
+        self._currentOperation = .init(initialValue: .init(id: id.wrappedValue, phase: .idle))
         self.dataGenerator = dataGenerator
         self.hostedViewGenerator = hostedViewGenerator
         self.errorViewGenerator = errorViewGenerator
@@ -119,7 +119,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
 
     public var body: some View {
         Group {
-            switch operation.phase {
+            switch currentOperation.phase {
             case .idle, .loading:
                 loadingView
             case .loaded(let data):
@@ -153,28 +153,28 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
         /// Turns out `.task { }` is called also
         /// when the view appears so if we're already
         /// loaded do not schedule a new fetch operation.
-        if operation.isLoaded(forID: id) { return }
+        if currentOperation.isLoaded(forID: id) { return }
         
         /// If the previous fetch has failed for non-cancelling reasons,
         /// then we should not retry the operation automatically
         /// and give the user chance to retry it using the UI.
-        if operation.isNonCancelledError(forID: id) { return }
+        if currentOperation.isNonCancelledError(forID: id) { return }
         
         /// If we we are on the right state, let's perform the fetch.
-        operation.id = id
+        currentOperation.id = id
         withAnimation {
-            operation.phase = .loading
+            currentOperation.phase = .loading
         }
         do {
             let finalData = try await dataGenerator()
             withAnimation {
-                operation.phase = .loaded(finalData)
+                currentOperation.phase = .loaded(finalData)
             }
         } catch is CancellationError {
             /// Do nothing as we handle this `.onAppear`
         } catch {
             withAnimation {
-                operation.phase = .error(error)
+                currentOperation.phase = .error(error)
             }
         }
     }
