@@ -60,12 +60,12 @@ struct RecipeListView: View, PlaceholderDataProvider {
 /// `AsyncStateView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
 ///
-public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View>: View {
+public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingView: View, ID: Equatable>: View {
     
     /// Represents the state of this view
     struct Operation {
         
-        var id: String
+        var id: ID
         var phase: Phase
         
         enum Phase {
@@ -82,7 +82,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     public typealias LoadingViewGenerator = () -> LoadingView
     public typealias OnRetryHandler = () -> ()
     
-    @Binding var id: String
+    @Binding var id: ID
     let dataGenerator: DataGenerator
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
@@ -96,7 +96,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.
     ///   - loadingViewGenerator: The function that creates the `LoadingView`.
-    public init(id: Binding<String>,
+    public init(id: Binding<ID>,
                 dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
@@ -109,7 +109,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
         self.loadingView = loadingViewGenerator()
     }
 
-    public init(id: String,
+    public init(id: ID,
                 dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
                 @ViewBuilder errorViewGenerator: @escaping ErrorViewGenerator,
@@ -181,7 +181,7 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
 }
 
 public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
-    init(id: Binding<String>,
+    init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
          loadingViewGenerator: @escaping LoadingViewGenerator) {
@@ -194,7 +194,7 @@ public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
         )
     }
 
-    init(id: String,
+    init(id: ID,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
          loadingViewGenerator: @escaping LoadingViewGenerator) {
@@ -209,7 +209,7 @@ public extension AsyncStateView where ErrorView == AsyncStatePlainErrorView {
 }
 
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data {
-    init(id: Binding<String>,
+    init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
          errorViewGenerator: @escaping ErrorViewGenerator) {
@@ -224,7 +224,7 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
         )
     }
 
-    init(id: String,
+    init(id: ID,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
          errorViewGenerator: @escaping ErrorViewGenerator) {
@@ -241,7 +241,7 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
 }
 
 public extension AsyncStateView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data, ErrorView == AsyncStatePlainErrorView {
-    init(id: Binding<String>,
+    init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator) {
         let placeholderData = HostedView.generatePlaceholderData()
@@ -255,7 +255,7 @@ public extension AsyncStateView where HostedView: PlaceholderDataProvider, Loadi
         )
     }
     
-    init(id: String,
+    init(id: ID,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator) {
         let placeholderData = HostedView.generatePlaceholderData()
@@ -304,7 +304,7 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
 
 private extension AsyncStateView.Operation {
     
-    func isNonCancelledError(forID id: String) -> Bool {
+    func isNonCancelledError(forID id: ID) -> Bool {
         guard self.id == id else { return false }
         switch self.phase {
         case .error(let error):
@@ -315,7 +315,7 @@ private extension AsyncStateView.Operation {
         }
     }
 
-    func isLoaded(forID id: String) -> Bool {
+    func isLoaded(forID id: ID) -> Bool {
         guard self.id == id else { return false }
         switch self.phase {
         case .loaded:
