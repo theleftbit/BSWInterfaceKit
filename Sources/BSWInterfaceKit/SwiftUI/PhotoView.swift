@@ -25,7 +25,7 @@ public struct PhotoView: View {
                 photoView
             }
         }
-        .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+        .apply(configuration: configuration)
     }
     
     private var shouldShowPlaceholder: Bool {
@@ -71,12 +71,21 @@ extension PhotoView {
     public struct Configuration {
         let placeholder: Placeholder
         let aspectRatio: CGFloat?
+        let width: CGFloat?
+        let height: CGFloat?
         let contentMode: ContentMode
         
-        public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit) {
-            self.placeholder = placeholder
-            self.aspectRatio = aspectRatio
-            self.contentMode = contentMode
+        public init(
+            placeholder: Placeholder = .init(shape: .rectangle),
+            aspectRatio: CGFloat? = nil,
+            width: CGFloat? = nil,
+            height: CGFloat? = nil,
+            contentMode: ContentMode = .fit) {
+                self.placeholder = placeholder
+                self.aspectRatio = aspectRatio
+                self.contentMode = contentMode
+                self.width = width
+                self.height = height
         }
         
         public struct Placeholder: View {
@@ -103,6 +112,23 @@ extension PhotoView {
                     }
                 }
                 .foregroundColor(color)
+            }
+        }
+    }
+}
+
+private extension View {
+    
+    func apply(configuration: PhotoView.Configuration) -> some View {
+        /// https://sarunw.com/posts/how-to-resize-swiftui-image-and-keep-aspect-ratio/#fill
+        let view = self
+            .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+            .frame(width: configuration.width, height: configuration.height)
+        return Group {
+            if configuration.contentMode == .fill {
+                view.clipped()
+            } else {
+                view
             }
         }
     }
