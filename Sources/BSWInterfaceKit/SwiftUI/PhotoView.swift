@@ -20,9 +20,9 @@ public struct PhotoView: View {
     public var body: some View {
         Group {
             if shouldShowPlaceholder {
-                placeholder
+                configuration.placeholder
             } else {
-                photoView
+                UIImageViewWrapper(photo: photo)
             }
         }
         .apply(configuration: configuration)
@@ -35,33 +35,6 @@ public struct PhotoView: View {
             return true
         } else {
             return false
-        }
-    }
-    
-    @ViewBuilder
-    @MainActor
-    private var placeholder: some View {
-        configuration.placeholder
-    }
-    
-    @ViewBuilder
-    @MainActor
-    private var photoView: some View {
-        switch photo.kind {
-        case .url(let url, _):
-            LazyImage(url: url, transaction: .init(animation: .default)) { state in
-                if let image = state.image {
-                    image
-                        .resizable()
-                } else {
-                    placeholder
-                }
-            }
-        case .image(let image):
-            Image(uiImage: image)
-                .resizable()
-        default:
-            placeholder
         }
     }
 }
@@ -131,5 +104,31 @@ private extension View {
                 view
             }
         }
+    }
+}
+
+private struct UIImageViewWrapper: UIViewRepresentable {
+        
+    init(photo: Photo, configuration: PhotoView.Configuration = .init()) {
+        self.photo = photo
+        self.configuration = configuration
+    }
+
+    let photo: Photo
+    let configuration: PhotoView.Configuration
+
+    public func makeUIView(context: Context) -> UIImageView {
+        let uiView = UIImageView()
+        uiView.setPhoto(photo)
+        uiView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        uiView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        uiView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        uiView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        uiView.clipsToBounds = true
+        return uiView
+    }
+
+    public func updateUIView(_ uiView: UIImageView, context: Context) {
+
     }
 }
