@@ -118,7 +118,9 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     }
 
     public var body: some View {
-        Group {
+        /// Using `VStack` here seems to be safer than `Group`
+        /// in terms of maintaining Structural Identity.
+        VStack {
             switch currentOperation.phase {
             case .idle, .loading:
                 loadingView
