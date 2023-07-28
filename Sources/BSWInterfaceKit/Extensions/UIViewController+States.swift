@@ -110,6 +110,7 @@ extension UIViewController {
 }
 
 public enum StateContainerAppereance {
+    @MainActor
     public static var padding: CGFloat = 20
     public static var transitionConfiguration: TransitionConfiguration?
 
