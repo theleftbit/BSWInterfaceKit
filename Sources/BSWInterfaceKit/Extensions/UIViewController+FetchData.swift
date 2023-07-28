@@ -112,7 +112,10 @@ public extension UIViewController {
         #endif
     }
     
+    @MainActor
     static var loadingViewFactory: LoadingViewFactory = { LoadingView() }
+    
+    @MainActor
     static var errorViewFactory: ErrorViewFactory = { ErrorView.retryView(message: $0, error: $1, onRetry: $2) }
 }
 

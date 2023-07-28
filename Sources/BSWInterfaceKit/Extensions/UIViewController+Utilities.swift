@@ -9,6 +9,7 @@ import UIKit
 extension UIViewController {
     
     @objc(bsw_enhancedErrorAlertMessage)
+    @MainActor
     public static var enhancedErrorAlertMessage: Bool = true
     
     public func prepareForIntrinsicModalSheetPresentation() {

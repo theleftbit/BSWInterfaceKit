@@ -103,16 +103,17 @@ extension UIViewController {
         animator.startAnimation()
     }
     
-    
     private var stateContainer: StateContainerViewController? {
         return self.children.compactMap({ return $0 as? StateContainerViewController }).first
     }
 }
 
+@MainActor
 public enum StateContainerAppereance {
     public static var padding: CGFloat = 20
     public static var transitionConfiguration: TransitionConfiguration?
 
+    @MainActor
     public struct TransitionConfiguration {
         public let duration: TimeInterval
         public let curve: UIView.AnimationCurve
@@ -158,9 +159,9 @@ private class StateContainerViewController: UIViewController {
         view.addAutolayoutSubview(stateView)
         stateView.centerInSuperview()
         NSLayoutConstraint.activate([
-                stateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: StateContainerAppereance.padding),
-                stateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -StateContainerAppereance.padding),
-            ])
+            stateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: StateContainerAppereance.padding),
+            stateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -StateContainerAppereance.padding),
+        ])
     }
 }
 #endif
