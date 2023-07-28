@@ -23,6 +23,7 @@ import UIKit
 @objc(BSWCheckboxButton)
 open class CheckboxButton: UIButton {
     
+    @MainActor
     public enum Appearance {
         public static var checkTintColor: UIColor = {
             return .systemBlue

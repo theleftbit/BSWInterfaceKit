@@ -11,8 +11,10 @@ import UIKit
 
 extension UIImageView {
 
+    @MainActor
     public static var fadeImageDuration: TimeInterval? = nil
 
+    @MainActor
     private static var webDownloadsEnabled = true
     
     public typealias BSWImageCompletionBlock = (Swift.Result<UIImage, Swift.Error>) -> Void
