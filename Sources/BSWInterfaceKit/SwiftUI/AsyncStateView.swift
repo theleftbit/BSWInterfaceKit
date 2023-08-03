@@ -173,7 +173,9 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
                 currentOperation.phase = .loaded(finalData)
             }
         } catch is CancellationError {
-            /// Do nothing as we handle this `.onAppear`
+            /// Do nothing as we handle this `.task`
+        } catch let error where error.isURLCancelled {
+            /// Do nothing as we handle this `.task`
         } catch {
             withAnimation {
                 currentOperation.phase = .error(error)
