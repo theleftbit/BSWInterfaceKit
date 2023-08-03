@@ -140,18 +140,18 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
     //MARK: Private
     
     @Environment(\.redactionReasons) private var reasons
-    
+    @Environment(\.debounceOperationForMilliseconds) var debounceOperationForMilliseconds
+
     private func fetchData() {
         Task { await fetchData() }
     }
 
     @MainActor
     private func fetchData() async {
-        if reasons.contains(.placeholder) {
-            /// Make sure no request is fired in case that this view
-            /// is used to compose a sub-section of the view hierarchy.
-            return
-        }
+        /// Make sure no request is fired in case that this view
+        /// is used to compose a sub-section of the view hierarchy.
+        if reasons.contains(.placeholder) { return }
+        
         /// Turns out `.task { }` is called also
         /// when the view appears so if we're already
         /// loaded do not schedule a new fetch operation.
@@ -162,6 +162,12 @@ public struct AsyncStateView<Data, HostedView: View, ErrorView: View, LoadingVie
         /// and give the user chance to retry it using the UI.
         if currentOperation.isNonCancelledError(forID: id) { return }
         
+        /// In case the environment tells us to debounce the operation, lets.
+        if let debounceOperationForMilliseconds {
+            let uint64 = UInt64(debounceOperationForMilliseconds)
+            try? await Task.sleep(nanoseconds: uint64 * 1_000_000)
+        }
+
         /// If we we are on the right state, let's perform the fetch.
         currentOperation.id = id
         withAnimation {
@@ -303,6 +309,17 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
             .redacted(reason: .placeholder)
             .disabled(true)
             .shimmering()
+    }
+}
+
+private struct DebounceOperationForMilliseconds: EnvironmentKey {
+    static let defaultValue: Double? = nil
+}
+
+public extension EnvironmentValues {
+    var debounceOperationForMilliseconds: Double? {
+        get { self[DebounceOperationForMilliseconds.self] }
+        set { self[DebounceOperationForMilliseconds.self] = newValue }
     }
 }
 
