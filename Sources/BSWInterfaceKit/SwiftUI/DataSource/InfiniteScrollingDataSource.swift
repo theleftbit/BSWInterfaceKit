@@ -22,7 +22,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     
     public typealias ItemFetcher = (Int) async throws -> ([ListItem], Bool)
     
-    public init(currentPage: Int = 0,  direction: Direction = .descendent, itemFetcher: @escaping ItemFetcher) async throws {
+    public init(currentPage: Int = 0, direction: Direction = .descendent, itemFetcher: @escaping ItemFetcher) async throws {
         self.itemFetcher = itemFetcher
         self.state = State.canLoadMorePages(currentPage: currentPage)
         try await loadMoreContent(direction: direction)
@@ -37,20 +37,22 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     public func loadMoreContentIfNeeded(currentItem item: ListItem, direction: Direction = .descendent) {
         switch direction {
         case .descendent:
-            let thresholdIndex = items.index(items.endIndex, offsetBy: -5)
-            if items.firstIndex(where: { $0.id == item.id }) == thresholdIndex {
+            let thresholdIndexDesc = items.index(items.endIndex, offsetBy: -5)
+            if items.firstIndex(where: { $0.id == item.id }) == thresholdIndexDesc {
                 Task {
                     try await loadMoreContent(direction: .descendent)
                 }
             }
         case .ascendent:
-            if items.firstIndex(where: { $0.id == item.id }) == 0 {
+            let thresholdIndexAsc = items.index(items.startIndex, offsetBy: 5)
+            if items.firstIndex(where: { $0.id == item.id }) == thresholdIndexAsc {
                 Task {
                     try await loadMoreContent(direction: .ascendent)
                 }
             }
         }
     }
+
     
     public func resetItemFecher(currentPage: Int, itemFetcher: @escaping ItemFetcher) async throws {
         self.items = []
@@ -85,7 +87,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
             }
         case .ascendent:
             withAnimation(stateAnimation) {
-                self.state = thereAreMorePages && currentPage - 1 >= 0 ? .canLoadMorePages(currentPage: currentPage - 1) : .noMorePages
+                self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
             }
             withAnimation(itemsAnimation) {
                 self.items.insert(contentsOf: newItems, at: 0)
