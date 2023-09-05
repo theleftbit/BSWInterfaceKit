@@ -8,6 +8,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
     private var itemFetcher: ItemFetcher
+    private let direction: Direction
     
     public enum State: Equatable {
         case noMorePages
@@ -24,30 +25,32 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     
     public init(currentPage: Int = 0, direction: Direction = .descendent, itemFetcher: @escaping ItemFetcher) async throws {
         self.itemFetcher = itemFetcher
+        self.direction = direction
         self.state = State.canLoadMorePages(currentPage: currentPage)
-        try await loadMoreContent(direction: direction)
+        try await loadMoreContent()
     }
     
     public init(mockItems: [ListItem]) {
         self.items = mockItems
+        self.direction = .descendent
         self.state = .noMorePages
         self.itemFetcher = { _ in return ([], false) }
     }
     
-    public func loadMoreContentIfNeeded(currentItem item: ListItem, direction: Direction = .descendent) {
+    public func loadMoreContentIfNeeded(currentItem item: ListItem) {
         switch direction {
         case .descendent:
             let thresholdIndexDesc = items.index(items.endIndex, offsetBy: -5)
             if items.firstIndex(where: { $0.id == item.id }) == thresholdIndexDesc {
                 Task {
-                    try await loadMoreContent(direction: .descendent)
+                    try await loadMoreContent()
                 }
             }
         case .ascendent:
             let thresholdIndexAsc = items.index(items.startIndex, offsetBy: 5)
             if items.firstIndex(where: { $0.id == item.id }) == thresholdIndexAsc {
                 Task {
-                    try await loadMoreContent(direction: .ascendent)
+                    try await loadMoreContent()
                 }
             }
         }
@@ -63,7 +66,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     
     /// MARK: Private
     
-    private func loadMoreContent(direction: Direction = .descendent) async throws {
+    private func loadMoreContent() async throws {
         guard case .canLoadMorePages(let currentPage) = state else {
             return
         }
