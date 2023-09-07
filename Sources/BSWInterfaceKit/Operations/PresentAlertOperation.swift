@@ -10,6 +10,8 @@ class PresentAlertOperation: Operation {
     let title: String?
     let message: String?
     weak var presentingViewController: UIViewController?
+    
+    @MainActor
     init(title: String?, message: String?, presentingViewController: UIViewController) {
         self.title = title
         self.message = message

@@ -4,6 +4,7 @@ import UIKit
 import XCTest
 import BSWInterfaceKit
 
+@MainActor
 class IntrinsicSizeCalculableTests: XCTestCase {
 
     func testIntrinsicSizingWorks() {

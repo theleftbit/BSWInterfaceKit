@@ -8,6 +8,7 @@
 import UIKit
 
 /// Describes a type where we can estimate it's height given a width.
+@MainActor
 public protocol IntrinsicSizeCalculable {
     /// Returns the `width` from a given `height`
     func heightConstrainedTo(width: CGFloat) -> CGFloat

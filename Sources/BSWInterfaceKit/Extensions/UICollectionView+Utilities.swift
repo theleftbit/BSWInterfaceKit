@@ -27,6 +27,7 @@ extension UICollectionView {
         case footer
         case header
 
+        @MainActor
         func toUIKit() -> String {
             switch self {
             case .footer:

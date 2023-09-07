@@ -27,6 +27,7 @@ import UIKit
  - note: For an example on how it [looks](http://i.giphy.com/l0EwZqcEkc15D6XOo.gif)
  */
 
+@MainActor
 public enum CardPresentation {
 
     /**
@@ -109,6 +110,7 @@ public enum CardPresentation {
     }
 }
 
+@MainActor
 private class CardPresentAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     let properties: CardPresentation.AnimationProperties
@@ -227,6 +229,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
     }
 }
 
+@MainActor
 private class CardDismissAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     let properties: CardPresentation.AnimationProperties

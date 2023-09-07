@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.0"),
-        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "5.3.8"),
+        .package(url: "https://github.com/theleftbit/BSWFoundation.git", branch: "sendable-conformance"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.1.0"),
     ],
     targets: [
@@ -32,6 +32,9 @@ let package = Package(
                 .product(name: "NukeUI", package: "Nuke"),
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
+            ],
+            swiftSettings: [
+//                SwiftSetting.unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"]),
             ]
         ),
         .testTarget(

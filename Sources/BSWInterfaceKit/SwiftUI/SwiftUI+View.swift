@@ -5,6 +5,7 @@ import SwiftUI
 
 import UIKit
 
+@MainActor
 public extension SwiftUI.View {
     /// Generates a `UIViewController` from this `SwiftUI.View`
     func asViewController() -> UIViewController {
