@@ -19,7 +19,7 @@ import SwiftUI
     .buttonStyle(.borderedProminent)
     .frame(width: 320)
     .font(.headline)
-    .loadingMessage("Loading...")
+    .asyncButtonLoadingMessage("Loading...")
 }
 #endif
 
@@ -41,7 +41,7 @@ public struct AsyncButton<Label: View>: View {
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
     @State private var size: CGSize = .zero
-    @Environment(\.loadingMessage) var loadingMessage
+    @Environment(\.asyncLoadingMessage) var asyncLoadingMessage
 
     public var body: some View {
         Button(
@@ -81,30 +81,28 @@ public struct AsyncButton<Label: View>: View {
     
     @ViewBuilder
     private var loadingView: some View {
-        if let loadingMessage {
-            HStack(spacing: 8) {
-                ProgressView()
-                Text(loadingMessage)
-            }
-        } else {
+        HStack(spacing: 8) {
             ProgressView()
+            if let asyncLoadingMessage {
+                Text(asyncLoadingMessage)
+            }
         }
     }
 }
 
 public extension View {
-    func loadingMessage(_ message: String) -> some View {
-        self.environment(\.loadingMessage, message)
+    func asyncButtonLoadingMessage(_ message: String) -> some View {
+        self.environment(\.asyncLoadingMessage, message)
     }
 }
 
-private struct LoadingMessageEnvironmentKey: EnvironmentKey {
+private struct AsyncLoadingMessageEnvironmentKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
 private extension EnvironmentValues {
-    var loadingMessage: String? {
-        get { self[LoadingMessageEnvironmentKey.self] }
-        set { self[LoadingMessageEnvironmentKey.self] = newValue }
+    var asyncLoadingMessage: String? {
+        get { self[AsyncLoadingMessageEnvironmentKey.self] }
+        set { self[AsyncLoadingMessageEnvironmentKey.self] = newValue }
     }
 }
