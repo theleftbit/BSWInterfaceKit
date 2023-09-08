@@ -316,7 +316,7 @@ private struct DebounceOperationForMilliseconds: EnvironmentKey {
     static let defaultValue: Double? = nil
 }
 
-public extension EnvironmentValues {
+private extension EnvironmentValues {
     var debounceOperationForMilliseconds: Double? {
         get { self[DebounceOperationForMilliseconds.self] }
         set { self[DebounceOperationForMilliseconds.self] = newValue }
