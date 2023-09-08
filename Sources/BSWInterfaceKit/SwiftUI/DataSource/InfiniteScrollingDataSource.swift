@@ -30,12 +30,13 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     }
     
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
-        let thresholdIndices = [items.index(items.endIndex, offsetBy: -5),
-                                items.index(items.endIndex, offsetBy: -4),
-                                items.index(items.endIndex, offsetBy: -3),
-                                items.index(items.endIndex, offsetBy: -2),
-                                items.index(items.endIndex, offsetBy: -1)]
-        
+        let thresholdIndices = [
+            items.index(items.endIndex, offsetBy: -5),
+            items.index(items.endIndex, offsetBy: -4),
+            items.index(items.endIndex, offsetBy: -3),
+            items.index(items.endIndex, offsetBy: -2),
+            items.index(items.endIndex, offsetBy: -1)
+        ]
         if let itemIndex = items.firstIndex(where: { $0.id == item.id }),
            thresholdIndices.contains(itemIndex) {
             Task {
@@ -57,7 +58,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         guard case .canLoadMorePages(let currentPage) = state else {
             return
         }
-        let duration: Double = 0.1
+        let duration: Double = 0.3
 
         withAnimation(.easeInOut(duration: duration)) {
             self.state = .loading
@@ -65,13 +66,9 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
 
         let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
         let stateAnimation = Animation.easeInOut(duration: duration)
-        let itemsAnimation = Animation.easeInOut(duration: duration)
 
         withAnimation(stateAnimation) {
             self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
-        }
-        
-        withAnimation(itemsAnimation) {
             self.items.append(contentsOf: newItems)
         }
     }
