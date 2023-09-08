@@ -90,6 +90,36 @@ public struct AsyncButton<Label: View>: View {
     }
 }
 
+public extension AsyncButton where Label == Text {
+    init(_ label: String,
+         action: @escaping () async throws -> Void) {
+        self.init(action: action) {
+            Text(label)
+        }
+    }
+
+    init(_ titleKey: LocalizedStringKey, action: @escaping () async throws -> Void) {
+        self.init(action: action) {
+            Text(titleKey)
+        }
+    }
+
+    init<S>(_ title: S, action: @escaping () async throws -> Void) where S : StringProtocol {
+        self.init(action: action) {
+            Text(title)
+        }
+    }
+}
+
+public extension AsyncButton where Label == Image {
+    init(systemImageName: String,
+         action: @escaping () async throws -> Void) {
+        self.init(action: action) {
+            Image(systemName: systemImageName)
+        }
+    }
+}
+
 public extension View {
     func asyncButtonLoadingMessage(_ message: String) -> some View {
         self.environment(\.asyncLoadingMessage, message)
