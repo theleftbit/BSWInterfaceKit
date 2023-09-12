@@ -5,7 +5,7 @@ import SwiftUI
 ///
 /// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
 ///
-/// In order to customize it's appereance, checkout the `.asyncButtonLoadingConfiguration` method
+/// In order to customize it's appereance, use the `.asyncButtonLoadingConfiguration` method
 public struct AsyncButton<Label: View>: View {
     
     public init(action: @escaping () async throws -> Void, label: @escaping () -> Label) {
