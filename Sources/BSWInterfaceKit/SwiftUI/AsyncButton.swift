@@ -41,7 +41,7 @@ public struct AsyncButton<Label: View>: View {
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
     @State private var size: CGSize = .zero
-    @Environment(\.asyncLoadingMessage) var asyncLoadingMessage
+    @Environment(\.asyncButtonLoadingMessage) var loadingMessage
 
     public var body: some View {
         Button(
@@ -81,8 +81,8 @@ public struct AsyncButton<Label: View>: View {
     private var loadingView: some View {
         HStack(spacing: 8) {
             ProgressView()
-            if let asyncLoadingMessage {
-                Text(asyncLoadingMessage)
+            if let loadingMessage {
+                Text(loadingMessage)
             }
         }
     }
@@ -120,17 +120,17 @@ public extension AsyncButton where Label == Image {
 
 public extension View {
     func asyncButtonLoadingMessage(_ message: String) -> some View {
-        self.environment(\.asyncLoadingMessage, message)
+        self.environment(\.asyncButtonLoadingMessage, message)
     }
 }
 
-private struct AsyncLoadingMessageEnvironmentKey: EnvironmentKey {
+private struct AsyncButtonLoadingMessageEnvironmentKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
 private extension EnvironmentValues {
-    var asyncLoadingMessage: String? {
-        get { self[AsyncLoadingMessageEnvironmentKey.self] }
-        set { self[AsyncLoadingMessageEnvironmentKey.self] = newValue }
+    var asyncButtonLoadingMessage: String? {
+        get { self[AsyncButtonLoadingMessageEnvironmentKey.self] }
+        set { self[AsyncButtonLoadingMessageEnvironmentKey.self] = newValue }
     }
 }
