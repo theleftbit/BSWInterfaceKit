@@ -1,6 +1,7 @@
 
 import SwiftUI
 
+/// Shows AsyncButton
 public struct AsyncButton<Label: View>: View {
     
     public init(action: @escaping () async throws -> Void, label: @escaping () -> Label) {
