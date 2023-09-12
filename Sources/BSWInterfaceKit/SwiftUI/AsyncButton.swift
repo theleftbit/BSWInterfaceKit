@@ -1,31 +1,6 @@
 
 import SwiftUI
 
-#if compiler(>=5.9)
-#Preview {
-    AsyncButton {
-        if #available(iOS 16.0, *) {
-            try await Task.sleep(for: .seconds(3))
-        }
-        struct SomeError: Swift.Error {}
-//        throw SomeError()
-    } label: {
-        Label(
-            title: { Text("Touch Me") },
-            icon: { Image(systemName: "42.circle") }
-        )
-        .frame(maxWidth: .infinity)
-    }
-    .buttonStyle(.borderedProminent)
-    .frame(width: 320)
-    .font(.headline)
-    .asyncButtonLoadingMessage("Loading...")
-    .asyncButtonLoadingStyle(isBlocking: true)
-    .asyncButtonHUDFont(.headline)
-    
-}
-#endif
-
 public struct AsyncButton<Label: View>: View {
     
     public init(action: @escaping () async throws -> Void, label: @escaping () -> Label) {
@@ -43,9 +18,7 @@ public struct AsyncButton<Label: View>: View {
     
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
-    @Environment(\.asyncButtonLoadingMessage) var loadingMessage
-    @Environment(\.asyncButtonLoadingStyleIsBlocking) var isBlocking
-    @Environment(\.asyncButtonHUDFont) var hudFont
+    @Environment(\.asyncButtonLoadingConfiguration) var loadingConfiguration
 
     public var body: some View {
         Button(
@@ -55,7 +28,7 @@ public struct AsyncButton<Label: View>: View {
                 }
             },
             label: {
-                if isBlocking {
+                if loadingConfiguration.isBlocking {
                     label
                 } else {
                     label
@@ -74,7 +47,7 @@ public struct AsyncButton<Label: View>: View {
     @MainActor
     private func performAction() async {
         var hudVC: UIViewController?
-        if isBlocking {
+        if loadingConfiguration.isBlocking {
             hudVC = presentHUDViewController()
         }
         withAnimation {
@@ -86,7 +59,7 @@ public struct AsyncButton<Label: View>: View {
         } catch {
             self.error = error
         }
-        if isBlocking {
+        if loadingConfiguration.isBlocking {
             hudVC?.dismiss(animated: true)
         }
         withAnimation {
@@ -98,7 +71,7 @@ public struct AsyncButton<Label: View>: View {
     private var loadingView: some View {
         HStack(spacing: 8) {
             ProgressView()
-            if let loadingMessage {
+            if let loadingMessage = loadingConfiguration.message {
                 Text(loadingMessage)
             }
         }
@@ -106,17 +79,18 @@ public struct AsyncButton<Label: View>: View {
     
     @ViewBuilder
     private var hudView: some View {
-        VStack(spacing: 8) {
-            ProgressView()
-            if let loadingMessage {
-                Text(loadingMessage)
+        if case .blocking(let hudFont) = loadingConfiguration.style {
+            VStack(spacing: 8) {
+                ProgressView()
+                if let loadingMessage = loadingConfiguration.message {
+                    Text(loadingMessage)
+                }
             }
+            .font(hudFont)
+            .padding()
+            .background(.thickMaterial)
+            .cornerRadius(3.0)
         }
-        .font(hudFont)
-        .padding()
-        .background(.thickMaterial)
-        .cornerRadius(3.0)
-        .frame(minWidth: 200, minHeight: 200)
     }
 
     private func presentHUDViewController() -> UIViewController? {
@@ -164,44 +138,45 @@ public extension AsyncButton where Label == Image {
     }
 }
 
+public struct AsyncButtonLoadingConfiguration {
+    
+    public init(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) {
+        self.message = message
+        self.style = style
+    }
+    
+    public enum Style {
+        case nonblocking
+        case blocking(Font = .body)
+    }
+    
+    public let message: String?
+    public let style: Style
+    
+    public var isBlocking: Bool {
+        switch style {
+        case .nonblocking:
+            return false
+        case .blocking:
+            return true
+        }
+    }
+}
+
 public extension View {
-    func asyncButtonLoadingMessage(_ message: String) -> some View {
-        self.environment(\.asyncButtonLoadingMessage, message)
-    }
-
-    func asyncButtonLoadingStyle(isBlocking: Bool) -> some View {
-        self.environment(\.asyncButtonLoadingStyleIsBlocking, isBlocking)
-    }
-    func asyncButtonHUDFont(_ font: Font) -> some View {
-        self.environment(\.asyncButtonHUDFont, font)
+    func asyncButtonLoadingConfiguration(_ config: AsyncButtonLoadingConfiguration) -> some View {
+        self.environment(\.asyncButtonLoadingConfiguration, config)
     }
 }
 
-private struct AsyncButtonLoadingStyleIsBlockingEnvironmentKey: EnvironmentKey {
-    static let defaultValue: Bool = false
-}
-
-private struct AsyncButtonLoadingHUDFontEnvironmentKey: EnvironmentKey {
-    static let defaultValue: Font = .body
-}
-
-private struct AsyncButtonLoadingMessageEnvironmentKey: EnvironmentKey {
-    static let defaultValue: String? = nil
+private struct AsyncButtonLoadingStyleEnvironmentKey: EnvironmentKey {
+    static let defaultValue: AsyncButtonLoadingConfiguration = .init()
 }
 
 private extension EnvironmentValues {
-    var asyncButtonLoadingMessage: String? {
-        get { self[AsyncButtonLoadingMessageEnvironmentKey.self] }
-        set { self[AsyncButtonLoadingMessageEnvironmentKey.self] = newValue }
-    }
     
-    var asyncButtonLoadingStyleIsBlocking: Bool {
-        get { self[AsyncButtonLoadingStyleIsBlockingEnvironmentKey.self] }
-        set { self[AsyncButtonLoadingStyleIsBlockingEnvironmentKey.self] = newValue }
-    }
-    
-    var asyncButtonHUDFont: Font {
-        get { self[AsyncButtonLoadingHUDFontEnvironmentKey.self] }
-        set { self[AsyncButtonLoadingHUDFontEnvironmentKey.self] = newValue }
+    var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
+        get { self[AsyncButtonLoadingStyleEnvironmentKey.self] }
+        set { self[AsyncButtonLoadingStyleEnvironmentKey.self] = newValue }
     }
 }
