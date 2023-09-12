@@ -16,6 +16,9 @@ struct AsyncButton_Previews: PreviewProvider {
         .buttonStyle(.borderedProminent)
         .frame(width: 320)
         .font(.headline)
-        .asyncButtonLoadingConfiguration(.init(message: "Loading...", style: .blocking(.headline)))
+        .asyncButtonLoadingConfiguration(
+            message: "Loading...",
+            style: .blocking(font: .headline, dimsBackground: true)
+        )
     }
 }

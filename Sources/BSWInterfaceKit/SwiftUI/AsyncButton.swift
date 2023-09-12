@@ -79,22 +79,31 @@ public struct AsyncButton<Label: View>: View {
     
     @ViewBuilder
     private var hudView: some View {
-        if case .blocking(let hudFont) = loadingConfiguration.style {
-            VStack(spacing: 8) {
-                ProgressView()
-                if let loadingMessage = loadingConfiguration.message {
-                    Text(loadingMessage)
+        if case .blocking(let hudFont, let dimsBackground) = loadingConfiguration.style {
+            HStack {
+                VStack(spacing: 8) {
+                    ProgressView()
+                        .tint(Color.primary)
+                    if let loadingMessage = loadingConfiguration.message {
+                        Text(loadingMessage)
+                    }
+                }
+                .font(hudFont)
+                .padding()
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background {
+                if dimsBackground {
+                    Color.black.opacity(0.2)
                 }
             }
-            .font(hudFont)
-            .padding()
-            .background(.thickMaterial)
-            .cornerRadius(3.0)
+            .ignoresSafeArea()
         }
     }
 
     private func presentHUDViewController() -> UIViewController? {
-        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene, let rootVC = windowScene.keyWindow?.rootViewController {
+        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene, let rootVC = windowScene.keyWindow?.visibleViewController  {
             let ___hudVC = UIHostingController(rootView: hudView)
             ___hudVC.modalPresentationStyle = .overCurrentContext
             ___hudVC.modalTransitionStyle = .crossDissolve
@@ -147,7 +156,7 @@ public struct AsyncButtonLoadingConfiguration {
     
     public enum Style {
         case nonblocking
-        case blocking(Font = .body)
+        case blocking(font: Font = .body, dimsBackground: Bool)
     }
     
     public let message: String?
@@ -164,8 +173,8 @@ public struct AsyncButtonLoadingConfiguration {
 }
 
 public extension View {
-    func asyncButtonLoadingConfiguration(_ config: AsyncButtonLoadingConfiguration) -> some View {
-        self.environment(\.asyncButtonLoadingConfiguration, config)
+    func asyncButtonLoadingConfiguration(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) -> some View {
+        self.environment(\.asyncButtonLoadingConfiguration, .init(message: message, style: style))
     }
 }
 
