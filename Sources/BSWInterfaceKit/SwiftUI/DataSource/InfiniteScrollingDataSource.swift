@@ -30,8 +30,8 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     }
     
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
-        let thresholdIndex = items.index(items.endIndex, offsetBy: -5)
-        if items.firstIndex(where: { $0.id == item.id }) == thresholdIndex {
+        let subArray = items.suffix(5)
+        if subArray.contains(where: { $0.id == item.id }) {
             Task {
                 try await loadMoreContent()
             }
@@ -52,18 +52,16 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         guard case .canLoadMorePages(let currentPage) = state else {
             return
         }
+        
         withAnimation {
             self.state = .loading
         }
-        let (items, thereAreMorePages) = try await self.itemFetcher(currentPage)
-        let duration: Double = 0.2
-        let stateAnimation = Animation.easeInOut(duration: duration)
-        let itemsAnimation = Animation.easeInOut(duration: duration).delay(duration)
-        withAnimation(stateAnimation) {
+        
+        let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
+        
+        withAnimation {
             self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
-        }
-        withAnimation(itemsAnimation) {
-            self.items.append(contentsOf: items)
+            self.items.append(contentsOf: newItems)
         }
     }
 }
