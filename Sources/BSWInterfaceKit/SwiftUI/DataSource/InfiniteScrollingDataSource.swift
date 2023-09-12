@@ -47,19 +47,19 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     
     /// MARK: Private
     
-    public func loadMoreContent() async throws {
+    @MainActor
+    private func loadMoreContent() async throws {
         guard case .canLoadMorePages(let currentPage) = state else {
             return
         }
-        let stateAnimation = Animation.easeInOut(duration: 0.3)
         
-        withAnimation(stateAnimation) {
+        withAnimation {
             self.state = .loading
         }
-
+        
         let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
-
-        withAnimation(stateAnimation) {
+        
+        withAnimation {
             self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
             self.items.append(contentsOf: newItems)
         }
