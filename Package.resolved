@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "branch" : "sendable-conformance",
-        "revision" : "0be8c75b2306c030ae69505e4f32bbb810ba239a"
+        "revision" : "d977a4c872be2cefd371d627b7b428c7cd7adb4f",
+        "version" : "5.3.8"
       }
     },
     {

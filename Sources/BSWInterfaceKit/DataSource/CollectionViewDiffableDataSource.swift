@@ -5,7 +5,7 @@ import BSWFoundation
 
 /// This `UICollectionViewDiffableDataSource` subclass adds a
 /// simple way to handle Pull to Refresh and empty views.
-open class CollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: Hashable & Sendable>:
+open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
     UICollectionViewDiffableDataSource<Section, Item>  {
     
     /// This type describes what to do when the `dataSource` is empty.
