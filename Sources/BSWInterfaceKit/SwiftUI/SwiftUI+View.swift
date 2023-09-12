@@ -33,7 +33,9 @@ private struct ErrorAwareView<T: View>: View {
                     errorBinding.wrappedValue != nil
                 }, set: { value in
                     if value == false {
-                        errorBinding.wrappedValue = nil
+                        withAnimation {
+                            errorBinding.wrappedValue = nil
+                        }
                     }
                 }),
                 presenting: errorBinding.wrappedValue,
