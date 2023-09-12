@@ -108,17 +108,15 @@ public struct AsyncButton<Label: View>: View {
     }
 
     private func presentHUDViewController() -> UIViewController? {
-        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene, let rootVC = windowScene.keyWindow?.visibleViewController  {
-            let ___hudVC = UIHostingController(rootView: hudView)
-            ___hudVC.modalPresentationStyle = .overCurrentContext
-            ___hudVC.modalTransitionStyle = .crossDissolve
-            ___hudVC.view.backgroundColor = .clear
-            ___hudVC.view.isOpaque = false
-            rootVC.present(___hudVC, animated: true)
-            return ___hudVC
-        } else {
-            return nil
-        }
+        guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+              let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
+        let ___hudVC = UIHostingController(rootView: hudView)
+        ___hudVC.modalPresentationStyle = .overCurrentContext
+        ___hudVC.modalTransitionStyle = .crossDissolve
+        ___hudVC.view.backgroundColor = .clear
+        ___hudVC.view.isOpaque = false
+        rootVC.present(___hudVC, animated: true)
+        return ___hudVC
     }
 }
 
