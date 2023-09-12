@@ -1,7 +1,11 @@
 
 import SwiftUI
 
-/// Shows AsyncButton
+/// A button that performs an `async throws` operation. It will show an alert in case the operation fails.
+///
+/// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
+///
+/// In order to customize it's appereance, checkout the `.asyncButtonLoadingConfiguration` method
 public struct AsyncButton<Label: View>: View {
     
     public init(action: @escaping () async throws -> Void, label: @escaping () -> Label) {
@@ -148,6 +152,7 @@ public extension AsyncButton where Label == Image {
     }
 }
 
+/// Describes how an `AsyncButton` will show it's "loading" state.
 public struct AsyncButtonLoadingConfiguration {
     
     public init(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) {
@@ -155,8 +160,11 @@ public struct AsyncButtonLoadingConfiguration {
         self.style = style
     }
     
+    /// Describes what kind of loading will be shown to the user during the "loading" state.
     public enum Style {
+        /// The rest of the UI in the screen will still be interactable using this style
         case nonblocking
+        /// Will show a HUD in order to let the user know that an operation is ongoing.
         case blocking(font: Font = .body, dimsBackground: Bool)
     }
     
