@@ -51,14 +51,12 @@ public struct AsyncButton<Label: View>: View {
                 }
             },
             label: {
-                switch state {
-                case .idle:
-                    label
-                        .getCGSize($size)
-                case .loading:
-                    loadingView
-                        .frame(width: size.width, height: size.height)
-                }
+                label
+                    .opacity(state == .loading ? 0 : 1)
+                    .overlay {
+                        loadingView
+                            .opacity(state == .loading ? 1 : 0)
+                    }
             }
         )
         .disabled(state == .loading)
