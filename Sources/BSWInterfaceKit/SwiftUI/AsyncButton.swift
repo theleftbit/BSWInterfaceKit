@@ -40,7 +40,6 @@ public struct AsyncButton<Label: View>: View {
     
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
-    @State private var size: CGSize = .zero
     @Environment(\.asyncButtonLoadingMessage) var loadingMessage
 
     public var body: some View {
