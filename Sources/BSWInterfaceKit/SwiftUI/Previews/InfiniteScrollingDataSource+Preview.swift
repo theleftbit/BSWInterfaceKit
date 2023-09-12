@@ -14,7 +14,7 @@ struct InfiniteDataSource_Previews: PreviewProvider {
     
     struct AsyncItemListView: View {
         var body: some View {
-            AsyncStateView(id: "mock-items") {
+            AsyncView(id: "mock-items") {
                 try await ItemInfiniteDataSource()
             } hostedViewGenerator: {
                 ItemListView(dataSource: $0)
