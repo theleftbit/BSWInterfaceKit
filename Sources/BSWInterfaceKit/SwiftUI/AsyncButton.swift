@@ -20,6 +20,9 @@ import SwiftUI
     .frame(width: 320)
     .font(.headline)
     .asyncButtonLoadingMessage("Loading...")
+    .asyncButtonLoadingStyle(isBlocking: true)
+    .asyncButtonHUDFont(.headline)
+    
 }
 #endif
 
@@ -42,6 +45,7 @@ public struct AsyncButton<Label: View>: View {
     @State private var error: Swift.Error?
     @Environment(\.asyncButtonLoadingMessage) var loadingMessage
     @Environment(\.asyncButtonLoadingStyleIsBlocking) var isBlocking
+    @Environment(\.asyncButtonHUDFont) var hudFont
 
     public var body: some View {
         Button(
@@ -108,6 +112,7 @@ public struct AsyncButton<Label: View>: View {
                 Text(loadingMessage)
             }
         }
+        .font(hudFont)
         .padding()
         .background(.thickMaterial)
         .cornerRadius(3.0)
@@ -167,10 +172,17 @@ public extension View {
     func asyncButtonLoadingStyle(isBlocking: Bool) -> some View {
         self.environment(\.asyncButtonLoadingStyleIsBlocking, isBlocking)
     }
+    func asyncButtonHUDFont(_ font: Font) -> some View {
+        self.environment(\.asyncButtonHUDFont, font)
+    }
 }
 
 private struct AsyncButtonLoadingStyleIsBlockingEnvironmentKey: EnvironmentKey {
     static let defaultValue: Bool = false
+}
+
+private struct AsyncButtonLoadingHUDFontEnvironmentKey: EnvironmentKey {
+    static let defaultValue: Font = .body
 }
 
 private struct AsyncButtonLoadingMessageEnvironmentKey: EnvironmentKey {
@@ -186,5 +198,10 @@ private extension EnvironmentValues {
     var asyncButtonLoadingStyleIsBlocking: Bool {
         get { self[AsyncButtonLoadingStyleIsBlockingEnvironmentKey.self] }
         set { self[AsyncButtonLoadingStyleIsBlockingEnvironmentKey.self] = newValue }
+    }
+    
+    var asyncButtonHUDFont: Font {
+        get { self[AsyncButtonLoadingHUDFontEnvironmentKey.self] }
+        set { self[AsyncButtonLoadingHUDFontEnvironmentKey.self] = newValue }
     }
 }
