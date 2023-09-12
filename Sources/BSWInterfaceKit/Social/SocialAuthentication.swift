@@ -22,7 +22,6 @@ public protocol SocialAuthenticationCredentials {
 }
 
 /// This class allows you to integrate with social networks to authenticate a user.
-///
 public class SocialAuthenticationManager: NSObject {
     
     /// A shared manager.

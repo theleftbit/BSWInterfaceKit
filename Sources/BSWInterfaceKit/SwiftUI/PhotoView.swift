@@ -28,6 +28,7 @@ public struct PhotoView: View {
         .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
     }
     
+    @MainActor
     private var shouldShowPlaceholder: Bool {
         if UIApplication.shared.isRunningTests {
             return true

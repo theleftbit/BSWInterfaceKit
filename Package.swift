@@ -32,6 +32,9 @@ let package = Package(
                 .product(name: "NukeUI", package: "Nuke"),
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
+            ],
+            swiftSettings: [
+//                SwiftSetting.unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"]),
             ]
         ),
         .testTarget(

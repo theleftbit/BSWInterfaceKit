@@ -10,10 +10,7 @@ public protocol InAppNotificationType {
     var image: UIImage? { get }
 }
 
-public protocol InAppNotificationDismissable {
-    func dismissNotification(animated: Bool)
-}
-
+@MainActor
 public enum InAppNotifications {
     
     // MARK: - Helpers
@@ -28,10 +25,9 @@ public enum InAppNotifications {
     ///   - dismissDelay: How long before it'll be dismissed
     ///   - completion: A completion handler when the notification is dismissed.
     /// - Returns: The notification.
-    @discardableResult
-    public static func showNotification(fromVC: UIViewController, backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
+    public static func showNotification(fromVC: UIViewController, backgroundColor: UIColor, image: UIImage?, title: NSAttributedString, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
         let notificationDefinition = InAppNotificationTypeDefinition(backgroundColor: backgroundColor, image: image)
-        return showNotification(type: notificationDefinition, fromVC: fromVC, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
+        showNotification(type: notificationDefinition, fromVC: fromVC, title: title, message: message, dismissDelay: dismissDelay, completion: completion)
     }
     
     /// Creates an in-app notification, to let the user know that something has happened
@@ -43,8 +39,7 @@ public enum InAppNotifications {
     ///   - dismissDelay: How long before it'll be dismissed
     ///   - completion: A completion handler when the notification is dismissed.
     /// - Returns: The notification.
-    @discardableResult
-    public static func showNotification(type: InAppNotificationType, fromVC: UIViewController, title: NSAttributedString?, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) -> InAppNotificationDismissable? {
+    public static func showNotification(type: InAppNotificationType, fromVC: UIViewController, title: NSAttributedString?, message: NSAttributedString?, dismissDelay: TimeInterval, completion: @escaping () -> () = {}) {
         let view = InAppNotificationView()
         
         view.setBackgroundColor(color: type.backgroundColor)
@@ -57,12 +52,11 @@ public enum InAppNotifications {
         
         guard let window = fromVC.view.window else {
             print("Failed to show CRNotification. No keywindow available.")
-            return nil
+            return
         }
         
         window.addSubview(view)
         view.showNotification()
-        return view
     }
 }
 
@@ -72,7 +66,7 @@ private struct InAppNotificationTypeDefinition: InAppNotificationType {
 }
 
 @objc(BSWInAppNotificationView)
-private class InAppNotificationView: UIView, InAppNotificationDismissable {
+private class InAppNotificationView: UIView {
     
     private let imageView: UIImageView = {
         let view = UIImageView()

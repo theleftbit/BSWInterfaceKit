@@ -66,7 +66,7 @@ public struct Photo {
 public enum RandomColorFactory {
 
     public static var isOn: Bool = true
-    public static var defaultColor = UIColor.init(r: 255, g: 149, b: 0)
+    public static let defaultColor = UIColor(r: 255, g: 149, b: 0)
     
     
     /// Generates a random pastel color

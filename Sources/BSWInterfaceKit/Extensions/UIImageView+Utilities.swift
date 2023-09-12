@@ -8,6 +8,7 @@ import UIKit
 
 extension UIImageView {
     
+    @MainActor
     private struct AssociatedKeys {
         static var BlurEffectViewKey: UInt8 = 0
     }
@@ -38,6 +39,7 @@ extension UIImageView {
         }()
     }
     
+    @MainActor
     public func removeBlurEffect() {
         blurEffectView?.removeFromSuperview()
         blurEffectView = nil

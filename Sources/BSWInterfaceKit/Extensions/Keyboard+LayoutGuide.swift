@@ -10,13 +10,16 @@
 
 import UIKit
 
+@MainActor
 private class Keyboard {
     static let shared = Keyboard()
     var currentHeight: CGFloat = 0
 }
 
+@MainActor
 public extension UIView {
     
+    @MainActor
     private struct AssociatedKeys {
         static var keyboardLayoutGuide: UInt8 = 0
     }
@@ -116,6 +119,7 @@ extension UILayoutGuide {
     }
 }
 
+@MainActor
 extension Notification {
     @available(macCatalyst, unavailable)
     func keyboardHeight(onWindow w: UIWindow?) -> CGFloat? {
@@ -131,6 +135,7 @@ extension Notification {
 
 // Credits to John Gibb for this nice helper :)
 // https://stackoverflow.com/questions/1536923/determine-if-uiview-is-visible-to-the-user
+@MainActor
 func isVisible(view: UIView) -> Bool {
     func isVisible(view: UIView, inView: UIView?) -> Bool {
         guard let inView = inView else { return true }
