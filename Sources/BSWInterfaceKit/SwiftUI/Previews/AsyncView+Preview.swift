@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-/// Example of how to reload `AsyncStateView`
+/// Example of how to reload `AsyncView`
 /// when the ID of the operation changes.
 
 @available(iOS 16.0, *)
@@ -28,7 +28,7 @@ private struct AsyncContentView: View {
                 }
             }
             Spacer()
-            AsyncStateView(
+            AsyncView(
                 id: $asyncViewID,
                 dataGenerator: {
                     await generateData(forQuery: asyncViewID)
