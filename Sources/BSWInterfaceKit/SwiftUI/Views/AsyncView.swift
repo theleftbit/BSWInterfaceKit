@@ -37,7 +37,7 @@ struct RecipeListView: View, PlaceholderDataProvider {
 /// Use it like this:
 ///
 ///     var body: some View {
-///         AsyncStateView(id: "Da Antonio", dataGenerator: {
+///         AsyncView(id: "Da Antonio", dataGenerator: {
 ///             ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
 ///         }, hostedViewGenerator: {
 ///             RecipeListView(contents: $0)
@@ -309,6 +309,12 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
             .redacted(reason: .placeholder)
             .disabled(true)
             .shimmering()
+    }
+}
+
+public extension View {
+    func asyncViewDebounceOperation(milliseconds: Double) -> some View {
+        self.environment(\.debounceOperationForMilliseconds, milliseconds)
     }
 }
 

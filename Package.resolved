@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "revision" : "d977a4c872be2cefd371d627b7b428c7cd7adb4f",
-        "version" : "5.3.8"
+        "revision" : "dd2b8c194ca8fdbc3c5cf3c59b8270e15467861c",
+        "version" : "6.0.0"
       }
     },
     {
