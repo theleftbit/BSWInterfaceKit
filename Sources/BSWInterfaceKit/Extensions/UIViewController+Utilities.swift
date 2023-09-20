@@ -60,7 +60,26 @@ extension UIViewController {
     public func showTodoAlert() {
         let operation = PresentAlertOperation(title: "To-Do", message: nil, presentingViewController: self)
         alertQueue.addOperation(operation)
-    }    
+    }
+}
+
+@MainActor
+public extension UIViewController {
+    func present(_ viewControllerToPresent: UIViewController, animated flag: Bool) async {
+        await withCheckedContinuation { cont in
+            present(viewControllerToPresent, animated: flag) {
+                cont.resume()
+            }
+        }
+    }
+    
+    func dismiss(animated flag: Bool) async {
+        await withCheckedContinuation { cont in
+            dismiss(animated: flag) {
+                cont.resume()
+            }
+        }
+    }
 }
 
 //MARK: - Dismissing

@@ -216,21 +216,3 @@ private extension Swift.Result where Failure == Error {
         }
     }
 }
-
-private extension UIViewController {
-    func present(_ viewControllerToPresent: UIViewController, animated flag: Bool) async {
-        await withCheckedContinuation { cont in
-            present(viewControllerToPresent, animated: flag) {
-                cont.resume()
-            }
-        }
-    }
-    
-    func dismiss(animated flag: Bool) async {
-        await withCheckedContinuation { cont in
-            dismiss(animated: flag) {
-                cont.resume()
-            }
-        }
-    }
-}
