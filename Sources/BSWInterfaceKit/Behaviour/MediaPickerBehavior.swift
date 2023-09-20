@@ -73,7 +73,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             }
         }()
         guard let vc = vc else { return nil }
-        fromVC.present(vc, animated: true)
+        await fromVC.present(vc, animated: true)
         return await withCheckedContinuation { cont in
             self.currentRequest = Request(kind: kind, fromVC: fromVC, cont: cont)
         }

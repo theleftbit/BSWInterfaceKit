@@ -53,20 +53,28 @@ public struct AsyncButton<Label: View>: View {
     private func performAction() async {
         var hudVC: UIViewController?
         if loadingConfiguration.isBlocking {
-            hudVC = presentHUDViewController()
+            hudVC = await presentHUDViewController()
         }
+        
         withAnimation {
             self.state = .loading
         }
-
-        do {
+        
+        let result = await Swift.Result(catching: {
             try await action()
-        } catch {
-            self.error = error
-        }
+        })
+
         if loadingConfiguration.isBlocking {
-            hudVC?.dismiss(animated: true)
+            await hudVC?.dismiss(animated: true)
         }
+        
+        switch result {
+        case .success:
+            break
+        case .failure(let failure):
+            self.error = failure
+        }
+        
         withAnimation {
             self.state = .idle
         }
@@ -107,7 +115,8 @@ public struct AsyncButton<Label: View>: View {
         }
     }
 
-    private func presentHUDViewController() -> UIViewController? {
+    @MainActor
+    private func presentHUDViewController() async -> UIViewController? {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
         let ___hudVC = UIHostingController(rootView: hudView)
@@ -115,7 +124,7 @@ public struct AsyncButton<Label: View>: View {
         ___hudVC.modalTransitionStyle = .crossDissolve
         ___hudVC.view.backgroundColor = .clear
         ___hudVC.view.isOpaque = false
-        rootVC.present(___hudVC, animated: true)
+        await rootVC.present(___hudVC, animated: true)
         return ___hudVC
     }
 }
@@ -194,5 +203,16 @@ private extension EnvironmentValues {
     var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
         get { self[AsyncButtonLoadingStyleEnvironmentKey.self] }
         set { self[AsyncButtonLoadingStyleEnvironmentKey.self] = newValue }
+    }
+}
+
+private extension Swift.Result where Failure == Error {
+    init(catching body: () async throws -> Success) async {
+        do {
+            let result = try await body()
+            self = .success(result)
+        } catch {
+            self = .failure(error)
+        }
     }
 }
