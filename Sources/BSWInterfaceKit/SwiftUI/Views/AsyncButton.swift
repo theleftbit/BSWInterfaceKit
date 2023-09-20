@@ -53,45 +53,31 @@ public struct AsyncButton<Label: View>: View {
     private func performAction() async {
         var hudVC: UIViewController?
         if loadingConfiguration.isBlocking {
-            hudVC = presentHUDViewController()
+            hudVC = await presentHUDViewController()
         }
-        transitionToLoadingState()
-        do {
-            try await action()
-            await dismissHUDAsync(hudVC)
-            transitionToIdleState()
-        } catch {
-            await handleError(error, withHUD: hudVC)
-        }
-    }
-
-    @MainActor
-    private func dismissHUDAsync(_ hudVC: UIViewController?) async {
-        await withUnsafeContinuation { continuation in
-            hudVC?.dismiss(animated: true) {
-                continuation.resume(returning: ())
-            }
-        }
-    }
-    
-    private func transitionToLoadingState() {
+        
         withAnimation {
             self.state = .loading
         }
-    }
+        
+        let result = await Swift.Result(catching: {
+            try await action()
+        })
 
-    private func transitionToIdleState() {
+        if loadingConfiguration.isBlocking {
+            await hudVC?.dismiss(animated: true)
+        }
+        
+        switch result {
+        case .success:
+            break
+        case .failure(let failure):
+            self.error = failure
+        }
+        
         withAnimation {
             self.state = .idle
         }
-    }
-
-    private func handleError(_ error: Error, withHUD hudVC: UIViewController?) async {
-        if loadingConfiguration.isBlocking {
-            await dismissHUDAsync(hudVC)
-        }
-        transitionToIdleState()
-        self.error = error
     }
     
     @ViewBuilder
@@ -129,7 +115,8 @@ public struct AsyncButton<Label: View>: View {
         }
     }
 
-    private func presentHUDViewController() -> UIViewController? {
+    @MainActor
+    private func presentHUDViewController() async -> UIViewController? {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
         let ___hudVC = UIHostingController(rootView: hudView)
@@ -137,7 +124,7 @@ public struct AsyncButton<Label: View>: View {
         ___hudVC.modalTransitionStyle = .crossDissolve
         ___hudVC.view.backgroundColor = .clear
         ___hudVC.view.isOpaque = false
-        rootVC.present(___hudVC, animated: true)
+        await rootVC.present(___hudVC, animated: true)
         return ___hudVC
     }
 }
@@ -216,5 +203,34 @@ private extension EnvironmentValues {
     var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
         get { self[AsyncButtonLoadingStyleEnvironmentKey.self] }
         set { self[AsyncButtonLoadingStyleEnvironmentKey.self] = newValue }
+    }
+}
+
+private extension Swift.Result where Failure == Error {
+    init(catching body: () async throws -> Success) async {
+        do {
+            let result = try await body()
+            self = .success(result)
+        } catch {
+            self = .failure(error)
+        }
+    }
+}
+
+private extension UIViewController {
+    func present(_ viewControllerToPresent: UIViewController, animated flag: Bool) async {
+        await withCheckedContinuation { cont in
+            present(viewControllerToPresent, animated: flag) {
+                cont.resume()
+            }
+        }
+    }
+    
+    func dismiss(animated flag: Bool) async {
+        await withCheckedContinuation { cont in
+            dismiss(animated: flag) {
+                cont.resume()
+            }
+        }
     }
 }
