@@ -13,4 +13,4 @@ jobs:
       with:
         lfs: true
     - name: Test BSWInterfaceKit
-      run: set -o pipefail && xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=16.4" -resultBundlePath TestResults.xcresult test | xcbeautify
+      run: set -o pipefail && xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 13,OS=17.0" -resultBundlePath TestResults.xcresult test | xcbeautify
