@@ -55,21 +55,43 @@ public struct AsyncButton<Label: View>: View {
         if loadingConfiguration.isBlocking {
             hudVC = presentHUDViewController()
         }
+        transitionToLoadingState()
+        do {
+            try await action()
+            await dismissHUDAsync(hudVC)
+            transitionToIdleState()
+        } catch {
+            await handleError(error, withHUD: hudVC)
+        }
+    }
+
+    @MainActor
+    private func dismissHUDAsync(_ hudVC: UIViewController?) async {
+        await withUnsafeContinuation { continuation in
+            hudVC?.dismiss(animated: true) {
+                continuation.resume(returning: ())
+            }
+        }
+    }
+    
+    private func transitionToLoadingState() {
         withAnimation {
             self.state = .loading
         }
+    }
 
-        do {
-            try await action()
-        } catch {
-            self.error = error
-        }
-        if loadingConfiguration.isBlocking {
-            hudVC?.dismiss(animated: true)
-        }
+    private func transitionToIdleState() {
         withAnimation {
             self.state = .idle
         }
+    }
+
+    private func handleError(_ error: Error, withHUD hudVC: UIViewController?) async {
+        if loadingConfiguration.isBlocking {
+            await dismissHUDAsync(hudVC)
+        }
+        transitionToIdleState()
+        self.error = error
     }
     
     @ViewBuilder
