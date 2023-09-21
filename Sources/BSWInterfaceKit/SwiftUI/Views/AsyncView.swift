@@ -157,11 +157,6 @@ public struct AsyncView<Data, HostedView: View, ErrorView: View, LoadingView: Vi
         /// loaded do not schedule a new fetch operation.
         if currentOperation.isLoaded(forID: id) { return }
         
-        /// If the previous fetch has failed for non-cancelling reasons,
-        /// then we should not retry the operation automatically
-        /// and give the user chance to retry it using the UI.
-        if currentOperation.isNonCancelledError(forID: id) { return }
-        
         /// In case the environment tells us to debounce the operation, lets.
         if let debounceOperationForMilliseconds {
             let uint64 = UInt64(debounceOperationForMilliseconds)
@@ -331,17 +326,6 @@ private extension EnvironmentValues {
 
 private extension AsyncView.Operation {
     
-    func isNonCancelledError(forID id: ID) -> Bool {
-        guard self.id == id else { return false }
-        switch self.phase {
-        case .error(let error):
-            let isCancelledError = (error.isURLCancelled || error is CancellationError)
-            return !isCancelledError
-        default:
-            return false
-        }
-    }
-
     func isLoaded(forID id: ID) -> Bool {
         guard self.id == id else { return false }
         switch self.phase {
