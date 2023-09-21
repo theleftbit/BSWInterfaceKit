@@ -31,7 +31,7 @@ private struct AsyncContentView: View {
             AsyncView(
                 id: $asyncViewID,
                 dataGenerator: {
-                    await generateData(forQuery: asyncViewID)
+                    try await generateData(forQuery: asyncViewID)
                 },
                 hostedViewGenerator: {
                     ContentView(data: $0)
@@ -41,11 +41,15 @@ private struct AsyncContentView: View {
         }
     }
 
-    func generateData(forQuery query: String) async -> String {
+    func generateData(forQuery query: String) async throws -> String {
         /// On a real app, this method will call a Web Server to fetch
         /// real data, but here we're mocking what to return in
         /// depending on the supplied ID. This is just mock logic.
         try? await Task.sleep(for: .milliseconds(600))
+        
+        struct SomeError: Swift.Error {}
+        throw SomeError()
+        
         switch query {
         case "default-value":
             return "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
