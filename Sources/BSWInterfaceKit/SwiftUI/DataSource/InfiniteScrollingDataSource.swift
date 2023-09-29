@@ -30,7 +30,9 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     }
     
     public func insert(_ newItems: [ListItem], position: Int = 0) {
-        self.items.insert(contentsOf: newItems, at: position)
+        withAnimation {
+            self.items.insert(contentsOf: newItems, at: position)
+        }
     }
     
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
