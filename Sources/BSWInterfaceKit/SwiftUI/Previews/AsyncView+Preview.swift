@@ -47,9 +47,6 @@ private struct AsyncContentView: View {
         /// depending on the supplied ID. This is just mock logic.
         try? await Task.sleep(for: .milliseconds(600))
         
-        struct SomeError: Swift.Error {}
-        throw SomeError()
-        
         switch query {
         case "default-value":
             return "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
