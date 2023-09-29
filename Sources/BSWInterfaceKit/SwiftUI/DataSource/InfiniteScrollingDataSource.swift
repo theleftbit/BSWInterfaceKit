@@ -29,6 +29,10 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         self.itemFetcher = { _ in return ([], false) }
     }
     
+    public func insert(_ newItems: [ListItem], position: Int = 0) {
+        self.items.insert(contentsOf: newItems, at: position)
+    }
+    
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
         let subArray = items.suffix(5)
         if subArray.contains(where: { $0.id == item.id }) {
