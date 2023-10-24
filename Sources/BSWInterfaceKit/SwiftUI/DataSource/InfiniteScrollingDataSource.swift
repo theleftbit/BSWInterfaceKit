@@ -35,6 +35,18 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         }
     }
     
+    public func appendItem(_ newItem: ListItem) {
+        withAnimation {
+            self.items.append(newItem)
+        }
+    }
+    
+    public func removeItem(_ item: ListItem) {
+        withAnimation {
+            self.items.removeAll(where: { $0.id == item.id })
+        }
+    }
+    
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
         let subArray = items.suffix(5)
         if subArray.contains(where: { $0.id == item.id }) {
