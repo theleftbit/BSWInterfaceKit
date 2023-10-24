@@ -35,14 +35,6 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         }
     }
     
-    public func updateItem(_ updatedItem: ListItem) {
-        if let index = items.firstIndex(where: { $0.id == updatedItem.id }) {
-            withAnimation {
-                items[index] = updatedItem
-            }
-        }
-    }
-    
     public func appendItem(_ newItem: ListItem) {
         withAnimation {
             self.items.append(newItem)
