@@ -72,7 +72,7 @@ open class TextStyler {
         }()
         let systemFont = UIFont.preferredFont(forTextStyle: style, compatibleWith: traitCollection)
         if let fontDescriptor = fontDescriptor {
-            let font = UIFont.init(descriptor: fontDescriptor, size: systemFont.pointSize)
+            let font = UIFont(descriptor: fontDescriptor, size: systemFont.pointSize)
             let metrics = UIFontMetrics(forTextStyle: style)
             return metrics.scaledFont(for: font, compatibleWith: traitCollection)
         } else {
