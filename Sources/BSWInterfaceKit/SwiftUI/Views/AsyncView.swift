@@ -276,6 +276,11 @@ public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingVie
 }
 
 public struct AsyncStatePlainErrorView: View {
+    
+    public init(error: Error, onRetry: @escaping () -> ()) {
+        self.error = error
+        self.onRetry = onRetry
+    }
 
     let error: Swift.Error
     let onRetry: () -> ()
