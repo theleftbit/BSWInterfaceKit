@@ -57,11 +57,7 @@ final public class PhotoGalleryView: UIView {
     public weak var delegate: PhotoGalleryViewDelegate?
     
     /// Enables or disables the zoom for the photos.
-    public var zoomEnabled = false {
-        didSet {
-            collectionView.reloadData()
-        }
-    }
+    private var zoomEnabled = false
     
     /// Returns the current page.
     public var currentPage: Int {
@@ -80,8 +76,9 @@ final public class PhotoGalleryView: UIView {
     /// - Parameters:
     ///   - photos: The photos to display
     ///   - imageContentMode: The contentMode for this images.
-    public init(photos: [Photo] = [], imageContentMode: UIView.ContentMode = .scaleAspectFill) {
+    public init(photos: [Photo] = [], imageContentMode: UIView.ContentMode = .scaleAspectFill, zoomEnabled: Bool = false) {
         self.imageContentMode = imageContentMode
+        self.zoomEnabled = zoomEnabled
         updatePageControlOnScrollBehavior = UpdatePageControlOnScrollBehavior(pageControl: pageControl, scrollView: collectionView)
         super.init(frame: .zero)
         setup()
