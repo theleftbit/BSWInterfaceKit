@@ -27,10 +27,11 @@ public final class PhotoGalleryViewController: UIViewController {
     }
 
     public init(photos: [Photo],
-         initialPageIndex: Int = 0,
-         allowShare: Bool = true) {
+                initialPageIndex: Int = 0,
+                allowShare: Bool = true,
+                zoomEnabled: Bool = false) {
         self.allowShare = allowShare
-        self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .scaleAspectFit)
+        self.photosGallery = PhotoGalleryView(photos: photos, imageContentMode: .scaleAspectFit, zoomEnabled: zoomEnabled)
         self.currentPage = initialPageIndex
         super.init(nibName: nil, bundle: nil)
     }
@@ -47,8 +48,7 @@ public final class PhotoGalleryViewController: UIViewController {
         view = UIView()
         view.backgroundColor = Appearance.BackgroundColor
         photosGallery.backgroundColor = Appearance.BackgroundColor
-        photosGallery.zoomEnabled = true
-
+        
         //Set up the Gallery
         view.addAutolayoutSubview(photosGallery)
         photosGallery.pinToSuperview()
