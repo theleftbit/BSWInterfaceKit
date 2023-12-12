@@ -6,11 +6,10 @@
 
 import UIKit
 
-#if compiler(>=5.9)
+@available(iOS 17, *)
 #Preview {
     return LoadingView(loadingMessage: nil, activityIndicatorStyle: .large)
 }
-#endif
 
 /// A simple view that represents the loading state in your app.
 @objc(BSWLoadingView)

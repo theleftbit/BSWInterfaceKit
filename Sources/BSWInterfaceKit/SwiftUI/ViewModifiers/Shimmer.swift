@@ -1,15 +1,12 @@
 
 import SwiftUI
 
-#if compiler(>=5.9)
-
 #Preview {
     Text("Adds an animated shimmering effect to any view, typically to show that an operation is in progress")
         .padding()
         .redacted(reason: .placeholder)
         .shimmering()
 }
-#endif
 
 public extension View {
     /// Adds an animated shimmering effect to any view, typically to show that an operation is in progress.
