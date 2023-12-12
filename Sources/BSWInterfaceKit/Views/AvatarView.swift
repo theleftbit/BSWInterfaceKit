@@ -6,11 +6,10 @@
 
 import UIKit
 
-#if compiler(>=5.9)
+@available(iOS 17, *)
 #Preview {
     return AvatarView(size: .big, photo: .emptyPhoto())
 }
-#endif
 
 /// This subclass of `UIView` displays it's `Photo` as a round image, perfect for showing avatars.
 @objc(BSWAvatarView)

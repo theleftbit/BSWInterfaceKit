@@ -1,8 +1,7 @@
 
 import SwiftUI
 
-#if compiler(>=5.9)
-@available(iOS 16.0, *)
+@available(iOS 17.0, *)
 struct DemoView: View {
     
     @State var presentSheet = false
@@ -29,14 +28,11 @@ struct DemoView: View {
         }
     }
 }
+
+@available(iOS 17.0, *)
 #Preview {
-    if #available(iOS 16, *) {
-        DemoView()
-    } else {
-        EmptyView()
-    }
+  DemoView()
 }
-#endif
 
 @available(iOS 16.0, *)
 public extension SwiftUI.View {

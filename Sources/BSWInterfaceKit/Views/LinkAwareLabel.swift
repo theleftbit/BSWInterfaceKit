@@ -6,7 +6,7 @@
 
 import UIKit
 
-#if compiler(>=5.9)
+@available(iOS 17, *)
 #Preview {
     let l = LinkAwareLabel()
     l.didTapOnURL = {
@@ -19,7 +19,6 @@ import UIKit
         .addingLink(onSubstring: link, linkURL: URL(string: "link")!, linkColor: .systemBlue)
     return l
 }
-#endif
 
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
