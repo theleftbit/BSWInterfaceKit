@@ -16,6 +16,10 @@ let package = Package(
             name: "BSWInterfaceKit",
             targets: ["BSWInterfaceKit"]
         ),
+        .library(
+            name: "BSWInterfaceKitObjC",
+            targets: ["BSWInterfaceKitObjC"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.0"),
@@ -23,6 +27,7 @@ let package = Package(
         .package(url: "https://github.com/kean/Nuke.git", from: "12.1.0"),
     ],
     targets: [
+        .target(name: "BSWInterfaceKitObjC"),
         .target(
             name: "BSWInterfaceKit",
             dependencies: [
