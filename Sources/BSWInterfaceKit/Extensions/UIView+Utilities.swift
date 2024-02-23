@@ -6,7 +6,6 @@
 
 import BSWFoundation
 import UIKit
-import BSWInterfaceKitObjC
 
 extension UIView {
 
@@ -31,24 +30,6 @@ extension UIView {
         let previousConstraints = constraints
         NSLayoutConstraint.deactivate(previousConstraints)
         removeConstraints(previousConstraints)
-    }
-
-    /// Adds a shadow taking into account Auto Layout. You don't need to override `layoutSubviews` for this method.
-    @objc(bsw_addShadowWithOpacity:radius:offset:)
-    public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize = .zero) {
-        let shadowInfo = BSWShadowInformation()
-        shadowInfo.opacity = opacity
-        shadowInfo.radius = radius
-        shadowInfo.offset = offset
-        bsw_shadowInfo = shadowInfo
-    }
-
-    /// Removes shadow added with the `addShadow` method.
-    @objc(bsw_removeShadow)
-    public func removeShadow() {
-        let shadowInfo = BSWShadowInformation()
-        shadowInfo.isEmpty = true
-        bsw_shadowInfo = shadowInfo
     }
 
     @objc(bsw_roundCorners:isContinuous:)
@@ -176,3 +157,25 @@ extension UIView {
     }
 }
 #endif
+
+import BSWInterfaceKitObjC
+
+extension UIView {
+    /// Adds a shadow taking into account Auto Layout. You don't need to override `layoutSubviews` for this method.
+    @objc(bsw_addShadowWithOpacity:radius:offset:)
+    public func addShadow(opacity: CGFloat, radius: CGFloat, offset: CGSize = .zero) {
+        let shadowInfo = BSWShadowInformation()
+        shadowInfo.opacity = opacity
+        shadowInfo.radius = radius
+        shadowInfo.offset = offset
+        bsw_shadowInfo = shadowInfo
+    }
+
+    /// Removes shadow added with the `addShadow` method.
+    @objc(bsw_removeShadow)
+    public func removeShadow() {
+        let shadowInfo = BSWShadowInformation()
+        shadowInfo.isEmpty = true
+        bsw_shadowInfo = shadowInfo
+    }
+}

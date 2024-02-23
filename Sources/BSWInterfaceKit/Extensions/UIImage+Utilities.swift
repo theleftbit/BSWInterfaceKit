@@ -6,7 +6,6 @@
 #if canImport(UIKit)
 
 import UIKit
-import BSWInterfaceKitObjC
 
 public extension UIImage {
 

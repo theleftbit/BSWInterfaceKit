@@ -14,7 +14,7 @@ let package = Package(
     products: [
         .library(
             name: "BSWInterfaceKit",
-            targets: ["BSWInterfaceKit", "BSWInterfaceKitObjC"]
+            targets: ["BSWInterfaceKit"]
         ),
     ],
     dependencies: [
