@@ -1,7 +1,7 @@
 
 #if canImport(UIKit)
 
-import BSWInterfaceKit
+import BSWInterfaceKit; import BSWInterfaceKitObjC
 import UIKit
 
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
@@ -391,7 +391,7 @@ private class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusabl
 
         setupImageConstraint()
         setupRoundedCorners()
-        addShadow(opacity: 0.1, radius: 4, offset: .zero)
+        bsw_addShadow(withOpacity: 0.1, radius: 4, offset: .zero)
     }
     
     override open func prepareForReuse() {

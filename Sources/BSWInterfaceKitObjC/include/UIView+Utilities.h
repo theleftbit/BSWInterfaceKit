@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIView (Utilities)
 
 - (void)bsw_layoutSubviews;
+- (void)bsw_addShadowWithOpacity:(CGFloat)opacity radius:(CGFloat)radius offset:(CGSize)offset;
+- (void)bsw_removeShadow;
 
 @property (nonatomic, nullable) BSWShadowInformation *bsw_shadowInfo;
 

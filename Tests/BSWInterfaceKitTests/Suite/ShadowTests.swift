@@ -2,6 +2,7 @@
 
 import UIKit
 import BSWInterfaceKit
+import BSWInterfaceKitObjC
 
 class ShadowTests: BSWSnapshotTest {
     
@@ -18,7 +19,7 @@ private class ViewController: UIViewController {
         view.backgroundColor = .white
         let sampleView = UIView()
         sampleView.backgroundColor = .systemRed
-        sampleView.addShadow(opacity: 0.5, radius: 10, offset: CGSize(width: 0, height: 1))
+        sampleView.bsw_addShadow(withOpacity: 0.5, radius: 10, offset: CGSize(width: 0, height: 1))
         sampleView.roundCorners()
         view.addAutolayoutSubview(sampleView)
         NSLayoutConstraint.activate([

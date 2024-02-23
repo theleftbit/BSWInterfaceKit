@@ -78,6 +78,20 @@
     return objc_getAssociatedObject(self, @selector(bswShadowInformation));
 }
 
+- (void)bsw_addShadowWithOpacity:(CGFloat)opacity radius:(CGFloat)radius offset:(CGSize)offset {
+    BSWShadowInformation *shadowInfo = [BSWShadowInformation new];
+    shadowInfo.opacity = opacity;
+    shadowInfo.radius = radius;
+    shadowInfo.offset = offset;
+    self.bsw_shadowInfo = shadowInfo;
+}
+
+- (void)bsw_removeShadow {
+    BSWShadowInformation *shadowInfo = [BSWShadowInformation new];
+    shadowInfo.isEmpty = YES;
+    self.bsw_shadowInfo = shadowInfo;
+}
+
 @end
 
 @implementation BSWShadowInformation
