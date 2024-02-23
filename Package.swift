@@ -23,14 +23,12 @@ let package = Package(
         .package(url: "https://github.com/kean/Nuke.git", from: "12.1.0"),
     ],
     targets: [
-        .target(name: "BSWInterfaceKitObjC"),
         .target(
             name: "BSWInterfaceKit",
             dependencies: [
                 .product(name: "Nuke", package: "Nuke"),
                 .product(name: "NukeExtensions", package: "Nuke"),
                 .product(name: "NukeUI", package: "Nuke"),
-                "BSWInterfaceKitObjC",
                 "BSWFoundation"
             ],
             swiftSettings: [

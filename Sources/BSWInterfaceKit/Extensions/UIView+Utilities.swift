@@ -158,6 +158,7 @@ extension UIView {
 }
 #endif
 
+/*
 import BSWInterfaceKitObjC
 
 extension UIView {
@@ -179,3 +180,4 @@ extension UIView {
         bsw_shadowInfo = shadowInfo
     }
 }
+*/
