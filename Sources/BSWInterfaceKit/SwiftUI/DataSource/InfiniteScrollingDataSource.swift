@@ -8,6 +8,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
     private var itemFetcher: ItemFetcher
+    private let direction: Direction
     
     public enum State: Equatable {
         case noMorePages
@@ -15,18 +16,25 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         case canLoadMorePages(currentPage: Int)
     }
     
+    public enum Direction {
+        case upwards
+        case downwards
+    }
+    
     public typealias ItemFetcher = (Int) async throws -> ([ListItem], Bool)
     
-    public init(currentPage: Int = 0, itemFetcher: @escaping ItemFetcher) async throws {
+    public init(currentPage: Int = 0, direction: Direction = .downwards, itemFetcher: @escaping ItemFetcher) async throws {
         self.itemFetcher = itemFetcher
         self.state = State.canLoadMorePages(currentPage: currentPage)
+        self.direction = direction
         try await loadMoreContent()
     }
     
-    public init(mockItems: [ListItem]) {
+    public init(mockItems: [ListItem], direction: Direction = .downwards, itemFetcher: @escaping ItemFetcher = { _ in return ([], false) }) {
         self.items = mockItems
         self.state = .noMorePages
-        self.itemFetcher = { _ in return ([], false) }
+        self.direction = direction
+        self.itemFetcher = itemFetcher
     }
     
     public func insert(_ newItems: [ListItem], position: Int = 0) {
@@ -48,8 +56,9 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     }
     
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
-        let subArray = items.suffix(5)
-        if subArray.contains(where: { $0.id == item.id }) {
+        let subArray = (direction == .downwards) ? items.suffix(5) : items.prefix(5)
+        let isInSubarray = subArray.contains(where: { $0.id == item.id })
+        if isInSubarray {
             Task {
                 try await loadMoreContent()
             }
@@ -79,7 +88,12 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         
         withAnimation {
             self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
-            self.items.append(contentsOf: newItems)
+            switch direction {
+            case .upwards:
+                self.items.insert(contentsOf: newItems, at: 0)
+            case .downwards:
+                self.items.append(contentsOf: newItems)
+            }
         }
     }
 }
