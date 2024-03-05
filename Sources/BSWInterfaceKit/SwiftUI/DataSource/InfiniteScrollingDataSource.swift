@@ -30,11 +30,11 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
         try await loadMoreContent()
     }
     
-    public init(mockItems: [ListItem], direction: Direction = .downwards) {
+    public init(mockItems: [ListItem], direction: Direction = .downwards, itemFetcher: @escaping ItemFetcher = { _ in return ([], false) }) {
         self.items = mockItems
         self.state = .noMorePages
         self.direction = direction
-        self.itemFetcher = { _ in return ([], false) }
+        self.itemFetcher = itemFetcher
     }
     
     public func insert(_ newItems: [ListItem], position: Int = 0) {
@@ -57,7 +57,8 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject
     
     public func loadMoreContentIfNeeded(currentItem item: ListItem) {
         let subArray = (direction == .downwards) ? items.suffix(5) : items.prefix(5)
-        if subArray.contains(where: { $0.id == item.id }) {
+        let isInSubarray = subArray.contains(where: { $0.id == item.id })
+        if isInSubarray {
             Task {
                 try await loadMoreContent()
             }
