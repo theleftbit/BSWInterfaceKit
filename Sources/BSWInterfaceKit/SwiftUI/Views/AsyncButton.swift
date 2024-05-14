@@ -46,9 +46,8 @@ public struct AsyncButton<Label: View>: View {
                 label
                     .opacity(state == .loading ? 0 : 1)
                     .overlay {
-                        if loadingConfiguration.isBlocking == false {
+                        if loadingConfiguration.isBlocking == false, state == .loading {
                             loadingView
-                                .opacity(state == .loading ? 1 : 0)
                         }
                     }
             }
