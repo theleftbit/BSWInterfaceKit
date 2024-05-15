@@ -28,21 +28,28 @@ public struct AsyncButton<Label: View>: View {
     public var body: some View {
         Button(
             action: {
-                Task {
-                    await performAction()
+                if #available(iOS 17.0, *) {
+                    withAnimation {
+                        self.state = .loading
+                    } completion: {
+                        Task {
+                            await performAction()
+                        }
+                    }
+                } else {
+                    Task {
+                        await performAction(forIOS16: true)
+                    }
                 }
             },
             label: {
-                if loadingConfiguration.isBlocking {
-                    label
-                } else {
-                    label
-                        .opacity(state == .loading ? 0 : 1)
-                        .overlay {
+                label
+                    .opacity(state == .loading ? 0 : 1)
+                    .overlay {
+                        if loadingConfiguration.isBlocking == false, state == .loading {
                             loadingView
-                                .opacity(state == .loading ? 1 : 0)
                         }
-                }
+                    }
             }
         )
         .disabled((state == .loading) || (error != nil))
@@ -50,14 +57,16 @@ public struct AsyncButton<Label: View>: View {
     }
     
     @MainActor
-    private func performAction() async {
+    private func performAction(forIOS16: Bool = false) async {
         var hudVC: UIViewController?
         if loadingConfiguration.isBlocking {
             hudVC = await presentHUDViewController()
         }
         
-        withAnimation {
-            self.state = .loading
+        if forIOS16 {
+            withAnimation {
+                self.state = .loading
+            }
         }
         
         let result = await Swift.Result(catching: {
