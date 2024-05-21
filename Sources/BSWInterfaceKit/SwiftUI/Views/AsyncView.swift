@@ -17,14 +17,15 @@ struct RecipeListView: View, PlaceholderDataProvider {
         ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
     }
 }
-@available(iOS 17, *)
+
+@available(iOS 17, macOS 14, *)
 #Preview {
-  AsyncView(id: "some-id", dataGenerator: {
-      try await Task.sleep(for: .seconds(1))
-      return ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
-  }, hostedViewGenerator: {
-      RecipeListView(recipes: $0)
-  })
+    AsyncView(id: "some-id", dataGenerator: {
+        try await Task.sleep(for: .seconds(1))
+        return ["Pasta", "Polpette", "Tiramisù", "Caffè", "Ammazza Caffè"]
+    }, hostedViewGenerator: {
+        RecipeListView(recipes: $0)
+    })
 }
 
 /// A SwiftUI View with an async state.

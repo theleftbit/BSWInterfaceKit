@@ -28,7 +28,7 @@ public struct AsyncButton<Label: View>: View {
     public var body: some View {
         Button(
             action: {
-                if #available(iOS 17.0, *) {
+                if #available(iOS 17.0, macOS 14, *) {
                     withAnimation {
                         self.state = .loading
                     } completion: {
@@ -58,10 +58,13 @@ public struct AsyncButton<Label: View>: View {
     
     @MainActor
     private func performAction(forIOS16: Bool = false) async {
+        
+        #if canImport(UIKit)
         var hudVC: UIViewController?
         if loadingConfiguration.isBlocking {
             hudVC = await presentHUDViewController()
         }
+        #endif
         
         if forIOS16 {
             withAnimation {
@@ -73,10 +76,12 @@ public struct AsyncButton<Label: View>: View {
             try await action()
         })
 
+        #if canImport(UIKit)
         if loadingConfiguration.isBlocking {
             await hudVC?.dismiss(animated: true)
         }
-        
+        #endif
+
         switch result {
         case .success:
             break
@@ -93,6 +98,9 @@ public struct AsyncButton<Label: View>: View {
     private var loadingView: some View {
         HStack(spacing: 8) {
             ProgressView()
+                #if canImport(AppKit)
+                .scaleEffect(x: 0.5, y: 0.5)
+                #endif
             if let loadingMessage = loadingConfiguration.message {
                 Text(loadingMessage)
             }
@@ -124,6 +132,7 @@ public struct AsyncButton<Label: View>: View {
         }
     }
 
+#if canImport(UIKit)
     @MainActor
     private func presentHUDViewController() async -> UIViewController? {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
@@ -136,6 +145,7 @@ public struct AsyncButton<Label: View>: View {
         await rootVC.present(___hudVC, animated: true)
         return ___hudVC
     }
+#endif
 }
 
 public extension AsyncButton where Label == Text {

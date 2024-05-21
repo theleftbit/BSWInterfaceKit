@@ -2,9 +2,19 @@
 //  Created by Pierluigi Cifani on 07/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
-#if canImport(UIKit)
 
+#if canImport(UIKit)
 import UIKit
+public typealias PlatformImage = UIImage
+public typealias PlatformColor = UIColor
+public typealias PlatformContentMode = UIView.ContentMode
+#elseif canImport(AppKit)
+import AppKit
+public typealias PlatformImage = NSImage
+public typealias PlatformColor = NSColor
+public typealias PlatformContentMode = Int
+#endif
+
 import Nuke
 
 /// This represents an image to be displayed in the app.
@@ -19,7 +29,7 @@ public struct Photo {
         case url(Foundation.URL, placeholderImage: PlaceholderImage?)
         
         /// There's a `UIImage` representing this Photo.
-        case image(UIImage)
+        case image(PlatformImage)
         
         /// Just an empty Photo.
         case empty
@@ -29,29 +39,29 @@ public struct Photo {
     public let kind: Kind
     
     /// The averageColor of the `Photo`. Will be shown during loading if appropiate.
-    public let averageColor: UIColor
+    public let averageColor: PlatformColor
     
     /// The size of the image if known
     public let size: CGSize?
     
     /// The `UIView.ContentMode` that will be used to display the `Photo`
-    public let preferredContentMode: UIView.ContentMode?
+    public let preferredContentMode: PlatformContentMode?
 
-    public init(kind: Kind, averageColor: UIColor = UIColor.randomColor(), size: CGSize? = nil, preferredContentMode: UIView.ContentMode? = nil) {
+    public init(kind: Kind, averageColor: PlatformColor = .randomColor(), size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
         self.kind = kind
         self.averageColor = averageColor
         self.preferredContentMode = preferredContentMode
         self.size = size
     }
 
-    public init(image: UIImage, averageColor: UIColor = UIColor.randomColor(), preferredContentMode: UIView.ContentMode? = nil) {
+    public init(image: PlatformImage, averageColor: PlatformColor = .randomColor(), preferredContentMode: PlatformContentMode? = nil) {
         self.kind = .image(image)
         self.averageColor = averageColor
         self.preferredContentMode = preferredContentMode
         self.size = image.size
     }
 
-    public init(url: URL?, averageColor: UIColor = UIColor.randomColor(), placeholderImage: PlaceholderImage? = nil, size: CGSize? = nil, preferredContentMode: UIView.ContentMode? = nil) {
+    public init(url: URL?, averageColor: PlatformColor = .randomColor(), placeholderImage: PlaceholderImage? = nil, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
         self.kind = (url == nil) ? .empty : .url(url!, placeholderImage: placeholderImage)
         self.averageColor = averageColor
         self.preferredContentMode = preferredContentMode
@@ -59,18 +69,19 @@ public struct Photo {
     }
     
     public static func emptyPhoto() -> Photo {
-        return Photo(kind: .empty, averageColor: UIColor.randomColor(), size: nil)
+        return Photo(kind: .empty, averageColor: .randomColor(), size: nil)
     }
 }
 
 public enum RandomColorFactory {
 
     public static var isOn: Bool = true
+#if canImport(UIKit)
     public static var defaultColor = UIColor(r: 255, g: 149, b: 0)
     
     /// Generates a random pastel color
     /// - Returns: a UIColor
-    public static func randomColor() -> UIColor {
+    public static func randomColor() -> PlatformColor {
         guard isOn else {
             return defaultColor
         }
@@ -82,6 +93,14 @@ public enum RandomColorFactory {
             alpha: 1
         )
     }
+    #elseif canImport(AppKit)
+    
+    public static var defaultColor: PlatformColor { .systemBlue }
+
+    public static func randomColor() -> PlatformColor {
+        .systemBlue
+    }
+    #endif
 }
 
 public extension Photo {
@@ -93,7 +112,7 @@ public extension Photo {
         return self.uiImage?.size
     }
     
-    var uiImage: UIImage? {
+    var uiImage: PlatformImage? {
         switch self.kind {
         case .empty:
             return nil
@@ -123,9 +142,9 @@ public extension Photo {
 
 public extension Photo {
     struct PlaceholderImage {
-        public let image: UIImage
-        public let preferredContentMode: UIView.ContentMode
-        public init(image: UIImage, preferredContentMode: UIView.ContentMode) {
+        public let image: PlatformImage
+        public let preferredContentMode: PlatformContentMode
+        public init(image: PlatformImage, preferredContentMode: PlatformContentMode) {
             self.image = image
             self.preferredContentMode = preferredContentMode
         }
@@ -151,4 +170,3 @@ extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
 extension Photo: Equatable, Hashable {}
 extension Photo.Kind: Equatable, Hashable {}
 extension Photo.PlaceholderImage: Equatable, Hashable {}
-#endif
