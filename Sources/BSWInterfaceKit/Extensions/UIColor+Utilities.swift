@@ -96,4 +96,16 @@ public extension UIColor {
     }
 }
 
+#elseif canImport(AppKit)
+
+import AppKit
+
+public extension NSColor {
+    /// Creates a random color using `RandomColorFactory`
+    /// - Returns: a `NSColor`
+    class func randomColor() -> NSColor {
+        return RandomColorFactory.randomColor()
+    }
+}
+
 #endif

@@ -30,7 +30,7 @@ public struct PhotoView: View {
     
     @MainActor
     private var shouldShowPlaceholder: Bool {
-        if UIApplication.shared.isRunningTests {
+        if isRunningTests {
             return true
         } else if reasons.isEmpty == false {
             return true
@@ -59,11 +59,23 @@ public struct PhotoView: View {
                 }
             }
         case .image(let image):
+            #if canImport(UIKit)
             Image(uiImage: image)
                 .resizable()
+            #elseif canImport(AppKit)
+            Image(nsImage: image)
+            #endif
         default:
             placeholder
         }
+    }
+    
+    @MainActor var isRunningTests: Bool {
+        #if canImport(UIKit)
+        UIApplication.shared.isRunningTests
+        #elseif canImport(AppKit)
+        false
+        #endif
     }
 }
 

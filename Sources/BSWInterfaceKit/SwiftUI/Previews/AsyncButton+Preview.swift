@@ -1,6 +1,6 @@
 import SwiftUI
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
   AsyncButton {
       try await Task.sleep(for: .seconds(1.5))

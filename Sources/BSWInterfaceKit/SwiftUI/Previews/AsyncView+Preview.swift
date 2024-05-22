@@ -4,14 +4,14 @@ import SwiftUI
 /// Example of how to reload `AsyncView`
 /// when the ID of the operation changes.
 
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13, *)
 struct AsyncContentView_Previews: PreviewProvider {
     static var previews: some View {
         AsyncContentView()
     }
 }
 
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13, *)
 private struct AsyncContentView: View {
     
     @State var asyncViewID: String = "default-value"

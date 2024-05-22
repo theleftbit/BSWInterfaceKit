@@ -7,7 +7,7 @@ let package = Package(
     name: "BSWInterfaceKit",
     platforms: [
         .iOS(.v15),
-        .macOS(.v12),
+        .macOS(.v13),
         .tvOS(.v14),
         .watchOS(.v7)
     ],
@@ -18,7 +18,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.16.0"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "6.0.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.1.0"),
     ],

@@ -12,5 +12,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         lfs: true
-    - name: Test BSWInterfaceKit
+    - name: Test BSWInterfaceKit iOS
       run: set -o pipefail && xcodebuild -scheme BSWInterfaceKit -destination "platform=iOS Simulator,name=iPhone 15,OS=17.5" -resultBundlePath TestResults.xcresult test | xcbeautify
+    - name: Build BSWInterfaceKit macOS
+      run: set -o pipefail && swift build | xcbeautify
