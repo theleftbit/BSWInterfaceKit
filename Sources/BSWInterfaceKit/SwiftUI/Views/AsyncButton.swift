@@ -13,7 +13,7 @@ public struct AsyncButton<Label: View>: View {
         self.label = label()
     }
     
-    public typealias Action = @Sendable () async throws -> Void
+    public typealias Action = () async throws -> Void
     public let action: Action
     public let label: Label
         

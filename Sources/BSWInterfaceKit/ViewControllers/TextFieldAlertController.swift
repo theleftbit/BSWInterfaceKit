@@ -26,7 +26,7 @@ public enum TextFieldAlertController {
         placeholder: String? = nil,
         initialValue: String? = nil,
         textContentType: UITextContentType? = nil,
-        actionValidator: @escaping @Sendable ((String) -> Bool) = { $0.count > 0 },
+        actionValidator: @escaping ((String) -> Bool) = { $0.count > 0 },
         onAction: @escaping (String?) -> (),
         onCancelAction: (() -> ())? = nil) -> UIViewController {
         let alertVC = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
