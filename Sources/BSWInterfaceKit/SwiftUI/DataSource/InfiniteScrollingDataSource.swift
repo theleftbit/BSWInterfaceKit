@@ -3,7 +3,7 @@
 import SwiftUI
 
 @MainActor
-open class InfiniteScrollingDataSource<ListItem: Identifiable>: ObservableObject {
+open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
     
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State

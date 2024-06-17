@@ -40,7 +40,7 @@ public struct PhotoView: View {
     
     @ViewBuilder
     private var placeholder: some View {
-        configuration.placeholder
+        configuration.placeholder.body()
     }
     
     @ViewBuilder
@@ -83,14 +83,13 @@ extension PhotoView {
         let aspectRatio: CGFloat?
         let contentMode: ContentMode
         
-        @MainActor
         public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit) {
             self.placeholder = placeholder
             self.aspectRatio = aspectRatio
             self.contentMode = contentMode
         }
         
-        public struct Placeholder: View {
+        public struct Placeholder {
             
             public init(shape: PhotoView.Configuration.Placeholder.Shape, color: Color = Color(RandomColorFactory.defaultColor)) {
                 self.shape = shape
@@ -104,7 +103,7 @@ extension PhotoView {
                 case circle, rectangle
             }
             
-            public var body: some View {
+            func body() -> some View {
                 Group {
                     switch self.shape {
                     case .circle:

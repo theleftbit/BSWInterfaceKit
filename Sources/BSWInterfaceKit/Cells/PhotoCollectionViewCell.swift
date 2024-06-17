@@ -8,13 +8,13 @@ import UIKit
 
 /// This View displays `Photo`s in a `UIScrollView` using `UIContentConfiguration` and `UIContentView`
 public enum PhotoCollectionViewCell {
-    struct Configuration: UIContentConfiguration, Hashable {
+    struct Configuration: UIContentConfiguration, Hashable, Sendable {
         
         let photo: Photo
         let imageContentMode: UIView.ContentMode
         let zoomEnabled: Bool
         
-        var state: UICellConfigurationState?
+        nonisolated(unsafe) var state: UICellConfigurationState?
         
         func makeContentView() -> UIView & UIContentView {
             View(configuration: self)

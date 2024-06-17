@@ -11,6 +11,7 @@ import BSWFoundation
 /// This class allows you generate `NSAttributedString`s that respect the user's [Dynamic Type](https://developer.apple.com/documentation/uikit/uifont/scaling_fonts_automatically/) setting.
 ///
 /// More info on how the fonts scale [here] (https://gist.github.com/zacwest/916d31da5d03405809c4)
+@MainActor
 open class TextStyler {
     
     /// Shared `TextStyler` that uses the system font.

@@ -63,7 +63,7 @@ extension SocialAuthenticationManager {
             return allScopes
         }
 
-        public struct Scope: OptionSet, CustomDebugStringConvertible {
+        public struct Scope: OptionSet, CustomDebugStringConvertible, Sendable {
             public let rawValue: Int
 
             public init(rawValue: Int) {

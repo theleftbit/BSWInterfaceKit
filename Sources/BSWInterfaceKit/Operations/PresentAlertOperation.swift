@@ -5,7 +5,7 @@
 
 import UIKit
 
-class PresentAlertOperation: Operation {
+class PresentAlertOperation: Operation, @unchecked Sendable {
 
     let title: String?
     let message: String?

@@ -20,11 +20,11 @@ import Nuke
 /// This represents an image to be displayed in the app.
 ///
 /// Please do not use this to represent Symbols, but rather large Bitmaps.
-public struct Photo {
+public struct Photo: Sendable {
     
     
     /// The source of the Photo.
-    public enum Kind {
+    public enum Kind: Sendable {
         /// The Photo is in a remote URL and there's an Optional `PlaceholderImage` to be shown while the Photo is loading.
         case url(Foundation.URL, placeholderImage: PlaceholderImage?)
         
@@ -73,12 +73,11 @@ public struct Photo {
     }
 }
 
-@MainActor
-public enum RandomColorFactory {
+public enum RandomColorFactory: @unchecked Sendable {
 
-    public static var isOn: Bool = true
+    public static nonisolated(unsafe) var isOn: Bool = true
 #if canImport(UIKit)
-    public static var defaultColor = UIColor(r: 255, g: 149, b: 0)
+    public static nonisolated(unsafe) var defaultColor = UIColor(r: 255, g: 149, b: 0)
     
     /// Generates a random pastel color
     /// - Returns: a UIColor
@@ -142,7 +141,7 @@ public extension Photo {
 }
 
 public extension Photo {
-    struct PlaceholderImage {
+    struct PlaceholderImage: Sendable {
         public let image: PlatformImage
         public let preferredContentMode: PlatformContentMode
         public init(image: PlatformImage, preferredContentMode: PlatformContentMode) {
@@ -162,7 +161,7 @@ extension Photo {
     }
 }
 
-extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
+extension CGSize: @retroactive Hashable { // For some reason `CGSize` isn't `Hashable`
     public func hash(into hasher: inout Hasher) {
         hasher.combine(width)
         hasher.combine(height)

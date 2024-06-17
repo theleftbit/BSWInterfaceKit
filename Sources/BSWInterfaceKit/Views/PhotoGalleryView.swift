@@ -28,11 +28,11 @@ public protocol PhotoGalleryViewDelegate: AnyObject {
 @objc(BSWPhotoGalleryView)
 final public class PhotoGalleryView: UIView {
     
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case main
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case photo(PhotoCollectionViewCell.Configuration)
     }
 
