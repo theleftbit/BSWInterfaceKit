@@ -18,7 +18,7 @@ public typealias MediaHandler = ((URL?) -> Void)
 @available(tvOS, unavailable)
 final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    public enum Kind {
+    public enum Kind: Sendable {
         case photo
         case video
         case thumbnail(CGSize)
@@ -48,7 +48,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case filesApp
     }
 
-    private struct Request {
+    private struct Request: Sendable {
         let kind: Kind
         let fromVC: UIViewController
         let cont: CheckedContinuation<URL?, Never>
@@ -180,20 +180,22 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             return
         }
         let _ = itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, _ in
-            guard let url = url else {
-                self.finishRequest(withURL: nil)
-                return
-            }
-            let targetURL = self.cachePathForMedia(currentRequest.kind)
-            let didSucceed: Bool = {
-                do {
-                    try self.fileManager.moveItem(at: url, to: targetURL)
-                    return true
-                } catch {
-                    return false
+            MainActor.assumeIsolated {
+                guard let url = url else {
+                    self.finishRequest(withURL: nil)
+                    return
                 }
-            }()
-            self.finishRequest(withURL: didSucceed ? targetURL : nil)
+                let targetURL = self.cachePathForMedia(currentRequest.kind)
+                let didSucceed: Bool = {
+                    do {
+                        try self.fileManager.moveItem(at: url, to: targetURL)
+                        return true
+                    } catch {
+                        return false
+                    }
+                }()
+                self.finishRequest(withURL: didSucceed ? targetURL : nil)
+            }
         }
     }
     
