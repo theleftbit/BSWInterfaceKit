@@ -24,23 +24,26 @@ extension EnvironmentObject {
 // MARK: - API
 
 extension EnvironmentObject.Optional {
-  @dynamicMemberLookup
-  @frozen
-  public struct Wrapper {
-    fileprivate let base: EnvironmentObject.Optional
     
-    public subscript<Subject>(dynamicMember keyPath: ReferenceWritableKeyPath<ObjectType, Subject>) -> Binding<Subject?> {
-      Binding<Subject?>(get: {
-        self.base.wrappedValue?[keyPath: keyPath]
-      }, set: {
-        if let newValue = $0 {
-          self.base.wrappedValue?[keyPath: keyPath] = newValue
-        } else {
-          assertionFailure("Cannot write back Optional.none to a non-Optional value.")
+    @MainActor
+    @dynamicMemberLookup
+    @frozen
+    public struct Wrapper {
+        
+        fileprivate let base: EnvironmentObject.Optional
+        
+        public subscript<Subject>(dynamicMember keyPath: ReferenceWritableKeyPath<ObjectType, Subject>) -> Binding<Subject?> {
+            Binding<Subject?>(get: {
+                self.base.wrappedValue?[keyPath: keyPath]
+            }, set: {
+                if let newValue = $0 {
+                    self.base.wrappedValue?[keyPath: keyPath] = newValue
+                } else {
+                    assertionFailure("Cannot write back Optional.none to a non-Optional value.")
+                }
+            })
         }
-      })
     }
-  }
 }
 
 // MARK: - Auxiliary
