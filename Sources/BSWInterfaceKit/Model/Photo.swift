@@ -161,7 +161,7 @@ extension Photo {
     }
 }
 
-extension CGSize: @retroactive Hashable { // For some reason `CGSize` isn't `Hashable`
+extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
     public func hash(into hasher: inout Hasher) {
         hasher.combine(width)
         hasher.combine(height)
