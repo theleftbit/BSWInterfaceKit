@@ -73,6 +73,7 @@ public struct Photo {
     }
 }
 
+@MainActor
 public enum RandomColorFactory {
 
     public static var isOn: Bool = true

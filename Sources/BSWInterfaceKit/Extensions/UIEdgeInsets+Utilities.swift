@@ -22,7 +22,7 @@ extension UIEdgeInsets {
 }
 
 //: Credit to [Adam Sharp](https://twitter.com/sharplet) & [Daniel Jalkut](https://twitter.com/danielpunkass)
-extension UIEdgeInsets: ExpressibleByDictionaryLiteral {
+extension UIEdgeInsets: @retroactive ExpressibleByDictionaryLiteral {
     public typealias Key = EdgeKey
     public typealias Value = CGFloat
 

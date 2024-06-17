@@ -42,7 +42,9 @@ extension UIStackView {
             ])
             
             hiddenObserver = subview.observe(\.isHidden, changeHandler: { [weak self] (view, _) in
-                self?.isHidden = view.isHidden
+                MainActor.assumeIsolated {
+                    self?.isHidden = view.isHidden
+                }
             })
         }
         
