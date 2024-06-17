@@ -14,7 +14,7 @@ import UIKit
  })
   ```
  */
-open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: PagingCollectionViewItem>:
+open class PagingCollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: PagingCollectionViewItem>:
     CollectionViewDiffableDataSource<Section, Item> {
         
     private var offsetObserver: NSKeyValueObservation?
@@ -37,7 +37,7 @@ open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: Pagin
 /// `PagingCollectionViewDiffableDataSource`
 /// forcing that Item to accomodate a `loading` option,
 /// which will be displayed during paging
-public protocol PagingCollectionViewItem: Hashable {
+public protocol PagingCollectionViewItem: Hashable & Sendable {
     var isLoading: Bool { get }
     static func loadingItem() -> Self
 }

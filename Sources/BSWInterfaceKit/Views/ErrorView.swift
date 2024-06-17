@@ -12,6 +12,7 @@ import BSWFoundation
 open class ErrorView: UIStackView {
     
     /// The configuration that will be used to generate an `ErrorView`
+    @MainActor
     public struct Configuration {
         public let title: NSAttributedString
         public let message: NSAttributedString?
@@ -48,6 +49,7 @@ open class ErrorView: UIStackView {
         }
     }
     
+    @MainActor
     public enum Appereance {
         static public var Spacing: CGFloat = 10
     }

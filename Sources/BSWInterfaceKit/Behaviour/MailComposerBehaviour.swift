@@ -9,6 +9,7 @@
 import UIKit
 import MessageUI
 
+@MainActor
 final public class MessageComposerBehavior: NSObject, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate {
     public static let composer = MessageComposerBehavior()
         
@@ -40,13 +41,16 @@ final public class MessageComposerBehavior: NSObject, MFMailComposeViewControlle
         return smsVC
     }
 
-    public func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
+    public nonisolated func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        MainActor.assumeIsolated {
+            controller.dismiss(animated: true, completion: nil)
+        }
     }
     
-    public func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
-
-        controller.dismiss(animated: true, completion: nil)
+    public nonisolated func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        MainActor.assumeIsolated {
+            controller.dismiss(animated: true, completion: nil)
+        }
     }
 }
 

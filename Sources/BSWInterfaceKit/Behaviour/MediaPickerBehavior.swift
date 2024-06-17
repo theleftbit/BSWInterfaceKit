@@ -14,6 +14,7 @@ import PhotosUI
 
 public typealias MediaHandler = ((URL?) -> Void)
 
+@MainActor
 @available(tvOS, unavailable)
 final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 

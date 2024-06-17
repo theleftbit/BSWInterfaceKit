@@ -8,6 +8,7 @@ import NukeUI
 /// Displays a `Photo` in `SwiftUI`
 public struct PhotoView: View {
     
+    @MainActor
     public init(photo: Photo, configuration: PhotoView.Configuration = .init()) {
         self.photo = photo
         self.configuration = configuration
@@ -81,6 +82,7 @@ public struct PhotoView: View {
 
 extension PhotoView {
         
+    @MainActor
     public struct Configuration {
         let placeholder: Placeholder
         let aspectRatio: CGFloat?

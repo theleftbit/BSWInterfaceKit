@@ -38,7 +38,7 @@ public struct AsyncButton<Label: View>: View {
                     }
                 } else {
                     Task {
-                        await performAction(forIOS16: true)
+                        await performAction(forLegacyOS: true)
                     }
                 }
             },
@@ -57,7 +57,7 @@ public struct AsyncButton<Label: View>: View {
     }
     
     @MainActor
-    private func performAction(forIOS16: Bool = false) async {
+    private func performAction(forLegacyOS: Bool = false) async {
         
         #if canImport(UIKit)
         var hudVC: UIViewController?
@@ -66,7 +66,7 @@ public struct AsyncButton<Label: View>: View {
         }
         #endif
         
-        if forIOS16 {
+        if forLegacyOS {
             withAnimation {
                 self.state = .loading
             }

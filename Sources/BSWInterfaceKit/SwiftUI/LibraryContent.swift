@@ -1,7 +1,10 @@
 
 import SwiftUI
 
+#warning("TODO")
+/*
 struct BSWInterfaceKit_SwiftUILibrary: LibraryContentProvider {
+    
     public var views: [LibraryItem] {
         return [
             LibraryItem(PhotoView(photo: .emptyPhoto()), title: "Photo View", category: .other, matchingSignature: "photovie"),
@@ -9,3 +12,4 @@ struct BSWInterfaceKit_SwiftUILibrary: LibraryContentProvider {
         ]
     }
 }
+*/

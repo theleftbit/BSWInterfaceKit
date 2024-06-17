@@ -7,6 +7,7 @@ import BSWFoundation
 
 public extension UICollectionViewCell {
 
+    @MainActor
     enum WiggleAppearance {
         public static var Spacing: CGFloat = 7
         public static var DeleteButtonImage: UIImage?
@@ -16,6 +17,7 @@ public extension UICollectionViewCell {
         fileprivate static let DeleteButtonTag = 876
     }
 
+    @MainActor
     private enum AssociatedBlockHost {
         static var handlerHost: UInt8 = 0
     }

@@ -5,10 +5,11 @@ import BSWFoundation
 
 /// This `UICollectionViewDiffableDataSource` subclass adds a
 /// simple way to handle Pull to Refresh and empty views.
-open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
+open class CollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: Hashable & Sendable>:
     UICollectionViewDiffableDataSource<Section, Item>  {
     
     /// This type describes what to do when the `dataSource` is empty.
+    @MainActor
     public enum EmptyConfiguration {
         /// Displays the given `UIView`
         case view(UIView)
@@ -42,7 +43,9 @@ open class CollectionViewDiffableDataSource<Section: Hashable, Item: Hashable>:
         guard let emptyView = emptyView else {
             return
         }
-        emptyView.removeFromSuperview()
+        MainActor.assumeIsolated {
+            emptyView.removeFromSuperview()
+        }
     }
     
     /// Specifies what to do when the `dataSource` is empty.

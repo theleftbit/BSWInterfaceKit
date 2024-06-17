@@ -236,11 +236,13 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
     }
     
     class RangeSliderThumbLayer: CALayer {
+        
         weak var rangeSlider: RangeSlider?
         var highlighted: Bool = false {
             didSet { setNeedsDisplay() }
         }
         
+        @MainActor
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
                 let thumbFrame = bounds.insetBy(dx: 2.0, dy: 2.0)
@@ -273,6 +275,7 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         weak var rangeSlider: RangeSlider?
         private let heightTrackLine: CGFloat = 3
         
+        @MainActor
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
                 // Clip
