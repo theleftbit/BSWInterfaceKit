@@ -22,7 +22,6 @@ import Nuke
 /// Please do not use this to represent Symbols, but rather large Bitmaps.
 public struct Photo: Sendable {
     
-    
     /// The source of the Photo.
     public enum Kind: Sendable {
         /// The Photo is in a remote URL and there's an Optional `PlaceholderImage` to be shown while the Photo is loading.
