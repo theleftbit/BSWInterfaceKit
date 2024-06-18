@@ -87,10 +87,11 @@ extension SocialAuthenticationManager {
 extension SocialAuthenticationManager.FacebookCredentials: SocialAuthenticationCredentials {
 
     public func createURLRequest(isSafariVC: Bool) -> URL {
-
         let redirectURI = "fb\(appID)://authorize/"
-        guard UIApplication.shared.canOpenURL(URL(string: redirectURI)!) else {
-            fatalError("Please add this URL Scheme")
+        Task {
+            guard await UIApplication.shared.canOpenURL(URL(string: redirectURI)!) else {
+                fatalError("Please add this URL Scheme")
+            }
         }
 
         var queryItems: [URLQueryItem] = [

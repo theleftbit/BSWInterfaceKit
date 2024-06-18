@@ -20,6 +20,7 @@ open class ContainerViewController: UIViewController {
         case pinToSafeArea
     }
     
+    @MainActor
     public enum Appereance {
         static public var BackgroundColor: UIColor = .clear
     }
