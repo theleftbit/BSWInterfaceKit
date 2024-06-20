@@ -73,22 +73,17 @@ public struct AsyncButton<Label: View>: View {
             }
         }
         
-        let result = await Swift.Result(catching: {
+        do {
             try await action()
-        })
+        } catch {
+            self.error = error
+        }
 
         #if canImport(UIKit)
         if loadingConfiguration.isBlocking {
             await hudVC?.dismiss(animated: true)
         }
         #endif
-
-        switch result {
-        case .success:
-            break
-        case .failure(let failure):
-            self.error = failure
-        }
         
         withAnimation {
             self.state = .idle
