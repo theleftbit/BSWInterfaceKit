@@ -5,6 +5,8 @@ import UIKit
 @MainActor
 public enum TextFieldAlertController {
     
+    public typealias ActionValidator = @Sendable (String) -> Bool
+    
     /// Creates an alert with a `UITextField` to capture user input.
     /// - Parameters:
     ///   - title: The title of the alert
@@ -26,7 +28,7 @@ public enum TextFieldAlertController {
         placeholder: String? = nil,
         initialValue: String? = nil,
         textContentType: UITextContentType? = nil,
-        actionValidator: @escaping ((String) -> Bool) = { $0.count > 0 },
+        actionValidator: @escaping ActionValidator = { $0.count > 0 },
         onAction: @escaping (String?) -> (),
         onCancelAction: (() -> ())? = nil) -> UIViewController {
         let alertVC = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
@@ -67,4 +69,5 @@ public enum TextFieldAlertController {
         return alertVC
     }
 }
+
 #endif

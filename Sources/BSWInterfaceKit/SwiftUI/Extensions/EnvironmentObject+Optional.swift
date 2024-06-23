@@ -2,23 +2,25 @@
 import SwiftUI
 
 extension EnvironmentObject {
-  /// An `@EnvironmentObject` wrapper that affords `Optional`-ity to environment objects.
-  @propertyWrapper
-  public struct Optional: DynamicProperty {
-    @EnvironmentObject private var _wrappedValue: ObjectType
-    
-    public var wrappedValue: ObjectType? {
-      __wrappedValue.___isEnvironmentObjectPresent ? _wrappedValue : nil
+    /// An `@EnvironmentObject` wrapper that affords `Optional`-ity to environment objects.
+    @propertyWrapper
+    @MainActor
+    public struct Optional: DynamicProperty {
+        
+        @EnvironmentObject private var _wrappedValue: ObjectType
+        
+        public var wrappedValue: ObjectType? {
+            __wrappedValue.___isEnvironmentObjectPresent ? _wrappedValue : nil
+        }
+        
+        public var projectedValue: Wrapper {
+            .init(base: self)
+        }
+        
+        public init() {
+            
+        }
     }
-    
-    public var projectedValue: Wrapper {
-      .init(base: self)
-    }
-    
-    public init() {
-      
-    }
-  }
 }
 
 // MARK: - API
@@ -49,14 +51,14 @@ extension EnvironmentObject.Optional {
 // MARK: - Auxiliary
 
 private extension EnvironmentObject {
-  var ___isEnvironmentObjectPresent: Bool {
-    let mirror = Mirror(reflecting: self)
-    let _store = mirror.children.first(where: { $0.label == "_store" })
-    
-    guard let _store else {
-      return false
+    nonisolated var ___isEnvironmentObjectPresent: Bool {
+        let mirror = Mirror(reflecting: self)
+        let _store = mirror.children.first(where: { $0.label == "_store" })
+        
+        guard let _store else {
+            return false
+        }
+        
+        return (_store.value as? ObjectType) != nil
     }
-    
-    return (_store.value as? ObjectType) != nil
-  }
 }

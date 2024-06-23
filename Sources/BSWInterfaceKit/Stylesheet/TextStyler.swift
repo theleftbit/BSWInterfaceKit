@@ -60,8 +60,8 @@ open class TextStyler: @unchecked Sendable {
         // Make sure the trait collection we apply
         // is within the user's accepted bounds
         let traitCollection: UITraitCollection? = {
-            guard !UIApplication.shared.isRunningTests else { return nil }
-            let userSelectedTrait = UIApplication.shared.preferredContentSizeCategory
+            guard !isRunningTests else { return nil }
+            let userSelectedTrait = UITraitCollection.current.preferredContentSizeCategory
             if userSelectedTrait < minContentSizeSupported {
                 return UITraitCollection(preferredContentSizeCategory: minContentSizeSupported)
             } else if userSelectedTrait > maxContentSizeSupported {
@@ -79,6 +79,14 @@ open class TextStyler: @unchecked Sendable {
             return systemFont
         }
     }
+}
+
+private var isRunningTests: Bool {
+#if DEBUG
+    return NSClassFromString("XCTest") != nil
+#else
+    return false
+#endif
 }
 
 #endif
