@@ -1,7 +1,7 @@
 #if canImport(UIKit)
 
 import XCTest
-@preconcurrency import SnapshotTesting
+import SnapshotTesting
 import BSWInterfaceKit
 
 /// XCTestCase subclass to ease snapshot testing

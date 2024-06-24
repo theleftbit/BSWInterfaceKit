@@ -6,6 +6,7 @@ import XCTest
 
 class UIViewControllerTests: BSWSnapshotTest {
 
+    @MainActor
     func testInitialLayoutCallback() {
         let sut = TestViewController()
         rootViewController = sut
@@ -17,6 +18,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(sut.viewInitialLayoutDidCompleteCalled)
     }
     
+    @MainActor
     func testChildViewController() {
         let parentVC = UIViewController()
         let childVC = UIViewController()
@@ -26,6 +28,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(!parentVC.children.contains(childVC))
     }
     
+    @MainActor
     func testAddBottomActionButton() {
         guard UIDevice.current.model != "iPad" else { return }
         let buttonHeight: CGFloat = 50
@@ -35,6 +38,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == buttonHeight)
     }
 
+    @MainActor
     func testAddBottomActionButtonWithMargin() {
         guard UIDevice.current.model != "iPad" else { return }
         let buttonHeight: CGFloat = 50
@@ -45,6 +49,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == (buttonHeight + padding))
     }
 
+    @MainActor
     func testAddBottomController() {
         let vc = bottomViewControllerContainer()
         waitABitAndVerify(viewController: vc, testDarkMode: false)
@@ -52,6 +57,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(vc.containedViewController.bottomContainerViewController == vc)
     }
     
+    @MainActor
     func testAddBottomActionButtonIntrinsicSizeCalculable() {
         
         let buttonHeight: CGFloat = 60
@@ -67,6 +73,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         XCTAssert(constrainedHeight == simulatedContentSize.height + buttonHeight)
     }
     
+    @MainActor
     func testErrorView() {
         let vc = TestViewController()
         var buttonConfig = UIButton.Configuration.plain()
@@ -75,12 +82,14 @@ class UIViewControllerTests: BSWSnapshotTest {
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
     
+    @MainActor
     func testLoadingView() {
         let vc = TestViewController()
         vc.showLoadingView(UIViewControllerTests.loadingView())
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
+    @MainActor
     static func loadingView() -> UIView {
         // This is a dummy black box to aid snapshot tests
         // because since UIActivityControllers move,
@@ -117,7 +126,8 @@ private class TestViewController: UIViewController {
     }
 }
 
-func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) -> BottomContainerViewController {
+@MainActor
+private func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) -> BottomContainerViewController {
     let containedViewController = TestViewController()
     var config = UIButton.Configuration.filled()
     config.title = "Send Wink"
@@ -129,7 +139,8 @@ func bottomViewController(margins: UIEdgeInsets = .zero, buttonHeight: CGFloat) 
     return BottomContainerViewController(containedViewController: containedViewController, button: button, margins: margins)
 }
 
-func bottomViewControllerContainer() -> BottomContainerViewController {
+@MainActor
+private func bottomViewControllerContainer() -> BottomContainerViewController {
     @objc(BSWInterfaceKitTestsTopVC)
     class TopVC: UIViewController {
         override func viewDidLoad() {
