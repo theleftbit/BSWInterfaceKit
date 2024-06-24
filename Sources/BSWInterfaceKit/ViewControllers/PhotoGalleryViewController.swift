@@ -6,6 +6,7 @@
 
 import UIKit
 
+@MainActor
 public protocol PhotoGalleryViewControllerDelegate: AnyObject {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }

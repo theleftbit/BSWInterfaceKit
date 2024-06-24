@@ -4,6 +4,8 @@ import BSWInterfaceKit
 import XCTest
 
 class ContentViewTests: BSWSnapshotTest {
+    
+    @MainActor
     func testLayout() throws {
         let vc = ViewController()
         waitABitAndVerify(viewController: vc, testDarkMode: false)

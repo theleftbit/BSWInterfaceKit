@@ -1,11 +1,10 @@
 #if canImport(UIKit)
 
 import XCTest
-import SnapshotTesting
+@preconcurrency import SnapshotTesting
 import BSWInterfaceKit
 
 /// XCTestCase subclass to ease snapshot testing
-@MainActor
 open class BSWSnapshotTest: XCTestCase {
 
     public let waiter = XCTWaiter()
@@ -13,6 +12,7 @@ open class BSWSnapshotTest: XCTestCase {
     public var recordMode = false
     let defaultPerceptualPrecision: Float = 0.997
 
+    @MainActor
     open override func setUp() {
         super.setUp()
         
@@ -25,8 +25,10 @@ open class BSWSnapshotTest: XCTestCase {
         }
     }
 
+    @MainActor
     private let currentWindow = UIWindow()
 
+    @MainActor
     public var rootViewController: UIViewController? {
         get {
             return currentWindow.rootViewController
@@ -41,12 +43,14 @@ open class BSWSnapshotTest: XCTestCase {
     }
 
     /// Add the view controller on the window and wait infinitly
+    @MainActor
     public func debug(viewController: UIViewController) {
         rootViewController = viewController
         let exp = expectation(description: "No expectation")
         let _ = waiter.wait(for: [exp], timeout: 1000)
     }
     
+    @MainActor
     public func debug(view: UIView) {
         let vc = UIViewController()
         vc.view.backgroundColor = .white
@@ -56,6 +60,7 @@ open class BSWSnapshotTest: XCTestCase {
 
     /// Presents the VC using a fresh rootVC in the host's main window.
     /// - note: This method blocks the calling thread until the presentation is finished.
+    @MainActor
     public func presentViewController(_ viewController: UIViewController) {
         let exp = expectation(description: "Presentation")
         rootViewController = UIViewController()
@@ -89,6 +94,7 @@ open class BSWSnapshotTest: XCTestCase {
 
     /// Sets this VC as the rootVC of the current window and snapshots it after some time.
     /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
+    @MainActor
     public func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #file, testName: String = #function) {
         rootViewController = viewController
         
@@ -116,12 +122,14 @@ open class BSWSnapshotTest: XCTestCase {
 
     /// Snapshots the passed view.
     /// - note: Remember to set the `frame` or `intrinsicContentSize` for the passed view.
+    @MainActor
     public func verify(view: UIView, file: StaticString = #file, testName: String = #function) {
         let currentSimulatorScale = Int(UIScreen.main.scale)
         assertSnapshot(matching: view, as: .image, named: "\(currentSimulatorScale)x", record: self.recordMode, file: file, testName: testName)
     }
 
     /// Snapshots the entire scrollView's `contentSize`
+    @MainActor
     public func verify(scrollView: UIScrollView, file: StaticString = #file, testName: String = #function) {
         /// First, set a ridiculous frame and do a fake layout pass.
         /// Some views seem to need this to get their shit togheter
@@ -138,11 +146,13 @@ open class BSWSnapshotTest: XCTestCase {
         verify(view: scrollView, file: file, testName: testName)
     }
 
+    @MainActor
     public func verify(attributedString: NSAttributedString, file: StaticString = #file, testName: String = #function) {
         let currentSimulatorScale = Int(UIScreen.main.scale)
         assertSnapshot(matching: attributedString, as: .image, named: "\(currentSimulatorScale)x", file: file, testName: testName)
     }
    
+    @MainActor
     public func verify<View: ViewModelConfigurable & UIViewController>(viewController: View, vm: View.VM, file: StaticString = #file, testName: String = #function) {
         viewController.configureFor(viewModel: vm)
         let estimatedSize = viewController.view.systemLayoutSizeFitting(
@@ -154,6 +164,7 @@ open class BSWSnapshotTest: XCTestCase {
         verify(view: viewController.view, file: file, testName: testName)
     }
 
+    @MainActor
     public func verify<View: ViewModelConfigurable & UIView>(view: View, vm: View.VM, file: StaticString = #file, testName: String = #function) {
         view.configureFor(viewModel: vm)
         
@@ -173,6 +184,7 @@ open class BSWSnapshotTest: XCTestCase {
         verify(view: view, file: file, testName: testName)
     }
     
+    @MainActor
     public func verify<View: IntrinsicSizeCalculable & UIViewController>(viewController: View, file: StaticString = #file, testName: String = #function) {
         let estimatedHeight = viewController.heightConstrainedTo(width: defaultWidth)
         viewController.view.frame.size = .init(width: defaultWidth, height: estimatedHeight)
@@ -205,6 +217,7 @@ private extension UIScreen {
 
 
 extension Snapshotting where Value == NSAttributedString, Format == UIImage {
+    @MainActor
     public static let image: Snapshotting = Snapshotting<UIView, UIImage>.image.pullback { string in
         let label = UILabel()
         label.attributedText = string

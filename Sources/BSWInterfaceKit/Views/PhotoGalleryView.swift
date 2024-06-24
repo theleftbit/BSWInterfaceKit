@@ -17,7 +17,7 @@ import BSWFoundation
 }
 
 // MARK: PhotoGalleryViewDelegate protocol
-
+@MainActor
 public protocol PhotoGalleryViewDelegate: AnyObject {
     func didTapPhotoAt(index: Int, fromView: UIView)
 }

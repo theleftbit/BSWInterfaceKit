@@ -9,16 +9,19 @@ import BSWInterfaceKit
 
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
     
+    @MainActor
     func testLayout() {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout())
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
+    @MainActor
     func testCenteredLayout() {
         let vc = PlanSelectorViewController()
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
+    @MainActor
     func testAvailableWidthLayout() {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout(itemSizing: .usingAvailableWidth(margin: 60)))
         waitABitAndVerify(viewController: vc, testDarkMode: false)
@@ -27,11 +30,11 @@ class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
 
 private class ViewController: UIViewController {
     
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case main
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case cell(PageCell.Configuration)
     }
     
@@ -102,12 +105,12 @@ private enum ModuleConstants {
 }
 
 private enum PageCell {
-    struct Configuration: UIContentConfiguration, Hashable {
+    struct Configuration: UIContentConfiguration, Hashable, Sendable {
         
         let id = UUID().uuidString
         let photo: Photo
         
-        var state: UICellConfigurationState?
+        nonisolated(unsafe) var state: UICellConfigurationState?
         
         func makeContentView() -> UIView & UIContentView {
             View(configuration: self)

@@ -345,11 +345,11 @@ private class ColumnFlowLayout: UICollectionViewLayout {
 private class PolaroidCollectionViewCell: UICollectionViewCell, ViewModelReusable {
 
     //MARK: ViewModel
-    public struct VM: Hashable {
+    public struct VM: Hashable, Sendable {
         public let id: Int?
         public let cellImage: Photo
-        public let cellTitle: NSAttributedString
-        public let cellDetails: NSAttributedString
+        public nonisolated(unsafe) let cellTitle: NSAttributedString
+        public nonisolated(unsafe) let cellDetails: NSAttributedString
 
         public init(id: Int? = nil, cellImage: Photo, cellTitle: NSAttributedString, cellDetails: NSAttributedString) {
             self.id = id

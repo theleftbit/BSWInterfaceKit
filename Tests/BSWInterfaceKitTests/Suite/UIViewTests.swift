@@ -26,17 +26,20 @@ class UIViewTests: BSWSnapshotTest {
         childView.centerInSuperview()
     }
     
+    @MainActor
     override func tearDown() {
         super.tearDown()
         hostView.removeAllConstraints()
         childView.removeAllConstraints()
     }
 
+    @MainActor
     func testFillSuperview() {
         childView.fillSuperview(withMargin: 5)
         verify(view: hostView)
     }
 
+    @MainActor
     func testFillSuperviewLayoutMargins() {
         hostView.layoutMargins = .init(uniform: 10)
         childView.pinToSuperviewLayoutMargins()
@@ -44,10 +47,12 @@ class UIViewTests: BSWSnapshotTest {
         hostView.layoutMargins = .zero
     }
 
+    @MainActor
     func testCenterInSuperview() {
         verify(view: hostView)
     }
 
+    @MainActor
     func testRoundedCorners() {
         childView.roundCorners()
         verify(view: hostView)

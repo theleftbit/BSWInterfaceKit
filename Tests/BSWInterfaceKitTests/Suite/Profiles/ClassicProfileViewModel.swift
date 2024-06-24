@@ -7,11 +7,11 @@
 import UIKit
 import BSWInterfaceKit
 
-public struct ClassicProfileViewModel {
+public struct ClassicProfileViewModel: Sendable {
     public let photos: [Photo]
-    public let titleInfo: NSAttributedString
-    public let detailsInfo: NSAttributedString
-    public let extraInfo: [NSAttributedString]
+    public nonisolated(unsafe) let titleInfo: NSAttributedString
+    public nonisolated(unsafe) let detailsInfo: NSAttributedString
+    public nonisolated(unsafe) let extraInfo: [NSAttributedString]
     
     public init(photos: [Photo], titleInfo: NSAttributedString, detailsInfo: NSAttributedString, extraInfo: [NSAttributedString]) {
         self.photos = photos

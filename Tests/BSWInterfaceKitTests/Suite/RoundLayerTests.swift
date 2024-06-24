@@ -8,6 +8,7 @@ import XCTest
 
 class RoundLayerTests: BSWSnapshotTest {
     
+    @MainActor
     func testLayout() {
         let sut = RoundView()
         verify(view: sut)

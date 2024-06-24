@@ -9,6 +9,7 @@ import UIKit
 
 class CardPresentationViewControllerTests: BSWSnapshotTest {
 
+    @MainActor
     func _testSampleLayout() {
         let navVC = UINavigationController(rootViewController: SampleVC())
         debug(viewController: navVC)
