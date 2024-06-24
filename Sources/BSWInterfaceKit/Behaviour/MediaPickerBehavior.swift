@@ -17,7 +17,7 @@ public typealias MediaHandler = ((URL?) -> Void)
 @MainActor
 @available(tvOS, unavailable)
 final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
+    
     public enum Kind: Sendable {
         case photo
         case video
@@ -47,7 +47,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         case camera
         case filesApp
     }
-
+    
     private struct Request: Sendable {
         let kind: Kind
         let fromVC: UIViewController
@@ -55,8 +55,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     }
     
     private var currentRequest: Request?
-    private let fileManager = FileManager.default
- 
+    
     public func getMedia(fromVC: UIViewController, kind: Kind = .photo, source: Source = .photoAlbum) async -> URL? {
         
         guard self.currentRequest == nil else {
@@ -122,7 +121,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         guard let currentRequest = self.currentRequest, let url = urls.first else { return }
         let targetURL = cachePathForMedia(currentRequest.kind)
         do {
-            try self.fileManager.moveItem(at: url, to: targetURL)
+            try self.fileManager().moveItem(at: url, to: targetURL)
             self.finishRequest(withURL: targetURL, shouldDismissVC: false)
         } catch {
             self.finishRequest(withURL: nil, shouldDismissVC: false)
@@ -179,27 +178,31 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             self.finishRequest(withURL: nil)
             return
         }
+        let targetURL = self.cachePathForMedia(currentRequest.kind)
         let _ = itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, _ in
-            MainActor.assumeIsolated {
-                guard let url = url else {
-                    self.finishRequest(withURL: nil)
-                    return
+            let finalURL: URL?
+            if let url {
+                do {
+                    try self.fileManager().moveItem(at: url, to: targetURL)
+                    finalURL = targetURL
+                } catch {
+                    print("Error figuring this out")
+                    finalURL = nil
                 }
-                let targetURL = self.cachePathForMedia(currentRequest.kind)
-                let didSucceed: Bool = {
-                    do {
-                        try self.fileManager.moveItem(at: url, to: targetURL)
-                        return true
-                    } catch {
-                        return false
-                    }
-                }()
-                self.finishRequest(withURL: didSucceed ? targetURL : nil)
+            } else {
+                finalURL = nil
+            }
+            Task {
+                await self.finishRequest(withURL: finalURL)
             }
         }
     }
     
     // MARK: Private
+    @Sendable
+    private nonisolated func fileManager() -> FileManager {
+        .default
+    }
 
     private func handleFilesAppRequest(kind: Kind) -> UIViewController? {
         let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: true)
@@ -250,7 +253,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     }
     
     private func cachePathForMedia(_ kind: Kind) -> URL {
-        let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+        let cachesDirectory = fileManager().urls(for: .cachesDirectory, in: .userDomainMask)[0]
         return cachesDirectory.appendingPathComponent("\(UUID().uuidString).\(kind.pathExtension())")
     }
     
