@@ -19,7 +19,9 @@ final public class UpdatePageControlOnScrollBehavior: NSObject {
         super.init()
 
         observation = scrollView.observe(\.contentOffset) { [weak self] (scrollView, _) in
-            self?.scrollViewDidScroll(scrollView)
+            MainActor.assumeIsolated {
+                self?.scrollViewDidScroll(scrollView)
+            }
         }
     }
 
@@ -31,13 +33,7 @@ final public class UpdatePageControlOnScrollBehavior: NSObject {
         case horizontal, vertical
     }
 
-    nonisolated func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        MainActor.assumeIsolated {
-            _scrollViewDidScroll(scrollView)
-        }
-    }
-    
-    private func _scrollViewDidScroll(_ scrollView: UIScrollView) {
+    private func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let pageControl = pageControl else { return }
         
         let isScrollingHorizontal = scrollingDirection == .horizontal
