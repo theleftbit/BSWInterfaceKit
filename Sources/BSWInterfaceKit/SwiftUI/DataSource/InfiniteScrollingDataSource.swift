@@ -2,6 +2,8 @@
 
 import SwiftUI
 
+/// As of iOS 18 and aligned releases, this is no longer recommended as there are cleaner
+/// alternatives https://x.com/Dimillian/status/1805192932225437975
 @MainActor
 open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
     
