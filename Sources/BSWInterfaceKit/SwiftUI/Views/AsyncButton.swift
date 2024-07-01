@@ -28,18 +28,8 @@ public struct AsyncButton<Label: View>: View {
     public var body: some View {
         Button(
             action: {
-                if #available(iOS 17.0, macOS 14, *) {
-                    withAnimation {
-                        self.state = .loading
-                    } completion: {
-                        Task {
-                            await performAction()
-                        }
-                    }
-                } else {
-                    Task {
-                        await performAction(forIOS16: true)
-                    }
+                withAnimation {
+                    self.state = .loading
                 }
             },
             label: {
@@ -54,10 +44,15 @@ public struct AsyncButton<Label: View>: View {
         )
         .disabled((state == .loading) || (error != nil))
         .errorAlert(error: $error)
+        .task(id: state) {
+            if state == .loading {
+                await performAction()
+            }
+        }
     }
     
     @MainActor
-    private func performAction(forIOS16: Bool = false) async {
+    private func performAction() async {
         
         #if canImport(UIKit)
         var hudVC: UIViewController?
@@ -65,13 +60,7 @@ public struct AsyncButton<Label: View>: View {
             hudVC = await presentHUDViewController()
         }
         #endif
-        
-        if forIOS16 {
-            withAnimation {
-                self.state = .loading
-            }
-        }
-        
+                
         let result = await Swift.Result(catching: {
             try await action()
         })
