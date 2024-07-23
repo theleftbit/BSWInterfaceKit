@@ -46,6 +46,7 @@ private struct ContentView: View {
 
 public extension View {
     
+    @available(iOS, deprecated: 16.4, message: "Use presentationCompactAdaptation(horizontal:vertical:) instead.")
     func alwaysPopover<Content: View, Value: Identifiable>(id: Value.ID, isPresented: Binding<Value?>, @ViewBuilder content: @escaping () -> Content) -> some View {
         self.modifier(AlwaysPopoverModifier(id: id, isPresented: isPresented, contentBlock: content))
     }
