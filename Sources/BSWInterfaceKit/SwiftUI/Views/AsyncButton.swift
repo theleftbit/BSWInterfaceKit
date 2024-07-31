@@ -29,18 +29,8 @@ public struct AsyncButton<Label: View>: View {
     public var body: some View {
         Button(
             action: {
-                if #available(iOS 17.0, macOS 14, *) {
-                    withAnimation {
-                        self.state = .loading
-                    } completion: {
-                        Task {
-                            await performAction()
-                        }
-                    }
-                } else {
-                    Task {
-                        await performAction(forLegacyOS: true)
-                    }
+                withAnimation {
+                    self.state = .loading
                 }
             },
             label: {
@@ -55,10 +45,15 @@ public struct AsyncButton<Label: View>: View {
         )
         .disabled((state == .loading) || (error != nil))
         .errorAlert(error: $error)
+        .task(id: state) {
+            if state == .loading {
+                await performAction()
+            }
+        }
     }
     
     @MainActor
-    private func performAction(forLegacyOS: Bool = false) async {
+    private func performAction() async {
         
         #if canImport(UIKit)
         var hudVC: UIViewController?
@@ -66,24 +61,23 @@ public struct AsyncButton<Label: View>: View {
             hudVC = await presentHUDViewController()
         }
         #endif
-        
-        if forLegacyOS {
-            withAnimation {
-                self.state = .loading
-            }
-        }
-        
-        do {
+                
+        let result = await Swift.Result(catching: {
             try await action()
-        } catch {
-            self.error = error
-        }
+        })
 
         #if canImport(UIKit)
         if loadingConfiguration.isBlocking {
             await hudVC?.dismiss(animated: true)
         }
         #endif
+
+        switch result {
+        case .success:
+            break
+        case .failure(let failure):
+            self.error = failure
+        }
         
         withAnimation {
             self.state = .idle
