@@ -11,7 +11,7 @@ import BSWFoundation
 /// This class allows you generate `NSAttributedString`s that respect the user's [Dynamic Type](https://developer.apple.com/documentation/uikit/uifont/scaling_fonts_automatically/) setting.
 ///
 /// More info on how the fonts scale [here] (https://gist.github.com/zacwest/916d31da5d03405809c4)
-open class TextStyler {
+open class TextStyler: @unchecked Sendable {
     
     /// Shared `TextStyler` that uses the system font.
     public static let styler = TextStyler(fontDescriptor: nil)
@@ -60,8 +60,8 @@ open class TextStyler {
         // Make sure the trait collection we apply
         // is within the user's accepted bounds
         let traitCollection: UITraitCollection? = {
-            guard !UIApplication.shared.isRunningTests else { return nil }
-            let userSelectedTrait = UIApplication.shared.preferredContentSizeCategory
+            guard !isRunningTests else { return nil }
+            let userSelectedTrait = UITraitCollection.current.preferredContentSizeCategory
             if userSelectedTrait < minContentSizeSupported {
                 return UITraitCollection(preferredContentSizeCategory: minContentSizeSupported)
             } else if userSelectedTrait > maxContentSizeSupported {
@@ -79,6 +79,14 @@ open class TextStyler {
             return systemFont
         }
     }
+}
+
+private var isRunningTests: Bool {
+#if DEBUG
+    return NSClassFromString("XCTest") != nil
+#else
+    return false
+#endif
 }
 
 #endif

@@ -9,6 +9,7 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     private var originalLoadingViewFactory: UIViewController.LoadingViewFactory!
     private var originalErrorViewFactory: UIViewController.ErrorViewFactory!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         originalLoadingViewFactory = UIViewController.loadingViewFactory
@@ -16,6 +17,7 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         UIViewController.loadingViewFactory = { UIViewControllerTests.loadingView() }
     }
     
+    @MainActor
     override func tearDown() {
         super.tearDown()
         UIViewController.loadingViewFactory = originalLoadingViewFactory
@@ -46,6 +48,7 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         }
     }
     
+    @MainActor
     func testTaskLoadingView() {
         let vc = MockVC(taskGenerator: {
             try await Task.sleep(nanoseconds: 3_000_000_000)
@@ -54,11 +57,13 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
+    @MainActor
     func testTaskErrorView() {
         let vc = MockVC(taskGenerator: { throw "Some Error" })
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
+    @MainActor
     func testTaskSuccessView() {
         let vc = MockVC(taskGenerator: { return "Cachondo" })
         waitABitAndVerify(viewController: vc, testDarkMode: false)

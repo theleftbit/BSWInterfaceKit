@@ -6,6 +6,7 @@
 
 import UIKit
 
+@MainActor
 public protocol PhotoGalleryViewControllerDelegate: AnyObject {
     func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int)
 }
@@ -13,6 +14,7 @@ public protocol PhotoGalleryViewControllerDelegate: AnyObject {
 /// A `UIViewController` subclass that shows full-screen photos.
 public final class PhotoGalleryViewController: UIViewController {
     
+    @MainActor
     public enum Appearance {
         static public var BackgroundColor: UIColor = .black
         static public var TintColor: UIColor = .white

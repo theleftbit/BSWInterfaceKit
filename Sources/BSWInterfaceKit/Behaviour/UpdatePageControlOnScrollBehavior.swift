@@ -6,6 +6,7 @@
 
 import UIKit
 
+@MainActor
 final public class UpdatePageControlOnScrollBehavior: NSObject {
     
     private weak var pageControl: UIPageControl?
@@ -18,7 +19,9 @@ final public class UpdatePageControlOnScrollBehavior: NSObject {
         super.init()
 
         observation = scrollView.observe(\.contentOffset) { [weak self] (scrollView, _) in
-            self?.scrollViewDidScroll(scrollView)
+            MainActor.assumeIsolated {
+                self?.scrollViewDidScroll(scrollView)
+            }
         }
     }
 
@@ -30,7 +33,7 @@ final public class UpdatePageControlOnScrollBehavior: NSObject {
         case horizontal, vertical
     }
 
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    private func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let pageControl = pageControl else { return }
         
         let isScrollingHorizontal = scrollingDirection == .horizontal

@@ -56,7 +56,8 @@ struct RecipeListView: View, PlaceholderDataProvider {
 /// `AsyncView` also makes use of SwiftUI's `redacted` modifier to show a placeholder view for the data.
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
 ///
-public struct AsyncView<Data, HostedView: View, ErrorView: View, LoadingView: View, ID: Equatable>: View {
+@MainActor
+public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, LoadingView: View, ID: Equatable>: View {
     
     /// Represents the state of this view
     struct Operation {

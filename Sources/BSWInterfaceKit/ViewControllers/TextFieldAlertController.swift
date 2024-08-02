@@ -2,7 +2,10 @@
 
 import UIKit
 
+@MainActor
 public enum TextFieldAlertController {
+    
+    public typealias ActionValidator = @Sendable (String) -> Bool
     
     /// Creates an alert with a `UITextField` to capture user input.
     /// - Parameters:
@@ -25,7 +28,7 @@ public enum TextFieldAlertController {
         placeholder: String? = nil,
         initialValue: String? = nil,
         textContentType: UITextContentType? = nil,
-        actionValidator: @escaping ((String) -> Bool) = { $0.count > 0 },
+        actionValidator: @escaping ActionValidator = { $0.count > 0 },
         onAction: @escaping (String?) -> (),
         onCancelAction: (() -> ())? = nil) -> UIViewController {
         let alertVC = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
@@ -56,12 +59,15 @@ public enum TextFieldAlertController {
             $0.isSecureTextEntry = (textContentType == .password)
             observation = NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: $0, queue: OperationQueue.main) { [weak action] (note) in
                 guard let t = note.object as? UITextField else { return }
-                textField = t
-                action?.isEnabled = actionValidator(t.text ?? "")
+                MainActor.assumeIsolated {
+                    textField = t
+                    action?.isEnabled = actionValidator(t.text ?? "")
+                }
             }
         }
 
         return alertVC
     }
 }
+
 #endif

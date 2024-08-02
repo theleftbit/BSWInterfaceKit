@@ -7,6 +7,7 @@
 import UIKit
 import BSWFoundation
 
+@MainActor
 public extension UIViewController {
 
     typealias LoadingViewFactory = () -> (UIView)
@@ -25,8 +26,7 @@ public extension UIViewController {
         - completion: A completion handler where the Success value is retrieved. Use it to configure your `viewController`.
      */
     @discardableResult
-    @MainActor
-    func fetchData<T>(taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool = true, errorMessage: String = "error", completion: @escaping SwiftConcurrencyCompletion<T>) -> Task<(), Never> {
+    func fetchData<T: Sendable>(taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool = true, errorMessage: String = "error", completion: @escaping SwiftConcurrencyCompletion<T>) -> Task<(), Never> {
         bsw_showLoadingView(animated: animated)
         let task = Task(priority: .userInitiated) {
             do {
@@ -53,11 +53,11 @@ public extension UIViewController {
         return task
     }
 
+    @MainActor
     private enum AssociatedKeys {
         static var FetchTask: UInt8 = 0
     }
     
-    @MainActor
     var closestBSWFetchTask: Task<(), Never>? {
         if let bswFetchTask {
             return bswFetchTask
@@ -66,7 +66,6 @@ public extension UIViewController {
         }
     }
     
-    @MainActor
     private var bswFetchTask: Task<(), Never>? {
         get {
             return (objc_getAssociatedObject(self, &AssociatedKeys.FetchTask) as? TaskWrapper)?.fetchTask
@@ -80,8 +79,7 @@ public extension UIViewController {
         }
     }
         
-    @MainActor
-    func handleError<T>(_ error: Swift.Error, errorMessage: String, taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool, completion: @escaping SwiftConcurrencyCompletion<T>) {
+    func handleError<T: Sendable>(_ error: Swift.Error, errorMessage: String, taskGenerator: @escaping SwiftConcurrencyGenerator<T>, animated: Bool, completion: @escaping SwiftConcurrencyCompletion<T>) {
         let localizedErrorMessage = (errorMessage == "error") ? errorMessage.localized : errorMessage
         let errorView = UIViewController.errorViewFactory(localizedErrorMessage, error) { [weak self] in
             self?.hideError(animated: animated)
@@ -90,12 +88,10 @@ public extension UIViewController {
         self.showErrorView(errorView, animated: animated)
     }
 
-    @MainActor
     @objc func bsw_showLoadingView(animated: Bool) {
         showLoadingView(UIViewController.loadingViewFactory(), animated: animated)
     }
     
-    @MainActor
     @objc func bsw_hideLoadingView(animated: Bool) {
         hideLoader(animated: animated)
     }
@@ -112,10 +108,8 @@ public extension UIViewController {
         #endif
     }
     
-    @MainActor
     static var loadingViewFactory: LoadingViewFactory = { LoadingView() }
     
-    @MainActor
     static var errorViewFactory: ErrorViewFactory = { ErrorView.retryView(message: $0, error: $1, onRetry: $2) }
 }
 

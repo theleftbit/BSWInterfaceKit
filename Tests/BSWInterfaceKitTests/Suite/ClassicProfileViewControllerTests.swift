@@ -10,6 +10,7 @@ import UIKit
 /// of BSWInterfaceKit so it works as some kind of "smoke test"
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
+    @MainActor
     func testSampleLayout() async {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
@@ -19,6 +20,7 @@ class ClassicProfileViewControllerTests: BSWSnapshotTest {
     }
 }
 
+@MainActor
 private class ClassicProfileViewController: UIViewController {
 
     enum ClassicProfileEditKind {

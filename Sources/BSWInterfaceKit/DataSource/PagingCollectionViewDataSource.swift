@@ -14,7 +14,7 @@ import UIKit
  })
   ```
  */
-open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: PagingCollectionViewItem>:
+open class PagingCollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: PagingCollectionViewItem>:
     CollectionViewDiffableDataSource<Section, Item> {
         
     private var offsetObserver: NSKeyValueObservation?
@@ -37,7 +37,7 @@ open class PagingCollectionViewDiffableDataSource<Section: Hashable, Item: Pagin
 /// `PagingCollectionViewDiffableDataSource`
 /// forcing that Item to accomodate a `loading` option,
 /// which will be displayed during paging
-public protocol PagingCollectionViewItem: Hashable {
+public protocol PagingCollectionViewItem: Hashable & Sendable {
     var isLoading: Bool { get }
     static func loadingItem() -> Self
 }
@@ -65,25 +65,31 @@ private extension PagingCollectionViewDiffableDataSource {
         
         offsetObserver = self.collectionView.observe(\.contentOffset, changeHandler: { [weak self] (cv, change) in
             guard let self = self else { return }
-            switch self.scrollDirection {
-            case .vertical:
-                let offsetY = cv.contentOffset.y
-                let contentHeight = cv.contentSize.height
-                guard offsetY > 0, contentHeight > 0 else { return }
-                if offsetY > contentHeight - cv.frame.size.height {
-                    self.requestNextInfiniteScrollPage()
-                }
-            case .horizontal:
-                let offsetX = cv.contentOffset.x
-                let contentWidth = cv.contentSize.width
-                guard offsetX > 0, contentWidth > 0 else { return }
-                if offsetX > contentWidth - cv.frame.size.width {
-                    self.requestNextInfiniteScrollPage()
-                }
-            @unknown default:
-                fatalError()
+            MainActor.assumeIsolated {
+                self.___handleInfiniteScroll(cv: cv)
             }
         })
+    }
+    
+    func ___handleInfiniteScroll(cv: UICollectionView) {
+        switch self.scrollDirection {
+        case .vertical:
+            let offsetY = cv.contentOffset.y
+            let contentHeight = cv.contentSize.height
+            guard offsetY > 0, contentHeight > 0 else { return }
+            if offsetY > contentHeight - cv.frame.size.height {
+                self.requestNextInfiniteScrollPage()
+            }
+        case .horizontal:
+            let offsetX = cv.contentOffset.x
+            let contentWidth = cv.contentSize.width
+            guard offsetX > 0, contentWidth > 0 else { return }
+            if offsetX > contentWidth - cv.frame.size.width {
+                self.requestNextInfiniteScrollPage()
+            }
+        @unknown default:
+            fatalError()
+        }
     }
     
     static func startPaginating(snapshot: inout NSDiffableDataSourceSnapshot<Section, Item>) {

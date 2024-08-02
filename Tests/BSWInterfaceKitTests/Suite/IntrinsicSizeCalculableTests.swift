@@ -4,9 +4,9 @@ import UIKit
 import XCTest
 import BSWInterfaceKit
 
-@MainActor
 class IntrinsicSizeCalculableTests: XCTestCase {
 
+    @MainActor
     func testIntrinsicSizingWorks() {
         let sut = SomeView()
         XCTAssert(sut.heightConstrainedTo(width: 300) == SomeView.HardcodedHeight)

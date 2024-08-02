@@ -5,7 +5,7 @@
 
 import UIKit
 
-class PresentAlertOperation: Operation {
+class PresentAlertOperation: Operation, @unchecked Sendable {
 
     let title: String?
     let message: String?
@@ -36,7 +36,7 @@ class PresentAlertOperation: Operation {
         self.isExecuting = true
         self.isFinished = false
 
-        OperationQueue.main.addOperation {
+        Task { @MainActor in
             
             guard let presentingViewController = self.presentingViewController, let _ = presentingViewController.view.window else {
                 self.finishOperation()

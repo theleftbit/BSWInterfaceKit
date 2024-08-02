@@ -6,6 +6,7 @@ import SwiftUI
 import NukeUI
 
 /// Displays a `Photo` in `SwiftUI`
+@MainActor
 public struct PhotoView: View {
     
     public init(photo: Photo, configuration: PhotoView.Configuration = .init()) {
@@ -28,7 +29,6 @@ public struct PhotoView: View {
         .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
     }
     
-    @MainActor
     private var shouldShowPlaceholder: Bool {
         if isRunningTests {
             return true
@@ -40,13 +40,11 @@ public struct PhotoView: View {
     }
     
     @ViewBuilder
-    @MainActor
     private var placeholder: some View {
-        configuration.placeholder
+        configuration.placeholder.body()
     }
     
     @ViewBuilder
-    @MainActor
     private var photoView: some View {
         switch photo.kind {
         case .url(let url, _):
@@ -70,7 +68,7 @@ public struct PhotoView: View {
         }
     }
     
-    @MainActor var isRunningTests: Bool {
+    var isRunningTests: Bool {
         #if canImport(UIKit)
         UIApplication.shared.isRunningTests
         #elseif canImport(AppKit)
@@ -92,7 +90,7 @@ extension PhotoView {
             self.contentMode = contentMode
         }
         
-        public struct Placeholder: View {
+        public struct Placeholder {
             
             public init(shape: PhotoView.Configuration.Placeholder.Shape, color: Color = Color(RandomColorFactory.defaultColor)) {
                 self.shape = shape
@@ -106,7 +104,7 @@ extension PhotoView {
                 case circle, rectangle
             }
             
-            public var body: some View {
+            func body() -> some View {
                 Group {
                     switch self.shape {
                     case .circle:

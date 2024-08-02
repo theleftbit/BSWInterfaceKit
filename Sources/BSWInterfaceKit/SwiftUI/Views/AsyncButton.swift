@@ -8,12 +8,13 @@ import SwiftUI
 /// In order to customize it's appereance, use the `.asyncButtonLoadingConfiguration` method
 public struct AsyncButton<Label: View>: View {
     
-    public init(action: @escaping () async throws -> Void, label: @escaping () -> Label) {
+    public init(action: @escaping Action, label: @escaping () -> Label) {
         self.action = action
         self.label = label()
     }
     
-    public let action: () async throws -> Void
+    public typealias Action = () async throws -> Void
+    public let action: Action
     public let label: Label
         
     private enum ButtonState: Equatable {
@@ -139,19 +140,19 @@ public struct AsyncButton<Label: View>: View {
 
 public extension AsyncButton where Label == Text {
     init(_ label: String,
-         action: @escaping () async throws -> Void) {
+         action: @escaping Action) {
         self.init(action: action) {
             Text(label)
         }
     }
 
-    init(_ titleKey: LocalizedStringKey, action: @escaping () async throws -> Void) {
+    init(_ titleKey: LocalizedStringKey, action: @escaping Action) {
         self.init(action: action) {
             Text(titleKey)
         }
     }
 
-    init<S>(_ title: S, action: @escaping () async throws -> Void) where S : StringProtocol {
+    init<S>(_ title: S, action: @escaping Action) where S : StringProtocol {
         self.init(action: action) {
             Text(title)
         }
@@ -160,7 +161,7 @@ public extension AsyncButton where Label == Text {
 
 public extension AsyncButton where Label == Image {
     init(systemImageName: String,
-         action: @escaping () async throws -> Void) {
+         action: @escaping Action) {
         self.init(action: action) {
             Image(systemName: systemImageName)
         }
@@ -168,7 +169,7 @@ public extension AsyncButton where Label == Image {
 }
 
 /// Describes how an `AsyncButton` will show it's "loading" state.
-public struct AsyncButtonLoadingConfiguration {
+public struct AsyncButtonLoadingConfiguration: Sendable {
     
     public init(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) {
         self.message = message
@@ -176,7 +177,7 @@ public struct AsyncButtonLoadingConfiguration {
     }
     
     /// Describes what kind of loading will be shown to the user during the "loading" state.
-    public enum Style {
+    public enum Style: Sendable {
         /// The rest of the UI in the screen will still be interactable using this style
         case nonblocking
         /// Will show a HUD in order to let the user know that an operation is ongoing.
