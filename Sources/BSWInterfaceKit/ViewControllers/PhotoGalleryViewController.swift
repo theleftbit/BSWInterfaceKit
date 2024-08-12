@@ -110,4 +110,58 @@ extension PhotoGalleryViewController: UIAdaptivePresentationControllerDelegate {
         delegate?.photoGalleryController(self, willDismissAtPageIndex: photosGallery.currentPage)
     }
 }
+
+// MARK: UIViewControllerRepresentable
+
+import SwiftUI
+
+public extension PhotoGalleryViewController {
+    
+    static func swiftUIView(photos: [URL], initialPageIndex: Binding<Int>) -> some View {
+        SwiftUI_PhotoGalleryViewController(photos: photos, initialPageIndex: initialPageIndex)
+    }
+    
+    private struct SwiftUI_PhotoGalleryViewController: UIViewControllerRepresentable {
+        
+        let photos: [URL]
+        
+        @Binding
+        var initialPageIndex: Int
+        
+        func makeUIViewController(context: Context) -> PhotoGalleryViewController {
+            let _photos: [Photo] = photos.map { .init(url: $0) }
+            let vc = PhotoGalleryViewController(
+                photos: _photos,
+                initialPageIndex: initialPageIndex,
+                allowShare: false,
+                zoomEnabled: true
+            )
+            vc.delegate = context.coordinator
+            return vc
+        }
+        
+        func updateUIViewController(_ uiViewController: PhotoGalleryViewController, context: Context) {
+            uiViewController.currentPage = initialPageIndex
+        }
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator(initialPageIndex: $initialPageIndex)
+        }
+        
+        class Coordinator: PhotoGalleryViewControllerDelegate {
+            
+            @Binding
+            var initialPageIndex: Int
+            
+            init(initialPageIndex: Binding<Int>) {
+                self._initialPageIndex = initialPageIndex
+            }
+            
+            func photoGalleryController(_ photoGalleryController: PhotoGalleryViewController, willDismissAtPageIndex index: Int) {
+                initialPageIndex = index
+            }
+        }
+    }
+}
+
 #endif
