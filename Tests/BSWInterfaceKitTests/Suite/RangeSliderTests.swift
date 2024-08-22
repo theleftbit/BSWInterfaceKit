@@ -9,8 +9,8 @@ import XCTest
 class RangeSliderTests: BSWSnapshotTest {
     var sut: RangeSlider!
     
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         let range = Range<Double>(uncheckedBounds: (10, 60))
         sut = RangeSlider(configuration: .init(range: range, trackTintColor: .gray, trackHighlightTintColor: .red, thumbTintColor: .white))
         sut.frame = CGRect(x: 0, y: 0, width: 350, height: 32)

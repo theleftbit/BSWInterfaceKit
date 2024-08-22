@@ -9,17 +9,15 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     private var originalLoadingViewFactory: UIViewController.LoadingViewFactory!
     private var originalErrorViewFactory: UIViewController.ErrorViewFactory!
 
-    @MainActor
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         originalLoadingViewFactory = UIViewController.loadingViewFactory
         originalErrorViewFactory = UIViewController.errorViewFactory
         UIViewController.loadingViewFactory = { UIViewControllerTests.loadingView() }
     }
     
-    @MainActor
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         UIViewController.loadingViewFactory = originalLoadingViewFactory
         UIViewController.errorViewFactory = originalErrorViewFactory
     }
