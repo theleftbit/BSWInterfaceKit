@@ -61,10 +61,14 @@ public struct AsyncButton<Label: View>: View {
             hudVC = await presentHUDViewController()
         }
         #endif
-                
-        let result = await Swift.Result(catching: {
-            try await action()
-        })
+        let result: Swift.Result<Void, Swift.Error> = await {
+            do {
+                try await action()
+                return .success(())
+            } catch {
+                return .failure(error)
+            }
+        }()
 
         #if canImport(UIKit)
         if loadingConfiguration.isBlocking {

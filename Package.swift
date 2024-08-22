@@ -18,7 +18,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.16.1"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.4"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "6.0.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.1.0"),
     ],
@@ -43,4 +43,6 @@ let package = Package(
             exclude: ["Suite/__Snapshots__/"]
         ),
     ]
+//    ,
+//    swiftLanguageVersions: [.version("6.0.0")]
 )

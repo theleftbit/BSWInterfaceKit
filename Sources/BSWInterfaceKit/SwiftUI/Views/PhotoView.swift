@@ -6,7 +6,6 @@ import SwiftUI
 import NukeUI
 
 /// Displays a `Photo` in `SwiftUI`
-@MainActor
 public struct PhotoView: View {
     
     public init(photo: Photo, configuration: PhotoView.Configuration = .init()) {
@@ -45,6 +44,7 @@ public struct PhotoView: View {
     }
     
     @ViewBuilder
+    @MainActor
     private var photoView: some View {
         switch photo.kind {
         case .url(let url, _):

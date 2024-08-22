@@ -30,7 +30,7 @@ public class SocialAuthenticationManager: NSObject {
     private var authSession: ASWebAuthenticationSession?
     private weak var fromViewController: UIViewController?
     
-    public struct LoginResponse {
+    public struct LoginResponse: Sendable {
         public let authToken: String
         public let approvedPermissions: Set<String>
         public let rejectedPermissions: Set<String>

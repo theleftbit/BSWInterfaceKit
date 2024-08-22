@@ -6,7 +6,6 @@ import XCTest
 
 class SelectableTableViewDataSourceTests: BSWSnapshotTest {
     
-    @MainActor
     func testLayout() throws {
         let vc = SelectableTableViewController()
         var vm = SelectableArray(options: [

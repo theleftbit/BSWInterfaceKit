@@ -9,45 +9,39 @@ import XCTest
 class TextStylerTests: BSWSnapshotTest {
 
     var sut: TextStyler!
-    override func setUp() {
-        super.setUp()
+    
+    override func setUp() async throws {
+        try await super.setUp()
         sut = TextStyler(fontDescriptor: .init(name: "ChalkboardSE-Light", size: 0))
     }
 
-    @MainActor
     func testTitle() {
         performTestFor(style: .title1)
     }
 
-    @MainActor
     func testHeadline() {
         performTestFor(style: .headline)
     }
 
-    @MainActor
     func testSubheadline() {
         performTestFor(style: .subheadline)
     }
 
-    @MainActor
     func testBody() {
         performTestFor(style: .body)
     }
 
-    @MainActor
     func testFootnote() {
         performTestFor(style: .footnote)
     }
 
-    @MainActor
     func testBoldedString() {
         sut = TextStyler()
         let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded
         verify(attributedString: string)
     }
 
-    @MainActor
-    private func performTestFor(style: UIFont.TextStyle, file: StaticString = #file, testName: String = #function) {
+    private func performTestFor(style: UIFont.TextStyle, file: StaticString = #filePath, testName: String = #function) {
         let string = sut.attributedString("HelloWorld", color: .blue, forStyle: style)
         verify(attributedString: string, file: file, testName: testName)
     }

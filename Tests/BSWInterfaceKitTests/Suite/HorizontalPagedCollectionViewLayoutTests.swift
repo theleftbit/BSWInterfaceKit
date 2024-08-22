@@ -9,19 +9,16 @@ import BSWInterfaceKit
 
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
     
-    @MainActor
     func testLayout() {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout())
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
-    @MainActor
     func testCenteredLayout() {
         let vc = PlanSelectorViewController()
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
-    @MainActor
     func testAvailableWidthLayout() {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout(itemSizing: .usingAvailableWidth(margin: 60)))
         waitABitAndVerify(viewController: vc, testDarkMode: false)

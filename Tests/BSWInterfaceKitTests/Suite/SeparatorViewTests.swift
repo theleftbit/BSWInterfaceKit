@@ -5,7 +5,6 @@ import XCTest
 
 class SeparatorViewTests: BSWSnapshotTest {
     
-    @MainActor
     func testLayout() throws {
         let separatorView = SeparatorView()
         let contentView = UIView(frame: .init(x: 0, y: 0, width: 100, height: 100))

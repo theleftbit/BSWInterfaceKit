@@ -6,7 +6,6 @@ import UIKit
 
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
     
-    @MainActor
     func testLayout() async {
         let cv = MockCollectionView()
         let sut = cv.diffDataSource!

@@ -102,7 +102,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
                 image.prepareThumbnail(of: .init(width: 500, height: 500/preferredAspectRatio)) { thumbnailImage in
                     do {
                         let finalImage = thumbnailImage ?? image
-                        let finalURL = try self.writeToCache(image: finalImage, kind: .photo)
+                        let finalURL = try Self.writeToCache(image: finalImage, kind: .photo)
                         continuation.resume(returning: finalURL)
                     } catch let error {
                         continuation.resume(throwing: error)
@@ -119,9 +119,9 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             self.currentRequest = nil
         }
         guard let currentRequest = self.currentRequest, let url = urls.first else { return }
-        let targetURL = cachePathForMedia(currentRequest.kind)
+        let targetURL = Self.cachePathForMedia(currentRequest.kind)
         do {
-            try self.fileManager().moveItem(at: url, to: targetURL)
+            try Self.fileManager().moveItem(at: url, to: targetURL)
             self.finishRequest(withURL: targetURL, shouldDismissVC: false)
         } catch {
             self.finishRequest(withURL: nil, shouldDismissVC: false)
@@ -178,12 +178,12 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
             self.finishRequest(withURL: nil)
             return
         }
-        let targetURL = self.cachePathForMedia(currentRequest.kind)
+        let targetURL = Self.cachePathForMedia(currentRequest.kind)
         let _ = itemProvider.loadFileRepresentation(forTypeIdentifier: contentType.identifier) { url, _ in
             let finalURL: URL?
             if let url {
                 do {
-                    try self.fileManager().moveItem(at: url, to: targetURL)
+                    try Self.fileManager().moveItem(at: url, to: targetURL)
                     finalURL = targetURL
                 } catch {
                     print("Error figuring this out")
@@ -199,10 +199,6 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
     }
     
     // MARK: Private
-    @Sendable
-    private nonisolated func fileManager() -> FileManager {
-        .default
-    }
 
     private func handleFilesAppRequest(kind: Kind) -> UIViewController? {
         let vc = UIDocumentPickerViewController(forOpeningContentTypes: kind.contentTypes, asCopy: true)
@@ -252,11 +248,30 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         return vc
     }
     
-    private func cachePathForMedia(_ kind: Kind) -> URL {
+    private static nonisolated func fileManager() -> FileManager {
+        .default
+    }
+
+    private static nonisolated func cachePathForMedia(_ kind: Kind) -> URL {
         let cachesDirectory = fileManager().urls(for: .cachesDirectory, in: .userDomainMask)[0]
         return cachesDirectory.appendingPathComponent("\(UUID().uuidString).\(kind.pathExtension())")
     }
     
+    private nonisolated static func writeToCache(image: UIImage, kind: Kind) throws -> URL {
+        guard let data = image.jpegData(compressionQuality: 1) else {
+            throw Error.jpegCompressionFailed
+        }
+        
+        let finalURL = cachePathForMedia(kind)
+        do {
+            try data.write(to: finalURL, options: [.atomic])
+            return finalURL
+        }
+        catch {
+            throw Error.diskWriteFailed
+        }
+    }
+
     private func handleVideoRequest(info: [UIImagePickerController.InfoKey : Any], request: Request) {
         if let videoURL = info[.mediaURL] as? URL {
             self.finishRequest(withURL: videoURL)
@@ -286,7 +301,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }
         
         do {
-            let finalURL = try writeToCache(image: image, kind: request.kind)
+            let finalURL = try Self.writeToCache(image: image, kind: request.kind)
             self.finishRequest(withURL: finalURL)
         } catch {
             self.finishRequest(withURL: nil)
@@ -329,27 +344,12 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
         }
         
         do {
-            let url = try writeToCache(image: image, kind: request.kind)
+            let url = try Self.writeToCache(image: image, kind: request.kind)
             request.cont.resume(returning: url)
         } catch {
             request.cont.resume(returning: nil)
         }
 
-    }
-    
-    private func writeToCache(image: UIImage, kind: Kind) throws -> URL {
-        guard let data = image.jpegData(compressionQuality: 1) else {
-            throw Error.jpegCompressionFailed
-        }
-        
-        let finalURL = cachePathForMedia(kind)
-        do {
-            try data.write(to: finalURL, options: [.atomic])
-            return finalURL
-        }
-        catch {
-            throw Error.diskWriteFailed
-        }
     }
     
     private func finishRequest(withURL url: URL?, shouldDismissVC: Bool = true) {

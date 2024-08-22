@@ -50,6 +50,8 @@ public func + (left: NSAttributedString, right: NSAttributedString) -> NSAttribu
     return result
 }
 
+import WebKit
+
 public extension NSAttributedString {
     
     convenience init?(html: String) {
@@ -65,7 +67,7 @@ public extension NSAttributedString {
     }
 
     convenience init(html: String) async throws {
-        let attributedString = try await NSAttributedString.loadFromHTML(string: html, options: [:])
+        let (attributedString, _) = try await NSAttributedString.fromHTML(html, options: [:])
         self.init(attributedString: attributedString)
     }
 
@@ -279,30 +281,6 @@ private extension String {
         let _indices = indices(of: searchString)
         let count = searchString.count
         return _indices.map({ NSRange(index(startIndex, offsetBy: $0)..<index(startIndex, offsetBy: $0+count), in: self) })
-    }
-}
-
-import WebKit
-
-private extension NSAttributedString {
-
-    struct HTMLLoadError: Swift.Error {}
-
-    class func loadFromHTML(
-        string: String,
-        options: [NSAttributedString.DocumentReadingOptionKey : Any] = [:]
-    ) async throws -> NSAttributedString {
-        try await withCheckedThrowingContinuation { cont in
-            NSAttributedString.loadFromHTML(string: string, options: options) { string, _, error in
-                if let error {
-                    cont.resume(throwing: error)
-                } else if let string {
-                    cont.resume(returning: string)
-                } else {
-                    cont.resume(throwing: HTMLLoadError())
-                }
-            }
-        }
     }
 }
 
