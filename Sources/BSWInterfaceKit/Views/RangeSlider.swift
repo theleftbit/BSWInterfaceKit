@@ -235,15 +235,26 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         upperThumbLayer.highlighted = false
     }
     
-    class RangeSliderThumbLayer: CALayer {
+    struct Wrapper: @unchecked Sendable {
+        let ctx: CGContext
+    }
+    
+    class RangeSliderThumbLayer: CALayer, @unchecked Sendable {
         
         weak var rangeSlider: RangeSlider?
         var highlighted: Bool = false {
             didSet { setNeedsDisplay() }
         }
         
-        @MainActor
         override func draw(in ctx: CGContext) {
+            let wrapper = Wrapper.init(ctx: ctx)
+            MainActor.assumeIsolated {
+                _draw(in: wrapper.ctx)
+            }
+        }
+        
+        @MainActor
+        private func _draw(in ctx: CGContext) {
             if let slider = rangeSlider {
                 let thumbFrame = bounds.insetBy(dx: 2.0, dy: 2.0)
                 let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
@@ -271,12 +282,19 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         }
     }
     
-    class RangeSliderTrackLayer: CALayer {
+    class RangeSliderTrackLayer: CALayer, @unchecked Sendable {
         weak var rangeSlider: RangeSlider?
         private let heightTrackLine: CGFloat = 3
         
-        @MainActor
         override func draw(in ctx: CGContext) {
+            let wrapper = Wrapper(ctx: ctx)
+            MainActor.assumeIsolated {
+                _draw(in: wrapper.ctx)
+            }
+        }
+        
+        @MainActor
+        private func _draw(in ctx: CGContext) {
             if let slider = rangeSlider {
                 // Clip
                 let cornerRadius = bounds.height * slider.curvaceousness / 2.0

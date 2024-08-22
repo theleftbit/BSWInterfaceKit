@@ -100,12 +100,14 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
                 let image = UIImage(cgImage: thumbnail)
                 let preferredAspectRatio = image.size.width / image.size.height
                 image.prepareThumbnail(of: .init(width: 500, height: 500/preferredAspectRatio)) { thumbnailImage in
-                    do {
-                        let finalImage = thumbnailImage ?? image
-                        let finalURL = try self.writeToCache(image: finalImage, kind: .photo)
-                        continuation.resume(returning: finalURL)
-                    } catch let error {
-                        continuation.resume(throwing: error)
+                    Task {
+                        do {
+                            let finalImage = thumbnailImage ?? image
+                            let finalURL = try await self.writeToCache(image: finalImage, kind: .photo)
+                            continuation.resume(returning: finalURL)
+                        } catch let error {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 }
             }
@@ -337,6 +339,7 @@ final public class MediaPickerBehavior: NSObject, UIDocumentPickerDelegate, PHPi
 
     }
     
+    @MainActor
     private func writeToCache(image: UIImage, kind: Kind) throws -> URL {
         guard let data = image.jpegData(compressionQuality: 1) else {
             throw Error.jpegCompressionFailed

@@ -77,7 +77,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: 
     }
 
     @available(iOS, deprecated: 15, obsoleted: 16, message: "Do not use this one")
-    open override nonisolated func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true, completion: (() -> Void)? = nil) {
+    open override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true, completion: (() -> Void)? = nil) {
         super.apply(snapshot, animatingDifferences: animatingDifferences, completion: completion)
     }
     
