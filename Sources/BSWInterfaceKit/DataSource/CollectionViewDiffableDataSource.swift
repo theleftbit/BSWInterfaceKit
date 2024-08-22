@@ -47,7 +47,7 @@ open class CollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: 
             emptyView.removeFromSuperview()
         }
     }
-    
+        
     /// Specifies what to do when the `dataSource` is empty.
     public var emptyConfiguration: EmptyConfiguration = .none {
         didSet {
@@ -80,6 +80,26 @@ open class CollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: 
     open override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true, completion: (() -> Void)? = nil) {
         super.apply(snapshot, animatingDifferences: animatingDifferences, completion: completion)
     }
+    
+    /// The Swift 6 compiler is finding a data race issue here, which seems to be alliviated when doing this dance here.
+    /// Very, very strange.  https://i.imgur.com/qjEYzTA.jpeg
+#if swift(>=6.0)
+    open override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true) async {
+        let _: () = await withCheckedContinuation { cont in
+            super.apply(snapshot, animatingDifferences: animatingDifferences) {
+                cont.resume()
+            }
+        }
+    }
+    
+    open override func applySnapshotUsingReloadData(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>) async {
+        let _: () = await withCheckedContinuation { cont in
+            super.applySnapshotUsingReloadData(snapshot) {
+                cont.resume()
+            }
+        }
+    }
+#endif
     
     // MARK: Actions
     
