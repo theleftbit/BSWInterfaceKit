@@ -5,7 +5,6 @@ import BSWInterfaceKit
 
 class ShadowTests: BSWSnapshotTest {
     
-    @MainActor
     func testLayout() {
         let vc = ViewController()
         waitABitAndVerify(viewController: vc, testDarkMode: false)

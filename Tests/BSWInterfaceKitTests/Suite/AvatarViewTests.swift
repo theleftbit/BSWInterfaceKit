@@ -5,17 +5,14 @@ import XCTest
 
 class AvatarViewTests: BSWSnapshotTest {
 
-    @MainActor
     func testLayoutHuge() {
         verifyAvatarForSize(.huge)
     }
 
-    @MainActor
     func testLayoutNormal() {
         verifyAvatarForSize(.normal)
     }
 
-    @MainActor
     func testLayoutWithCameraHuge() {
         let avatarView = AvatarView(size: .huge, photo: Photo.emptyPhoto())
         avatarView.onTapOnAvatar = { avatarIn in

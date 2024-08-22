@@ -46,7 +46,6 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         }
     }
     
-    @MainActor
     func testTaskLoadingView() {
         let vc = MockVC(taskGenerator: {
             try await Task.sleep(nanoseconds: 3_000_000_000)
@@ -55,13 +54,11 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
-    @MainActor
     func testTaskErrorView() {
         let vc = MockVC(taskGenerator: { throw "Some Error" })
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 
-    @MainActor
     func testTaskSuccessView() {
         let vc = MockVC(taskGenerator: { return "Cachondo" })
         waitABitAndVerify(viewController: vc, testDarkMode: false)

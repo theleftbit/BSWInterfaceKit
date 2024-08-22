@@ -16,7 +16,6 @@ class RangeSliderTests: BSWSnapshotTest {
         sut.frame = CGRect(x: 0, y: 0, width: 350, height: 32)
     }
     
-    @MainActor
     func testLayout() {
         let range = Range<Double>(uncheckedBounds: (12, 55))
         sut.configureFor(viewModel: .init(selectedRange: range))
