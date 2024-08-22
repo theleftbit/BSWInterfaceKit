@@ -66,7 +66,7 @@ private class MockCollectionView: UICollectionView {
     static func mockDataDefenders() -> [PolaroidCollectionViewCell.VM] {
         let vm1 = PolaroidCollectionViewCell.VM(
             cellImage: Photo(url: URL(string: "https://i.imgur.com/vUMmWxu.jpg")!, size: CGSize(width: 320, height: 480)),
-            cellTitle: TextStyler.styler.attributedString("Gigi Buffon", forStyle: .title1),
+            cellTitle: TextStyler.styler.attributedString("asfdads", forStyle: .title1),
             cellDetails: TextStyler.styler.attributedString("#1", forStyle: .body)
         )
         
