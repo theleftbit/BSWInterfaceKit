@@ -44,6 +44,7 @@ public struct PhotoView: View {
     }
     
     @ViewBuilder
+    @MainActor
     private var photoView: some View {
         switch photo.kind {
         case .url(let url, _):
