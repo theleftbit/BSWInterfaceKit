@@ -24,12 +24,12 @@ public enum AsyncOperationTracer {
     public typealias OperationHandler = @Sendable (Operation) async -> ()
     public typealias OperationFailedHandler = @Sendable (Operation, any Error) async -> ()
 
-    public struct Operation {
+    public struct Operation: Sendable {
         
         public let kind: Kind
         public let id: any (Equatable & Sendable)
         
-        public enum Kind {
+        public enum Kind: Sendable {
             case viewLoading
             case buttonAction
         }
