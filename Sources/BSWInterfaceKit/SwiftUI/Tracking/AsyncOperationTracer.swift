@@ -35,6 +35,6 @@ public enum AsyncOperationTracer {
     static var operationDidFail: OperationFailed = { _, _ in }
 }
 
-@globalActor private actor AsyncOperationTracerStorageActor: GlobalActor {
+@globalActor actor AsyncOperationTracerStorageActor: GlobalActor {
     static let shared = AsyncOperationTracerStorageActor()
 }
