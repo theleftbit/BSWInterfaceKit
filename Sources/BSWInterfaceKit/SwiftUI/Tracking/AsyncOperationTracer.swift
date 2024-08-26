@@ -33,6 +33,15 @@ public enum AsyncOperationTracer {
             case viewLoading
             case buttonAction
         }
+    
+        public var traceValue: String {
+            switch self.kind {
+            case .buttonAction:
+                return "async-button-\(self.id)"
+            case .viewLoading:
+                return "async-view-\(self.id)"
+            }
+        }
     }
     
     @AsyncOperationTracerStorageActor
