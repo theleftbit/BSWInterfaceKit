@@ -112,4 +112,7 @@ open class ErrorView: UIStackView {
         )
     }
 }
+
+extension ErrorView: IntrinsicSizeCalculable { }
+
 #endif
