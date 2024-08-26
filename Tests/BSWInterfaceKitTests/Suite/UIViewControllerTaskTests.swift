@@ -55,7 +55,7 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     }
 
     func testTaskErrorView() {
-        let vc = MockVC(taskGenerator: { throw "Some Error" })
+        let vc = MockVC(taskGenerator: { throw SomeError() })
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 

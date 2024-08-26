@@ -71,7 +71,7 @@ class UIViewControllerTests: BSWSnapshotTest {
         let vc = TestViewController()
         var buttonConfig = UIButton.Configuration.plain()
         buttonConfig.title = "Retry"
-        vc.showErrorMessage("Something Failed", error: "Some Error", retryButton: buttonConfig)
+        vc.showErrorMessage("Something Failed", error: SomeError(), retryButton: buttonConfig)
         waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
     
@@ -190,10 +190,6 @@ private class ContentVC: UIViewController {
         view.widthAnchor.constraint(equalToConstant: size.width).isActive = true
         view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
     }
-}
-
-extension String: LocalizedError {
-
 }
 
 #endif

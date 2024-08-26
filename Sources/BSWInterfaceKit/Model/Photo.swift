@@ -169,3 +169,8 @@ extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
 extension Photo: Equatable, Hashable {}
 extension Photo.Kind: Equatable, Hashable {}
 extension Photo.PlaceholderImage: Equatable, Hashable {}
+
+
+#if canImport(AppKit)
+extension PlatformImage: @unchecked Sendable {}
+#endif

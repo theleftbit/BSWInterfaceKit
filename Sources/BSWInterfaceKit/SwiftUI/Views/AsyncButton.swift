@@ -62,10 +62,20 @@ public struct AsyncButton<Label: View>: View {
         }
         #endif
         let result: Swift.Result<Void, Swift.Error> = await {
+            if let operation = operation {
+                await AsyncOperationTracer.operationDidBegin(operation)
+            }
             do {
                 try await action()
+                if let operation = operation {
+                    await AsyncOperationTracer.operationDidEnd(operation)
+                }
                 return .success(())
             } catch {
+                if let operation = operation {
+                    await AsyncOperationTracer.operationDidEnd(operation)
+                    await AsyncOperationTracer.operationDidFail(operation, error)
+                }
                 return .failure(error)
             }
         }()
@@ -124,6 +134,16 @@ public struct AsyncButton<Label: View>: View {
             }
             .ignoresSafeArea()
         }
+    }
+    
+    @Environment(\.asyncButtonOperationIdentifierKey)
+    private var operationKey
+
+    private var operation: AsyncOperationTracer.Operation? {
+        guard let operationKey else {
+            return nil
+        }
+        return .init(kind: .buttonAction, id: operationKey)
     }
 
 #if canImport(UIKit)
@@ -205,10 +225,18 @@ public extension View {
     func asyncButtonLoadingConfiguration(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) -> some View {
         self.environment(\.asyncButtonLoadingConfiguration, .init(message: message, style: style))
     }
+
+    func asyncButtonOperationIdentifierKey(_ key: String) -> some View {
+        self.environment(\.asyncButtonOperationIdentifierKey, key)
+    }
 }
 
 private struct AsyncButtonLoadingStyleEnvironmentKey: EnvironmentKey {
     static let defaultValue: AsyncButtonLoadingConfiguration = .init()
+}
+
+private struct AsyncButtonOperationIdentifierKey: EnvironmentKey {
+    static let defaultValue: String? = nil
 }
 
 private extension EnvironmentValues {
@@ -216,6 +244,11 @@ private extension EnvironmentValues {
     var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
         get { self[AsyncButtonLoadingStyleEnvironmentKey.self] }
         set { self[AsyncButtonLoadingStyleEnvironmentKey.self] = newValue }
+    }
+
+    var asyncButtonOperationIdentifierKey: String? {
+        get { self[AsyncButtonOperationIdentifierKey.self] }
+        set { self[AsyncButtonOperationIdentifierKey.self] = newValue }
     }
 }
 

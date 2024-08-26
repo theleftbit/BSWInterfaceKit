@@ -57,7 +57,7 @@ struct RecipeListView: View, PlaceholderDataProvider {
 /// To do so, implement `generatePlaceholderData()` from `PlaceholderDataProvider` protocol
 ///
 @MainActor
-public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, LoadingView: View, ID: Equatable>: View {
+public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, LoadingView: View, ID: Equatable & Sendable>: View {
     
     /// Represents the state of this view
     struct Operation {
@@ -165,6 +165,9 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
         withAnimation {
             currentOperation.phase = .loading
         }
+
+        let operation = AsyncOperationTracer.Operation(kind: .viewLoading, id: id)
+        await AsyncOperationTracer.operationDidBegin(operation)
         do {
             let finalData = try await dataGenerator()
             withAnimation {
@@ -175,10 +178,12 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
         } catch let error where error.isURLCancelled {
             /// Do nothing as we handle this `.task`
         } catch {
+            await AsyncOperationTracer.operationDidFail(operation, error)
             withAnimation {
                 currentOperation.phase = .error(error)
             }
         }
+        await AsyncOperationTracer.operationDidEnd(operation)
     }
 }
 
