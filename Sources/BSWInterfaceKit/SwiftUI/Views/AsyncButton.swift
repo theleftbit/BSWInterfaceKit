@@ -25,7 +25,6 @@ public struct AsyncButton<Label: View>: View {
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
     @Environment(\.asyncButtonLoadingConfiguration) var loadingConfiguration
-    @Environment(\.asyncButtonOperationIdentifierKey) var operationKey
 
     public var body: some View {
         Button(
@@ -62,21 +61,20 @@ public struct AsyncButton<Label: View>: View {
             hudVC = await presentHUDViewController()
         }
         #endif
-        let _operationKey = self.operationKey
         let result: Swift.Result<Void, Swift.Error> = await {
-            if let operationKey = _operationKey {
-                await AsyncOperationTracer.operationDidBegin(operationKey)
+            if let operation = operation {
+                await AsyncOperationTracer.operationDidBegin(operation)
             }
             do {
                 try await action()
-                if let operationKey = _operationKey {
-                    await AsyncOperationTracer.operationDidEnd(operationKey)
+                if let operation = operation {
+                    await AsyncOperationTracer.operationDidEnd(operation)
                 }
                 return .success(())
             } catch {
-                if let operationKey = _operationKey {
-                    await AsyncOperationTracer.operationDidEnd(operationKey)
-                    await AsyncOperationTracer.operationDidFail(operationKey, error)
+                if let operation = operation {
+                    await AsyncOperationTracer.operationDidEnd(operation)
+                    await AsyncOperationTracer.operationDidFail(operation, error)
                 }
                 return .failure(error)
             }
@@ -136,6 +134,16 @@ public struct AsyncButton<Label: View>: View {
             }
             .ignoresSafeArea()
         }
+    }
+    
+    @Environment(\.asyncButtonOperationIdentifierKey)
+    private var operationKey
+
+    private var operation: AsyncOperationTracer.Operation? {
+        guard let operationKey else {
+            return nil
+        }
+        return .init(kind: .buttonAction, id: operationKey)
     }
 
 #if canImport(UIKit)

@@ -166,7 +166,8 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
             currentOperation.phase = .loading
         }
 
-        await AsyncOperationTracer.operationDidBegin(id)
+        let operation = AsyncOperationTracer.Operation(kind: .viewLoading, id: id)
+        await AsyncOperationTracer.operationDidBegin(operation)
         do {
             let finalData = try await dataGenerator()
             withAnimation {
@@ -177,12 +178,12 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
         } catch let error where error.isURLCancelled {
             /// Do nothing as we handle this `.task`
         } catch {
-            await AsyncOperationTracer.operationDidFail(id, error)
+            await AsyncOperationTracer.operationDidFail(operation, error)
             withAnimation {
                 currentOperation.phase = .error(error)
             }
         }
-        await AsyncOperationTracer.operationDidEnd(id)
+        await AsyncOperationTracer.operationDidEnd(operation)
     }
 }
 

@@ -21,10 +21,19 @@ public enum AsyncOperationTracer {
         }
     }
 
-    public typealias OperationHandler = @Sendable (any OperationID) async -> ()
-    public typealias OperationFailedHandler = @Sendable (any OperationID, any Error) async -> ()
+    public typealias OperationHandler = @Sendable (Operation) async -> ()
+    public typealias OperationFailedHandler = @Sendable (Operation, any Error) async -> ()
 
-    public typealias OperationID = (Equatable & Sendable)
+    public struct Operation {
+        
+        public let kind: Kind
+        public let id: any (Equatable & Sendable)
+        
+        public enum Kind {
+            case viewLoading
+            case buttonAction
+        }
+    }
     
     @AsyncOperationTracerStorageActor
     static var operationDidBegin: OperationHandler = { _ in }
