@@ -1,19 +1,23 @@
 #if canImport(UIKit)
 
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class AvatarViewTests: BSWSnapshotTest {
 
-    func testLayoutHuge() {
+    @Test
+    func layoutHuge() {
         verifyAvatarForSize(.huge)
     }
 
-    func testLayoutNormal() {
+    @Test
+    func layoutNormal() {
         verifyAvatarForSize(.normal)
     }
 
-    func testLayoutWithCameraHuge() {
+    @Test
+    func layoutWithCameraHuge() {
         let avatarView = AvatarView(size: .huge, photo: Photo.emptyPhoto())
         avatarView.onTapOnAvatar = { avatarIn in
             

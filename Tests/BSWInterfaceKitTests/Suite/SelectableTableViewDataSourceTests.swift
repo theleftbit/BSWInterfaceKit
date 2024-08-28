@@ -6,7 +6,7 @@ import XCTest
 
 class SelectableTableViewDataSourceTests: BSWSnapshotTest {
     
-    func testLayout() throws {
+    func testLayout() async throws {
         let vc = SelectableTableViewController()
         var vm = SelectableArray(options: [
             Cell.VM(text: "Title1"),
@@ -15,7 +15,7 @@ class SelectableTableViewDataSourceTests: BSWSnapshotTest {
         ])
         vm.select(atIndex: 0)
         vc.configureFor(viewModel: vm)
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await waitABitAndVerify(viewController: vc, testDarkMode: false)
     }
 }
 

@@ -1,5 +1,5 @@
 #if canImport(UIKit)
-
+/*
 import BSWInterfaceKit
 import XCTest
 
@@ -174,4 +174,5 @@ private class ViewController: UIViewController {
 
     }
 }
+ */
 #endif

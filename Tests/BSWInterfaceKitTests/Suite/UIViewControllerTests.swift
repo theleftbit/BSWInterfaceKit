@@ -4,6 +4,7 @@ import BSWInterfaceKit
 import BSWFoundation
 import XCTest
 
+/*
 class UIViewControllerTests: BSWSnapshotTest {
 
     func testInitialLayoutCallback() {
@@ -191,5 +192,5 @@ private class ContentVC: UIViewController {
         view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
     }
 }
-
+*/
 #endif

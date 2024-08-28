@@ -1,28 +1,25 @@
 #if canImport(UIKit)
 
-import XCTest
+import Testing
 import SnapshotTesting
 import BSWInterfaceKit
+import UIKit
 
 /// XCTestCase subclass to ease snapshot testing
 @MainActor
-open class BSWSnapshotTest: XCTestCase {
+open class BSWSnapshotTest {
 
-    public let waiter = XCTWaiter()
     public let defaultWidth: CGFloat = 375
     public nonisolated(unsafe) var recordMode = false
     let defaultPerceptualPrecision: Float = 0.997
 
-    override open func setUp() {
-        super.setUp()
+    init() {
         if let value = ProcessInfo.processInfo.environment["GENERATE_SNAPSHOTS"], value == "1" {
             recordMode = true
         }
-
+        
         // Disable downloading images from web to avoid flaky tests.
-        MainActor.assumeIsolated {
-            UIImageView.disableWebDownloads()
-        }
+        UIImageView.disableWebDownloads()
         RandomColorFactory.isOn = false
         RandomColorFactory.defaultColor = UIColor.init(r: 255, g: 149, b: 0)
     }
@@ -33,7 +30,6 @@ open class BSWSnapshotTest: XCTestCase {
         get {
             return currentWindow.rootViewController
         }
-
         set(newRootViewController) {
             currentWindow.rootViewController = newRootViewController
             currentWindow.makeKeyAndVisible()
@@ -43,29 +39,36 @@ open class BSWSnapshotTest: XCTestCase {
     }
 
     /// Add the view controller on the window and wait infinitly
-    public func debug(viewController: UIViewController) {
-        rootViewController = viewController
-        let exp = expectation(description: "No expectation")
-        let _ = waiter.wait(for: [exp], timeout: 1000)
+    public nonisolated func debug(viewController: UIViewController) async {
+        await confirmation { _ in
+            await MainActor.run {
+                rootViewController = viewController
+            }
+            if #available(iOS 16.0, *) {
+                try? await Task.sleep(for: .seconds(1000))
+            }
+        }
     }
 
-    public func debug(view: UIView) {
+    public func debug(view: UIView) async {
         let vc = UIViewController()
         vc.view.backgroundColor = .white
         vc.view.addSubview(view)
-        debug(viewController: vc)
+        await debug(viewController: vc)
     }
 
     /// Presents the VC using a fresh rootVC in the host's main window.
     /// - note: This method blocks the calling thread until the presentation is finished.
-    public func presentViewController(_ viewController: UIViewController) {
-        let exp = expectation(description: "Presentation")
-        rootViewController = UIViewController()
-        rootViewController!.view.backgroundColor = .white // I just think it looks pretier this way
-        rootViewController!.present(viewController, animated: true, completion: {
-            exp.fulfill()
-        })
-        let _ = waiter.wait(for: [exp], timeout: 10)
+    public nonisolated func presentViewController(_ viewController: UIViewController) async {
+        await confirmation { conf in
+            await MainActor.run {
+                rootViewController = UIViewController()
+                rootViewController!.view.backgroundColor = .white // I just think it looks pretier this way
+                rootViewController!.present(viewController, animated: true) {
+                    conf()
+                }
+            }
+        }
     }
     
     public func waitTaskAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
@@ -90,29 +93,34 @@ open class BSWSnapshotTest: XCTestCase {
 
     /// Sets this VC as the rootVC of the current window and snapshots it after some time.
     /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
-    public func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) {
-        rootViewController = viewController
-        
-        let strategy: Snapshotting = .image(
-            on: UIScreen.main.currentDevice,
-            perceptualPrecision: defaultPerceptualPrecision
-        )
-
-        let exp = expectation(description: "verify view")
-        let deadlineTime = DispatchTime.now() + .milliseconds(50)
-        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.rootViewController = nil
-            
-            let screenSize = UIScreen.main.bounds
-            let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
-            assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            if testDarkMode {
-                viewController.overrideUserInterfaceStyle = .dark
-                assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            }
-            exp.fulfill()
+    public nonisolated func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
+        await MainActor.run {
+            rootViewController = viewController
         }
-        let _ = waiter.wait(for: [exp], timeout: 1)
+        
+
+        await confirmation { confirmation in
+            if #available(iOS 16.0, *) {
+                try? await Task.sleep(for: .milliseconds(50))
+            }
+            await MainActor.run {
+                let strategy: Snapshotting = .image(
+                    on: UIScreen.main.currentDevice,
+                    perceptualPrecision: defaultPerceptualPrecision
+                )
+
+                self.rootViewController = nil
+                
+                let screenSize = UIScreen.main.bounds
+                let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
+                assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+                if testDarkMode {
+                    viewController.overrideUserInterfaceStyle = .dark
+                    assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+                }
+            }
+            confirmation()
+        }
     }
 
     /// Snapshots the passed view.

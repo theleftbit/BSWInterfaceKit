@@ -8,11 +8,11 @@ import XCTest
 
 class TextStylerTests: BSWSnapshotTest {
 
-    var sut: TextStyler!
+    var sut: TextStyler
     
-    override func setUp() async throws {
-        try await super.setUp()
+    override init() {
         sut = TextStyler(fontDescriptor: .init(name: "ChalkboardSE-Light", size: 0))
+        super.init()
     }
 
     func testTitle() {
