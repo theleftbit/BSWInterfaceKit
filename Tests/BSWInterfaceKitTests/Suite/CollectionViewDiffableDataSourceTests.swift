@@ -1,5 +1,5 @@
 
-#if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import UIKit

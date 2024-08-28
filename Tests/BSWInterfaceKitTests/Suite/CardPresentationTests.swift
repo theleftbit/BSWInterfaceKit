@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 09/09/2019.
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import UIKit

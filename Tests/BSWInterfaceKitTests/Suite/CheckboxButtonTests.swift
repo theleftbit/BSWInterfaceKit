@@ -2,7 +2,7 @@
 //  Created by Michele Restuccia on 22/2/23.
 //
 
-#if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
