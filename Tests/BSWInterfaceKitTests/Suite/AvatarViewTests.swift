@@ -1,5 +1,4 @@
 #if canImport(UIKit)
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -35,5 +34,4 @@ class AvatarViewTests: BSWSnapshotTest {
     }
 }
 
-#endif
 #endif

@@ -1,6 +1,5 @@
 
 #if canImport(UIKit)
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import UIKit
@@ -488,5 +487,4 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
     }
 }
 
-#endif
 #endif

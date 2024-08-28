@@ -1,5 +1,4 @@
 #if canImport(UIKit)
-#if canImport(Testing)
 
 import UIKit
 import BSWInterfaceKit
@@ -33,5 +32,4 @@ private class ViewController: UIViewController {
     }
 }
 
-#endif
 #endif

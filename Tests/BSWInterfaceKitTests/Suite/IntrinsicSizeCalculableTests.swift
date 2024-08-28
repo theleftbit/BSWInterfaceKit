@@ -1,4 +1,4 @@
-#if canImport(Testing)
+#if canImport(UIKit)
 
 import UIKit
 import Testing
@@ -39,4 +39,5 @@ private class SomeViewThatOverridesIntrinsicSize: UIView, IntrinsicSizeCalculabl
         SomeViewThatOverridesIntrinsicSize.HardcodedHeight
     }
 }
+
 #endif

@@ -1,5 +1,4 @@
 #if canImport(UIKit)
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import BSWFoundation
@@ -71,5 +70,4 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     }
 }
 
-#endif
 #endif

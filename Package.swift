@@ -41,6 +41,6 @@ let package = Package(
             exclude: ["Suite/__Snapshots__/"]
         ),
     ]
-//    ,
-//    swiftLanguageVersions: [.version("6")]
+    ,
+    swiftLanguageVersions: [.version("6")]
 )

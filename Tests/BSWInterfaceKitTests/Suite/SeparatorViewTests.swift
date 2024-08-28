@@ -1,5 +1,4 @@
 #if canImport(UIKit)
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -22,5 +21,4 @@ class SeparatorViewTests: BSWSnapshotTest {
     }
 }
 
-#endif
 #endif
