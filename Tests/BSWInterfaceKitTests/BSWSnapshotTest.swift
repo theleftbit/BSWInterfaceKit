@@ -5,12 +5,13 @@ import SnapshotTesting
 import BSWInterfaceKit
 import UIKit
 
+
 /// XCTestCase subclass to ease snapshot testing
 @MainActor
 open class BSWSnapshotTest {
 
     public let defaultWidth: CGFloat = 375
-    public nonisolated(unsafe) var recordMode = false
+    public var recordMode = false
     let defaultPerceptualPrecision: Float = 0.997
 
     init() {
@@ -39,14 +40,10 @@ open class BSWSnapshotTest {
     }
 
     /// Add the view controller on the window and wait infinitly
-    public nonisolated func debug(viewController: UIViewController) async {
-        await confirmation { _ in
-            await MainActor.run {
-                rootViewController = viewController
-            }
-            if #available(iOS 16.0, *) {
-                try? await Task.sleep(for: .seconds(1000))
-            }
+    public func debug(viewController: UIViewController) async {
+        rootViewController = viewController
+        if #available(iOS 16.0, *) {
+            try? await Task.sleep(for: .seconds(1000))
         }
     }
 
@@ -93,31 +90,28 @@ open class BSWSnapshotTest {
 
     /// Sets this VC as the rootVC of the current window and snapshots it after some time.
     /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
-    public nonisolated func verify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
-        await confirmation { confirmation in
-            await MainActor.run {
-                rootViewController = viewController
-            }
-            if #available(iOS 16.0, *) {
-                try? await Task.sleep(for: .milliseconds(50))
-            }
-            await MainActor.run {
-                let strategy: Snapshotting = .image(
-                    on: UIScreen.main.currentDevice,
-                    perceptualPrecision: defaultPerceptualPrecision
-                )
+    public func verify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
+        await MainActor.run {
+            rootViewController = viewController
+        }
+        if #available(iOS 16.0, *) {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+        await MainActor.run {
+            let strategy: Snapshotting = .image(
+                on: UIScreen.main.currentDevice,
+                perceptualPrecision: defaultPerceptualPrecision
+            )
 
-                self.rootViewController = nil
-                
-                let screenSize = UIScreen.main.bounds
-                let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
-                assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-                if testDarkMode {
-                    viewController.overrideUserInterfaceStyle = .dark
-                    assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-                }
+            self.rootViewController = nil
+            
+            let screenSize = UIScreen.main.bounds
+            let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
+            assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
+            if testDarkMode {
+                viewController.overrideUserInterfaceStyle = .dark
+                assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
             }
-            confirmation()
         }
     }
 
