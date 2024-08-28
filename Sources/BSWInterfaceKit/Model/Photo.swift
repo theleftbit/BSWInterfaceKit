@@ -159,18 +159,30 @@ extension Photo {
         return [photo1, photo2, photo3, photo4]
     }
 }
+#if swift(>=6.0)
+extension CGSize: @retroactive Hashable { // For some reason `CGSize` isn't `Hashable`
+}
+#if canImport(AppKit)
+extension PlatformImage: @retroactive @unchecked Sendable {}
+#endif
 
+#else
 extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
+}
+
+#if canImport(AppKit)
+extension PlatformImage: @unchecked Sendable {}
+#endif
+
+#endif
+
+extension CGSize {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(width)
         hasher.combine(height)
     }
 }
+
 extension Photo: Equatable, Hashable {}
 extension Photo.Kind: Equatable, Hashable {}
 extension Photo.PlaceholderImage: Equatable, Hashable {}
-
-
-#if canImport(AppKit)
-extension PlatformImage: @unchecked Sendable {}
-#endif

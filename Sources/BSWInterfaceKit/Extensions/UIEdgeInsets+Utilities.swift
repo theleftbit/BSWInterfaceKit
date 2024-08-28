@@ -21,8 +21,13 @@ extension UIEdgeInsets {
     }
 }
 
+#if swift(>=6.0)
+extension UIEdgeInsets: @retroactive ExpressibleByDictionaryLiteral { }
+#else
+extension UIEdgeInsets: ExpressibleByDictionaryLiteral { }
+#endif
 //: Credit to [Adam Sharp](https://twitter.com/sharplet) & [Daniel Jalkut](https://twitter.com/danielpunkass)
-extension UIEdgeInsets: ExpressibleByDictionaryLiteral {
+extension UIEdgeInsets {
     public typealias Key = EdgeKey
     public typealias Value = CGFloat
 
