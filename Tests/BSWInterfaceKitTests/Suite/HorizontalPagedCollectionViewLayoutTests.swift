@@ -199,6 +199,22 @@ class PlanSelectorViewController: UIViewController {
         ])
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        fetchData { [weak self] in
+            guard let self else { return }
+            var snapshot = self.collectionView.diffDataSouce.snapshot()
+            snapshot.appendSections([.main])
+            for _ in 0...6 {
+                snapshot.appendItems([.cell(UUID.init())])
+            }
+            await self.collectionView.diffDataSouce.apply(snapshot)
+        } completion: { _ in
+            
+        }
+
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
@@ -280,15 +296,6 @@ class PlanSelectorViewController: UIViewController {
                     return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: Cell.Configuration())
                 }
             })
-            
-            Task {
-                var snapshot = diffDataSouce.snapshot()
-                snapshot.appendSections([.main])
-                for _ in 0...6 {
-                    snapshot.appendItems([.cell(UUID.init())])
-                }
-                await diffDataSouce.apply(snapshot)
-            }
         }
     }
     
