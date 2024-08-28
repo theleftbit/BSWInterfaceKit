@@ -2,6 +2,7 @@
 //  Created by Michele Restuccia on 22/10/2019.
 //
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -43,4 +44,5 @@ class RoundLayerTests: BSWSnapshotTest {
     }
 }
 
+#endif
 #endif

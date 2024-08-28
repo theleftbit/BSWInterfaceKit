@@ -3,6 +3,7 @@
 //
 
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import UIKit
 import BSWInterfaceKit
@@ -354,4 +355,5 @@ class PlanSelectorViewController: UIViewController {
     }
 }
 
+#endif
 #endif

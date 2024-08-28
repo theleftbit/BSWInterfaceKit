@@ -1,4 +1,5 @@
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWFoundation
 import BSWInterfaceKit
@@ -47,4 +48,5 @@ private class Cell: UITableViewCell, ViewModelReusable {
     }
 }
 
+#endif
 #endif

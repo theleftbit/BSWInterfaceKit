@@ -3,6 +3,7 @@
 //
 
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -26,4 +27,5 @@ class CheckboxButtonTests: BSWSnapshotTest {
     }
 }
 
+#endif
 #endif

@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 12/02/2017.
 //
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import UIKit
@@ -155,4 +156,5 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
     }
 }
 
+#endif
 #endif

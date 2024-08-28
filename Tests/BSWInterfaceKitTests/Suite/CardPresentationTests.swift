@@ -3,6 +3,7 @@
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import UIKit
@@ -68,4 +69,5 @@ extension SampleVC: UIViewControllerTransitioningDelegate {
     }
 }
 
+#endif
 #endif

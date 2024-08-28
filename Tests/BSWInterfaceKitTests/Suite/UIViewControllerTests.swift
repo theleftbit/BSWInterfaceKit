@@ -1,4 +1,5 @@
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import BSWFoundation
@@ -196,4 +197,5 @@ private class ContentVC: UIViewController {
     }
 }
 
+#endif
 #endif

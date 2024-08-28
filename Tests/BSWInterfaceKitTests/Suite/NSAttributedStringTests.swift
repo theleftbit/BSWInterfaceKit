@@ -1,4 +1,5 @@
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import SnapshotTesting
@@ -42,4 +43,5 @@ struct NSAttributedStringTests {
     }
 }
 
+#endif
 #endif

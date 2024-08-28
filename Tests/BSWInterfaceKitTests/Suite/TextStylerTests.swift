@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 11/04/2017.
 //
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -54,4 +55,5 @@ class TextStylerTests: BSWSnapshotTest {
     }
 }
 
+#endif
 #endif

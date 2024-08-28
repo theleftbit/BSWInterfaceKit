@@ -1,4 +1,5 @@
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import BSWFoundation
@@ -16,4 +17,5 @@ struct UIColorTests {
     }
 }
 
+#endif
 #endif

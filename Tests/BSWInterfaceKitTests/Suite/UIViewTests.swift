@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 21/03/2017.
 //
 #if canImport(UIKit)
+#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -53,4 +54,5 @@ class UIViewTests: BSWSnapshotTest {
     }
 }
 
+#endif
 #endif
