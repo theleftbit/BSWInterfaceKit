@@ -17,3 +17,11 @@ struct UIColorTests {
 }
 
 #endif
+
+import XCTest
+
+class HelloGHActions: XCTestCase {
+    func testThis() {
+        XCTFail()
+    }
+}
