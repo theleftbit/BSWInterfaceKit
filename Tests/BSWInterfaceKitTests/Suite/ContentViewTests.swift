@@ -1,13 +1,13 @@
 #if canImport(UIKit)
-/*
 import BSWInterfaceKit
-import XCTest
+import Testing
 
 class ContentViewTests: BSWSnapshotTest {
     
-    func testLayout() throws {
+    @Test
+    func layout() async throws {
         let vc = ViewController()
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 }
 
@@ -174,5 +174,5 @@ private class ViewController: UIViewController {
 
     }
 }
- */
+
 #endif

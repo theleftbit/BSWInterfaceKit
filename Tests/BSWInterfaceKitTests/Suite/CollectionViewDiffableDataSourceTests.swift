@@ -3,10 +3,12 @@
 
 import BSWInterfaceKit
 import UIKit
+import Testing
 
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
     
-    func testLayout() async {
+    @Test
+    func layout() async {
         let cv = MockCollectionView()
         let sut = cv.diffDataSource!
         var snapshot = sut.snapshot()

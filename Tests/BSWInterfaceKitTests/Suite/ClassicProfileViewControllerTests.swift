@@ -5,12 +5,14 @@
 
 import BSWInterfaceKit
 import UIKit
+import Testing
 
 /// This test is here because it tests several underlying subsystems
 /// of BSWInterfaceKit so it works as some kind of "smoke test"
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
-    func testSampleLayout() async {
+    @Test
+    func sampleLayout() async {
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
         detailVC.editKind = .editable(.init(title: "Edit", style: .plain, target: nil, action: nil))

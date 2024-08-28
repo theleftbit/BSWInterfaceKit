@@ -2,58 +2,59 @@
 
 import BSWInterfaceKit
 import BSWFoundation
-import XCTest
+import Testing
+import UIKit
 
-/*
 class UIViewControllerTests: BSWSnapshotTest {
 
-    func testInitialLayoutCallback() {
+    @Test
+    func initialLayoutCallback() {
         let sut = TestViewController()
-        rootViewController = sut
-        let exp = expectation(description: "Layout the view and wait for it")
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
-            exp.fulfill()
-        }
-        let _ = waiter.wait(for: [exp], timeout: 1)
-        XCTAssert(sut.viewInitialLayoutDidCompleteCalled)
+        self.rootViewController = sut
+        #expect(sut.viewInitialLayoutDidCompleteCalled)
     }
     
-    func testChildViewController() {
+    @Test
+    func childViewController() {
         let parentVC = UIViewController()
         let childVC = UIViewController()
         parentVC.containViewController(childVC)
-        XCTAssert(parentVC.children.contains(childVC))
+        #expect(parentVC.children.contains(childVC))
         parentVC.removeContainedViewController(childVC)
-        XCTAssert(!parentVC.children.contains(childVC))
+        #expect(!parentVC.children.contains(childVC))
     }
     
-    func testAddBottomActionButton() {
+    @Test
+    func addBottomActionButton() async {
         guard UIDevice.current.model != "iPad" else { return }
         let buttonHeight: CGFloat = 50
         let vc = bottomViewController(buttonHeight: buttonHeight)
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
-        XCTAssertNotNil(vc.button)
-        XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == buttonHeight)
+        await verify(viewController: vc, testDarkMode: false)
+        #expect(vc.button != nil)
+        #expect(vc.containedViewController.view.safeAreaInsets.bottom == buttonHeight)
     }
 
-    func testAddBottomActionButtonWithMargin() {
+    @Test
+    func addBottomActionButtonWithMargin() async {
         guard UIDevice.current.model != "iPad" else { return }
         let buttonHeight: CGFloat = 50
         let padding: CGFloat = 20
         let vc = bottomViewController(margins: UIEdgeInsets(top: 0, left: padding, bottom: padding, right: padding), buttonHeight: buttonHeight)
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
-        XCTAssertNotNil(vc.button)
-        XCTAssert(vc.containedViewController.view.safeAreaInsets.bottom == (buttonHeight + padding))
+        await verify(viewController: vc, testDarkMode: false)
+        #expect(vc.button != nil)
+        #expect(vc.containedViewController.view.safeAreaInsets.bottom == (buttonHeight + padding))
     }
 
-    func testAddBottomController() {
+    @Test
+    func addBottomController() async {
         let vc = bottomViewControllerContainer()
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
-        XCTAssertNotNil(vc.bottomController)
-        XCTAssert(vc.containedViewController.bottomContainerViewController == vc)
+        await verify(viewController: vc, testDarkMode: false)
+        #expect(vc.bottomController != nil)
+        #expect(vc.containedViewController.bottomContainerViewController == vc)
     }
     
-    func testAddBottomActionButtonIntrinsicSizeCalculable() {
+    @Test
+    func addBottomActionButtonIntrinsicSizeCalculable() {
         
         let buttonHeight: CGFloat = 60
         let simulatedContentSize = CGSize(width: 320, height: 500)
@@ -65,21 +66,23 @@ class UIViewControllerTests: BSWSnapshotTest {
             button: button
         )
         let constrainedHeight = vc.heightConstrainedTo(width: simulatedContentSize.width)
-        XCTAssert(constrainedHeight == simulatedContentSize.height + buttonHeight)
+        #expect(constrainedHeight == simulatedContentSize.height + buttonHeight)
     }
     
-    func testErrorView() {
+    @Test
+    func errorView() async {
         let vc = TestViewController()
         var buttonConfig = UIButton.Configuration.plain()
         buttonConfig.title = "Retry"
         vc.showErrorMessage("Something Failed", error: SomeError(), retryButton: buttonConfig)
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
     
-    func testLoadingView() {
+    @Test
+    func loadingView() async {
         let vc = TestViewController()
         vc.showLoadingView(UIViewControllerTests.loadingView())
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
     @MainActor
@@ -192,5 +195,5 @@ private class ContentVC: UIViewController {
         view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
     }
 }
-*/
+
 #endif

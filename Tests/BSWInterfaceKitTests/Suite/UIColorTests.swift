@@ -2,14 +2,17 @@
 
 import BSWInterfaceKit
 import BSWFoundation
-import XCTest
+import Testing
+import UIKit
 
-class UIColorTests: BSWSnapshotTest {
-    func testInvertColors() {
+struct UIColorTests {
+    
+    @Test
+    func invertColors() {
         let testColor = UIColor.systemBackground
         let lightVariation = testColor.resolvedColor(with: .init(userInterfaceStyle: .light))
         let darkVariation = testColor.invertedForUserInterfaceStyle()
-        XCTAssertNotEqual(lightVariation, darkVariation)
+        #expect(lightVariation != darkVariation)
     }
 }
 

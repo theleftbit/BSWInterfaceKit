@@ -6,11 +6,12 @@
 
 import BSWInterfaceKit
 import UIKit
+import Testing
 
 class CardPresentationViewControllerTests: BSWSnapshotTest {
 
-    @MainActor
-    func _testSampleLayout() async {
+    @Test(.disabled())
+    func sampleLayout() async {
         let navVC = UINavigationController(rootViewController: SampleVC())
         await debug(viewController: navVC)
     }

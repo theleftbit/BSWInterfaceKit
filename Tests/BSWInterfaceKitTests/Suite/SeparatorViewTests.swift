@@ -1,11 +1,13 @@
 #if canImport(UIKit)
 
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class SeparatorViewTests: BSWSnapshotTest {
     
-    func testLayout() throws {
+    @Test
+    func layout() throws {
         let separatorView = SeparatorView()
         let contentView = UIView(frame: .init(x: 0, y: 0, width: 100, height: 100))
         contentView.backgroundColor = .white

@@ -3,25 +3,29 @@
 //
 
 #if canImport(UIKit)
-/*
+
 import UIKit
 import BSWInterfaceKit
+import Testing
 
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
     
-    func testLayout() {
+    @Test
+    func layout() async {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout())
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
-    func testCenteredLayout() {
+    @Test
+    func centeredLayout() async {
         let vc = PlanSelectorViewController()
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
-    func testAvailableWidthLayout() {
+    @Test
+    func availableWidthLayout() async {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout(itemSizing: .usingAvailableWidth(margin: 60)))
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 }
 
@@ -349,5 +353,5 @@ class PlanSelectorViewController: UIViewController {
         }
     }
 }
-*/
+
 #endif

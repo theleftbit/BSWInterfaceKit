@@ -93,13 +93,11 @@ open class BSWSnapshotTest {
 
     /// Sets this VC as the rootVC of the current window and snapshots it after some time.
     /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
-    public nonisolated func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
-        await MainActor.run {
-            rootViewController = viewController
-        }
-        
-
+    public nonisolated func verify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
         await confirmation { confirmation in
+            await MainActor.run {
+                rootViewController = viewController
+            }
             if #available(iOS 16.0, *) {
                 try? await Task.sleep(for: .milliseconds(50))
             }

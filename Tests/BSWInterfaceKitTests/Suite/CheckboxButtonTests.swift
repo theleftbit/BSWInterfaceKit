@@ -5,17 +5,20 @@
 #if canImport(UIKit)
 
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class CheckboxButtonTests: BSWSnapshotTest {
 
-    func testCheckboxButton() {
+    @Test
+    func checkboxButton() {
         let button = CheckboxButton()
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)
         verify(view: button)
     }
     
-    func testCheckboxButtonSelected() {
+    @Test
+    func checkboxButtonSelected() {
         let button = CheckboxButton()
         button.isSelected = true
         button.frame = CGRect(origin: .zero, size: button.intrinsicContentSize)

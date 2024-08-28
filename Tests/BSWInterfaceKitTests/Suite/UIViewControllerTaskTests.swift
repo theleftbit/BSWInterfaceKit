@@ -1,8 +1,9 @@
 #if canImport(UIKit)
-/*
+
 import BSWInterfaceKit
 import BSWFoundation
-import XCTest
+import Testing
+import UIKit
 
 class UIViewControllerTaskTests: BSWSnapshotTest {
     
@@ -47,23 +48,26 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         }
     }
     
-    func testTaskLoadingView() async {
+    @Test
+    func taskLoadingView() async {
         let vc = MockVC(taskGenerator: {
             try await Task.sleep(nanoseconds: 3_000_000_000)
             return ""
         })
-        await waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
-    func testTaskErrorView() async {
+    @Test
+    func taskErrorView() async {
         let vc = MockVC(taskGenerator: { throw SomeError() })
-        await waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
-    func testTaskSuccessView() async {
+    @Test
+    func taskSuccessView() async {
         let vc = MockVC(taskGenerator: { return "Cachondo" })
-        await waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 }
- */
+
 #endif
