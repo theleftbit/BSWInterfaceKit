@@ -18,8 +18,12 @@ class UIViewTests: BSWSnapshotTest {
         hostView.backgroundColor = .white
 
         childView = UIView(frame: .zero)
-        childView.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        childView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        let widthConstraint = childView.widthAnchor.constraint(equalToConstant: 50)
+        let heightConstraint = childView.heightAnchor.constraint(equalToConstant: 50)
+        [widthConstraint, heightConstraint].forEach {
+            $0.priority = .init(rawValue: 999)
+            $0.isActive = true
+        }
         childView.backgroundColor = .red
 
         hostView.addAutolayoutSubview(childView)
