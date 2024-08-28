@@ -51,7 +51,7 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
     @Test
     func taskLoadingView() async {
         let vc = MockVC(taskGenerator: {
-            try await Task.sleep(nanoseconds: 3_000_000_000)
+            try await Task.never
             return ""
         })
         await verify(viewController: vc, testDarkMode: false)

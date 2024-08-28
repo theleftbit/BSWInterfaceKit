@@ -5,13 +5,19 @@ import SnapshotTesting
 import BSWInterfaceKit
 import UIKit
 
-
-/// XCTestCase subclass to ease snapshot testing
+/// Convenience class to ease snapshot testing
 @MainActor
 open class BSWSnapshotTest {
 
     public let defaultWidth: CGFloat = 375
     public var recordMode = false
+    public var waitStrategy: WaitStrategy = .milliseconds(50)
+    
+    public enum WaitStrategy {
+        case closestBSWTask
+        case milliseconds(Double)
+    }
+    
     let defaultPerceptualPrecision: Float = 0.997
 
     init() {
@@ -53,65 +59,37 @@ open class BSWSnapshotTest {
         vc.view.addSubview(view)
         await debug(viewController: vc)
     }
-
-    /// Presents the VC using a fresh rootVC in the host's main window.
-    /// - note: This method blocks the calling thread until the presentation is finished.
-    public nonisolated func presentViewController(_ viewController: UIViewController) async {
-        await confirmation { conf in
-            await MainActor.run {
-                rootViewController = UIViewController()
-                rootViewController!.view.backgroundColor = .white // I just think it looks pretier this way
-                rootViewController!.present(viewController, animated: true) {
-                    conf()
-                }
-            }
-        }
-    }
     
-    public func waitTaskAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
+    /// Sets this VC as the rootVC of the current window and snapshots it after some time.
+    /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
+    public func verify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
+
         rootViewController = viewController
 
+        switch waitStrategy {
+        case .closestBSWTask:
+            if let task = viewController.closestBSWFetchTask {
+                await task.value
+            }
+        case .milliseconds(let double):
+            if #available(iOS 16.0, *) {
+                try? await Task.sleep(for: .milliseconds(double))
+            }
+        }
+        
         let strategy: Snapshotting = .image(
             on: UIScreen.main.currentDevice,
             perceptualPrecision: defaultPerceptualPrecision
         )
 
-        if let task = viewController.closestBSWFetchTask {
-            await task.value
-        }
+        self.rootViewController = nil
+        
         let screenSize = UIScreen.main.bounds
         let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
         assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
         if testDarkMode {
             viewController.overrideUserInterfaceStyle = .dark
             assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-        }
-    }
-
-    /// Sets this VC as the rootVC of the current window and snapshots it after some time.
-    /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
-    public func verify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
-        await MainActor.run {
-            rootViewController = viewController
-        }
-        if #available(iOS 16.0, *) {
-            try? await Task.sleep(for: .milliseconds(50))
-        }
-        await MainActor.run {
-            let strategy: Snapshotting = .image(
-                on: UIScreen.main.currentDevice,
-                perceptualPrecision: defaultPerceptualPrecision
-            )
-
-            self.rootViewController = nil
-            
-            let screenSize = UIScreen.main.bounds
-            let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
-            assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            if testDarkMode {
-                viewController.overrideUserInterfaceStyle = .dark
-                assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            }
         }
     }
 

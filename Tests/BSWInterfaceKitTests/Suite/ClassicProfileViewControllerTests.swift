@@ -13,11 +13,12 @@ class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
     @Test
     func sampleLayout() async {
+        waitStrategy = .closestBSWTask
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
         detailVC.editKind = .editable(.init(title: "Edit", style: .plain, target: nil, action: nil))
         let navController = UINavigationController(rootViewController: detailVC)
-        await waitTaskAndVerify(viewController: navController, testDarkMode: false)
+        await verify(viewController: navController, testDarkMode: false)
     }
 }
 

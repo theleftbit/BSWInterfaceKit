@@ -9,6 +9,11 @@ import BSWInterfaceKit
 import Testing
 
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
+        
+    override init() {
+        super.init()
+        waitStrategy = .closestBSWTask
+    }
     
     @Test
     func layout() async {
@@ -47,7 +52,6 @@ private class ViewController: UIViewController {
         repeating: Photo.emptyPhoto(),
         count: 10
     )
-
     
     init(layout: HorizontalPagedCollectionViewLayout) {
         self.layout = layout
@@ -86,16 +90,17 @@ private class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        /// Insert stuff
-        Task {
-            var snapshot = diffDataSource.snapshot()
+        fetchData { [weak self] in
+            guard let self else { return }
+            var snapshot = self.diffDataSource.snapshot()
             snapshot.appendSections([.main])
-            mockData.forEach { photo in
+            self.mockData.forEach { photo in
                 let configuration = PageCell.Configuration(photo: photo)
                 snapshot.appendItems([.cell(configuration)])
             }
-            await diffDataSource.apply(snapshot)
+            await self.diffDataSource.apply(snapshot)
+        } completion: { _ in
+            
         }
     }
 }
