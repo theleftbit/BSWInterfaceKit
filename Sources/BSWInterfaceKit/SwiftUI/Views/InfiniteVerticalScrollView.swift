@@ -1,19 +1,14 @@
 import SwiftUI
 
-@available(iOS 17, macOS 14, *)
+#if swift(>=6.0)
+@available(iOS 18, macOS 15, *)
 #Preview {
-    NavigationStack {
-        ItemListView(items: Item.createItems())
-    }
-}
-
-@available(iOS 17, macOS 14, *)
-private struct ItemListView: View {
-
-    @State
-    var items: [Item]
     
-    var body: some View {
+    @Previewable
+    @State
+    var items: [Item] = Item.createItems()
+    
+    NavigationStack {
         InfiniteVerticalScrollView(
             direction: .downwards,
             items: $items,
@@ -32,14 +27,18 @@ private struct ItemListView: View {
             }
         )
         .contentMargins(.all, 16, for: .scrollContent)
-#if os(iOS)
-        .background(Color.init(uiColor: .systemGroupedBackground))
-#endif
+        .safeAreaInset(edge: .top, spacing: 0) {
+            Rectangle()
+                .fill(Color.red)
+                .frame(height: 40)
+        }
+        .background(Color.gray)
     }
 }
+#endif
 
 @available(iOS 17, macOS 14, *)
-public struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
+public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView: View>: View where Item.ID : Sendable {
     
     public init(direction: Direction = .downwards,
          alignment: HorizontalAlignment = .center,
