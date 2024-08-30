@@ -1,14 +1,13 @@
-#if canImport(UIKit)
 import SwiftUI
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 #Preview {
     NavigationStack {
         ItemListView(items: Item.createItems())
     }
 }
 
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, *)
 private struct ItemListView: View {
 
     @State
@@ -32,13 +31,17 @@ private struct ItemListView: View {
                     .padding(.horizontal, 16)
             }
         )
+        .contentMargins(.all, 16, for: .scrollContent)
+#if os(iOS)
         .background(Color.init(uiColor: .systemGroupedBackground))
+#endif
     }
 }
-@available(iOS 17, *)
-struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
+
+@available(iOS 17, macOS 14, *)
+public struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
     
-    init(direction: Direction = .downwards,
+    public init(direction: Direction = .downwards,
          alignment: HorizontalAlignment = .center,
          spacing: CGFloat? = nil,
          pinnedViews: PinnedScrollableViews = .init(),
@@ -54,19 +57,15 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
         self.itemViewBuilder = itemViewBuilder
     }
         
-    
-    enum Direction {
+    public enum Direction {
         case downwards
         
-        @available(iOS 18, *)
+        @available(iOS 18, macOS 15, *)
         case upwards
     }
     
-    @Binding
-    private var items: [Item]
-    
-    typealias ItemViewBuilder = (Item) -> ItemView
-    typealias NextPageFetcher = (Item.ID) async throws -> ([Item], Bool)
+    public typealias ItemViewBuilder = (Item) -> ItemView
+    public typealias NextPageFetcher = (Item.ID) async throws -> ([Item], Bool)
 
     private let itemViewBuilder: ItemViewBuilder
     private let nextPageFetcher: NextPageFetcher
@@ -75,6 +74,9 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
     private let pinnedViews: PinnedScrollableViews
     private let direction: Direction
 
+    @Binding
+    private var items: [Item]
+    
     @State
     private var phase: Phase = .idle
     
@@ -99,10 +101,10 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         ScrollView(.vertical) {
             
-            if #available(iOS 18, *), direction == .upwards, phase.isPaging {
+            if #available(iOS 18, macOS 15, *), direction == .upwards, phase.isPaging {
                 ProgressView()
             }
 
@@ -128,7 +130,6 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
                 self.phase = .paging(fromItem: newValue)
             }
         }
-        .navigationBarTitle(Text(scrollPositionItemID.flatMap({String.init(describing: $0)}) ?? "nil"), displayMode: .inline)
         .task(id: phase) {
             guard case let .paging(itemID) = phase else {
                 return
@@ -188,5 +189,3 @@ private struct Item: Identifiable {
         ]
     }
 }
-
-#endif
