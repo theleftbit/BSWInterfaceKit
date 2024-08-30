@@ -1,38 +1,22 @@
 #if canImport(UIKit)
-/// Example of how to use `InfiniteScrollingDataSource`
-/// Note: as of Xcode 14.3.1 this code is not transitioning to .loaded
-/// but if you copy/paste the code in an app, it'll work correctly
 import SwiftUI
 
 @available(iOS 17, *)
 #Preview {
     NavigationStack {
-        AsyncItemListView()
-    }
-}
-
-@available(iOS 17, *)
-private struct AsyncItemListView: View {
-    var body: some View {
-        AsyncView(id: "mock-items") {
-            try await Task.sleep(for: .seconds(1))
-            return Item.createItems()
-        } hostedViewGenerator: {
-            ItemListView(items: $0)
-        } loadingViewGenerator: {
-            ProgressView()
-        }
+        ItemListView(items: Item.createItems())
     }
 }
 
 @available(iOS 17, *)
 private struct ItemListView: View {
 
-    @State 
+    @State
     var items: [Item]
     
     var body: some View {
         InfiniteVerticalScrollView(
+            direction: .downwards,
             items: $items,
             nextPageFetcher: { _ in
                 try await Task.sleep(for: .seconds(2))
@@ -54,7 +38,8 @@ private struct ItemListView: View {
 @available(iOS 17, *)
 struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
     
-    init(alignment: HorizontalAlignment = .center,
+    init(direction: Direction = .downwards,
+         alignment: HorizontalAlignment = .center,
          spacing: CGFloat? = nil,
          pinnedViews: PinnedScrollableViews = .init(),
          items: Binding<[Item]>,
@@ -63,11 +48,20 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
         self.alignment = alignment
         self.spacing = spacing
         self.pinnedViews = pinnedViews
+        self.direction = direction
         self._items = items
         self.nextPageFetcher = nextPageFetcher
         self.itemViewBuilder = itemViewBuilder
     }
         
+    
+    enum Direction {
+        case downwards
+        
+        @available(iOS 18, *)
+        case upwards
+    }
+    
     @Binding
     private var items: [Item]
     
@@ -79,6 +73,7 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
     private let alignment: HorizontalAlignment
     private let spacing: CGFloat?
     private let pinnedViews: PinnedScrollableViews
+    private let direction: Direction
 
     @State
     private var phase: Phase = .idle
@@ -106,6 +101,11 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
 
     var body: some View {
         ScrollView(.vertical) {
+            
+            if #available(iOS 18, *), direction == .upwards, phase.isPaging {
+                ProgressView()
+            }
+
             LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
                 ForEach(items) { item in
                     itemViewBuilder(item)
@@ -114,31 +114,48 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
             }
             .scrollTargetLayout()
             
-            if phase.isPaging {
+            if direction == .downwards, phase.isPaging {
                 ProgressView()
             }
         }
-        .errorAlert(error: $error)
-        .scrollPosition(id: $scrollPositionItemID, anchor: .bottom)
-        .animation(.default, value: phase)
+        .scrollPosition(
+            id: $scrollPositionItemID,
+            anchor: (direction == .downwards) ? .bottom : .top
+        )
+        .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
         .onChange(of: scrollPositionItemID) { _, newValue in
-            if let newValue, newValue == items.last?.id, phase == .idle {
+            if let newValue, newValue == anchorItemID, phase == .idle {
                 self.phase = .paging(fromItem: newValue)
             }
         }
-        .navigationTitle(scrollPositionItemID.flatMap({String.init(describing: $0)}) ?? "nil")
+        .navigationBarTitle(Text(scrollPositionItemID.flatMap({String.init(describing: $0)}) ?? "nil"), displayMode: .inline)
         .task(id: phase) {
             guard case let .paging(itemID) = phase else {
                 return
             }
             do {
                 let (newItems, areThereMorePages) = try await nextPageFetcher(itemID)
-                self.items.append(contentsOf: newItems)
+                switch direction {
+                case .downwards:
+                    self.items.append(contentsOf: newItems)
+                case .upwards:
+                    self.items.insert(contentsOf: newItems, at: 0)
+                }
                 self.phase = areThereMorePages ? .idle : .noMorePages
             } catch {
                 self.phase = .idle
                 self.error = error
             }
+        }
+        .errorAlert(error: $error)
+    }
+    
+    private var anchorItemID: Item.ID? {
+        switch direction {
+        case .downwards:
+            return items.last?.id
+        case .upwards:
+            return items.first?.id
         }
     }
 }
@@ -150,6 +167,13 @@ private struct Item: Identifiable {
     
     static func createItems() -> [Item] {
         [
+            Item(name: UUID().uuidString),
+            Item(name: UUID().uuidString),
+            Item(name: UUID().uuidString),
+            Item(name: UUID().uuidString),
+            Item(name: UUID().uuidString),
+            Item(name: UUID().uuidString),
+            Item(name: UUID().uuidString),
             Item(name: UUID().uuidString),
             Item(name: UUID().uuidString),
             Item(name: UUID().uuidString),
