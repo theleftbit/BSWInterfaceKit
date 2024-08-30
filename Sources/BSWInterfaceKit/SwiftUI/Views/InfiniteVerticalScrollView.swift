@@ -54,12 +54,20 @@ private struct ItemListView: View {
 @available(iOS 17, *)
 struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
     
-    init(items: Binding<[Item]>, nextPageFetcher: @escaping NextPageFetcher, @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
+    init(alignment: HorizontalAlignment = .center,
+         spacing: CGFloat? = nil,
+         pinnedViews: PinnedScrollableViews = .init(),
+         items: Binding<[Item]>,
+         nextPageFetcher: @escaping NextPageFetcher,
+         @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
+        self.alignment = alignment
+        self.spacing = spacing
+        self.pinnedViews = pinnedViews
         self._items = items
         self.nextPageFetcher = nextPageFetcher
         self.itemViewBuilder = itemViewBuilder
     }
-    
+        
     @Binding
     private var items: [Item]
     
@@ -68,7 +76,10 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
 
     private let itemViewBuilder: ItemViewBuilder
     private let nextPageFetcher: NextPageFetcher
-    
+    private let alignment: HorizontalAlignment
+    private let spacing: CGFloat?
+    private let pinnedViews: PinnedScrollableViews
+
     @State
     private var phase: Phase = .idle
     
@@ -95,7 +106,7 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
 
     var body: some View {
         ScrollView(.vertical) {
-            LazyVStack {
+            LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
                 ForEach(items) { item in
                     itemViewBuilder(item)
                         .id(item.id)
