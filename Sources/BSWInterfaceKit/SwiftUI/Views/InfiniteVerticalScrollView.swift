@@ -126,7 +126,7 @@ struct InfiniteVerticalScrollView<Item: Identifiable, ItemView: View>: View {
                 self.phase = .paging(fromItem: newValue)
             }
         }
-        .navigationTitle(scrollPositionItemID.flatMap({String.init(describing: $0)}) ?? "")
+        .navigationTitle(scrollPositionItemID.flatMap({String.init(describing: $0)}) ?? "nil")
         .task(id: phase) {
             guard case let .paging(itemID) = phase else {
                 return
