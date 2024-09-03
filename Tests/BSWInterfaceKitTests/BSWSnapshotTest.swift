@@ -151,12 +151,6 @@ open class BSWSnapshotTest {
         view.frame.size = estimatedSize
         verify(view: view, file: file, testName: testName)
     }
-    
-    public func verify<View: IntrinsicSizeCalculable & UIViewController>(viewController: View, file: StaticString = #filePath, testName: String = #function) {
-        let estimatedHeight = viewController.heightConstrainedTo(width: defaultWidth)
-        viewController.view.frame.size = .init(width: defaultWidth, height: estimatedHeight)
-        verify(view: viewController.view, file: file, testName: testName)
-    }
 }
 
 private extension UIScreen {
