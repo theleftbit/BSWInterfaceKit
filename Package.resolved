@@ -1,4 +1,5 @@
 {
+  "originHash" : "9238ad9a88aeac55fc6a0930948fab78b5074eb1c683241ad44db1d9efae4136",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -23,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Nuke.git",
       "state" : {
-        "revision" : "f4d9b95788679d0654c032961f73e7e9c16ca6b4",
-        "version" : "12.1.0"
+        "revision" : "0ead44350d2737db384908569c012fe67c421e4d",
+        "version" : "12.8.0"
       }
     },
     {
@@ -46,5 +47,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

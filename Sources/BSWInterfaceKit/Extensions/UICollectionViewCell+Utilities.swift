@@ -1,5 +1,5 @@
 
-#if canImport(UIKit)
+#if canImport(UIKit.UICollectionViewCell)
 
 import UIKit
 import ObjectiveC

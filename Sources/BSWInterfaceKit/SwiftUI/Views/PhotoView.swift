@@ -69,9 +69,9 @@ public struct PhotoView: View {
     }
     
     var isRunningTests: Bool {
-        #if canImport(UIKit)
+        #if canImport(UIKit.UIApplication)
         UIApplication.shared.isRunningTests
-        #elseif canImport(AppKit)
+        #else
         false
         #endif
     }

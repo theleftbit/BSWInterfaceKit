@@ -3,19 +3,24 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIImage) && canImport(UIKit.UIColor)
 import UIKit
 public typealias PlatformImage = UIImage
 public typealias PlatformColor = UIColor
-public typealias PlatformContentMode = UIView.ContentMode
 #elseif canImport(AppKit)
 import AppKit
 public typealias PlatformImage = NSImage
 public typealias PlatformColor = NSColor
+ #endif
+
+#if canImport(UIKit.UIView)
+public typealias PlatformContentMode = UIView.ContentMode
+#else
 public typealias PlatformContentMode = Int
 #endif
 
 import Nuke
+import Foundation
 
 /// This represents an image to be displayed in the app.
 ///
@@ -75,7 +80,7 @@ public struct Photo: Sendable {
 public enum RandomColorFactory: @unchecked Sendable {
 
     public static nonisolated(unsafe) var isOn: Bool = true
-#if canImport(UIKit)
+#if canImport(UIKit.UIColor)
     public static nonisolated(unsafe) var defaultColor = UIColor(r: 255, g: 149, b: 0)
     
     /// Generates a random pastel color
@@ -93,11 +98,10 @@ public enum RandomColorFactory: @unchecked Sendable {
         )
     }
     #elseif canImport(AppKit)
-    
     public static var defaultColor: PlatformColor { .systemBlue }
 
     public static func randomColor() -> PlatformColor {
-        .systemBlue
+        Self.defaultColor
     }
     #endif
 }

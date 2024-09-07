@@ -1,5 +1,5 @@
 
-#if canImport(UIKit)
+#if canImport(UIKit.UICollectionViewListCell)
 
 import UIKit
 

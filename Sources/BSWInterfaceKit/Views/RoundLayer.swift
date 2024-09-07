@@ -3,7 +3,7 @@
 //  Copyright © 2019 TheLeftBit SL. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.CALayer)
 
 import UIKit
 

@@ -3,12 +3,14 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIColor)
 
 import UIKit
 
 public extension UIColor {
     
+    #if os(watchOS)
+    #else
     /**
      Initializes and returns a color given the current trait environment.
      
@@ -43,7 +45,7 @@ public extension UIColor {
             }
         }
     }
-
+    #endif
     /**
      Initializes and returns a color object using the specified opacity and RGB component values.
      

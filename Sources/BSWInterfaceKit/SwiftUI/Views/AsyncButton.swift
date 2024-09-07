@@ -55,7 +55,7 @@ public struct AsyncButton<Label: View>: View {
     @MainActor
     private func performAction() async {
         
-        #if canImport(UIKit)
+        #if canImport(UIKit.UIViewController)
         var hudVC: UIViewController?
         if loadingConfiguration.isBlocking {
             hudVC = await presentHUDViewController()
@@ -80,7 +80,7 @@ public struct AsyncButton<Label: View>: View {
             }
         }()
 
-        #if canImport(UIKit)
+        #if canImport(UIKit.UIViewController)
         if loadingConfiguration.isBlocking {
             await hudVC?.dismiss(animated: true)
         }
@@ -134,7 +134,7 @@ public struct AsyncButton<Label: View>: View {
             }
             .ignoresSafeArea()
         }
-    }
+    }    
     
     @Environment(\.asyncButtonOperationIdentifierKey)
     private var operationKey
@@ -146,7 +146,7 @@ public struct AsyncButton<Label: View>: View {
         return .init(kind: .buttonAction, id: operationKey)
     }
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
     @MainActor
     private func presentHUDViewController() async -> UIViewController? {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,

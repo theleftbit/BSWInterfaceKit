@@ -1,7 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 20/03/2017.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
 
 import UIKit
 

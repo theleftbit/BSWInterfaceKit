@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 08/08/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(Photos) && canImport(UIKit)
 
 import UIKit
 import MobileCoreServices

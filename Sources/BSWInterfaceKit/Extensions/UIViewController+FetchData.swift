@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 19/08/2019.
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
 
 import UIKit
 import BSWFoundation

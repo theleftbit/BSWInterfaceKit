@@ -3,7 +3,7 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIImageView)
 
 import BSWFoundation
 import Nuke; import NukeExtensions

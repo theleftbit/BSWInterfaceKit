@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 19/03/2020.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UILabel)
 
 import UIKit
 
