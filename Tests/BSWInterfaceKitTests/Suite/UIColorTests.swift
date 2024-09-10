@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import BSWFoundation
@@ -15,5 +14,3 @@ struct UIColorTests {
         #expect(lightVariation != darkVariation)
     }
 }
-
-#endif

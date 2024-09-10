@@ -1,7 +1,6 @@
 //
 //  Created by Pierluigi Cifani on 11/04/2017.
 //
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -53,5 +52,3 @@ class TextStylerTests: BSWSnapshotTest {
         verify(attributedString: string, file: file, testName: testName)
     }
 }
-
-#endif

@@ -1,4 +1,3 @@
-#if canImport(Testing)
 import BSWInterfaceKit
 import Testing
 
@@ -174,5 +173,3 @@ private class ViewController: UIViewController {
 
     }
 }
-
-#endif

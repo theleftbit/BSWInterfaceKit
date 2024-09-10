@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import BSWFoundation
@@ -195,5 +194,3 @@ private class ContentVC: UIViewController {
         view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
     }
 }
-
-#endif

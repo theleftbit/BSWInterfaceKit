@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import BSWFoundation
@@ -69,5 +68,3 @@ class UIViewControllerTaskTests: BSWSnapshotTest {
         await verify(viewController: vc, testDarkMode: false)
     }
 }
-
-#endif

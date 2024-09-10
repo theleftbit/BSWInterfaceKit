@@ -1,6 +1,4 @@
 
-#if canImport(Testing)
-
 import BSWInterfaceKit
 import UIKit
 import Testing
@@ -486,5 +484,3 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
         stackView.addArrangedSubview(detailLabel)
     }
 }
-
-#endif

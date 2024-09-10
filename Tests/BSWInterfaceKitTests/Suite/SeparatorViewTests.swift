@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -20,5 +19,3 @@ class SeparatorViewTests: BSWSnapshotTest {
         verify(view: contentView)
     }
 }
-
-#endif

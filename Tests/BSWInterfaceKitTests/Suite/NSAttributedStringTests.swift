@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import SnapshotTesting
@@ -41,5 +40,3 @@ struct NSAttributedStringTests {
         assertSnapshot(of: attributedString, as: .dump)
     }
 }
-
-#endif

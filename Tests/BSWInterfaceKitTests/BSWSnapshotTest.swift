@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import Testing
 import SnapshotTesting
@@ -192,6 +191,3 @@ extension Snapshotting where Value == NSAttributedString, Format == UIImage {
         return label
     }
 }
-
-
-#endif

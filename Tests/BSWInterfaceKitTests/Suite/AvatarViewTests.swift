@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWInterfaceKit
 import Testing
@@ -33,5 +32,3 @@ class AvatarViewTests: BSWSnapshotTest {
         verify(view: avatarView, file: file, testName: testName)
     }
 }
-
-#endif

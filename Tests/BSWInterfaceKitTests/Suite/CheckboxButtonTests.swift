@@ -2,8 +2,6 @@
 //  Created by Michele Restuccia on 22/2/23.
 //
 
-#if canImport(Testing)
-
 import BSWInterfaceKit
 import Testing
 import UIKit
@@ -25,5 +23,3 @@ class CheckboxButtonTests: BSWSnapshotTest {
         verify(view: button)
     }
 }
-
-#endif

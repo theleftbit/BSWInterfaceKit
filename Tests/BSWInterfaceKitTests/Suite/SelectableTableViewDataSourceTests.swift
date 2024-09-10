@@ -1,4 +1,3 @@
-#if canImport(Testing)
 
 import BSWFoundation
 import BSWInterfaceKit
@@ -46,5 +45,3 @@ private class Cell: UITableViewCell, ViewModelReusable {
         textLabel?.text = viewModel.text
     }
 }
-
-#endif

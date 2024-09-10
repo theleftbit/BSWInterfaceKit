@@ -2,8 +2,6 @@
 //  Created by Pierluigi Cifani on 28/03/2019.
 //
 
-#if canImport(Testing)
-
 import UIKit
 import BSWInterfaceKit
 import Testing
@@ -365,5 +363,3 @@ class PlanSelectorViewController: UIViewController {
         }
     }
 }
-
-#endif

@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -18,7 +18,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.4"),
-        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "6.0.0"),
+        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "6.2.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.8.0"),
     ],
     targets: [
@@ -31,9 +31,6 @@ let package = Package(
                 .product(name: "NukeUI", package: "Nuke"),
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
-            ],
-            swiftSettings: [
-//                SwiftSetting.unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"]),
             ]
         ),
         .testTarget(
@@ -41,7 +38,6 @@ let package = Package(
             dependencies: ["BSWInterfaceKit", .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
             exclude: ["Suite/__Snapshots__/"]
         ),
-    ]
-//    ,
-//    swiftLanguageVersions: [.version("6")]
+    ],
+    swiftLanguageModes: [.v6]
 )
