@@ -20,7 +20,9 @@ open class BSWSnapshotTest {
     let defaultPerceptualPrecision: Float = 0.997
 
     init() {
-        recordMode = true
+        if let value = ProcessInfo.processInfo.environment["GENERATE_SNAPSHOTS"], value == "1" {
+            recordMode = true
+        }
         
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
