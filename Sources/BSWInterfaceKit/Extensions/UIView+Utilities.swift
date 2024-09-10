@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 2/22/16.
 //  Copyright © 2018 TheLeftBit SL SL. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIView)
 
 import BSWFoundation
 import UIKit

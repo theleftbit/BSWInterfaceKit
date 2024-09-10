@@ -1,18 +1,18 @@
-#if canImport(UIKit)
 
 import UIKit
-import XCTest
+import Testing
 import BSWInterfaceKit
 
-class IntrinsicSizeCalculableTests: XCTestCase {
+@MainActor
+struct IntrinsicSizeCalculableTests {
 
-    @MainActor
+    @Test
     func testIntrinsicSizingWorks() {
         let sut = SomeView()
-        XCTAssert(sut.heightConstrainedTo(width: 300) == SomeView.HardcodedHeight)
+        #expect(sut.heightConstrainedTo(width: 300) == SomeView.HardcodedHeight)
 
         let sut2 = SomeViewThatOverridesIntrinsicSize()
-        XCTAssert(sut2.heightConstrainedTo(width: 300) == SomeViewThatOverridesIntrinsicSize.HardcodedHeight)
+        #expect(sut2.heightConstrainedTo(width: 300) == SomeViewThatOverridesIntrinsicSize.HardcodedHeight)
     }
 }
 
@@ -38,5 +38,3 @@ private class SomeViewThatOverridesIntrinsicSize: UIView, IntrinsicSizeCalculabl
         SomeViewThatOverridesIntrinsicSize.HardcodedHeight
     }
 }
-
-#endif

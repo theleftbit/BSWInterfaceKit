@@ -1,21 +1,23 @@
 //
 //  Created by Pierluigi Cifani on 12/02/2017.
 //
-#if canImport(UIKit)
 
 import BSWInterfaceKit
 import UIKit
+import Testing
 
 /// This test is here because it tests several underlying subsystems
 /// of BSWInterfaceKit so it works as some kind of "smoke test"
 class ClassicProfileViewControllerTests: BSWSnapshotTest {
 
-    func testSampleLayout() async {
+    @Test
+    func sampleLayout() async {
+        waitStrategy = .closestBSWTask
         let viewModel = ClassicProfileViewModel.buffon()
         let detailVC = ClassicProfileViewController(viewModel: viewModel)
         detailVC.editKind = .editable(.init(title: "Edit", style: .plain, target: nil, action: nil))
         let navController = UINavigationController(rootViewController: detailVC)
-        await waitTaskAndVerify(viewController: navController, testDarkMode: false)
+        await verify(viewController: navController, testDarkMode: false)
     }
 }
 
@@ -152,5 +154,3 @@ extension ClassicProfileViewController: PhotoGalleryViewControllerDelegate {
         dismiss(animated: true, completion: nil)
     }
 }
-
-#endif

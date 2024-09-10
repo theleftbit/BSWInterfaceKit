@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIButton)
 
 import UIKit
 

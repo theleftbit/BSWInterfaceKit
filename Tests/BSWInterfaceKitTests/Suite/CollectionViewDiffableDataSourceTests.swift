@@ -1,12 +1,12 @@
 
-#if canImport(UIKit)
-
 import BSWInterfaceKit
 import UIKit
+import Testing
 
 class CollectionViewDiffableDataSourceTests: BSWSnapshotTest {
     
-    func testLayout() async {
+    @Test
+    func layout() async {
         let cv = MockCollectionView()
         let sut = cv.diffDataSource!
         var snapshot = sut.snapshot()
@@ -484,5 +484,3 @@ private class PolaroidCollectionCellBasicInfoView: UIView {
         stackView.addArrangedSubview(detailLabel)
     }
 }
-
-#endif

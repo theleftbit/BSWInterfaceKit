@@ -1,7 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 09/01/2020.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIButton)
 
 import UIKit
 import BSWFoundation

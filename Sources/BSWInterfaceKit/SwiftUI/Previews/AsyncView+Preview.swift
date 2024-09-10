@@ -3,12 +3,12 @@ import SwiftUI
 
 /// Example of how to reload `AsyncView`
 /// when the ID of the operation changes.
-@available(iOS 17.0, macOS 14, *)
+@available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     AsyncContentView()
 }
 
-@available(iOS 17.0, macOS 14, *)
+@available(iOS 17, macOS 14, watchOS 9, *)
 @MainActor
 private struct AsyncContentView: View {
     

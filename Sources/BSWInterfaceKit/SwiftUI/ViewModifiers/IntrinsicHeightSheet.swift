@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-@available(iOS 17.0, macOS 13, *)
+@available(iOS 17.0, macOS 13, watchOS 9, *)
 struct DemoView: View {
     
     @State var presentSheet = false
@@ -29,12 +29,12 @@ struct DemoView: View {
     }
 }
 
-@available(iOS 17.0, macOS 13, *)
+@available(iOS 17.0, macOS 13, watchOS 9, *)
 #Preview {
   DemoView()
 }
 
-@available(iOS 16.0, macOS 13, *)
+@available(iOS 16.0, macOS 13, watchOS 9, *)
 public extension SwiftUI.View {
     
     /// Presents a sheet where the sheet's height is the contained view's intrinsic height
@@ -68,7 +68,7 @@ public extension SwiftUI.View {
     }
 }
 
-@available(iOS 16.0, macOS 13, *)
+@available(iOS 16.0, macOS 13, watchOS 9, *)
 private struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     
     let hostView: Host
@@ -88,7 +88,7 @@ private struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: Vie
     }
 }
 
-@available(iOS 16.0, macOS 13, *)
+@available(iOS 16.0, macOS 13, watchOS 9, *)
 private struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
     
     let hostView: Host

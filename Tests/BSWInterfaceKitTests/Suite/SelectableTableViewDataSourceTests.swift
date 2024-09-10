@@ -1,12 +1,13 @@
-#if canImport(UIKit)
 
 import BSWFoundation
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class SelectableTableViewDataSourceTests: BSWSnapshotTest {
     
-    func testLayout() throws {
+    @Test
+    func layout() async throws {
         let vc = SelectableTableViewController()
         var vm = SelectableArray(options: [
             Cell.VM(text: "Title1"),
@@ -15,7 +16,7 @@ class SelectableTableViewDataSourceTests: BSWSnapshotTest {
         ])
         vm.select(atIndex: 0)
         vc.configureFor(viewModel: vm)
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 }
 
@@ -44,5 +45,3 @@ private class Cell: UITableViewCell, ViewModelReusable {
         textLabel?.text = viewModel.text
     }
 }
-
-#endif

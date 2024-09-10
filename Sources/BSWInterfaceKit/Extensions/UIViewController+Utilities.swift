@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 10/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
 
 import UIKit
 

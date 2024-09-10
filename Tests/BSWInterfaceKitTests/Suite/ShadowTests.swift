@@ -1,13 +1,14 @@
-#if canImport(UIKit)
 
 import UIKit
 import BSWInterfaceKit
+import Testing
 
 class ShadowTests: BSWSnapshotTest {
     
-    func testLayout() {
+    @Test
+    func layout() async {
         let vc = ViewController()
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 }
 
@@ -29,5 +30,3 @@ private class ViewController: UIViewController {
         ])
     }
 }
-
-#endif

@@ -2,7 +2,7 @@
 //  RootViewController.swift
 //  Created by Pierluigi Cifani on 15/09/2018.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
 
 import UIKit
 

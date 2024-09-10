@@ -1,4 +1,4 @@
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
 
 import UIKit
 

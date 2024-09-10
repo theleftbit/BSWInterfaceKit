@@ -1,41 +1,47 @@
 //
 //  Created by Pierluigi Cifani on 11/04/2017.
 //
-#if canImport(UIKit)
 
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class TextStylerTests: BSWSnapshotTest {
 
-    var sut: TextStyler!
+    var sut: TextStyler
     
-    override func setUp() async throws {
-        try await super.setUp()
+    override init() {
         sut = TextStyler(fontDescriptor: .init(name: "ChalkboardSE-Light", size: 0))
+        super.init()
     }
 
-    func testTitle() {
+    @Test
+    func title() {
         performTestFor(style: .title1)
     }
 
-    func testHeadline() {
+    @Test
+    func headline() {
         performTestFor(style: .headline)
     }
-
-    func testSubheadline() {
+    
+    @Test
+    func subheadline() {
         performTestFor(style: .subheadline)
     }
 
-    func testBody() {
+    @Test
+    func body() {
         performTestFor(style: .body)
     }
 
-    func testFootnote() {
+    @Test
+    func footnote() {
         performTestFor(style: .footnote)
     }
 
-    func testBoldedString() {
+    @Test
+    func boldedString() {
         sut = TextStyler()
         let string = sut.attributedString("Juventus", color: .black, forStyle: .body).bolded
         verify(attributedString: string)
@@ -46,5 +52,3 @@ class TextStylerTests: BSWSnapshotTest {
         verify(attributedString: string, file: file, testName: testName)
     }
 }
-
-#endif

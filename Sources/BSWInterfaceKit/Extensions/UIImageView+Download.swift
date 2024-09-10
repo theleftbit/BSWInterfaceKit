@@ -3,7 +3,7 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIImageView)
 
 import BSWFoundation
 import Nuke; import NukeExtensions
@@ -14,12 +14,12 @@ extension UIImageView {
 
     public static var fadeImageDuration: TimeInterval? = nil
 
-    private static var webDownloadsEnabled = true
+    private nonisolated(unsafe) static var webDownloadsEnabled = true
     
     public typealias BSWImageCompletionBlock = (Swift.Result<UIImage, Swift.Error>) -> Void
 
     @objc(bsw_disableWebDownloads)
-    static public func disableWebDownloads() {
+    static nonisolated public func disableWebDownloads() {
         webDownloadsEnabled = false
     }
 

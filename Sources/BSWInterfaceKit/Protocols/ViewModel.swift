@@ -2,10 +2,10 @@
 //  Created by Pierluigi Cifani on 03/05/16.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UINib)
 
-import UIKit
 import BSWFoundation
+import UIKit
 
 //MARK:- Protocols
 

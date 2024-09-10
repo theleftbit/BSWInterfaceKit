@@ -6,7 +6,7 @@
 //  Copyright © 2017 freshos. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIView)
 
 import UIKit
 

@@ -1,4 +1,4 @@
-#if canImport(UIKit)
+#if canImport(UIKit.UICollectionView)
 
 import UIKit
 import BSWFoundation

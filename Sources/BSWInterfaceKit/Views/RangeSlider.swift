@@ -3,7 +3,7 @@
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit.UIControl)
 
 //https://www.raywenderlich.com/2297-how-to-make-a-custom-control-tutorial-a-reusable-slider#toc-anchor-009
 

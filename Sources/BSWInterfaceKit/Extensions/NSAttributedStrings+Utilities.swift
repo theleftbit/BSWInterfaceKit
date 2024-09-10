@@ -50,26 +50,7 @@ public func + (left: NSAttributedString, right: NSAttributedString) -> NSAttribu
     return result
 }
 
-import WebKit
-
 public extension NSAttributedString {
-    
-    convenience init?(html: String) {
-        guard let data = html.data(using: .utf16, allowLossyConversion: false) else {
-            return nil
-        }
-        
-        guard let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf16.rawValue], documentAttributes: nil) else {
-            return nil
-        }
-        
-        self.init(attributedString: attributedString)
-    }
-
-    convenience init(html: String) async throws {
-        let (attributedString, _) = try await NSAttributedString.fromHTML(html, options: [:])
-        self.init(attributedString: attributedString)
-    }
 
     func modifyingFont(_ newFont: UIFont, onSubstring: String? = nil) -> NSAttributedString {
         let string = self.mutableCopy() as! NSMutableAttributedString
@@ -284,4 +265,28 @@ private extension String {
     }
 }
 
+#endif
+
+#if canImport(WebKit)
+import WebKit
+
+public extension NSAttributedString {
+    
+    convenience init?(html: String) {
+        guard let data = html.data(using: .utf16, allowLossyConversion: false) else {
+            return nil
+        }
+        
+        guard let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf16.rawValue], documentAttributes: nil) else {
+            return nil
+        }
+        
+        self.init(attributedString: attributedString)
+    }
+    
+    convenience init(html: String) async throws {
+        let (attributedString, _) = try await NSAttributedString.fromHTML(html, options: [:])
+        self.init(attributedString: attributedString)
+    }
+}
 #endif
