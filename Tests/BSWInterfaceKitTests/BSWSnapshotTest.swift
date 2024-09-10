@@ -1,28 +1,31 @@
-#if canImport(UIKit)
 
-import XCTest
+import Testing
 import SnapshotTesting
 import BSWInterfaceKit
+import UIKit
 
-/// XCTestCase subclass to ease snapshot testing
+/// Convenience class to ease snapshot testing
 @MainActor
-open class BSWSnapshotTest: XCTestCase {
+open class BSWSnapshotTest {
 
-    public let waiter = XCTWaiter()
     public let defaultWidth: CGFloat = 375
-    public nonisolated(unsafe) var recordMode = false
+    public var recordMode = false
+    public var waitStrategy: WaitStrategy = .milliseconds(50)
+    
+    public enum WaitStrategy {
+        case closestBSWTask
+        case milliseconds(Double)
+    }
+    
     let defaultPerceptualPrecision: Float = 0.997
 
-    override open func setUp() {
-        super.setUp()
+    init() {
         if let value = ProcessInfo.processInfo.environment["GENERATE_SNAPSHOTS"], value == "1" {
             recordMode = true
         }
-
+        
         // Disable downloading images from web to avoid flaky tests.
-        MainActor.assumeIsolated {
-            UIImageView.disableWebDownloads()
-        }
+        UIImageView.disableWebDownloads()
         RandomColorFactory.isOn = false
         RandomColorFactory.defaultColor = UIColor.init(r: 255, g: 149, b: 0)
     }
@@ -33,7 +36,6 @@ open class BSWSnapshotTest: XCTestCase {
         get {
             return currentWindow.rootViewController
         }
-
         set(newRootViewController) {
             currentWindow.rootViewController = newRootViewController
             currentWindow.makeKeyAndVisible()
@@ -43,42 +45,44 @@ open class BSWSnapshotTest: XCTestCase {
     }
 
     /// Add the view controller on the window and wait infinitly
-    public func debug(viewController: UIViewController) {
+    public func debug(viewController: UIViewController) async {
         rootViewController = viewController
-        let exp = expectation(description: "No expectation")
-        let _ = waiter.wait(for: [exp], timeout: 1000)
+        if #available(iOS 16.0, *) {
+            try? await Task.sleep(for: .seconds(1000))
+        }
     }
 
-    public func debug(view: UIView) {
+    public func debug(view: UIView) async {
         let vc = UIViewController()
         vc.view.backgroundColor = .white
         vc.view.addSubview(view)
-        debug(viewController: vc)
-    }
-
-    /// Presents the VC using a fresh rootVC in the host's main window.
-    /// - note: This method blocks the calling thread until the presentation is finished.
-    public func presentViewController(_ viewController: UIViewController) {
-        let exp = expectation(description: "Presentation")
-        rootViewController = UIViewController()
-        rootViewController!.view.backgroundColor = .white // I just think it looks pretier this way
-        rootViewController!.present(viewController, animated: true, completion: {
-            exp.fulfill()
-        })
-        let _ = waiter.wait(for: [exp], timeout: 10)
+        await debug(viewController: vc)
     }
     
-    public func waitTaskAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
+    /// Sets this VC as the rootVC of the current window and snapshots it after some time.
+    /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
+    public func verify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) async {
+
         rootViewController = viewController
 
+        switch waitStrategy {
+        case .closestBSWTask:
+            if let task = viewController.closestBSWFetchTask {
+                await task.value
+            }
+        case .milliseconds(let double):
+            if #available(iOS 16.0, *) {
+                try? await Task.sleep(for: .milliseconds(double))
+            }
+        }
+        
         let strategy: Snapshotting = .image(
             on: UIScreen.main.currentDevice,
             perceptualPrecision: defaultPerceptualPrecision
         )
 
-        if let task = viewController.closestBSWFetchTask {
-            await task.value
-        }
+        self.rootViewController = nil
+        
         let screenSize = UIScreen.main.bounds
         let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
         assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
@@ -86,33 +90,6 @@ open class BSWSnapshotTest: XCTestCase {
             viewController.overrideUserInterfaceStyle = .dark
             assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
         }
-    }
-
-    /// Sets this VC as the rootVC of the current window and snapshots it after some time.
-    /// - note: Use this method if you're VC fetches some data asynchronously, but mock that dependency.
-    public func waitABitAndVerify(viewController: UIViewController, testDarkMode: Bool = true, file: StaticString = #filePath, testName: String = #function) {
-        rootViewController = viewController
-        
-        let strategy: Snapshotting = .image(
-            on: UIScreen.main.currentDevice,
-            perceptualPrecision: defaultPerceptualPrecision
-        )
-
-        let exp = expectation(description: "verify view")
-        let deadlineTime = DispatchTime.now() + .milliseconds(50)
-        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.rootViewController = nil
-            
-            let screenSize = UIScreen.main.bounds
-            let currentSimulatorSize = "\(Int(screenSize.width))x\(Int(screenSize.height))"
-            assertSnapshot(of: viewController, as: strategy, named: currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            if testDarkMode {
-                viewController.overrideUserInterfaceStyle = .dark
-                assertSnapshot(of: viewController, as: strategy, named: "Dark" + currentSimulatorSize, record: self.recordMode, file: file, testName: testName)
-            }
-            exp.fulfill()
-        }
-        let _ = waiter.wait(for: [exp], timeout: 1)
     }
 
     /// Snapshots the passed view.
@@ -173,12 +150,6 @@ open class BSWSnapshotTest: XCTestCase {
         view.frame.size = estimatedSize
         verify(view: view, file: file, testName: testName)
     }
-    
-    public func verify<View: IntrinsicSizeCalculable & UIViewController>(viewController: View, file: StaticString = #filePath, testName: String = #function) {
-        let estimatedHeight = viewController.heightConstrainedTo(width: defaultWidth)
-        viewController.view.frame.size = .init(width: defaultWidth, height: estimatedHeight)
-        verify(view: viewController.view, file: file, testName: testName)
-    }
 }
 
 private extension UIScreen {
@@ -220,6 +191,3 @@ extension Snapshotting where Value == NSAttributedString, Format == UIImage {
         return label
     }
 }
-
-
-#endif

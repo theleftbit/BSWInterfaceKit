@@ -10,6 +10,7 @@ import BSWInterfaceKitObjC
 
 public extension UIImage {
 
+    #if canImport(UIKit.CAGradientLayer)
     /**
      Generates an UIImage from a CAGradientLayer
      
@@ -24,7 +25,7 @@ public extension UIImage {
         UIGraphicsEndImageContext()
         return image!
     }
-
+    #endif
     /**
      Redraws the `UIImage` to the given size. Use this method
      to redraw big PDF based images to smaller sizes and force

@@ -5,7 +5,7 @@
 /// but if you copy/paste the code in an app, it'll work correctly
 import SwiftUI
 
-@available(iOS 16.0, macOS 13, *)
+@available(iOS 16.0, macOS 13, watchOS 9, *)
 struct InfiniteDataSource_Previews: PreviewProvider {
     
     static var previews: some View {

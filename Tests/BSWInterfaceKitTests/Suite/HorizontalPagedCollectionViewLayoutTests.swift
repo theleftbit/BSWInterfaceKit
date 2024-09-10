@@ -2,26 +2,33 @@
 //  Created by Pierluigi Cifani on 28/03/2019.
 //
 
-#if canImport(UIKit)
-
 import UIKit
 import BSWInterfaceKit
+import Testing
 
 class HorizontalPagedCollectionViewLayoutTests: BSWSnapshotTest {
+        
+    override init() {
+        super.init()
+        waitStrategy = .closestBSWTask
+    }
     
-    func testLayout() {
+    @Test
+    func layout() async {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout())
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
-    func testCenteredLayout() {
+    @Test
+    func centeredLayout() async {
         let vc = PlanSelectorViewController()
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 
-    func testAvailableWidthLayout() {
+    @Test
+    func availableWidthLayout() async {
         let vc = ViewController(layout: HorizontalPagedCollectionViewLayout(itemSizing: .usingAvailableWidth(margin: 60)))
-        waitABitAndVerify(viewController: vc, testDarkMode: false)
+        await verify(viewController: vc, testDarkMode: false)
     }
 }
 
@@ -43,7 +50,6 @@ private class ViewController: UIViewController {
         repeating: Photo.emptyPhoto(),
         count: 10
     )
-
     
     init(layout: HorizontalPagedCollectionViewLayout) {
         self.layout = layout
@@ -82,16 +88,17 @@ private class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        /// Insert stuff
-        Task {
-            var snapshot = diffDataSource.snapshot()
+        fetchData { [weak self] in
+            guard let self else { return }
+            var snapshot = self.diffDataSource.snapshot()
             snapshot.appendSections([.main])
-            mockData.forEach { photo in
+            self.mockData.forEach { photo in
                 let configuration = PageCell.Configuration(photo: photo)
                 snapshot.appendItems([.cell(configuration)])
             }
-            await diffDataSource.apply(snapshot)
+            await self.diffDataSource.apply(snapshot)
+        } completion: { _ in
+            
         }
     }
 }
@@ -190,6 +197,22 @@ class PlanSelectorViewController: UIViewController {
         ])
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        fetchData { [weak self] in
+            guard let self else { return }
+            var snapshot = self.collectionView.diffDataSouce.snapshot()
+            snapshot.appendSections([.main])
+            for _ in 0...6 {
+                snapshot.appendItems([.cell(UUID.init())])
+            }
+            await self.collectionView.diffDataSouce.apply(snapshot)
+        } completion: { _ in
+            
+        }
+
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
@@ -271,15 +294,6 @@ class PlanSelectorViewController: UIViewController {
                     return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: Cell.Configuration())
                 }
             })
-            
-            Task {
-                var snapshot = diffDataSouce.snapshot()
-                snapshot.appendSections([.main])
-                for _ in 0...6 {
-                    snapshot.appendItems([.cell(UUID.init())])
-                }
-                await diffDataSouce.apply(snapshot)
-            }
         }
     }
     
@@ -349,5 +363,3 @@ class PlanSelectorViewController: UIViewController {
         }
     }
 }
-
-#endif

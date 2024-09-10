@@ -2,7 +2,7 @@
 //  UIScreen+Utilities.swift
 //  Created by Pierluigi Cifani on 13/08/2018.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIScreen)
 
 import UIKit
 

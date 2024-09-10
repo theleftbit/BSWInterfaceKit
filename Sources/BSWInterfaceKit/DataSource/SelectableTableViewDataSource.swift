@@ -1,5 +1,5 @@
 
-#if canImport(UIKit)
+#if canImport(UIKit.UITableView)
 
 import UIKit
 import BSWFoundation

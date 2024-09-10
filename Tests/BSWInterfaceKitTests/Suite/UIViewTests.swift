@@ -1,57 +1,57 @@
 //
 //  Created by Pierluigi Cifani on 21/03/2017.
 //
-#if canImport(UIKit)
 
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class UIViewTests: BSWSnapshotTest {
 
     var hostView: UIView!
     var childView: UIView!
 
-    override func setUp() async throws {
-        try await super.setUp()
+    override init() {
 
         hostView = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         hostView.backgroundColor = .white
 
         childView = UIView(frame: .zero)
-        childView.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        childView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        let widthConstraint = childView.widthAnchor.constraint(equalToConstant: 50)
+        let heightConstraint = childView.heightAnchor.constraint(equalToConstant: 50)
+        [widthConstraint, heightConstraint].forEach {
+            $0.priority = .init(rawValue: 999)
+            $0.isActive = true
+        }
         childView.backgroundColor = .red
 
         hostView.addAutolayoutSubview(childView)
         childView.centerInSuperview()
+        super.init()
     }
     
-    override func tearDown() async throws {
-        try await super.tearDown()
-        hostView.removeAllConstraints()
-        childView.removeAllConstraints()
-    }
-
-    func testFillSuperview() {
+    @Test
+    func fillSuperview() {
         childView.fillSuperview(withMargin: 5)
         verify(view: hostView)
     }
 
-    func testFillSuperviewLayoutMargins() {
+    @Test
+    func fillSuperviewLayoutMargins() {
         hostView.layoutMargins = .init(uniform: 10)
         childView.pinToSuperviewLayoutMargins()
         verify(view: hostView)
         hostView.layoutMargins = .zero
     }
 
-    func testCenterInSuperview() {
+    @Test
+    func centerInSuperview() {
         verify(view: hostView)
     }
 
-    func testRoundedCorners() {
+    @Test
+    func roundedCorners() {
         childView.roundCorners()
         verify(view: hostView)
     }
 }
-
-#endif

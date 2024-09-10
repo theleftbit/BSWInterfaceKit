@@ -1,14 +1,15 @@
 //
 //  Created by Michele Restuccia on 22/10/2019.
 //
-#if canImport(UIKit)
 
 import BSWInterfaceKit
-import XCTest
+import Testing
+import UIKit
 
 class RoundLayerTests: BSWSnapshotTest {
     
-    func testLayout() {
+    @Test
+    func layout() {
         let sut = RoundView()
         verify(view: sut)
     }
@@ -40,5 +41,3 @@ class RoundLayerTests: BSWSnapshotTest {
         }
     }
 }
-
-#endif

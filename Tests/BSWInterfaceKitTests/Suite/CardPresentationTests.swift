@@ -2,17 +2,17 @@
 //  Created by Pierluigi Cifani on 09/09/2019.
 //  Copyright © 2019 The Left Bit. All rights reserved.
 //
-#if canImport(UIKit)
 
 import BSWInterfaceKit
 import UIKit
+import Testing
 
 class CardPresentationViewControllerTests: BSWSnapshotTest {
 
-    @MainActor
-    func _testSampleLayout() {
+    @Test(.disabled())
+    func sampleLayout() async {
         let navVC = UINavigationController(rootViewController: SampleVC())
-        debug(viewController: navVC)
+        await debug(viewController: navVC)
     }
 }
 
@@ -66,5 +66,3 @@ extension SampleVC: UIViewControllerTransitioningDelegate {
         return CardPresentation.transitioningFor(properties: properties)
     }
 }
-
-#endif

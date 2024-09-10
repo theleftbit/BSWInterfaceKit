@@ -1,7 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 12/07/2018.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UITableView)
 
 import UIKit
 

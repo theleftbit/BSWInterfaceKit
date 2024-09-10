@@ -1,7 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 30/10/2019.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIActivityIndicatorView)
 
 import UIKit
 

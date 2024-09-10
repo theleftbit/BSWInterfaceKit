@@ -2,7 +2,7 @@
 //  Created by Pierluigi Cifani on 01/10/2018.
 //  Copyright © 2018 TheLeftBit. All rights reserved.
 //
-#if canImport(UIKit)
+#if canImport(UIKit.UIViewController)
 
 import UIKit
 import BSWInterfaceKitObjC
