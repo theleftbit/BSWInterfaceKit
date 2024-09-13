@@ -1,6 +1,5 @@
 import SwiftUI
 
-#if swift(>=6.0)
 @available(iOS 18, macOS 15, *)
 #Preview {
     
@@ -35,7 +34,6 @@ import SwiftUI
         .background(Color.gray)
     }
 }
-#endif
 
 @available(iOS 17, macOS 14, *)
 public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView: View>: View where Item.ID : Sendable {
