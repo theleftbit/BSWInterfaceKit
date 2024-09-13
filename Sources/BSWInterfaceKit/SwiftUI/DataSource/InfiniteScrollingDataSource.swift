@@ -2,13 +2,14 @@
 
 import SwiftUI
 
-/// As of iOS 18 and aligned releases, this is no longer recommended as there are cleaner
-/// alternatives https://x.com/Dimillian/status/1805192932225437975
+/// As of iOS 18 and aligned releases, this is no longer recommended as
+/// there are cleaner alternatives like `InfiniteVerticalScrollView`
 @MainActor
 open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
     
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
+    @Published public var paginationError: Error?
     private var itemFetcher: ItemFetcher
     
     public enum State: Equatable {
@@ -65,6 +66,17 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         try await loadMoreContent()
     }
     
+    /// This is a workaround for paging glitches found on iOS 17 and above.
+    /// As all workarouds, it's an indicator of a poor design that must be fixed ASAP.
+    public func ___update(items: [ListItem]? = nil, state: State? = nil) {
+        if let items {
+            self.items = items
+        }
+        if let state {
+            self.state = state
+        }
+    }
+    
     /// MARK: Private
     
     @MainActor
@@ -73,15 +85,25 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
             return
         }
         
+        let previousState = self.state
         withAnimation {
             self.state = .loading
         }
         
-        let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
-        
-        withAnimation {
-            self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
-            self.items.append(contentsOf: newItems)
+        do {
+            let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
+            
+            withAnimation {
+                self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
+                self.items.append(contentsOf: newItems)
+            }
+        } catch {
+            if error is CancellationError {} else {
+                self.paginationError = error
+            }
+            withAnimation {
+                self.state = previousState
+            }
         }
     }
 }
