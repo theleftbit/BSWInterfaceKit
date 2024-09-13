@@ -2,14 +2,14 @@
 
 import SwiftUI
 
-/// As of iOS 18 and aligned releases, this is no longer recommended as there are cleaner
-/// alternatives https://x.com/Dimillian/status/1805192932225437975
+/// As of iOS 18 and aligned releases, this is no longer recommended as
+/// there are cleaner alternatives like `InfiniteVerticalScrollView`
 @MainActor
 open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
     
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
-    @Published public private(set) var paginationError: Error?
+    @Published public var paginationError: Error?
     private var itemFetcher: ItemFetcher
     
     public enum State: Equatable {
@@ -98,8 +98,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
                 self.items.append(contentsOf: newItems)
             }
         } catch {
-            if error is CancellationError {}
-            else {
+            if error is CancellationError {} else {
                 self.paginationError = error
             }
             withAnimation {
