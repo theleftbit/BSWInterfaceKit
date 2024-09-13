@@ -9,6 +9,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
     
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
+    @Published public private(set) var paginationError: Error?
     private var itemFetcher: ItemFetcher
     
     public enum State: Equatable {
@@ -84,15 +85,26 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
             return
         }
         
+        let previousState = self.state
         withAnimation {
             self.state = .loading
         }
         
-        let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
-        
-        withAnimation {
-            self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
-            self.items.append(contentsOf: newItems)
+        do {
+            let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
+            
+            withAnimation {
+                self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
+                self.items.append(contentsOf: newItems)
+            }
+        } catch {
+            if error is CancellationError {}
+            else {
+                self.paginationError = error
+            }
+            withAnimation {
+                self.state = previousState
+            }
         }
     }
 }
