@@ -17,6 +17,6 @@ import SwiftUI
   .font(.headline)
   .asyncButtonLoadingConfiguration(
       message: "Loading...",
-      style: .nonblocking
+      style: .inline(tint: .red)
   )
 }
