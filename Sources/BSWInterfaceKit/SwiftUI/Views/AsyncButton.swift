@@ -102,6 +102,12 @@ public struct AsyncButton<Label: View>: View {
     private var loadingView: some View {
         HStack(spacing: 8) {
             ProgressView()
+                .tint({
+                    switch loadingConfiguration.style {
+                    case .inline(let tint): return tint
+                    case .blocking: return nil
+                    }
+                }())
                 #if canImport(AppKit)
                 .scaleEffect(x: 0.5, y: 0.5)
                 #endif
@@ -203,9 +209,12 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
     /// Describes what kind of loading will be shown to the user during the "loading" state.
     public enum Style: Sendable {
         /// The rest of the UI in the screen will still be interactable using this style
-        case nonblocking
+        case inline(tint: Color? = nil)
         /// Will show a HUD in order to let the user know that an operation is ongoing.
         case blocking(font: Font = .body, dimsBackground: Bool)
+
+        @usableFromInline
+        static var nonblocking: Style { .inline(tint: nil) }
     }
     
     public let message: String?
@@ -213,7 +222,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
     
     public var isBlocking: Bool {
         switch style {
-        case .nonblocking:
+        case .inline:
             return false
         case .blocking:
             return true
