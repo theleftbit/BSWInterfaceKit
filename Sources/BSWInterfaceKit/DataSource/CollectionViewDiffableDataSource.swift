@@ -81,26 +81,6 @@ open class CollectionViewDiffableDataSource<Section: Hashable & Sendable, Item: 
         super.apply(snapshot, animatingDifferences: animatingDifferences, completion: completion)
     }
     
-    /// The Swift 6 compiler is finding a data race issue here, which seems to be alliviated when doing this dance here.
-    /// Very, very strange.  https://i.imgur.com/qjEYzTA.jpeg
-#if swift(>=6.0)
-    open override func apply(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>, animatingDifferences: Bool = true) async {
-        let _: () = await withCheckedContinuation { cont in
-            super.apply(snapshot, animatingDifferences: animatingDifferences) {
-                cont.resume()
-            }
-        }
-    }
-    
-    open override func applySnapshotUsingReloadData(_ snapshot: NSDiffableDataSourceSnapshot<Section, Item>) async {
-        let _: () = await withCheckedContinuation { cont in
-            super.applySnapshotUsingReloadData(snapshot) {
-                cont.resume()
-            }
-        }
-    }
-#endif
-    
     // MARK: Actions
     
     @objc private func _handlePullToRefresh() {
