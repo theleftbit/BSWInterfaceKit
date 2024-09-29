@@ -7,7 +7,7 @@ import SwiftUI
 @MainActor
 open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
     
-    @Published public private(set) var items = [ListItem]()
+    @Published public var items = [ListItem]()
     @Published public private(set) var state: State
     @Published public var paginationError: Error?
     private var itemFetcher: ItemFetcher
@@ -64,17 +64,6 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         self.itemFetcher = itemFetcher
         self.state = State.canLoadMorePages(currentPage: currentPage)
         try await loadMoreContent()
-    }
-    
-    /// This is a workaround for paging glitches found on iOS 17 and above.
-    /// As all workarouds, it's an indicator of a poor design that must be fixed ASAP.
-    public func ___update(items: [ListItem]? = nil, state: State? = nil) {
-        if let items {
-            self.items = items
-        }
-        if let state {
-            self.state = state
-        }
     }
     
     /// MARK: Private
