@@ -15,7 +15,7 @@ import SwiftUI
         InfiniteVerticalScrollView(
             direction: .downwards,
             items: $items,
-            pleaseScrollTo: $pleaseScrollTo,
+            scrollPositionItemID: $pleaseScrollTo,
             nextPageFetcher: { _ in
                 try await Task.sleep(for: .seconds(2))
                 return (Item.createItems(), true)
@@ -49,7 +49,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         spacing: CGFloat? = nil,
         pinnedViews: PinnedScrollableViews = .init(),
         items: Binding<[Item]>,
-        pleaseScrollTo: Binding<Item.ID?>,
+        scrollPositionItemID: Binding<Item.ID?>,
         nextPageFetcher: @escaping NextPageFetcher,
         @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
             self.alignment = alignment
@@ -57,7 +57,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             self.pinnedViews = pinnedViews
             self.direction = direction
             self._items = items
-            self._scrollPositionItemID = pleaseScrollTo
+            self._scrollPositionItemID = scrollPositionItemID
             self.nextPageFetcher = nextPageFetcher
             self.itemViewBuilder = itemViewBuilder
     }
@@ -88,9 +88,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
 
     @State
     private var error: Swift.Error?
-
-    @State
-    private var pleaseScrollTo: Item.ID?
 
     enum Phase: Equatable {
         case idle
@@ -126,12 +123,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                     ProgressView()
                 }
             }
-            .onChange(of: pleaseScrollTo) { oldValue, newValue in
-                if let newValue {
-                    proxy.scrollTo(newValue, anchor: direction == .upwards ? .top : .bottom)
-                }
-                self.pleaseScrollTo = nil
-            }
             .scrollPosition(
                 id: $scrollPositionItemID,
                 anchor: (direction == .downwards) ? .bottom : .top
@@ -159,7 +150,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                     case .upwards:
                         self.items.insert(contentsOf: newItems, at: 0)
                     }
-                    self.pleaseScrollTo = itemID
+                    self.scrollPositionItemID = itemID
                 }
             } catch {
                 self.phase = .idle
