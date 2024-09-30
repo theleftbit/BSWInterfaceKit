@@ -215,7 +215,7 @@ public extension AsyncView where ErrorView == AsyncStatePlainErrorView {
     }
 }
 
-public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data {
+public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.PlaceholderData == Data {
     init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator,
@@ -247,7 +247,7 @@ public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingVie
     }
 }
 
-public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.Data == Data, ErrorView == AsyncStatePlainErrorView {
+public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.PlaceholderData == Data, ErrorView == AsyncStatePlainErrorView {
     init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator) {
