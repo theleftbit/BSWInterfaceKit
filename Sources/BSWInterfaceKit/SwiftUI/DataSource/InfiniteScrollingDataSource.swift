@@ -66,17 +66,15 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         try await loadMoreContent()
     }
     
-    /// This is a workaround for paging glitches found on iOS 17 and above.
-    /// As all workarouds, it's an indicator of a poor design that must be fixed ASAP.
-    public func ___update(items: [ListItem]? = nil, state: State? = nil) {
-        if let items {
-            self.items = items
-        }
-        if let state {
-            self.state = state
-        }
+    /// Use at your own peril
+    public var unsafeItemsBinding: Binding<[ListItem]> {
+        .init(get: {
+            self.items
+        }, set: { newItems in
+            self.items = newItems
+        })
     }
-    
+
     /// MARK: Private
     
     @MainActor

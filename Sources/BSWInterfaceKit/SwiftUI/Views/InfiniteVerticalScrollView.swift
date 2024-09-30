@@ -7,10 +7,15 @@ import SwiftUI
     @State
     var items: [Item] = Item.createItems()
     
+    @Previewable
+    @State
+    var scrollPositionItemID: Item.ID? = nil
+    
     NavigationStack {
         InfiniteVerticalScrollView(
             direction: .downwards,
             items: $items,
+            scrollPositionItemID: $scrollPositionItemID,
             nextPageFetcher: { _ in
                 try await Task.sleep(for: .seconds(2))
                 return (Item.createItems(), true)
@@ -35,29 +40,30 @@ import SwiftUI
     }
 }
 
-@available(iOS 17, macOS 14, *)
+@available(iOS 18, macOS 14, *)
 public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView: View>: View where Item.ID : Sendable {
     
-    public init(direction: Direction = .downwards,
-         alignment: HorizontalAlignment = .center,
-         spacing: CGFloat? = nil,
-         pinnedViews: PinnedScrollableViews = .init(),
-         items: Binding<[Item]>,
-         nextPageFetcher: @escaping NextPageFetcher,
-         @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
-        self.alignment = alignment
-        self.spacing = spacing
-        self.pinnedViews = pinnedViews
-        self.direction = direction
-        self._items = items
-        self.nextPageFetcher = nextPageFetcher
-        self.itemViewBuilder = itemViewBuilder
+    public init(
+        direction: Direction = .downwards,
+        alignment: HorizontalAlignment = .center,
+        spacing: CGFloat? = nil,
+        pinnedViews: PinnedScrollableViews = .init(),
+        items: Binding<[Item]>,
+        scrollPositionItemID: Binding<Item.ID?>,
+        nextPageFetcher: @escaping NextPageFetcher,
+        @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
+            self.alignment = alignment
+            self.spacing = spacing
+            self.pinnedViews = pinnedViews
+            self.direction = direction
+            self._items = items
+            self._scrollPositionItemID = scrollPositionItemID
+            self.nextPageFetcher = nextPageFetcher
+            self.itemViewBuilder = itemViewBuilder
     }
         
     public enum Direction {
         case downwards
-        
-        @available(iOS 18, macOS 15, *)
         case upwards
     }
     
@@ -77,7 +83,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     @State
     private var phase: Phase = .idle
     
-    @State
+    @Binding
     private var scrollPositionItemID: Item.ID?
 
     @State
@@ -97,14 +103,13 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             }
         }
     }
-
+    
     public var body: some View {
         ScrollView(.vertical) {
-            
-            if #available(iOS 18, macOS 15, *), direction == .upwards, phase.isPaging {
+            if direction == .upwards, phase.isPaging {
                 ProgressView()
             }
-
+            
             LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
                 ForEach(items) { item in
                     itemViewBuilder(item)
@@ -122,7 +127,9 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             anchor: (direction == .downwards) ? .bottom : .top
         )
         .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
-        .onChange(of: scrollPositionItemID) { _, newValue in
+        .scrollDismissesKeyboard(.interactively)
+        
+        .onChange(of: scrollPositionItemID) { oldValue, newValue in
             if let newValue, newValue == anchorItemID, phase == .idle {
                 self.phase = .paging(fromItem: newValue)
             }
@@ -133,13 +140,17 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             }
             do {
                 let (newItems, areThereMorePages) = try await nextPageFetcher(itemID)
-                switch direction {
-                case .downwards:
-                    self.items.append(contentsOf: newItems)
-                case .upwards:
-                    self.items.insert(contentsOf: newItems, at: 0)
+                withAnimation {
+                    self.phase = areThereMorePages ? .idle : .noMorePages
+                } completion: {
+                    self.scrollPositionItemID = itemID
+                    switch direction {
+                    case .downwards:
+                        self.items.append(contentsOf: newItems)
+                    case .upwards:
+                        self.items.insert(contentsOf: newItems, at: 0)
+                    }
                 }
-                self.phase = areThereMorePages ? .idle : .noMorePages
             } catch {
                 self.phase = .idle
                 self.error = error
