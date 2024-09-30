@@ -9,13 +9,13 @@ import SwiftUI
     
     @Previewable
     @State
-    var pleaseScrollTo: Item.ID? = nil
+    var scrollPositionItemID: Item.ID? = nil
     
     NavigationStack {
         InfiniteVerticalScrollView(
             direction: .downwards,
             items: $items,
-            scrollPositionItemID: $pleaseScrollTo,
+            scrollPositionItemID: $scrollPositionItemID,
             nextPageFetcher: { _ in
                 try await Task.sleep(for: .seconds(2))
                 return (Item.createItems(), true)
@@ -103,33 +103,32 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             }
         }
     }
-
+    
     public var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical) {
-                if direction == .upwards, phase.isPaging {
-                    ProgressView()
-                }
-
-                LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
-                    ForEach(items) { item in
-                        itemViewBuilder(item)
-                            .id(item.id)
-                    }
-                }
-                .scrollTargetLayout()
-                
-                if direction == .downwards, phase.isPaging {
-                    ProgressView()
+        ScrollView(.vertical) {
+            if direction == .upwards, phase.isPaging {
+                ProgressView()
+            }
+            
+            LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
+                ForEach(items) { item in
+                    itemViewBuilder(item)
+                        .id(item.id)
                 }
             }
-            .scrollPosition(
-                id: $scrollPositionItemID,
-                anchor: (direction == .downwards) ? .bottom : .top
-            )
-            .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
-            .scrollDismissesKeyboard(.interactively)
+            .scrollTargetLayout()
+            
+            if direction == .downwards, phase.isPaging {
+                ProgressView()
+            }
         }
+        .scrollPosition(
+            id: $scrollPositionItemID,
+            anchor: (direction == .downwards) ? .bottom : .top
+        )
+        .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
+        .scrollDismissesKeyboard(.interactively)
+        
         .onChange(of: scrollPositionItemID) { oldValue, newValue in
             if let newValue, newValue == anchorItemID, phase == .idle {
                 self.phase = .paging(fromItem: newValue)
@@ -144,19 +143,20 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 withAnimation {
                     self.phase = areThereMorePages ? .idle : .noMorePages
                 } completion: {
+                    self.scrollPositionItemID = itemID
                     switch direction {
                     case .downwards:
                         self.items.append(contentsOf: newItems)
                     case .upwards:
                         self.items.insert(contentsOf: newItems, at: 0)
                     }
-                    self.scrollPositionItemID = itemID
                 }
             } catch {
                 self.phase = .idle
                 self.error = error
             }
         }
+        .errorAlert(error: $error)
     }
     
     private var anchorItemID: Item.ID? {
