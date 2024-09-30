@@ -7,7 +7,7 @@ import SwiftUI
 @MainActor
 open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
     
-    @Published public var items = [ListItem]()
+    @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
     @Published public var paginationError: Error?
     private var itemFetcher: ItemFetcher
@@ -66,6 +66,15 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         try await loadMoreContent()
     }
     
+    /// Use at your own peril
+    public var unsafeItemsBinding: Binding<[ListItem]> {
+        .init(get: {
+            self.items
+        }, set: { newItems in
+            self.items = newItems
+        })
+    }
+
     /// MARK: Private
     
     @MainActor
