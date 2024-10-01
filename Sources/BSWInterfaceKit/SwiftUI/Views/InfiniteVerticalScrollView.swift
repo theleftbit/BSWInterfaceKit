@@ -155,8 +155,12 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             }
             do {
                 let (newItems, areThereMorePages) = try await nextPageFetcher(itemID)
+                guard areThereMorePages else {
+                    self.phase = .noMorePages
+                    return
+                }
                 withAnimation {
-                    self.phase = areThereMorePages ? .idle : .noMorePages
+                    self.phase = .idle
                 } completion: {
                     switch direction {
                     case .downwards:
