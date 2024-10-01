@@ -89,6 +89,12 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     @State
     private var error: Swift.Error?
 
+    @State
+    private var pleaseScrollTo: Item.ID?
+
+    @Environment(\.redactionReasons)
+    private var redactionReasons
+
     enum Phase: Equatable {
         case idle
         case noMorePages
@@ -103,38 +109,47 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             }
         }
     }
-    
+
     public var body: some View {
-        ScrollView(.vertical) {
-            if direction == .upwards, phase.isPaging {
-                ProgressView()
-            }
-            
-            LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
-                ForEach(items) { item in
-                    itemViewBuilder(item)
-                        .id(item.id)
+        ScrollViewReader { proxy in
+            ScrollView(.vertical) {
+                if direction == .upwards, phase.isPaging {
+                    ProgressView()
+                }
+
+                LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
+                    ForEach(items) { item in
+                        itemViewBuilder(item)
+                            .id(item.id)
+                    }
+                }
+                .scrollTargetLayout()
+                
+                if direction == .downwards, phase.isPaging {
+                    ProgressView()
                 }
             }
-            .scrollTargetLayout()
-            
-            if direction == .downwards, phase.isPaging {
-                ProgressView()
+            .onChange(of: pleaseScrollTo) { oldValue, newValue in
+                if let newValue {
+                    proxy.scrollTo(newValue, anchor: direction == .upwards ? .top : .bottom)
+                }
+                self.pleaseScrollTo = nil
             }
+            .scrollPosition(
+                id: $scrollPositionItemID,
+                anchor: (direction == .downwards) ? .bottom : .top
+            )
+            .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
+            .scrollDismissesKeyboard(.interactively)
         }
-        .scrollPosition(
-            id: $scrollPositionItemID,
-            anchor: (direction == .downwards) ? .bottom : .top
-        )
-        .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
-        .scrollDismissesKeyboard(.interactively)
-        
         .onChange(of: scrollPositionItemID) { oldValue, newValue in
+            if redactionReasons.contains(.placeholder) { return }
             if let newValue, newValue == anchorItemID, phase == .idle {
                 self.phase = .paging(fromItem: newValue)
             }
         }
         .task(id: phase) {
+            if redactionReasons.contains(.placeholder) { return }
             guard case let .paging(itemID) = phase else {
                 return
             }
@@ -143,13 +158,13 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 withAnimation {
                     self.phase = areThereMorePages ? .idle : .noMorePages
                 } completion: {
-                    self.scrollPositionItemID = itemID
                     switch direction {
                     case .downwards:
                         self.items.append(contentsOf: newItems)
                     case .upwards:
                         self.items.insert(contentsOf: newItems, at: 0)
                     }
+                    self.pleaseScrollTo = itemID
                 }
             } catch {
                 self.phase = .idle
@@ -168,7 +183,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         }
     }
 }
-
 
 private struct Item: Identifiable {
     let name: String
