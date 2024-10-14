@@ -1,6 +1,7 @@
 #if canImport(SwiftUI)
 
 import SwiftUI
+import Combine
 
 /// As of iOS 18 and aligned releases, this is no longer recommended as
 /// there are cleaner alternatives like `InfiniteVerticalScrollView`
