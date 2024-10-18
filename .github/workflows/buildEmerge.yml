@@ -1,0 +1,27 @@
+name: Build Emerge
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    name: Build XCFramework
+    runs-on: ios
+    env:
+      PRODUCT_NAME: BSWInterfaceKit
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: Build XCFramework
+      run: sh build.sh $PRODUCT_NAME
+
+    - name: Upload artifact to Emerge
+      uses: EmergeTools/emerge-upload-action@v1.1.0
+      with:
+        build_type: release
+        artifact_path: ./${{ env.PRODUCT_NAME }}.xcframework.zip
+        emerge_api_key: ${{ secrets.EMERGE_API_KEY }}
