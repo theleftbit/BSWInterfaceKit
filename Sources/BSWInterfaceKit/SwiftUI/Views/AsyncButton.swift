@@ -240,25 +240,9 @@ public extension View {
     }
 }
 
-private struct AsyncButtonLoadingStyleEnvironmentKey: EnvironmentKey {
-    static let defaultValue: AsyncButtonLoadingConfiguration = .init()
-}
-
-private struct AsyncButtonOperationIdentifierKey: EnvironmentKey {
-    static let defaultValue: String? = nil
-}
-
 private extension EnvironmentValues {
-    
-    var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
-        get { self[AsyncButtonLoadingStyleEnvironmentKey.self] }
-        set { self[AsyncButtonLoadingStyleEnvironmentKey.self] = newValue }
-    }
-
-    var asyncButtonOperationIdentifierKey: String? {
-        get { self[AsyncButtonOperationIdentifierKey.self] }
-        set { self[AsyncButtonOperationIdentifierKey.self] = newValue }
-    }
+    @Entry var asyncButtonLoadingConfiguration = AsyncButtonLoadingConfiguration()
+    @Entry var asyncButtonOperationIdentifierKey: String? = nil
 }
 
 private extension Swift.Result where Failure == Error {

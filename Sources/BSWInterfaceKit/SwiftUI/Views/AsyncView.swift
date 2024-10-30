@@ -320,15 +320,8 @@ public extension View {
     }
 }
 
-private struct DebounceOperationForMilliseconds: EnvironmentKey {
-    static let defaultValue: Double? = nil
-}
-
 private extension EnvironmentValues {
-    var debounceOperationForMilliseconds: Double? {
-        get { self[DebounceOperationForMilliseconds.self] }
-        set { self[DebounceOperationForMilliseconds.self] = newValue }
-    }
+    @Entry var debounceOperationForMilliseconds: Double? = nil
 }
 
 private extension AsyncView.Operation {
