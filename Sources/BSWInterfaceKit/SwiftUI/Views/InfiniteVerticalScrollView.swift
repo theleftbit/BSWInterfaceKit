@@ -7,22 +7,18 @@ import SwiftUI
     @State
     var items: [Item] = Item.createItems()
     
-    @Previewable
-    @State
-    var scrollPositionItemID: Item.ID? = nil
-    
     NavigationStack {
         InfiniteVerticalScrollView(
-            direction: .downwards,
+            direction: .upwards,
             items: $items,
-            scrollPositionItemID: $scrollPositionItemID,
             nextPageFetcher: { _ in
                 try await Task.sleep(for: .seconds(2))
                 return (Item.createItems(), true)
             },
             itemViewBuilder: { item in
                 Text(item.name)
-                    .font(.subheadline)
+                    .font(.title)
+                    .padding(8)
                     .frame(maxWidth: .infinity, minHeight: 60)
                     .background(.white)
                     .background(in: RoundedRectangle(cornerRadius: 8))
@@ -36,7 +32,9 @@ import SwiftUI
                 .fill(Color.red)
                 .frame(height: 40)
         }
-        .background(Color.gray)
+        .background(Color(uiColor: .systemGray4))
+        .navigationTitle("Hello")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -49,7 +47,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         spacing: CGFloat? = nil,
         pinnedViews: PinnedScrollableViews = .init(),
         items: Binding<[Item]>,
-        scrollPositionItemID: Binding<Item.ID?>,
         nextPageFetcher: @escaping NextPageFetcher,
         @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
             self.alignment = alignment
@@ -57,7 +54,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             self.pinnedViews = pinnedViews
             self.direction = direction
             self._items = items
-            self._scrollPositionItemID = scrollPositionItemID
             self.nextPageFetcher = nextPageFetcher
             self.itemViewBuilder = itemViewBuilder
     }
@@ -83,14 +79,17 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     @State
     private var phase: Phase = .idle
     
-    @Binding
-    private var scrollPositionItemID: Item.ID?
+    @State
+    private var scrollPosition = ScrollPosition()
+
+    @State
+    private var isScrolling = false
+
+    @State
+    private var visibleItemIDs: [Item.ID] = []
 
     @State
     private var error: Swift.Error?
-
-    @State
-    private var pleaseScrollTo: Item.ID?
 
     @Environment(\.redactionReasons)
     private var redactionReasons
@@ -111,41 +110,37 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     }
 
     public var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical) {
-                if direction == .upwards, phase.isPaging {
-                    ProgressView()
-                }
+        ScrollView(.vertical) {
+            if direction == .upwards, phase.isPaging {
+                ProgressView()
+            }
 
-                LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
-                    ForEach(items) { item in
-                        itemViewBuilder(item)
-                            .id(item.id)
-                    }
-                }
-                .scrollTargetLayout()
-                
-                if direction == .downwards, phase.isPaging {
-                    ProgressView()
+            LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
+                ForEach(items) { item in
+                    itemViewBuilder(item)
+                        .id(item.id)
                 }
             }
-            .onChange(of: pleaseScrollTo) { oldValue, newValue in
-                if let newValue {
-                    proxy.scrollTo(newValue, anchor: direction == .upwards ? .top : .bottom)
-                }
-                self.pleaseScrollTo = nil
+            .scrollTargetLayout()
+            
+            if direction == .downwards, phase.isPaging {
+                ProgressView()
             }
-            .scrollPosition(
-                id: $scrollPositionItemID,
-                anchor: (direction == .downwards) ? .bottom : .top
-            )
-            .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
-            .scrollDismissesKeyboard(.interactively)
         }
-        .onChange(of: scrollPositionItemID) { oldValue, newValue in
+        .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
+        .scrollPosition($scrollPosition, anchor: (direction == .downwards) ? .bottom : .top)
+        .onScrollTargetVisibilityChange(idType: Item.ID.self, threshold: 0.9) { ids in
+            self.visibleItemIDs = ids
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .onScrollPhaseChange { _, newPhase in
+            isScrolling = (newPhase != .idle)
+        }
+        .onChange(of: visibleItemIDs) { _, newValue in
             if redactionReasons.contains(.placeholder) { return }
-            if let newValue, newValue == anchorItemID, phase == .idle {
-                self.phase = .paging(fromItem: newValue)
+            if let anchorItemID, newValue.contains(anchorItemID), phase == .idle, isScrolling {
+                let newPhase = Phase.paging(fromItem: anchorItemID)
+                self.phase = newPhase
             }
         }
         .task(id: phase) {
@@ -164,16 +159,19 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                     case .upwards:
                         self.items.insert(contentsOf: newItems, at: 0)
                     }
-                    self.pleaseScrollTo = itemID
+                    self.scrollPosition.scrollTo(id: itemID)
                 }
             } catch {
                 self.phase = .idle
+                if error is CancellationError {
+                    return
+                }
                 self.error = error
             }
         }
         .errorAlert(error: $error)
     }
-    
+
     private var anchorItemID: Item.ID? {
         switch direction {
         case .downwards:
@@ -190,24 +188,38 @@ private struct Item: Identifiable {
     
     static func createItems() -> [Item] {
         [
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
+            generateItem(),
         ]
+    }
+    
+    private static func generateItem() -> Item {
+        Item(name: randomAlphaNumericString(length: Int.random(in: 1...200)))
+    }
+    
+    private static func randomAlphaNumericString(length: Int) -> String {
+        let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let allowedCharsCount = UInt32(allowedChars.count)
+        var randomString = ""
+
+        for _ in 0 ..< length {
+            let randomNum = Int(arc4random_uniform(allowedCharsCount))
+            let randomIndex = allowedChars.index(allowedChars.startIndex, offsetBy: randomNum)
+            let newCharacter = allowedChars[randomIndex]
+            randomString += String(newCharacter)
+        }
+
+        return randomString
     }
 }
