@@ -189,6 +189,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
         .scrollPosition($scrollPosition, anchor: (direction == .downwards) ? .bottom : .top)
         .onScrollTargetVisibilityChange(idType: Item.ID.self, threshold: 0.9) { ids in
+            if redactionReasons.contains(.placeholder) { return }
             self.visibleItemIDs = ids
         }
         .scrollDismissesKeyboard(.interactively)
@@ -196,7 +197,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             isScrolling = (newPhase != .idle)
         }
         .onChange(of: visibleItemIDs) { _, newValue in
-            if redactionReasons.contains(.placeholder) { return }
             if let anchorItemID, newValue.contains(anchorItemID), phase == .idle, isScrolling {
                 let newPhase = Phase.paging(fromItem: anchorItemID)
                 self.phase = newPhase
@@ -204,6 +204,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         }
         .task(id: phase) {
             if redactionReasons.contains(.placeholder) { return }
+            try? await Task.sleep(for: .seconds(0.15))
             guard case let .paging(itemID) = phase else {
                 return
             }
