@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 @available(iOS 18, macOS 15, *)
 #Preview {
@@ -7,22 +8,62 @@ import SwiftUI
     @State
     var items: [Item] = Item.createItems()
     
-    @Previewable
-    @State
-    var scrollPositionItemID: Item.ID? = nil
+    let isUpwards = true
     
-    NavigationStack {
+    struct Item: Identifiable {
+        let name: String
+        var id: String { name }
+        
+        static func createItems() -> [Item] {
+            [
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+                generateItem(),
+            ]
+        }
+        
+        static func generateItem() -> Item {
+            Item(name: randomAlphaNumericString(length: Int.random(in: 1...200)))
+        }
+        
+        private static func randomAlphaNumericString(length: Int) -> String {
+            let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            let allowedCharsCount = UInt32(allowedChars.count)
+            var randomString = ""
+
+            for _ in 0 ..< length {
+                let randomNum = Int(arc4random_uniform(allowedCharsCount))
+                let randomIndex = allowedChars.index(allowedChars.startIndex, offsetBy: randomNum)
+                let newCharacter = allowedChars[randomIndex]
+                randomString += String(newCharacter)
+            }
+
+            return randomString
+        }
+    }
+
+    return NavigationStack {
         InfiniteVerticalScrollView(
-            direction: .downwards,
+            direction: isUpwards ? .upwards : .downwards,
             items: $items,
-            scrollPositionItemID: $scrollPositionItemID,
             nextPageFetcher: { _ in
                 try await Task.sleep(for: .seconds(2))
                 return (Item.createItems(), true)
             },
             itemViewBuilder: { item in
                 Text(item.name)
-                    .font(.subheadline)
+                    .font(.title)
+                    .padding(8)
                     .frame(maxWidth: .infinity, minHeight: 60)
                     .background(.white)
                     .background(in: RoundedRectangle(cornerRadius: 8))
@@ -35,12 +76,28 @@ import SwiftUI
             Rectangle()
                 .fill(Color.red)
                 .frame(height: 40)
+                .overlay {
+                    Text("Insert Item")
+                }
+                .onTapGesture {
+                    withAnimation {
+                        if isUpwards {
+                            items.append(Item.generateItem())
+                        } else {
+                            items.insert(Item.generateItem(), at: 0)
+                        }
+                    }
+                }
         }
-        .background(Color.gray)
+#if canImport(UIKit)
+        .background(Color(uiColor: .systemGray4))
+        .navigationBarTitleDisplayMode(.inline)
+#endif
+        .navigationTitle("Hello")
     }
 }
 
-@available(iOS 18, macOS 14, *)
+@available(iOS 18, macOS 15, *)
 public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView: View>: View where Item.ID : Sendable {
     
     public init(
@@ -49,7 +106,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         spacing: CGFloat? = nil,
         pinnedViews: PinnedScrollableViews = .init(),
         items: Binding<[Item]>,
-        scrollPositionItemID: Binding<Item.ID?>,
         nextPageFetcher: @escaping NextPageFetcher,
         @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
             self.alignment = alignment
@@ -57,11 +113,10 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             self.pinnedViews = pinnedViews
             self.direction = direction
             self._items = items
-            self._scrollPositionItemID = scrollPositionItemID
             self.nextPageFetcher = nextPageFetcher
             self.itemViewBuilder = itemViewBuilder
-    }
-        
+        }
+    
     public enum Direction {
         case downwards
         case upwards
@@ -69,32 +124,35 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     
     public typealias ItemViewBuilder = (Item) -> ItemView
     public typealias NextPageFetcher = (Item.ID) async throws -> ([Item], Bool)
-
+    
     private let itemViewBuilder: ItemViewBuilder
     private let nextPageFetcher: NextPageFetcher
     private let alignment: HorizontalAlignment
     private let spacing: CGFloat?
     private let pinnedViews: PinnedScrollableViews
     private let direction: Direction
-
+    
     @Binding
     private var items: [Item]
     
     @State
     private var phase: Phase = .idle
     
-    @Binding
-    private var scrollPositionItemID: Item.ID?
-
+    @State
+    private var scrollPosition = ScrollPosition()
+    
+    @State
+    private var isScrolling = false
+    
+    @State
+    private var visibleItemIDs: [Item.ID] = []
+    
     @State
     private var error: Swift.Error?
-
-    @State
-    private var pleaseScrollTo: Item.ID?
-
+    
     @Environment(\.redactionReasons)
     private var redactionReasons
-
+    
     enum Phase: Equatable {
         case idle
         case noMorePages
@@ -109,47 +167,44 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             }
         }
     }
-
+    
     public var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical) {
-                if direction == .upwards, phase.isPaging {
-                    ProgressView()
-                }
-
-                LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
-                    ForEach(items) { item in
-                        itemViewBuilder(item)
-                            .id(item.id)
-                    }
-                }
-                .scrollTargetLayout()
-                
-                if direction == .downwards, phase.isPaging {
-                    ProgressView()
+        ScrollView(.vertical) {
+            if direction == .upwards, phase.isPaging {
+                ProgressView()
+            }
+            
+            LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
+                ForEach(items) { item in
+                    itemViewBuilder(item)
+                        .id(item.id)
                 }
             }
-            .onChange(of: pleaseScrollTo) { oldValue, newValue in
-                if let newValue {
-                    proxy.scrollTo(newValue, anchor: direction == .upwards ? .top : .bottom)
-                }
-                self.pleaseScrollTo = nil
+            .scrollTargetLayout()
+            
+            if direction == .downwards, phase.isPaging {
+                ProgressView()
             }
-            .scrollPosition(
-                id: $scrollPositionItemID,
-                anchor: (direction == .downwards) ? .bottom : .top
-            )
-            .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
-            .scrollDismissesKeyboard(.interactively)
         }
-        .onChange(of: scrollPositionItemID) { oldValue, newValue in
+        .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
+        .scrollPosition($scrollPosition, anchor: (direction == .downwards) ? .bottom : .top)
+        .onScrollTargetVisibilityChange(idType: Item.ID.self, threshold: 0.9) { ids in
             if redactionReasons.contains(.placeholder) { return }
-            if let newValue, newValue == anchorItemID, phase == .idle {
-                self.phase = .paging(fromItem: newValue)
+            self.visibleItemIDs = ids
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .onScrollPhaseChange { _, newPhase in
+            isScrolling = (newPhase != .idle)
+        }
+        .onChange(of: visibleItemIDs) { _, newValue in
+            if let anchorItemID, newValue.contains(anchorItemID), phase == .idle, isScrolling {
+                let newPhase = Phase.paging(fromItem: anchorItemID)
+                self.phase = newPhase
             }
         }
         .task(id: phase) {
             if redactionReasons.contains(.placeholder) { return }
+            try? await Task.sleep(for: .seconds(0.15))
             guard case let .paging(itemID) = phase else {
                 return
             }
@@ -164,13 +219,25 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                     case .upwards:
                         self.items.insert(contentsOf: newItems, at: 0)
                     }
-                    self.pleaseScrollTo = itemID
+                    self.scrollPosition.scrollTo(id: itemID)
                 }
             } catch {
                 self.phase = .idle
+                if error is CancellationError {
+                    return
+                }
                 self.error = error
             }
         }
+#if canImport(UIKit)
+        .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+            if newIsKeyboardVisible, direction == .upwards {
+                withAnimation(.default) {
+                    self.scrollPosition.scrollTo(id: items.last?.id, anchor: .bottom)
+                }
+            }
+        }
+#endif
         .errorAlert(error: $error)
     }
     
@@ -182,32 +249,19 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             return items.first?.id
         }
     }
-}
-
-private struct Item: Identifiable {
-    let name: String
-    var id: String { name }
     
-    static func createItems() -> [Item] {
-        [
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-            Item(name: UUID().uuidString),
-        ]
+#if canImport(UIKit)
+    var keyboardPublisher: AnyPublisher<Bool, Never> {
+        Publishers.Merge(
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardDidShowNotification)
+                .map { _ in true },
+            
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardDidHideNotification)
+                .map { _ in false }
+        )
+        .eraseToAnyPublisher()
     }
+#endif
 }
