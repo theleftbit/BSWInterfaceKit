@@ -1,3 +1,4 @@
+#if canImport(UIKit.UIViewController)
 
 import SwiftUI
 
@@ -12,25 +13,35 @@ import SwiftUI
     } label: {
         Text("Marc es muy del Madrid")
     }
-    .inAppNotification(message: $state)
+    .inAppNotification(message: $state, textColor: .white, backgroundColor: .orange)
 }
 
 public extension SwiftUI.View {
     
-    /// Presents a sheet where the sheet's height is the contained view's intrinsic height
-    /// **Note:** It doesn't work if `Content` is embedded in a `NavigationView`
+    /// Presents an in-app notification as an overlay on the current view.
+    /// The notification displays a message with customizable text color and background color.
     /// - Parameters:
-    ///   - isPresented: the Binding that controls the presentation
-    ///   - onDismiss: a callback to be called on dismissal
-    ///   - content: the content to be presented
-    func inAppNotification(message: Binding<String?>) -> some View {
-        self.modifier(InAppToastModifier(isPresented: message))
+    ///   - message: A binding to a string that triggers the notification when set. Setting it to `nil` dismisses the notification.
+    ///   - textColor: The color of the notification's text. Defaults to `.white`.
+    ///   - backgroundColor: The color of the notification's background. Defaults to `.green`.
+    func inAppNotification(
+        message: Binding<String?>,
+        textColor: UIColor = .white,
+        backgroundColor: UIColor = .green
+    ) -> some View {
+        self.modifier(InAppToastModifier(
+            isPresented: message,
+            textColor: textColor,
+            backgroundColor: backgroundColor
+        ))
     }
 }
 
 private struct InAppToastModifier: ViewModifier {
     
     let isPresented: Binding<String?>
+    let textColor: UIColor
+    let backgroundColor: UIColor
     @State private var anchorView = UIView()
     
     func body(content: Content) -> some View {
@@ -47,9 +58,9 @@ private struct InAppToastModifier: ViewModifier {
         guard let sourceVC = view.next() as UIViewController? else { return }
         InAppNotifications.showNotification(
             fromVC: sourceVC,
-            backgroundColor: .green,
+            backgroundColor: backgroundColor,
             image: nil,
-            title: TextStyler.styler.attributedString(value),
+            title: TextStyler.styler.attributedString(value, color: textColor),
             message: nil,
             dismissDelay: 2) {
                 self.isPresented.wrappedValue = nil
@@ -66,3 +77,4 @@ private struct InAppToastModifier: ViewModifier {
         func updateUIView(_ uiView: UIView, context: Self.Context) { }
     }
 }
+#endif
