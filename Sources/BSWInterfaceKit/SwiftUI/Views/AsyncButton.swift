@@ -42,9 +42,11 @@ public struct AsyncButton<Label: View>: View {
     private enum ButtonState: Equatable {
         case idle
         case loading
-        case success
     }
     
+    @ObservedObject
+    private var hudWrapper = HUDStateWrapper(isSuccess: false)
+
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
     @Environment(\.asyncButtonLoadingConfiguration) var loadingConfiguration
@@ -69,7 +71,6 @@ public struct AsyncButton<Label: View>: View {
         .disabled((state == .loading) || (error != nil))
         .errorAlert(error: $error)
         .task(id: state) {
-            let _ = print("Async button: \(state)")
             if state == .loading {
                 await performAction()
             }
@@ -139,33 +140,43 @@ public struct AsyncButton<Label: View>: View {
         }
     }
     
+    
+    class HUDStateWrapper: ObservableObject {
+        init(isSuccess: Bool) {
+            self.isSuccess = isSuccess
+        }
+        
+        @Published
+        var isSuccess: Bool
+    }
+
     struct HUDView: View {
-        @Binding var state: Bool
+        
+        @ObservedObject
+        var stateWrapper: HUDStateWrapper
+        
         let configuration: AsyncButtonLoadingConfiguration.Style.BlockingConfiguration
         
         var body: some View {
-            HStack {
-                VStack(spacing: 8) {
-                   let _ = print(state)
-                    switch state {
-                    case true:
-                        VStack(spacing: 8) {
-                            ProgressView()
-                                .tint(Color.primary)
-                            Text("Test")
-                        }
-                    case false:
-                        VStack(spacing: 8) {
-                            Image.init(systemName: "checkmark")
-                                .tint(Color.primary)
-                            Text("Test")
-                        }
+            VStack(spacing: 24) {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .tint(Color.primary)
+                    .opacity(stateWrapper.isSuccess ? 0 : 1)
+                    .overlay {
+                        Image(systemName: "checkmark")
+                            .tint(Color.primary)
+                            .font(.title)
+                            .opacity(stateWrapper.isSuccess ? 1 : 0)
                     }
-                }
-                .font(configuration.font)
-                .padding()
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+                Text(stateWrapper.isSuccess ? "Test" : "Test")
             }
+            .transition(.scale.combined(with: .opacity))
+            .animation(.default, value: stateWrapper.isSuccess)
+            .frame(minWidth: 100, minHeight: 100)
+            .font(configuration.font)
+            .padding()
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
                 if configuration.dimsBackground {
@@ -174,6 +185,7 @@ public struct AsyncButton<Label: View>: View {
             }
             .ignoresSafeArea()
         }
+        
     }
     
     @Environment(\.asyncButtonOperationIdentifierKey)
@@ -194,7 +206,12 @@ public struct AsyncButton<Label: View>: View {
         }
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
-        let ___hudVC = UIHostingController(rootView: HUDView.init(state: .init(get: { state == .loading }, set: { _ in }), configuration: configuration))
+        let ___hudVC = UIHostingController(
+            rootView: HUDView(
+                stateWrapper: hudWrapper,
+                configuration: configuration
+            )
+        )
         ___hudVC.modalPresentationStyle = .overCurrentContext
         ___hudVC.modalTransitionStyle = .crossDissolve
         ___hudVC.view.backgroundColor = .clear
@@ -210,10 +227,11 @@ public struct AsyncButton<Label: View>: View {
             return
         }
         withAnimation {
-            self.state = .success
+            self.hudWrapper.isSuccess = true
         }
         try? await Task.sleep(nanoseconds: UInt64(successMessage.timeInterval) * 1_000_000_000)
         await hudVC?.dismiss(animated: true)
+        self.hudWrapper.isSuccess = false
     }
 #endif
 }
@@ -267,7 +285,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
         static var nonblocking: Style { .inline(tint: nil) }
         
         @usableFromInline
-        static func blocking(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground, successMessage: successMessage)) }
+        static func blocking(font: Font = .headline, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground, successMessage: successMessage)) }
         
         public struct BlockingConfiguration: Sendable {
             public init(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) {
