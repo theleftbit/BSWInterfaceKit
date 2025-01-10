@@ -19,7 +19,7 @@ import SwiftUI
   .asyncButtonLoadingConfiguration(
       message: "Loading...",
 //      style: .inline(tint: .red)
-      style: .blocking(.init(successMessage: .init(message: "Done!")))
+      style: .blocking(dimsBackground: true, successMessage: .init(message: "Done!"))
   )
 }
 
@@ -286,7 +286,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
         static var nonblocking: Style { .inline(tint: nil) }
     
         @usableFromInline
-        static func blocking(font: Font = .body, dimsBackground: Bool = false) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground)) }
+        static func blocking(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground, successMessage: successMessage)) }
 
         public struct BlockingConfiguration: Sendable {
             public init(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) {
