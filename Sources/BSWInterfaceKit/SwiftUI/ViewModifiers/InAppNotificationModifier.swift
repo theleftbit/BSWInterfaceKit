@@ -25,7 +25,7 @@ public extension SwiftUI.View {
     ///   - backgroundColor: The color of the notification's background. Defaults to `.green`.
     func inAppNotification(
         message: Binding<AttributedString?>,
-        backgroundColor: UIColor = .green
+        backgroundColor: Color = .green
     ) -> some View {
         self.modifier(InAppToastModifier(
             isPresented: message,
@@ -37,7 +37,7 @@ public extension SwiftUI.View {
 private struct InAppToastModifier: ViewModifier {
     
     let isPresented: Binding<AttributedString?>
-    let backgroundColor: UIColor
+    let backgroundColor: Color
     @State private var anchorView = UIView()
     
     func body(content: Content) -> some View {
@@ -56,7 +56,7 @@ private struct InAppToastModifier: ViewModifier {
         
         InAppNotifications.showNotification(
             fromVC: sourceVC,
-            backgroundColor: backgroundColor,
+            backgroundColor: UIColor(backgroundColor),
             image: nil,
             title: nsAttributedString,
             message: nil,
