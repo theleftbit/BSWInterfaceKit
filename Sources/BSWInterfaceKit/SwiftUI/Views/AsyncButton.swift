@@ -1,6 +1,28 @@
 
 import SwiftUI
 
+@available(iOS 17, macOS 14, watchOS 9, *)
+#Preview {
+  AsyncButton {
+      try await Task.sleep(for: .seconds(1.5))
+      struct SomeError: Swift.Error {}
+  } label: {
+      Label(
+          title: { Text("Touch Me") },
+          icon: { Image(systemName: "42.circle") }
+      )
+      .frame(maxWidth: .infinity)
+  }
+  .buttonStyle(.borderedProminent)
+  .padding()
+  .font(.headline)
+  .asyncButtonLoadingConfiguration(
+      message: "Loading...",
+//      style: .inline(tint: .red)
+      style: .blocking(.init(successMessage: .init(message: "Done!")))
+  )
+}
+
 /// A button that performs an `async throws` operation. It will show an alert in case the operation fails.
 ///
 /// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
@@ -81,9 +103,7 @@ public struct AsyncButton<Label: View>: View {
         }()
 
         #if canImport(UIKit.UIViewController)
-        if loadingConfiguration.isBlocking {
-            await hudVC?.dismiss(animated: true)
-        }
+        await dismissHUDViewController(hudVC: hudVC)
         #endif
 
         switch result {
@@ -119,7 +139,7 @@ public struct AsyncButton<Label: View>: View {
     
     @ViewBuilder
     private var hudView: some View {
-        if case .blocking(let hudFont, let dimsBackground) = loadingConfiguration.style {
+        if case .blocking(let configuration) = loadingConfiguration.style {
             HStack {
                 VStack(spacing: 8) {
                     ProgressView()
@@ -128,13 +148,13 @@ public struct AsyncButton<Label: View>: View {
                         Text(loadingMessage)
                     }
                 }
-                .font(hudFont)
+                .font(configuration.font)
                 .padding()
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
-                if dimsBackground {
+                if configuration.dimsBackground {
                     Color.black.opacity(0.2)
                 }
             }
@@ -142,6 +162,31 @@ public struct AsyncButton<Label: View>: View {
         }
     }    
     
+    @ViewBuilder
+    private var successView: some View {
+        if case .blocking(let configuration) = loadingConfiguration.style {
+            HStack {
+                VStack(spacing: 8) {
+                    Image.init(systemName: "checkmark")
+                        .tint(Color.primary)
+                    if let loadingMessage = configuration.successMessage?.message {
+                        Text(loadingMessage)
+                    }
+                }
+                .font(configuration.font)
+                .padding()
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background {
+                if configuration.dimsBackground {
+                    Color.black.opacity(0.2)
+                }
+            }
+            .ignoresSafeArea()
+        }
+    }
+
     @Environment(\.asyncButtonOperationIdentifierKey)
     private var operationKey
 
@@ -158,6 +203,30 @@ public struct AsyncButton<Label: View>: View {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
         let ___hudVC = UIHostingController(rootView: hudView)
+        ___hudVC.modalPresentationStyle = .overCurrentContext
+        ___hudVC.modalTransitionStyle = .crossDissolve
+        ___hudVC.view.backgroundColor = .clear
+        ___hudVC.view.isOpaque = false
+        await rootVC.present(___hudVC, animated: true)
+        return ___hudVC
+    }
+    
+    @MainActor
+    private func dismissHUDViewController(hudVC: UIViewController?) async {
+        await hudVC?.dismiss(animated: true)
+        guard case let .blocking(configuration) = loadingConfiguration.style, let successMessage = configuration.successMessage else {
+            return
+        }
+        let successVC = await presentSuccessViewController()
+        try? await Task.sleep(nanoseconds: UInt64(successMessage.timeInterval) * 1_000_000_000)
+        await successVC?.dismiss(animated: true)
+    }
+    
+    @MainActor
+    private func presentSuccessViewController() async -> UIViewController? {
+        guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+              let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
+        let ___hudVC = UIHostingController(rootView: successView)
         ___hudVC.modalPresentationStyle = .overCurrentContext
         ___hudVC.modalTransitionStyle = .crossDissolve
         ___hudVC.view.backgroundColor = .clear
@@ -211,10 +280,35 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
         /// The rest of the UI in the screen will still be interactable using this style
         case inline(tint: Color? = nil)
         /// Will show a HUD in order to let the user know that an operation is ongoing.
-        case blocking(font: Font = .body, dimsBackground: Bool)
-
+        case blocking(BlockingConfiguration)
+        
         @usableFromInline
         static var nonblocking: Style { .inline(tint: nil) }
+    
+        @usableFromInline
+        static func blocking(font: Font = .body, dimsBackground: Bool = false) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground)) }
+
+        public struct BlockingConfiguration: Sendable {
+            public init(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) {
+                self.dimsBackground = dimsBackground
+                self.font = font
+                self.successMessage = successMessage
+            }
+            
+            let font: Font
+            let dimsBackground: Bool
+            let successMessage: BlockingSuccessMessage?
+        }
+        
+        public struct BlockingSuccessMessage: Sendable {
+            public init(message: String, timeInterval: TimeInterval = 3) {
+                self.message = message
+                self.timeInterval = timeInterval
+            }
+            
+            let message: String
+            let timeInterval: TimeInterval
+        }
     }
     
     public let message: String?
