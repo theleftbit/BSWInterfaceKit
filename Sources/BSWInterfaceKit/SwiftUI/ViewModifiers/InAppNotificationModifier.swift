@@ -6,14 +6,14 @@ import SwiftUI
 #Preview {
     @Previewable
     @State
-    var state: String? = nil
+    var state: AttributedString? = nil
     
     Button {
-        state = "HALA MADRID!"
+        state = AttributedString("Successfull")
     } label: {
-        Text("Marc es muy del Madrid")
+        Text("Tap me")
     }
-    .inAppNotification(message: $state, textColor: .white, backgroundColor: .orange)
+    .inAppNotification(message: $state)
 }
 
 public extension SwiftUI.View {
@@ -21,17 +21,14 @@ public extension SwiftUI.View {
     /// Presents an in-app notification as an overlay on the current view.
     /// The notification displays a message with customizable text color and background color.
     /// - Parameters:
-    ///   - message: A binding to a string that triggers the notification when set. Setting it to `nil` dismisses the notification.
-    ///   - textColor: The color of the notification's text. Defaults to `.white`.
+    ///   - message: A binding to an `AttributedString` that triggers the notification when set. Setting it to `nil` dismisses the notification.
     ///   - backgroundColor: The color of the notification's background. Defaults to `.green`.
     func inAppNotification(
-        message: Binding<String?>,
-        textColor: UIColor = .white,
+        message: Binding<AttributedString?>,
         backgroundColor: UIColor = .green
     ) -> some View {
         self.modifier(InAppToastModifier(
             isPresented: message,
-            textColor: textColor,
             backgroundColor: backgroundColor
         ))
     }
@@ -39,8 +36,7 @@ public extension SwiftUI.View {
 
 private struct InAppToastModifier: ViewModifier {
     
-    let isPresented: Binding<String?>
-    let textColor: UIColor
+    let isPresented: Binding<AttributedString?>
     let backgroundColor: UIColor
     @State private var anchorView = UIView()
     
@@ -53,14 +49,16 @@ private struct InAppToastModifier: ViewModifier {
             .background(InternalAnchorView(uiView: anchorView))
     }
     
-    func presentPopover(value: String) {
+    func presentPopover(value: AttributedString) {
         let view = anchorView
         guard let sourceVC = view.next() as UIViewController? else { return }
+        let nsAttributedString = NSAttributedString(value)
+        
         InAppNotifications.showNotification(
             fromVC: sourceVC,
             backgroundColor: backgroundColor,
             image: nil,
-            title: TextStyler.styler.attributedString(value, color: textColor),
+            title: nsAttributedString,
             message: nil,
             dismissDelay: 2) {
                 self.isPresented.wrappedValue = nil
@@ -77,4 +75,5 @@ private struct InAppToastModifier: ViewModifier {
         func updateUIView(_ uiView: UIView, context: Self.Context) { }
     }
 }
+
 #endif
