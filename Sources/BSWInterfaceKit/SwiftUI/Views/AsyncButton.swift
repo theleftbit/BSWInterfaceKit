@@ -69,6 +69,7 @@ public struct AsyncButton<Label: View>: View {
         .disabled((state == .loading) || (error != nil))
         .errorAlert(error: $error)
         .task(id: state) {
+            let _ = print("Async button: \(state)")
             if state == .loading {
                 await performAction()
             }
@@ -138,26 +139,26 @@ public struct AsyncButton<Label: View>: View {
         }
     }
     
-    @ViewBuilder
-    private var hudView: some View {
-        if case .blocking(let configuration) = loadingConfiguration.style {
+    struct HUDView: View {
+        @Binding var state: Bool
+        let configuration: AsyncButtonLoadingConfiguration.Style.BlockingConfiguration
+        
+        var body: some View {
             HStack {
                 VStack(spacing: 8) {
-                    if state == .loading {
+                   let _ = print(state)
+                    switch state {
+                    case true:
                         VStack(spacing: 8) {
                             ProgressView()
                                 .tint(Color.primary)
-                            if let loadingMessage = loadingConfiguration.message {
-                                Text(loadingMessage)
-                            }
+                            Text("Test")
                         }
-                    } else {
+                    case false:
                         VStack(spacing: 8) {
                             Image.init(systemName: "checkmark")
                                 .tint(Color.primary)
-                            if let loadingMessage = loadingConfiguration.message {
-                                Text(loadingMessage)
-                            }
+                            Text("Test")
                         }
                     }
                 }
@@ -188,9 +189,12 @@ public struct AsyncButton<Label: View>: View {
 #if canImport(UIKit.UIViewController)
     @MainActor
     private func presentHUDViewController() async -> UIViewController? {
+        guard case let .blocking(configuration) = loadingConfiguration.style else {
+            return nil
+        }
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
-        let ___hudVC = UIHostingController(rootView: hudView)
+        let ___hudVC = UIHostingController(rootView: HUDView.init(state: .init(get: { state == .loading }, set: { _ in }), configuration: configuration))
         ___hudVC.modalPresentationStyle = .overCurrentContext
         ___hudVC.modalTransitionStyle = .crossDissolve
         ___hudVC.view.backgroundColor = .clear
@@ -210,19 +214,6 @@ public struct AsyncButton<Label: View>: View {
         }
         try? await Task.sleep(nanoseconds: UInt64(successMessage.timeInterval) * 1_000_000_000)
         await hudVC?.dismiss(animated: true)
-    }
-    
-    @MainActor
-    private func presentSuccessViewController() async -> UIViewController? {
-        guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-              let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
-        let ___hudVC = UIHostingController(rootView: hudView)
-        ___hudVC.modalPresentationStyle = .overCurrentContext
-        ___hudVC.modalTransitionStyle = .crossDissolve
-        ___hudVC.view.backgroundColor = .clear
-        ___hudVC.view.isOpaque = false
-        await rootVC.present(___hudVC, animated: true)
-        return ___hudVC
     }
 #endif
 }
