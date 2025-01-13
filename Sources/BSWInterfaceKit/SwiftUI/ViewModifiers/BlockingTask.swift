@@ -18,8 +18,8 @@ public struct BlockingTaskReturn<T: Equatable> {
 
 public extension View {
     
-    func performBlockingTask(readyToPerform: Binding<Bool>, task: @escaping BlockingTask) -> some View {
-        self.modifier(PerformBlockingModifier(readyToPerform: readyToPerform, task: task))
+    func performBlockingTask(readyToPerform: Binding<Bool>, font: Font = .body, task: @escaping BlockingTask) -> some View {
+        self.modifier(PerformBlockingModifier(readyToPerform: readyToPerform, font: font, task: task))
     }
     
     func performBlockingTaskAfterConfirmation(
@@ -29,6 +29,7 @@ public extension View {
         textFieldTitle: String? = nil,
         buttonAlert: String = NSLocalizedString("accept", bundle: Bundle.main, comment: ""),
         buttonRole: ButtonRole? = nil,
+        font: Font = .body,
         task: @escaping BlockingReturnTask) -> some View {
             self.modifier(PerformBlockingAfterConfirmationModifier(
                 presentingAlert: presentingAlert,
@@ -37,12 +38,13 @@ public extension View {
                 textFieldTitle: textFieldTitle,
                 buttonAlert: buttonAlert,
                 buttonRole: buttonRole,
+                font: font,
                 task: task
             ))
         }
 
-    func performBlockingTask<T: Equatable>(value: Binding<T?>, task: @escaping BlockingTaskWithValue<T>) -> some View {
-        self.modifier(PerformEquatableBlockingModifier(value: value, task: task))
+    func performBlockingTask<T: Equatable>(value: Binding<T?>, font: Font = .body, task: @escaping BlockingTaskWithValue<T>) -> some View {
+        self.modifier(PerformEquatableBlockingModifier(value: value, font: font, task: task))
     }
     
     func performBlockingTaskAfterConfirmation<T: Equatable>(
@@ -52,6 +54,7 @@ public extension View {
         textFieldTitle: String? = nil,
         buttonAlert: String = NSLocalizedString("accept", bundle: Bundle.main, comment: ""),
         buttonRole: ButtonRole? = nil,
+        font: Font = .body,
         task: @escaping BlockingReturnTaskWithValue<T>) -> some View {
         self.modifier(PerformEquatableBlockingModifierAfterConfirmationModifier(
             value: value,
@@ -60,6 +63,7 @@ public extension View {
             textFieldTitle: textFieldTitle,
             buttonAlert: buttonAlert,
             buttonRole: buttonRole,
+            font: font,
             task: task
         ))
     }
@@ -72,18 +76,15 @@ private struct PerformBlockingModifier: ViewModifier {
     @Binding
     var readyToPerform: Bool
     
+    let font: Font
     let task: BlockingTask
     
+    @State
+    private var phase: Phase = .idle
     private enum Phase {
         case idle
         case loading
     }
-    
-    @State
-    private var phase: Phase = .idle
-    
-    @State
-    private var hudVC: UIViewController?
     
     @State
     private var taskError: Error? = nil
@@ -92,13 +93,11 @@ private struct PerformBlockingModifier: ViewModifier {
         content
             .task(id: phase) {
                 guard phase == .loading else { return }
-                hudVC = await presentHUDViewController()
                 do {
-                    try await task()
+                    try await performWithHUD(task: task, font: font)
                 } catch {
                     taskError = error
                 }
-                await dismissHUDViewController(hudVC: hudVC)
                 readyToPerform = false
                 self.phase = .idle
             }
@@ -118,11 +117,9 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     @Binding
     var value: T?
     
+    let font: Font
     let task: BlockingTaskWithValue<T>
         
-    @State
-    private var hudVC: UIViewController?
-    
     @State
     private var taskError: Error? = nil
     
@@ -130,13 +127,14 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         content
             .task(id: value) {
                 guard let value = self.value else { return }
-                hudVC = await presentHUDViewController()
                 do {
-                    try await task(value)
+                    try await performWithHUD(
+                        task: { try await task(value) },
+                        font: font
+                    )
                 } catch {
                     taskError = error
                 }
-                await dismissHUDViewController(hudVC: hudVC)
                 self.value = nil
             }
             .errorAlert(error: $taskError)
@@ -155,13 +153,11 @@ private struct PerformBlockingAfterConfirmationModifier: ViewModifier {
     let textFieldTitle: String?
     let buttonAlert: String
     let buttonRole: ButtonRole?
+    let font: Font
     let task: BlockingReturnTask
     
     @State
     private var readyToPerform: Bool = false
-    
-    @State
-    private var hudVC: UIViewController?
     
     @State
     private var textFieldValue: String = ""
@@ -179,13 +175,14 @@ private struct PerformBlockingAfterConfirmationModifier: ViewModifier {
         content
             .task(id: phase) {
                 guard phase == .loading else { return }
-                hudVC = await presentHUDViewController()
                 do {
-                    try await task(textFieldValue)
+                    try await performWithHUD(
+                        task: { try await task(textFieldValue) },
+                        font: font
+                    )
                 } catch {
                     taskError = error
                 }
-                await dismissHUDViewController(hudVC: hudVC)
                 readyToPerform = false
                 textFieldValue = ""
                 self.phase = .idle
@@ -221,10 +218,8 @@ private struct PerformEquatableBlockingModifierAfterConfirmationModifier<T: Equa
     let textFieldTitle: String?
     let buttonAlert: String
     let buttonRole: ButtonRole?
+    let font: Font
     let task: BlockingReturnTaskWithValue<T>
-        
-    @State
-    private var hudVC: UIViewController?
     
     @State
     private var presentingAlert: Bool = false
@@ -246,13 +241,14 @@ private struct PerformEquatableBlockingModifierAfterConfirmationModifier<T: Equa
             }
             .task(id: readyToPerform) {
                 guard let value = self.value else { return }
-                hudVC = await presentHUDViewController()
                 do {
-                    try await task(.init(task: value, textFieldValue: textFieldValue))
+                    try await performWithHUD(
+                        task: { try await task(.init(task: value, textFieldValue: textFieldValue)) },
+                        font: font
+                    )
                 } catch {
                     taskError = error
                 }
-                await dismissHUDViewController(hudVC: hudVC)
                 readyToPerform = false
                 textFieldValue = ""
                 self.value = nil
@@ -328,12 +324,16 @@ private struct BlockingAlertView: ViewModifier {
 
 private struct HUDView: View {
     
+    let font: Font
+    
     var body: some View {
         VStack(spacing: 8) {
             ProgressView()
                 .frame(width: 60, height: 60)
             
             Text("loader-message".localized)
+                .font(font)
+                .foregroundColor(.white)
         }
         .transition(.scale.combined(with: .opacity))
         .padding()
@@ -345,11 +345,31 @@ private struct HUDView: View {
     }
 }
 
+// MARK: PerformWithHUD
+
 @MainActor
-private func presentHUDViewController() async -> UIViewController? {
+func performWithHUD(task: @escaping () async throws -> Void, font: Font) async throws {
+    var hudVC: UIViewController?
+    do {
+        hudVC = await presentHUDViewController(font: font)
+        try await task()
+    } catch {
+        throw error
+    }
+    await hudVC?.dismiss(animated: true)
+}
+
+// MARK: PresentHUDViewController
+
+@MainActor
+private func presentHUDViewController(font: Font) async -> UIViewController? {
     guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
           let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
-    let ___hudVC = UIHostingController(rootView: HUDView())
+    let ___hudVC = UIHostingController(
+        rootView: HUDView(
+            font: font
+        )
+    )
     ___hudVC.modalPresentationStyle = .overCurrentContext
     ___hudVC.modalTransitionStyle = .crossDissolve
     ___hudVC.view.backgroundColor = .clear
@@ -357,10 +377,4 @@ private func presentHUDViewController() async -> UIViewController? {
     await rootVC.present(___hudVC, animated: true)
     return ___hudVC
 }
-
-@MainActor
-private func dismissHUDViewController(hudVC: UIViewController?) async {
-    await hudVC?.dismiss(animated: true)
-}
-
 #endif
