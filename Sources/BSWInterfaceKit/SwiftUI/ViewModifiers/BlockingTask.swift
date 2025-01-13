@@ -6,38 +6,30 @@
 
 import SwiftUI
 
-@available(iOS 16.0, *)
+@available(iOS 17.0, *)
 #Preview {
-    SampleView()
-}
-
-@available(iOS 16.0, *)
-private struct SampleView: View {
-    
-    struct SomeError: Swift.Error {}
-    
     @State
+    @Previewable
     var perform: Int? = nil
     
-    var body: some View {
-        Button {
-            perform = 44
-        } label: {
-            Text("Trigger Job")
-        }
-        .performBlockingTask(
-            value: $perform,
-            confirmationStrategy: .confirmWith(
-                title: "Are you sure?",
-                message: nil,
-                confirmButtonTitle: "Yes I am",
-                cancelButtonTitle: "Nope",
-                isDestructiveAction: false
-            )
-        ) { _ in
+    Button {
+        perform = 44
+    } label: {
+        Text("Trigger Job")
+    }
+    .performBlockingTask(
+        value: $perform,
+        confirmationStrategy: .confirmWith(
+            title: "Are you sure?",
+            message: nil,
+            confirmButtonTitle: "Yes I am",
+            cancelButtonTitle: "Nope",
+            isDestructiveAction: false
+        ),
+        task: { _ in
             try await Task.sleep(for: .seconds(2))
         }
-    }
+    )
 }
 
 public typealias AsyncBlockingTask = @MainActor () async throws -> ()
