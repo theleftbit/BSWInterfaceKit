@@ -17,17 +17,25 @@ private struct SampleView: View {
     struct SomeError: Swift.Error {}
     
     @State
-    var perform: Bool = false
+    var perform: Int? = nil
     
     var body: some View {
         Button {
-            perform = true
+            perform = 44
         } label: {
-            Text("try")
+            Text("Trigger Job")
         }
-        .performBlockingTask(readyToPerform: $perform) {
-            try await Task.sleep(for: .seconds(5))
-            throw SomeError()
+        .performBlockingTask(
+            value: $perform,
+            confirmationStrategy: .confirmWith(
+                title: "Are you sure?",
+                message: nil,
+                confirmButtonTitle: "Yes I am",
+                cancelButtonTitle: "Nope",
+                isDestructiveAction: false
+            )
+        ) { _ in
+            try await Task.sleep(for: .seconds(2))
         }
     }
 }
@@ -36,19 +44,21 @@ public typealias AsyncBlockingTask = @MainActor () async throws -> ()
 public typealias AsyncBlockingTaskWithValue<T: Equatable> = @MainActor (T) async throws -> ()
 public enum AsyncBlockingTaskConfirmationStrategy {
     case notRequired
-    case confirmWith(title: String, message: String, confirmButtonTitle: String, cancelButtonTitle: String)
+    case confirmWith(title: String, message: String?, confirmButtonTitle: String, cancelButtonTitle: String, isDestructiveAction: Bool = false)
 }
 
 public extension View {
     
     func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
-        self.modifier(PerformBlockingModifier(readyToPerform: readyToPerform, task: task))
+        self.modifier(PerformBlockingModifier(readyToPerform: readyToPerform, task: task, confirmationStrategy: confirmationStrategy))
     }
 
     func performBlockingTask<T: Equatable>(value: Binding<T?>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
-        self.modifier(PerformEquatableBlockingModifier(value: value, task: task))
+        self.modifier(PerformEquatableBlockingModifier(value: value, task: task, confirmationStrategy: confirmationStrategy))
     }
 }
+
+// MARK: Private
 
 private struct PerformBlockingModifier: ViewModifier {
     
@@ -56,12 +66,9 @@ private struct PerformBlockingModifier: ViewModifier {
     var readyToPerform: Bool
     
     let task: AsyncBlockingTask
+            
+    let confirmationStrategy: AsyncBlockingTaskConfirmationStrategy
     
-    private enum Phase {
-        case idle
-        case loading
-    }
-        
     @State
     private var taskError: Error? = nil
     
@@ -69,7 +76,22 @@ private struct PerformBlockingModifier: ViewModifier {
         content
             .task(id: readyToPerform) {
                 guard readyToPerform else { return }
+                defer {
+                    self.readyToPerform = false
+                }
                 #if canImport(UIKit.UIViewController)
+                if case .confirmWith(let title, let message, let confirmButtonTitle, let cancelButtonTitle, let isDestructiveAction) = confirmationStrategy {
+                    let didConfirm = await SwiftUIAlerts.presentAlert(
+                        title: title,
+                        message: message,
+                        cancelButtonTitle: cancelButtonTitle,
+                        confirmButtonTitle: confirmButtonTitle,
+                        isConfirmButtonDestructive: isDestructiveAction
+                    )
+                    guard didConfirm else {
+                        return
+                    }
+                }
                 async let ___vc = SwiftUIHUD.presentHUDViewController()
                 #endif
                 do {
@@ -83,7 +105,6 @@ private struct PerformBlockingModifier: ViewModifier {
                     await SwiftUIHUD.dismissHUDViewController(hudVC: vc)
                 }
                 #endif
-                self.readyToPerform = false
             }
             .errorAlert(error: $taskError)
     }
@@ -95,7 +116,9 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     var value: T?
     
     let task: AsyncBlockingTaskWithValue<T>
-            
+           
+    let confirmationStrategy: AsyncBlockingTaskConfirmationStrategy
+
     @State
     private var taskError: Error? = nil
     
@@ -104,6 +127,18 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
             .task(id: value) {
                 guard let value = self.value else { return }
                 #if canImport(UIKit.UIViewController)
+                if case .confirmWith(let title, let message, let confirmButtonTitle, let cancelButtonTitle, let isDestructiveAction) = confirmationStrategy {
+                    let didConfirm = await SwiftUIAlerts.presentAlert(
+                        title: title,
+                        message: message,
+                        cancelButtonTitle: cancelButtonTitle,
+                        confirmButtonTitle: confirmButtonTitle,
+                        isConfirmButtonDestructive: isDestructiveAction
+                    )
+                    guard didConfirm else {
+                        return
+                    }
+                }
                 async let ___vc = SwiftUIHUD.presentHUDViewController()
                 #endif
                 do {
@@ -120,6 +155,41 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
                 self.value = nil
             }
             .errorAlert(error: $taskError)
+    }
+}
+
+
+private struct BlockingAlertView: ViewModifier {
+    
+    let title: String
+    let message: String?
+    let confirmButtonTitle: String
+    let cancelButtonTitle: String
+    let isDestructiveAction: Bool
+    
+    @Binding
+    var presentingAlert: Bool
+    
+    @Binding
+    var readyToPerform: Bool
+        
+    func body(content: Content) -> some View {
+        content
+            .alert(
+                title,
+                isPresented: $presentingAlert,
+                actions: {
+                    Button(cancelButtonTitle, role: .cancel) { }
+                    Button(confirmButtonTitle, role: isDestructiveAction ? .destructive : nil, action: {
+                        readyToPerform = true
+                    })
+                },
+                message: {
+                    if let messageAlert = message {
+                        Text(messageAlert)
+                    }
+                }
+            )
     }
 }
 
