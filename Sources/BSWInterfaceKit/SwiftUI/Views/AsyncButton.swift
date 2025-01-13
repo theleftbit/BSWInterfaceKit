@@ -18,8 +18,8 @@ import SwiftUI
     .font(.headline)
     .asyncButtonLoadingConfiguration(
         message: "Loading...",
-        //      style: .inline(tint: .red)
-        style: .blocking(dimsBackground: true, successMessage: .init(message: "Done!"))
+//              style: .inline(tint: .red)
+        style: .blocking(dimsBackground: false, successMessage: .init(message: "Done!"))
     )
 }
 
@@ -158,11 +158,16 @@ public struct AsyncButton<Label: View>: View {
         let configuration: AsyncButtonLoadingConfiguration.Style.BlockingConfiguration
         let loadingMessage: String?
         
+        @ScaledMetric
+        private var hudImageSize = 60.0
+        
+        @ScaledMetric
+        private var hudContentSize = 120.0
+        
         var body: some View {
-            VStack(spacing: 8) {
-                hudContent
-                    .frame(width: 60, height: 60)
-                    .border(Color.red)
+            VStack(alignment: .center, spacing: 8) {
+                hudImage
+                    .frame(width: hudImageSize, height: hudImageSize)
                 if let textMessage {
                     Text(textMessage)
                 }
@@ -171,8 +176,7 @@ public struct AsyncButton<Label: View>: View {
             .animation(.default, value: stateWrapper.isSuccess)
             .font(configuration.font)
             .padding()
-            .frame(minWidth: 100, minHeight: 100)
-            .aspectRatio(1, contentMode: .fit)
+            .frame(width: hudContentSize, height: hudContentSize)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
@@ -192,13 +196,13 @@ public struct AsyncButton<Label: View>: View {
         }
         
         @ViewBuilder
-        private var hudContent: some View {
+        private var hudImage: some View {
             if stateWrapper.isSuccess {
                 Image(systemName: "checkmark")
                     .font(.largeTitle)
-                    .foregroundColor(.green)
             } else {
                 ProgressView()
+                    .tint(.primary)
                     .scaleEffect(1.5)
             }
         }
@@ -228,6 +232,7 @@ public struct AsyncButton<Label: View>: View {
                 configuration: configuration,
                 loadingMessage: loadingConfiguration.message
             )
+            .environment(\.colorScheme, rootVC.traitCollection.userInterfaceStyle == .light ? .dark : .light)
         )
         ___hudVC.modalPresentationStyle = .overCurrentContext
         ___hudVC.modalTransitionStyle = .crossDissolve
