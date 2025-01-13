@@ -303,7 +303,7 @@ private struct BlockingAlertView: ViewModifier {
                             .textInputAutocapitalization(.sentences)
                     }
                     
-                    Button("cancel".localized, role: .cancel) { }
+                    Button("dismiss".localized, role: .cancel) { }
                     Button(buttonAlert, role: buttonRole, action: {
                         readyToPerform = true
                     })
@@ -332,6 +332,8 @@ private struct HUDView: View {
         VStack(spacing: 8) {
             ProgressView()
                 .frame(width: 60, height: 60)
+            
+            Text("loader-message".localized)
         }
         .transition(.scale.combined(with: .opacity))
         .padding()
