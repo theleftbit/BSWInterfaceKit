@@ -126,6 +126,10 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         content
             .task(id: value) {
                 guard let value = self.value else { return }
+                defer {
+                    self.value = nil
+                }
+
                 #if canImport(UIKit.UIViewController)
                 if case .confirmWith(let title, let message, let confirmButtonTitle, let cancelButtonTitle, let isDestructiveAction) = confirmationStrategy {
                     let didConfirm = await SwiftUIAlerts.presentAlert(
@@ -152,7 +156,6 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
                     await SwiftUIHUD.dismissHUDViewController(hudVC: vc)
                 }
                 #endif
-                self.value = nil
             }
             .errorAlert(error: $taskError)
     }
