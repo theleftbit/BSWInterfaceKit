@@ -2,6 +2,8 @@
 //  Created by Michele Restuccia on 13/1/25.
 //
 
+#if canImport(UIKit)
+
 import SwiftUI; import UIKit
 
 public typealias BlockingTask = @MainActor () async throws -> ()
@@ -343,7 +345,6 @@ private struct HUDView: View {
 
 @MainActor
 private func presentHUDViewController() async -> UIViewController? {
-    #if canImport(UIKit.UIViewController)
     guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
           let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
     let ___hudVC = UIHostingController(rootView: HUDView())
@@ -353,12 +354,11 @@ private func presentHUDViewController() async -> UIViewController? {
     ___hudVC.view.isOpaque = false
     await rootVC.present(___hudVC, animated: true)
     return ___hudVC
-    #endif
 }
 
 @MainActor
 private func dismissHUDViewController(hudVC: UIViewController?) async {
-    #if canImport(UIKit.UIViewController)
     await hudVC?.dismiss(animated: true)
-    #endif
 }
+
+#endif
