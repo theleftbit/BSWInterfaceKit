@@ -6,6 +6,29 @@
 
 import SwiftUI; import UIKit
 
+@available(iOS 16.0, *)
+#Preview {
+    SampleView()
+}
+
+@available(iOS 16.0, *)
+private struct SampleView: View {
+    
+    @State
+    var perform: Bool = false
+    
+    var body: some View {
+        Button {
+            perform = true
+        } label: {
+            Text("try")
+        }
+        .performBlockingTask(readyToPerform: $perform) {
+            try await Task.sleep(for: .seconds(5))
+        }
+    }
+}
+
 public typealias BlockingTask = @MainActor () async throws -> ()
 public typealias BlockingReturnTask = @MainActor (String) async throws -> ()
 public typealias BlockingTaskWithValue<T: Equatable> = @MainActor (T) async throws -> ()
