@@ -156,26 +156,23 @@ public struct AsyncButton<Label: View>: View {
         var stateWrapper: HUDStateWrapper
         
         let configuration: AsyncButtonLoadingConfiguration.Style.BlockingConfiguration
+        let loadingMessage: String?
         
         var body: some View {
-            VStack(spacing: 24) {
-                ProgressView()
-                    .scaleEffect(1.5)
-                    .tint(Color.primary)
-                    .opacity(stateWrapper.isSuccess ? 0 : 1)
-                    .overlay {
-                        Image(systemName: "checkmark")
-                            .tint(Color.primary)
-                            .font(.title)
-                            .opacity(stateWrapper.isSuccess ? 1 : 0)
-                    }
-                Text(stateWrapper.isSuccess ? "Test" : "Test")
+            VStack(spacing: 8) {
+                hudContent
+                    .frame(width: 60, height: 60)
+                    .border(Color.red)
+                if let textMessage {
+                    Text(textMessage)
+                }
             }
             .transition(.scale.combined(with: .opacity))
             .animation(.default, value: stateWrapper.isSuccess)
-            .frame(minWidth: 100, minHeight: 100)
             .font(configuration.font)
             .padding()
+            .frame(minWidth: 100, minHeight: 100)
+            .aspectRatio(1, contentMode: .fit)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
@@ -186,6 +183,25 @@ public struct AsyncButton<Label: View>: View {
             .ignoresSafeArea()
         }
         
+        private var textMessage: String? {
+            if stateWrapper.isSuccess, let successMessage = configuration.successMessage {
+                return successMessage.message
+            } else {
+                return loadingMessage
+            }
+        }
+        
+        @ViewBuilder
+        private var hudContent: some View {
+            if stateWrapper.isSuccess {
+                Image(systemName: "checkmark")
+                    .font(.largeTitle)
+                    .foregroundColor(.green)
+            } else {
+                ProgressView()
+                    .scaleEffect(1.5)
+            }
+        }
     }
     
     @Environment(\.asyncButtonOperationIdentifierKey)
@@ -209,7 +225,8 @@ public struct AsyncButton<Label: View>: View {
         let ___hudVC = UIHostingController(
             rootView: HUDView(
                 stateWrapper: hudWrapper,
-                configuration: configuration
+                configuration: configuration,
+                loadingMessage: loadingConfiguration.message
             )
         )
         ___hudVC.modalPresentationStyle = .overCurrentContext
