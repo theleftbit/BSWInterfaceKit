@@ -19,7 +19,7 @@ import SwiftUI
     .asyncButtonLoadingConfiguration(
         message: "Loading...",
 //              style: .inline(tint: .red)
-        style: .blocking(dimsBackground: false, successMessage: .init(message: "Done!"))
+        style: .blocking(dimsBackground: true, successMessage: .init(message: "Succesfully Sent Message!"))
     )
 }
 
@@ -176,7 +176,7 @@ public struct AsyncButton<Label: View>: View {
             .animation(.default, value: stateWrapper.isSuccess)
             .font(configuration.font)
             .padding()
-            .frame(width: hudContentSize, height: hudContentSize)
+            .frame(minWidth: hudContentSize, minHeight: hudContentSize)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
@@ -190,8 +190,10 @@ public struct AsyncButton<Label: View>: View {
         private var textMessage: String? {
             if stateWrapper.isSuccess, let successMessage = configuration.successMessage {
                 return successMessage.message
-            } else {
+            } else if let loadingMessage {
                 return loadingMessage
+            } else {
+                return nil
             }
         }
         
