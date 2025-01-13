@@ -16,65 +16,46 @@ public struct BlockingTaskReturn<T: Equatable> {
     public let textFieldValue: String
 }
 
+public struct BlockingAlertConfiguration {
+    let titleAlert: String
+    let messageAlert: String?
+    let textFieldTitle: String?
+    let buttonAlert: String
+    let buttonRole: ButtonRole?
+    
+    public init(
+        titleAlert: String,
+        messageAlert: String? = nil,
+        textFieldTitle: String? = nil,
+        buttonAlert: String = NSLocalizedString("accept", bundle: Bundle.main, comment: ""),
+        buttonRole: ButtonRole? = nil
+    ) {
+        self.titleAlert = titleAlert
+        self.messageAlert = messageAlert
+        self.textFieldTitle = textFieldTitle
+        self.buttonAlert = buttonAlert
+        self.buttonRole = buttonRole
+    }
+}
+
 public extension View {
     
-    func performBlockingTask(
-        readyToPerform: Binding<Bool>,
-        font: Font = .body,
-        task: @escaping BlockingTask
-    ) -> some View {
+    func performBlockingTask(readyToPerform: Binding<Bool>, font: Font = .body, task: @escaping BlockingTask) -> some View {
         self.modifier(PerformBlockingModifier(readyToPerform: readyToPerform, font: font, task: task))
     }
     
-    func performBlockingTaskAfterConfirmation(
-        presentingAlert: Binding<Bool>,
-        titleAlert: String,
-        messageAlert: String? = nil,
-        textFieldTitle: String? = nil,
-        buttonAlert: String = NSLocalizedString("accept", bundle: Bundle.main, comment: ""),
-        buttonRole: ButtonRole? = nil,
-        font: Font = .body,
-        task: @escaping BlockingReturnTask
-    ) -> some View {
+    func performBlockingTaskAfterConfirmation(presentingAlert: Binding<Bool>, alert: BlockingAlertConfiguration, font: Font = .body, task: @escaping BlockingReturnTask) -> some View {
         self.modifier(PerformBlockingAfterConfirmationModifier(
-            presentingAlert: presentingAlert,
-            titleAlert: titleAlert,
-            messageAlert: messageAlert,
-            textFieldTitle: textFieldTitle,
-            buttonAlert: buttonAlert,
-            buttonRole: buttonRole,
-            font: font,
-            task: task
+            presentingAlert: presentingAlert, alert: alert, font: font, task: task
         ))
     }
     
-    func performBlockingTask<T: Equatable>(
-        value: Binding<T?>,
-        font: Font = .body,
-        task: @escaping BlockingTaskWithValue<T>
-    ) -> some View {
+    func performBlockingTask<T: Equatable>(value: Binding<T?>, font: Font = .body, task: @escaping BlockingTaskWithValue<T>) -> some View {
         self.modifier(PerformEquatableBlockingModifier(value: value, font: font, task: task))
     }
     
-    func performBlockingTaskAfterConfirmation<T: Equatable>(
-        value: Binding<T?>,
-        titleAlert: String,
-        messageAlert: String? = nil,
-        textFieldTitle: String? = nil,
-        buttonAlert: String = NSLocalizedString("accept", bundle: Bundle.main, comment: ""),
-        buttonRole: ButtonRole? = nil,
-        font: Font = .body,
-        task: @escaping BlockingReturnTaskWithValue<T>
-    ) -> some View {
-        self.modifier(PerformEquatableBlockingModifierAfterConfirmationModifier(
-            value: value,
-            titleAlert: titleAlert,
-            messageAlert: messageAlert,
-            textFieldTitle: textFieldTitle,
-            buttonAlert: buttonAlert,
-            buttonRole: buttonRole,
-            font: font,
-            task: task
+    func performBlockingTaskAfterConfirmation<T: Equatable>(value: Binding<T?>, alert: BlockingAlertConfiguration, font: Font = .body, task: @escaping BlockingReturnTaskWithValue<T>) -> some View {
+        self.modifier(PerformEquatableBlockingModifierAfterConfirmationModifier(value: value, alert: alert, font: font, task: task
         ))
     }
 }
@@ -158,11 +139,7 @@ private struct PerformBlockingAfterConfirmationModifier: ViewModifier {
     @Binding
     var presentingAlert: Bool
     
-    let titleAlert: String
-    let messageAlert: String?
-    let textFieldTitle: String?
-    let buttonAlert: String
-    let buttonRole: ButtonRole?
+    let alert: BlockingAlertConfiguration
     let font: Font
     let task: BlockingReturnTask
     
@@ -204,11 +181,8 @@ private struct PerformBlockingAfterConfirmationModifier: ViewModifier {
             }
             .errorAlert(error: $taskError)
             .modifier(BlockingAlertView(
-                titleAlert: titleAlert,
-                messageAlert: messageAlert,
-                textFieldTitle: textFieldTitle,
-                buttonAlert: buttonAlert,
-                buttonRole: buttonRole,
+                configuration: alert,
+                font: font,
                 presentingAlert: $presentingAlert,
                 readyToPerform: $readyToPerform,
                 textFieldValue: $textFieldValue
@@ -223,11 +197,7 @@ private struct PerformEquatableBlockingModifierAfterConfirmationModifier<T: Equa
     @Binding
     var value: T?
     
-    let titleAlert: String
-    let messageAlert: String?
-    let textFieldTitle: String?
-    let buttonAlert: String
-    let buttonRole: ButtonRole?
+    let alert: BlockingAlertConfiguration
     let font: Font
     let task: BlockingReturnTaskWithValue<T>
     
@@ -265,11 +235,8 @@ private struct PerformEquatableBlockingModifierAfterConfirmationModifier<T: Equa
             }
             .errorAlert(error: $taskError)
             .modifier(BlockingAlertView(
-                titleAlert: titleAlert,
-                messageAlert: messageAlert,
-                textFieldTitle: textFieldTitle,
-                buttonAlert: buttonAlert,
-                buttonRole: buttonRole,
+                configuration: alert,
+                font: font,
                 presentingAlert: $presentingAlert,
                 readyToPerform: $readyToPerform,
                 textFieldValue: $textFieldValue
@@ -281,11 +248,8 @@ private struct PerformEquatableBlockingModifierAfterConfirmationModifier<T: Equa
 
 private struct BlockingAlertView: ViewModifier {
     
-    let titleAlert: String
-    let messageAlert: String?
-    let textFieldTitle: String?
-    let buttonAlert: String
-    let buttonRole: ButtonRole?
+    let configuration: BlockingAlertConfiguration
+    let font: Font
     
     @Binding
     var presentingAlert: Bool
@@ -299,22 +263,22 @@ private struct BlockingAlertView: ViewModifier {
     func body(content: Content) -> some View {
         content
             .alert(
-                titleAlert,
+                configuration.titleAlert,
                 isPresented: $presentingAlert,
                 actions: {
-                    if let textFieldTitle {
+                    if let textFieldTitle = configuration.textFieldTitle {
                         TextField(textFieldTitle, text: $textFieldValue)
-                        //                            .naturitasFont(forTextStyle: .footnote)
-                        //                            .foregroundStyle(Color(.naturitasTextTitleColor))
+                            .font(font)
+                            .foregroundStyle(Color(uiColor: .label))
                             .textInputAutocapitalization(.sentences)
                     }
                     
                     Button("dismiss".localized, role: .cancel) { }
-                    Button(buttonAlert, role: buttonRole, action: {
+                    Button(configuration.buttonAlert, role: configuration.buttonRole, action: {
                         readyToPerform = true
                     })
                     .disabled({
-                        if textFieldTitle != nil {
+                        if configuration.textFieldTitle != nil {
                             return textFieldValue.isEmpty
                         } else {
                             return false
@@ -322,8 +286,10 @@ private struct BlockingAlertView: ViewModifier {
                     }())
                 },
                 message: {
-                    if let messageAlert {
+                    if let messageAlert = configuration.messageAlert {
                         Text(messageAlert)
+                            .font(font)
+                            .foregroundStyle(Color(uiColor: .label))
                     }
                 }
             )
