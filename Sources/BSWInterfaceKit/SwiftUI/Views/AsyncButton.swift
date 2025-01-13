@@ -45,7 +45,7 @@ public struct AsyncButton<Label: View>: View {
     }
     
     @ObservedObject
-    private var hudWrapper = HUDStateWrapper(isSuccess: false)
+    private var hudWrapper = HUDView.StateWrapper(isSuccess: false)
 
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
@@ -80,12 +80,13 @@ public struct AsyncButton<Label: View>: View {
     @MainActor
     private func performAction() async {
         
-#if canImport(UIKit.UIViewController)
+        #if canImport(UIKit.UIViewController)
         var hudVC: UIViewController?
-        if loadingConfiguration.isBlocking {
-            hudVC = await presentHUDViewController()
+        if let hudConfiguration {
+            hudVC = await SwiftUIHUD.presentHUDViewController(hudWrapper, configuration: hudConfiguration)
         }
-#endif
+        #endif
+        
         let result: Swift.Result<Void, Swift.Error> = await {
             if let operation = operation {
                 await AsyncOperationTracer.operationDidBegin(operation)
@@ -105,9 +106,15 @@ public struct AsyncButton<Label: View>: View {
             }
         }()
         
-#if canImport(UIKit.UIViewController)
-        await dismissHUDViewController(hudVC: hudVC)
-#endif
+        #if canImport(UIKit.UIViewController)
+        if let hudVC, let hudConfiguration {
+            await SwiftUIHUD.dismissHUDViewController(
+                hudVC: hudVC,
+                stateWrapper: hudWrapper,
+                configuration: hudConfiguration
+            )
+        }
+        #endif
         
         switch result {
         case .success:
@@ -140,76 +147,6 @@ public struct AsyncButton<Label: View>: View {
         }
     }
     
-    
-    class HUDStateWrapper: ObservableObject {
-        init(isSuccess: Bool) {
-            self.isSuccess = isSuccess
-        }
-        
-        @Published
-        var isSuccess: Bool
-    }
-
-    struct HUDView: View {
-        
-        @ObservedObject
-        var stateWrapper: HUDStateWrapper
-        
-        let configuration: AsyncButtonLoadingConfiguration.Style.BlockingConfiguration
-        let loadingMessage: String?
-        
-        @ScaledMetric
-        private var hudImageSize = 60.0
-        
-        @ScaledMetric
-        private var hudContentSize = 120.0
-        
-        var body: some View {
-            VStack(alignment: .center, spacing: 8) {
-                hudImage
-                    .frame(width: hudImageSize, height: hudImageSize)
-                if let textMessage {
-                    Text(textMessage)
-                }
-            }
-            .transition(.scale.combined(with: .opacity))
-            .animation(.default, value: stateWrapper.isSuccess)
-            .font(configuration.font)
-            .padding()
-            .frame(minWidth: hudContentSize, minHeight: hudContentSize)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background {
-                if configuration.dimsBackground {
-                    Color.black.opacity(0.2)
-                }
-            }
-            .ignoresSafeArea()
-        }
-        
-        private var textMessage: String? {
-            if stateWrapper.isSuccess, let successMessage = configuration.successMessage {
-                return successMessage.message
-            } else if let loadingMessage {
-                return loadingMessage
-            } else {
-                return nil
-            }
-        }
-        
-        @ViewBuilder
-        private var hudImage: some View {
-            if stateWrapper.isSuccess {
-                Image(systemName: "checkmark")
-                    .font(.largeTitle)
-            } else {
-                ProgressView()
-                    .tint(.primary)
-                    .scaleEffect(1.5)
-            }
-        }
-    }
-    
     @Environment(\.asyncButtonOperationIdentifierKey)
     private var operationKey
     
@@ -220,44 +157,23 @@ public struct AsyncButton<Label: View>: View {
         return .init(kind: .buttonAction, id: operationKey)
     }
     
-#if canImport(UIKit.UIViewController)
-    @MainActor
-    private func presentHUDViewController() async -> UIViewController? {
-        guard case let .blocking(configuration) = loadingConfiguration.style else {
+    private var hudConfiguration: HUDView.Configuration? {
+        switch loadingConfiguration.style {
+        case .blocking(let config):
+            return .init(
+                font: config.font,
+                dimsBackground: config.dimsBackground,
+                loadingMessage: loadingConfiguration.message,
+                successMessage: {
+                guard let successMessage = config.successMessage else {
+                    return nil
+                }
+                return .init(message: successMessage.message, timeInterval: successMessage.timeInterval)
+            }())
+        case .inline:
             return nil
         }
-        guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-              let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
-        let ___hudVC = UIHostingController(
-            rootView: HUDView(
-                stateWrapper: hudWrapper,
-                configuration: configuration,
-                loadingMessage: loadingConfiguration.message
-            )
-            .environment(\.colorScheme, rootVC.traitCollection.userInterfaceStyle == .light ? .dark : .light)
-        )
-        ___hudVC.modalPresentationStyle = .overCurrentContext
-        ___hudVC.modalTransitionStyle = .crossDissolve
-        ___hudVC.view.backgroundColor = .clear
-        ___hudVC.view.isOpaque = false
-        await rootVC.present(___hudVC, animated: true)
-        return ___hudVC
     }
-    
-    @MainActor
-    private func dismissHUDViewController(hudVC: UIViewController?) async {
-        guard case let .blocking(configuration) = loadingConfiguration.style, let successMessage = configuration.successMessage else {
-            await hudVC?.dismiss(animated: true)
-            return
-        }
-        withAnimation {
-            self.hudWrapper.isSuccess = true
-        }
-        try? await Task.sleep(nanoseconds: UInt64(successMessage.timeInterval) * 1_000_000_000)
-        await hudVC?.dismiss(animated: true)
-        self.hudWrapper.isSuccess = false
-    }
-#endif
 }
 
 public extension AsyncButton where Label == Text {
