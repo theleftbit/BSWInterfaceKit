@@ -34,14 +34,18 @@ private struct SampleView: View {
 
 public typealias AsyncBlockingTask = @MainActor () async throws -> ()
 public typealias AsyncBlockingTaskWithValue<T: Equatable> = @MainActor (T) async throws -> ()
+public enum AsyncBlockingTaskConfirmationStrategy {
+    case notRequired
+    case confirmWith(title: String, message: String, confirmButtonTitle: String, cancelButtonTitle: String)
+}
 
 public extension View {
     
-    func performBlockingTask(readyToPerform: Binding<Bool>, task: @escaping AsyncBlockingTask) -> some View {
+    func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
         self.modifier(PerformBlockingModifier(readyToPerform: readyToPerform, task: task))
     }
 
-    func performBlockingTask<T: Equatable>(value: Binding<T?>, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
+    func performBlockingTask<T: Equatable>(value: Binding<T?>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
         self.modifier(PerformEquatableBlockingModifier(value: value, task: task))
     }
 }
@@ -65,16 +69,20 @@ private struct PerformBlockingModifier: ViewModifier {
         content
             .task(id: readyToPerform) {
                 guard readyToPerform else { return }
+                #if canImport(UIKit.UIViewController)
                 async let ___vc = SwiftUIHUD.presentHUDViewController()
+                #endif
                 do {
                     try await task()
                 } catch {
                     taskError = error
                 }
+                #if canImport(UIKit.UIViewController)
                 let vc = await ___vc
                 if let vc {
                     await SwiftUIHUD.dismissHUDViewController(hudVC: vc)
                 }
+                #endif
                 self.readyToPerform = false
             }
             .errorAlert(error: $taskError)
@@ -95,16 +103,20 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         content
             .task(id: value) {
                 guard let value = self.value else { return }
+                #if canImport(UIKit.UIViewController)
                 async let ___vc = SwiftUIHUD.presentHUDViewController()
+                #endif
                 do {
                     try await task(value)
                 } catch {
                     taskError = error
                 }
+                #if canImport(UIKit.UIViewController)
                 let vc = await ___vc
                 if let vc {
                     await SwiftUIHUD.dismissHUDViewController(hudVC: vc)
                 }
+                #endif
                 self.value = nil
             }
             .errorAlert(error: $taskError)
