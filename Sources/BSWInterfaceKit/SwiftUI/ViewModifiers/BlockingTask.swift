@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     @State
     @Previewable
