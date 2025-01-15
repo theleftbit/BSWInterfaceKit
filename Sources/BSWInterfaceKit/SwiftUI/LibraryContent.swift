@@ -13,8 +13,4 @@ struct BSWInterfaceKit_SwiftUILibrary: LibraryContentProvider {
     }
 }
 
-#if swift(>=6.0)
 extension LibraryItem: @unchecked @retroactive Sendable {}
-#else
-extension LibraryItem: @unchecked Sendable {}
-#endif
