@@ -18,7 +18,7 @@ enum SwiftUIHUD {
             )
             .environment(\.colorScheme, rootVC.traitCollection.userInterfaceStyle == .light ? .dark : .light)
         )
-        ___hudVC.modalPresentationStyle = .overCurrentContext
+        ___hudVC.modalPresentationStyle = .overFullScreen
         ___hudVC.modalTransitionStyle = .crossDissolve
         ___hudVC.view.backgroundColor = .clear
         ___hudVC.view.isOpaque = false
