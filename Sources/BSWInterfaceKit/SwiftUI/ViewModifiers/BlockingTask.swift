@@ -153,39 +153,4 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     }
 }
 
-
-private struct BlockingAlertView: ViewModifier {
-    
-    let title: String
-    let message: String?
-    let confirmButtonTitle: String
-    let cancelButtonTitle: String
-    let isDestructiveAction: Bool
-    
-    @Binding
-    var presentingAlert: Bool
-    
-    @Binding
-    var readyToPerform: Bool
-        
-    func body(content: Content) -> some View {
-        content
-            .alert(
-                title,
-                isPresented: $presentingAlert,
-                actions: {
-                    Button(cancelButtonTitle, role: .cancel) { }
-                    Button(confirmButtonTitle, role: isDestructiveAction ? .destructive : nil, action: {
-                        readyToPerform = true
-                    })
-                },
-                message: {
-                    if let messageAlert = message {
-                        Text(messageAlert)
-                    }
-                }
-            )
-    }
-}
-
 #endif
