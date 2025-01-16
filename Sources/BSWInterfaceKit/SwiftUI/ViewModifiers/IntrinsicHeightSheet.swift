@@ -1,37 +1,23 @@
 
 import SwiftUI
 
-@available(iOS 17.0, macOS 13, watchOS 9, *)
-struct DemoView: View {
-    
-    @State var presentSheet = false
-    
-    var body: some View {
-        Button("Present Sheet") {
-            presentSheet = true
-        }
-        .intrinsicHeightSheet(isPresented: $presentSheet) {
-            ContentView()
-        }
-        .task {
-            presentSheet = true
-        }
-
-    }
-
-    struct ContentView: View {
-        var body: some View {
-            VStack {
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac bibendum est. Donec tincidunt ligula sit amet ipsum vehicula vehicula. Vestibulum ultrices arcu sit amet aliquam dictum.")
-            }
-            .padding()
-        }
-    }
-}
-
-@available(iOS 17.0, macOS 13, watchOS 9, *)
+@available(iOS 18.0, macOS 14, watchOS 10, *)
 #Preview {
-  DemoView()
+    
+    @Previewable
+    @State
+    var presentSheet = false
+    
+    Button("Present Sheet") {
+        presentSheet = true
+    }
+    .intrinsicHeightSheet(isPresented: $presentSheet) {
+        Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac bibendum est. Donec tincidunt ligula sit amet ipsum vehicula vehicula. Vestibulum ultrices arcu sit amet aliquam dictum.")
+        .padding()
+    }
+    .task {
+        presentSheet = true
+    }
 }
 
 @available(iOS 16.0, macOS 13, watchOS 9, *)
