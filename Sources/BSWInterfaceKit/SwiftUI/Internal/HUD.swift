@@ -8,7 +8,7 @@ import UIKit
 enum SwiftUIHUD {
     
     @MainActor
-    static func presentHUDViewController(_ stateWrapper: HUDView.StateWrapper?, configuration: HUDView.Configuration = .init()) async -> UIViewController? {
+    static func presentHUDViewController(_ stateWrapper: HUDView.StateWrapper? = nil, configuration: HUDView.Configuration = .init()) async -> UIViewController? {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
         let ___hudVC = UIHostingController(
@@ -27,17 +27,17 @@ enum SwiftUIHUD {
     }
     
     @MainActor
-    static func dismissHUDViewController(hudVC: UIViewController?, stateWrapper: HUDView.StateWrapper, configuration: HUDView.Configuration) async {
+    static func dismissHUDViewController(hudVC: UIViewController?, stateWrapper: HUDView.StateWrapper? = nil, configuration: HUDView.Configuration = .init()) async {
         guard let successMessage = configuration.successMessage else {
             await hudVC?.dismiss(animated: true)
             return
         }
         withAnimation {
-            stateWrapper.isSuccess = true
+            stateWrapper?.isSuccess = true
         }
         try? await Task.sleep(nanoseconds: UInt64(successMessage.timeInterval) * 1_000_000_000)
         await hudVC?.dismiss(animated: true)
-        stateWrapper.isSuccess = false
+        stateWrapper?.isSuccess = false
     }
 }
 #endif
