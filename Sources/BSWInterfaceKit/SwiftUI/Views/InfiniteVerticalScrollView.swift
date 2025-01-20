@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-@available(iOS 18, macOS 15, *)
+@available(iOS 18, macOS 15, watchOS 11, *)
 #Preview {
     
     @Previewable
@@ -9,6 +9,7 @@ import Combine
     var items: [Item] = Item.createItems()
     
     let isUpwards = true
+
     
     struct Item: Identifiable {
         let name: String
@@ -89,7 +90,7 @@ import Combine
                     }
                 }
         }
-#if canImport(UIKit)
+#if os(iOS)
         .background(Color(uiColor: .systemGray4))
         .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -97,7 +98,7 @@ import Combine
     }
 }
 
-@available(iOS 18, macOS 15, *)
+@available(iOS 18, macOS 15, watchOS 11, *)
 public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView: View>: View where Item.ID : Sendable {
     
     public init(
@@ -229,7 +230,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 self.error = error
             }
         }
-#if canImport(UIKit)
+#if canImport(UIKit.UIResponder)
         .onReceive(keyboardPublisher) { newIsKeyboardVisible in
             if newIsKeyboardVisible, direction == .upwards {
                 withAnimation(.default) {
@@ -250,7 +251,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         }
     }
     
-#if canImport(UIKit)
+#if canImport(UIKit.UIResponder)
     var keyboardPublisher: AnyPublisher<Bool, Never> {
         Publishers.Merge(
             NotificationCenter.default

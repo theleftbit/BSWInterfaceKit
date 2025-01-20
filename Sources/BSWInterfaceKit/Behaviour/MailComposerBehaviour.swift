@@ -3,8 +3,7 @@
 //  Copyright © 2019 TheLeftBit. All rights reserved.
 //
 
-#if canImport(UIKit)
-#if canImport(MessageUI)
+#if canImport(UIKit) && canImport(MessageUI)
 
 import UIKit
 import MessageUI
@@ -66,5 +65,4 @@ public extension MessageComposerBehavior {
     }
 }
 
-#endif
 #endif
