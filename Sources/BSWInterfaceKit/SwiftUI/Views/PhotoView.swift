@@ -79,7 +79,7 @@ public struct PhotoView: View {
 
 extension PhotoView {
         
-    public struct Configuration {
+    public struct Configuration: Sendable {
         let placeholder: Placeholder
         let aspectRatio: CGFloat?
         let contentMode: ContentMode
@@ -90,7 +90,7 @@ extension PhotoView {
             self.contentMode = contentMode
         }
         
-        public struct Placeholder {
+        public struct Placeholder: Sendable {
             
             public init(shape: PhotoView.Configuration.Placeholder.Shape, color: Color = Color(RandomColorFactory.defaultColor)) {
                 self.shape = shape
@@ -100,7 +100,7 @@ extension PhotoView {
             let shape: Shape
             let color: Color
             
-            public enum Shape {
+            public enum Shape: Sendable {
                 case circle, rectangle
             }
             
