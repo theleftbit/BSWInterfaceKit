@@ -18,7 +18,7 @@ import SwiftUI
 }
 
 @available(iOS 17, macOS 14, watchOS 10, *)
-class ItemInfiniteDataSource: InfiniteScrollingDataSource<Item> {
+private class ItemInfiniteDataSource: InfiniteScrollingDataSource<Item> {
     init() async throws {
         try await super.init { pageNumber in
             try await Task.sleep(for: .seconds(1))
@@ -41,7 +41,7 @@ class ItemInfiniteDataSource: InfiniteScrollingDataSource<Item> {
 }
 
 @available(iOS 17, macOS 14, watchOS 10, *)
-struct ItemListView: View {
+private struct ItemListView: View {
 
     @StateObject var dataSource: ItemInfiniteDataSource
 
@@ -74,7 +74,7 @@ struct ItemListView: View {
     }
 }
 
-struct Item: Identifiable {
+private struct Item: Identifiable {
     let name: String
     var id: String { name }
 }
