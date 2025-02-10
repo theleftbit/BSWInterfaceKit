@@ -8,11 +8,11 @@ import Combine
 @MainActor
 open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject, RandomAccessCollection {
     
-    @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
     @Published public var paginationError: Error?
+    @Published private var items = [ListItem]()
     private var itemFetcher: ItemFetcher
-    
+
     public enum State: Equatable {
         case noMorePages
         case loading
@@ -68,7 +68,12 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
     }
     
     /// MARK: RandomAccessCollection
-
+    nonisolated public var count: Int {
+        MainActor.assumeIsolated {
+            items.count
+        }
+    }
+    
     nonisolated public var startIndex: Int {
         MainActor.assumeIsolated {
             items.startIndex

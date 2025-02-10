@@ -63,7 +63,7 @@ private struct ItemListView: View {
 
         var body: some View {
             HStack(spacing: 8) {
-                Text("Products count: \(dataSource.items.count)")
+                Text("Products count: \(dataSource.count)")
                 if dataSource.state == .loading {
                     Text("🔄")
                 } else {
