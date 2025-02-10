@@ -5,88 +5,78 @@
 /// but if you copy/paste the code in an app, it'll work correctly
 import SwiftUI
 
-@available(iOS 16.0, macOS 13, watchOS 9, *)
-struct InfiniteDataSource_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        AsyncItemListView()
+@available(iOS 17, macOS 14, watchOS 10, *)
+#Preview {
+    AsyncView(id: "mock-items") {
+        try await ItemInfiniteDataSource()
+    } hostedViewGenerator: {
+        ItemListView(dataSource: $0)
+    } loadingViewGenerator: {
+        ProgressView()
     }
-    
-    struct AsyncItemListView: View {
-        var body: some View {
-            AsyncView(id: "mock-items") {
-                try await ItemInfiniteDataSource()
-            } hostedViewGenerator: {
-                ItemListView(dataSource: $0)
-            } loadingViewGenerator: {
-                ProgressView()
-            }
+
+}
+
+@available(iOS 17, macOS 14, watchOS 10, *)
+class ItemInfiniteDataSource: InfiniteScrollingDataSource<Item> {
+    init() async throws {
+        try await super.init { pageNumber in
+            try await Task.sleep(for: .seconds(1))
+            let products = [
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+                Item(name: UUID().uuidString),
+            ]
+            let areThereMorePages = true
+            return (products, areThereMorePages)
         }
     }
+}
 
-    class ItemInfiniteDataSource: InfiniteScrollingDataSource<Item> {
-        init() async throws {
-            try await super.init { pageNumber in
-                try await Task.sleep(for: .seconds(1))
-                let products = [
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                    Item(name: UUID().uuidString),
-                ]
-                let areThereMorePages = true
-                return (products, areThereMorePages)
-            }
-        }
-    }
+@available(iOS 17, macOS 14, watchOS 10, *)
+struct ItemListView: View {
 
-    struct ItemListView: View {
+    @StateObject var dataSource: ItemInfiniteDataSource
 
-        @StateObject var dataSource: ItemInfiniteDataSource
-
-        var body: some View {
-            List {
-                Section {
-                    ForEach(dataSource.items) { item in
-                        Text(item.name)
-                            .onAppear {
-                                dataSource.loadMoreContentIfNeeded(currentItem: item)
-                            }
-                    }
-                } footer: {
-                    FooterView(dataSource: dataSource)
+    var body: some View {
+        List {
+            Section {
+                ForEach(dataSource) { item in
+                    Text(item.name)
                 }
+            } footer: {
+                FooterView(dataSource: dataSource)
             }
         }
+    }
 
-        struct FooterView: View {
+    struct FooterView: View {
 
-            @ObservedObject var dataSource: ItemInfiniteDataSource
+        @ObservedObject var dataSource: ItemInfiniteDataSource
 
-            var body: some View {
-                HStack(spacing: 8) {
-                    Text("Products count: \(dataSource.items.count)")
-                    if dataSource.state == .loading {
-                        Text("🔄")
-                    } else {
-                        Text("✅")
-                    }
+        var body: some View {
+            HStack(spacing: 8) {
+                Text("Products count: \(dataSource.items.count)")
+                if dataSource.state == .loading {
+                    Text("🔄")
+                } else {
+                    Text("✅")
                 }
             }
         }
     }
+}
 
-    struct Item: Identifiable {
-        let name: String
-        var id: String { name }
-    }
-
+struct Item: Identifiable {
+    let name: String
+    var id: String { name }
 }
 
 #endif

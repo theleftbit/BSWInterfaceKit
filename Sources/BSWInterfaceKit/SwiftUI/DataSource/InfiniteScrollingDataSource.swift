@@ -6,7 +6,7 @@ import Combine
 /// As of iOS 18 and aligned releases, this is no longer recommended as
 /// there are cleaner alternatives like `InfiniteVerticalScrollView`
 @MainActor
-open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
+open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject, RandomAccessCollection {
     
     @Published public private(set) var items = [ListItem]()
     @Published public private(set) var state: State
@@ -51,15 +51,6 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         }
     }
     
-    public func loadMoreContentIfNeeded(currentItem item: ListItem) {
-        let subArray = items.suffix(5)
-        if subArray.contains(where: { $0.id == item.id }) {
-            Task {
-                try await loadMoreContent()
-            }
-        }
-    }
-    
     public func resetItemFecher(currentPage: Int, itemFetcher: @escaping ItemFetcher) async throws {
         self.items = []
         self.itemFetcher = itemFetcher
@@ -75,7 +66,40 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
             self.items = newItems
         })
     }
+    
+    /// MARK: RandomAccessCollection
 
+    nonisolated public var startIndex: Int {
+        MainActor.assumeIsolated {
+            items.startIndex
+        }
+    }
+    
+    nonisolated public var endIndex: Int {
+        MainActor.assumeIsolated {
+            items.endIndex
+        }
+    }
+    
+    nonisolated public func formIndex(after i: inout Int) {
+        MainActor.assumeIsolated {
+            i += 1
+            
+            let threshold: Int = 5
+            if i >= (items.count - threshold), case .canLoadMorePages = state {
+                Task {
+                    try await loadMoreContent()
+                }
+            }
+        }
+    }
+    
+    nonisolated public subscript(position: Int) -> ListItem {
+        MainActor.assumeIsolated {
+            items[position]
+        }
+    }
+    
     /// MARK: Private
     
     @MainActor
@@ -105,6 +129,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
             }
         }
     }
+    
 }
 
 #endif
