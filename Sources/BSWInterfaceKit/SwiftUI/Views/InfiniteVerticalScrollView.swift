@@ -8,9 +8,8 @@ import Combine
     @State
     var items: [Item] = Item.createItems()
     
-    let isUpwards = true
+    let isUpwards = false
 
-    
     struct Item: Identifiable {
         let name: String
         var id: String { name }
@@ -171,10 +170,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     
     public var body: some View {
         ScrollView(.vertical) {
-            if direction == .upwards, phase.isPaging {
-                ProgressView()
-            }
-            
             LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
                 ForEach(items) { item in
                     itemViewBuilder(item)
@@ -182,9 +177,11 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 }
             }
             .scrollTargetLayout()
-            
-            if direction == .downwards, phase.isPaging {
+        }
+        .safeAreaInset(edge: (direction == .upwards) ? .top : .bottom) {
+            if phase.isPaging {
                 ProgressView()
+                    .padding()
             }
         }
         .defaultScrollAnchor((direction == .downwards) ? .top : .bottom)
