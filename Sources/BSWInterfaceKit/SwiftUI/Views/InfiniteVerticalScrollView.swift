@@ -204,7 +204,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             /// https://developer.apple.com/documentation/swiftui/view/defaultscrollanchor(_:)
             /// https://developer.apple.com/documentation/swiftui/view/scrollposition(_:anchor:)
             /// Using only the iOS 18 version and this workaround seems to alleviate the issues
-            if visibleItemIDs.isEmpty {
+            if visibleItemIDs.isEmpty, redactionReasons.isEmpty {
                 scrollPosition.scrollTo(edge: (direction == .downwards) ? .top : .bottom)
             }
         }
