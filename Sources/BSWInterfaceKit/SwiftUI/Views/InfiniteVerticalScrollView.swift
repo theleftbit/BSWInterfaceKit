@@ -247,6 +247,20 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         }
 #endif
         .errorAlert(error: $error)
+        .onChange(of: items.map { $0.id }) { oldValue, newValue in
+            guard direction == .upwards,
+                  let newValueID = newValue.last,
+                  let oldValueID = oldValue.last,
+                  newValueID != oldValueID else {
+                return
+            }
+            Task { @MainActor in
+                try await Task.sleep(for: .seconds(0.3))
+                withAnimation(.default) {
+                    self.scrollPosition.scrollTo(id: newValueID, anchor: .bottom)
+                }
+            }
+        }
     }
     
     private var anchorItemID: Item.ID? {
