@@ -177,6 +177,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             LazyVStack(alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
                 ForEach(items) { item in
                     itemViewBuilder(item)
+                        .id(item.id)
                 }
             }
             .scrollTargetLayout()
