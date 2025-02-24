@@ -4,8 +4,9 @@ import SwiftUI
 @available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     AsyncButton {
-        try await Task.sleep(for: .seconds(1.5))
+        try await Task.sleep(for: .seconds(0.5))
         struct SomeError: Swift.Error {}
+//        throw SomeError()
     } label: {
         Label(
             title: { Text("Touch Me") },
@@ -18,8 +19,13 @@ import SwiftUI
     .font(.headline)
     .asyncButtonLoadingConfiguration(
         message: "Loading...",
-//              style: .inline(tint: .red)
-        style: .blocking(dimsBackground: true, successMessage: .init(message: "Succesfully Sent Message!"))
+//        style: .inline(tint: .red)
+
+        style: .blocking(
+            font: .callout,
+            dimsBackground: true,
+            successMessage: .init(message: "Done!")
+        )
     )
 }
 
@@ -45,7 +51,7 @@ public struct AsyncButton<Label: View>: View {
     }
     
     @ObservedObject
-    private var hudWrapper = HUDView.StateWrapper(isSuccess: false)
+    private var hudWrapper = SwiftUIHUD.StateWrapper(isSuccess: false)
 
     @State private var state: ButtonState = .idle
     @State private var error: Swift.Error?
@@ -110,7 +116,7 @@ public struct AsyncButton<Label: View>: View {
         if let hudVC, let hudConfiguration {
             await SwiftUIHUD.dismissHUDViewController(
                 hudVC: hudVC,
-                stateWrapper: hudWrapper,
+                stateWrapper: result.isError ? nil : hudWrapper,
                 configuration: hudConfiguration
             )
         }
@@ -157,7 +163,7 @@ public struct AsyncButton<Label: View>: View {
         return .init(kind: .buttonAction, id: operationKey)
     }
     
-    private var hudConfiguration: HUDView.Configuration? {
+    private var hudConfiguration: SwiftUIHUD.Configuration? {
         switch loadingConfiguration.style {
         case .blocking(let config):
             return .init(
@@ -278,13 +284,13 @@ private extension EnvironmentValues {
     @Entry var asyncButtonOperationIdentifierKey: String? = nil
 }
 
-private extension Swift.Result where Failure == Error {
-    init(catching body: () async throws -> Success) async {
-        do {
-            let result = try await body()
-            self = .success(result)
-        } catch {
-            self = .failure(error)
+private extension Swift.Result {
+    var isError: Bool {
+        switch self {
+        case .success:
+            return false
+        case .failure:
+            return true
         }
     }
 }

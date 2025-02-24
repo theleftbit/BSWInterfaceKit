@@ -2,13 +2,14 @@
 import SwiftUI
 
 #if canImport(UIKit.UIViewController)
-
 import UIKit
+#endif
 
+@MainActor
 enum SwiftUIHUD {
     
-    @MainActor
-    static func presentHUDViewController(_ stateWrapper: HUDView.StateWrapper? = nil, configuration: HUDView.Configuration = .init()) async -> UIViewController? {
+    #if canImport(UIKit.UIViewController)
+    static func presentHUDViewController(_ stateWrapper: StateWrapper? = nil, configuration: Configuration = .init()) async -> UIViewController? {
         guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let rootVC = windowScene.keyWindow?.visibleViewController else { return nil }
         let ___hudVC = UIHostingController(
@@ -26,23 +27,19 @@ enum SwiftUIHUD {
         return ___hudVC
     }
     
-    @MainActor
-    static func dismissHUDViewController(hudVC: UIViewController?, stateWrapper: HUDView.StateWrapper? = nil, configuration: HUDView.Configuration = .init()) async {
-        guard let successMessage = configuration.successMessage else {
-            await hudVC?.dismiss(animated: true)
+    static func dismissHUDViewController(hudVC: UIViewController, stateWrapper: StateWrapper? = nil, configuration: Configuration = .init()) async {
+        guard let successMessage = configuration.successMessage, let stateWrapper else {
+            await hudVC.dismiss(animated: true)
             return
         }
         withAnimation {
-            stateWrapper?.isSuccess = true
+            stateWrapper.isSuccess = true
         }
         try? await Task.sleep(nanoseconds: UInt64(successMessage.timeInterval) * 1_000_000_000)
-        await hudVC?.dismiss(animated: true)
-        stateWrapper?.isSuccess = false
+        await hudVC.dismiss(animated: true)
+        stateWrapper.isSuccess = false
     }
-}
-#endif
-
-struct HUDView: View {
+    #endif
     
     class StateWrapper: ObservableObject {
         init(isSuccess: Bool) {
@@ -77,6 +74,13 @@ struct HUDView: View {
             let timeInterval: TimeInterval
         }
     }
+
+}
+
+private struct HUDView: View {
+
+    typealias StateWrapper = SwiftUIHUD.StateWrapper
+    typealias Configuration = SwiftUIHUD.Configuration
 
     @ObservedObject
     var stateWrapper: StateWrapper
