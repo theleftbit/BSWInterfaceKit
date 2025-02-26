@@ -112,7 +112,7 @@ public struct PhotoView: View {
                 }
             }
             .task {
-                self.decodedImage = image.extractSubject()
+                self.decodedImage = await image.extractSubject()
             }
         }
     }
@@ -170,11 +170,11 @@ import CoreImage.CIFilterBuiltins
 private extension UIImage {
     
 #if targetEnvironment(simulator)
-    nonisolated func extractSubject() -> UIImage? {
+    nonisolated func extractSubject() async -> UIImage? {
         self
     }
 #else
-    nonisolated func extractSubject() -> UIImage? {
+    nonisolated func extractSubject() async -> UIImage? {
         guard let inputImage = CIImage(image: self) else { return nil }
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(ciImage: inputImage)
