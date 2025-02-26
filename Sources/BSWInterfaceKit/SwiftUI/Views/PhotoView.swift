@@ -20,15 +20,62 @@ public struct PhotoView: View {
     let configuration: Configuration
     @Environment(\.redactionReasons) var reasons: RedactionReasons
     
+    @State
+    var image: Image?
+    
     public var body: some View {
         Group {
             if shouldShowPlaceholder {
                 placeholder
             } else {
-                photoView
+                VStack {
+                    if let image {
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    } else {
+                        placeholder
+                    }
+                }
             }
         }
         .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+        .onAppear() {
+            processImage()
+        }
+    }
+    
+    @MainActor
+    private func processImage() {
+        switch photo.kind {
+        case .url(let url, _):
+            Task.detached(priority: .userInitiated) {
+                guard let apiImage = try? await ImagePipeline.shared.image(for: url) else { return }
+                if #available(iOS 17.0, *),
+                   configuration.shouldRemoveBackground,
+                   let uiImage = apiImage.extractSubject() {
+                    await setImage(uiImage)
+                } else {
+                    await setImage(apiImage)
+                }
+            }
+        case .image(let uiImage):
+            #if canImport(UIKit)
+            image = Image(uiImage: uiImage)
+            #elseif canImport(AppKit)
+            image = Image(nsImage: uiImage)
+            #endif
+        default:
+            break
+        }
+    }
+    
+    private func setImage(_ uiImage: UIImage) {
+        Task {
+            await MainActor.run {
+                image = Image(uiImage: uiImage)
+            }
+        }
     }
     
     private var shouldShowPlaceholder: Bool {
@@ -44,38 +91,6 @@ public struct PhotoView: View {
     @ViewBuilder
     private var placeholder: some View {
         configuration.placeholder.body()
-    }
-    
-    @ViewBuilder
-    @MainActor
-    private var photoView: some View {
-        switch photo.kind {
-        case .url(let url, _):
-            LazyImage(url: url, transaction: .init(animation: .default)) { state in
-                if #available(iOS 17.0, *),
-                   configuration.shouldRemoveBackground,
-                   let uiImage = state.imageContainer?.extractSubject() {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                }
-                else if let image = state.image {
-                    image
-                        .resizable()
-                }
-                else {
-                    placeholder
-                }
-            }
-        case .image(let image):
-            #if canImport(UIKit)
-            Image(uiImage: image)
-                .resizable()
-            #elseif canImport(AppKit)
-            Image(nsImage: image)
-            #endif
-        default:
-            placeholder
-        }
     }
     
     var isRunningTests: Bool {
@@ -132,10 +147,10 @@ extension PhotoView {
 }
 
 @available(iOS 17.0, *)
-private extension ImageContainer {
+private extension PlatformImage {
     
     func extractSubject() -> UIImage? {
-        guard let inputImage = CIImage(image: self.image) else { return nil }
+        guard let inputImage = CIImage(image: self) else { return nil }
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(ciImage: inputImage)
         
