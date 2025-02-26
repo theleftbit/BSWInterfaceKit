@@ -4,9 +4,19 @@
 
 import SwiftUI
 import NukeUI; import Nuke
-import Vision
-import CoreImage
-import CoreImage.CIFilterBuiltins
+
+#Preview {
+    PhotoView(
+        photo: .init(url: URL(string: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png")),
+        configuration: .init(
+            placeholder: .init(shape: .rectangle),
+            aspectRatio: nil,
+            contentMode: .fit,
+            shouldRemoveBackground: false
+        )
+    )
+    .frame(width: 300)
+}
 
 /// Displays a `Photo` in `SwiftUI`
 public struct PhotoView: View {
@@ -21,14 +31,17 @@ public struct PhotoView: View {
     @Environment(\.redactionReasons) var reasons: RedactionReasons
     
     public var body: some View {
-        Group {
-            if shouldShowPlaceholder {
-                placeholder
-            } else {
-                photoView
-            }
+        contentView
+            .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        if shouldShowPlaceholder {
+            placeholder
+        } else {
+            photoView
         }
-        .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
     }
     
     private var shouldShowPlaceholder: Bool {
@@ -52,17 +65,12 @@ public struct PhotoView: View {
         switch photo.kind {
         case .url(let url, _):
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
-                if #available(iOS 17.0, *),
-                   configuration.shouldRemoveBackground,
-                   let uiImage = state.imageContainer?.extractSubject() {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                }
-                else if let image = state.image {
+                if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
+                    RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
+                } else if let image = state.image {
                     image
                         .resizable()
-                }
-                else {
+                } else {
                     placeholder
                 }
             }
@@ -84,6 +92,29 @@ public struct PhotoView: View {
         #else
         false
         #endif
+    }
+    
+    @available(iOS 17, *)
+    struct RemoveBackgroundView: View {
+        
+        let image: UIImage
+        let placeholder: PhotoView.Configuration.Placeholder
+        
+        @State var decodedImage: UIImage?
+        
+        var body: some View {
+            Group {
+                if let decodedImage {
+                    Image(uiImage: decodedImage)
+                        .resizable()
+                } else {
+                    placeholder.body()
+                }
+            }
+            .task {
+                self.decodedImage = image.extractSubject()
+            }
+        }
     }
 }
 
@@ -131,11 +162,20 @@ extension PhotoView {
     }
 }
 
+import Vision
+import CoreImage
+import CoreImage.CIFilterBuiltins
+
 @available(iOS 17.0, *)
-private extension ImageContainer {
+private extension UIImage {
     
-    func extractSubject() -> UIImage? {
-        guard let inputImage = CIImage(image: self.image) else { return nil }
+#if targetEnvironment(simulator)
+    nonisolated func extractSubject() -> UIImage? {
+        self
+    }
+#else
+    nonisolated func extractSubject() -> UIImage? {
+        guard let inputImage = CIImage(image: self) else { return nil }
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(ciImage: inputImage)
         
@@ -163,4 +203,5 @@ private extension ImageContainer {
             return nil
         }
     }
+  #endif
 }
