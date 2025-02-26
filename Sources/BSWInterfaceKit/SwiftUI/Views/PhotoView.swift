@@ -65,6 +65,7 @@ public struct PhotoView: View {
         switch photo.kind {
         case .url(let url, _):
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
+                #if canImport(UIKit)
                 if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
                     RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
                 } else if let image = state.image {
@@ -73,6 +74,14 @@ public struct PhotoView: View {
                 } else {
                     placeholder
                 }
+                #else
+                if let image = state.image {
+                    image
+                        .resizable()
+                } else {
+                    placeholder
+                }
+                #endif
             }
         case .image(let image):
             #if canImport(UIKit)
@@ -93,6 +102,10 @@ public struct PhotoView: View {
         false
         #endif
     }
+}
+
+#if canImport(UIKit)
+private extension PhotoView {
     
     @available(iOS 17, *)
     struct RemoveBackgroundView: View {
@@ -117,6 +130,51 @@ public struct PhotoView: View {
         }
     }
 }
+
+import Vision
+import CoreImage
+import CoreImage.CIFilterBuiltins
+
+@available(iOS 17.0, *)
+private extension UIImage {
+    
+    #if targetEnvironment(simulator)
+    nonisolated func extractSubject() async -> UIImage? {
+        self
+    }
+    #else
+    nonisolated func extractSubject() async -> UIImage? {
+        guard let inputImage = CIImage(image: self) else { return nil }
+        let request = VNGenerateForegroundInstanceMaskRequest()
+        let handler = VNImageRequestHandler(ciImage: inputImage)
+        
+        do {
+            try handler.perform([request])
+            guard let result = request.results?.first,
+                  let mask = try? result.generateScaledMaskForImage(
+                    forInstances: result.allInstances,
+                    from: handler
+                  ) else {
+                return nil
+            }
+            let maskImage = CIImage(cvPixelBuffer: mask)
+            let filter = CIFilter.blendWithMask()
+            filter.inputImage = inputImage
+            filter.maskImage = maskImage
+            filter.backgroundImage = CIImage.empty()
+            
+            guard let outputImage = filter.outputImage,
+                  let cgImage = CIContext(options: nil).createCGImage(outputImage, from: outputImage.extent)
+            else { return nil }
+            
+            return UIImage(cgImage: cgImage)
+        } catch {
+            return nil
+        }
+    }
+    #endif
+}
+#endif
 
 extension PhotoView {
         
@@ -160,48 +218,4 @@ extension PhotoView {
             }
         }
     }
-}
-
-import Vision
-import CoreImage
-import CoreImage.CIFilterBuiltins
-
-@available(iOS 17.0, *)
-private extension UIImage {
-    
-#if targetEnvironment(simulator)
-    nonisolated func extractSubject() async -> UIImage? {
-        self
-    }
-#else
-    nonisolated func extractSubject() async -> UIImage? {
-        guard let inputImage = CIImage(image: self) else { return nil }
-        let request = VNGenerateForegroundInstanceMaskRequest()
-        let handler = VNImageRequestHandler(ciImage: inputImage)
-        
-        do {
-            try handler.perform([request])
-            guard let result = request.results?.first,
-                  let mask = try? result.generateScaledMaskForImage(
-                    forInstances: result.allInstances,
-                    from: handler
-                  ) else {
-                return nil
-            }
-            let maskImage = CIImage(cvPixelBuffer: mask)
-            let filter = CIFilter.blendWithMask()
-            filter.inputImage = inputImage
-            filter.maskImage = maskImage
-            filter.backgroundImage = CIImage.empty()
-            
-            guard let outputImage = filter.outputImage,
-                  let cgImage = CIContext(options: nil).createCGImage(outputImage, from: outputImage.extent)
-            else { return nil }
-            
-            return UIImage(cgImage: cgImage)
-        } catch {
-            return nil
-        }
-    }
-  #endif
 }
