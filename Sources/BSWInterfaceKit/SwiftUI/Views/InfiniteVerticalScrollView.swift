@@ -186,6 +186,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 ProgressView()
             }
         }
+        .defaultScrollAnchor(.bottom, for: .initialOffset)
         .scrollPosition($scrollPosition, anchor: (direction == .downwards) ? .bottom : .top)
         .onScrollTargetVisibilityChange(idType: Item.ID.self, threshold: 0.9) { ids in
             if redactionReasons.contains(.placeholder) { return }
@@ -199,16 +200,6 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             if let anchorItemID, newValue.contains(anchorItemID), phase == .idle, isScrolling {
                 let newPhase = Phase.paging(fromItem: anchorItemID)
                 self.phase = newPhase
-            }
-        }
-        .onAppear {
-            /// The first time we're shown on screen, scroll to where we should
-            /// We had a _lot_ of weird issues because we were using these two modifiers:
-            /// https://developer.apple.com/documentation/swiftui/view/defaultscrollanchor(_:)
-            /// https://developer.apple.com/documentation/swiftui/view/scrollposition(_:anchor:)
-            /// Using only the iOS 18 version and this workaround seems to alleviate the issues
-            if visibleItemIDs.isEmpty, redactionReasons.isEmpty {
-                scrollPosition.scrollTo(edge: (direction == .downwards) ? .top : .bottom)
             }
         }
         .task(id: phase) {
