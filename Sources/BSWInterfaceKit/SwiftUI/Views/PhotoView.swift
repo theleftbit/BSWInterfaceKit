@@ -3,7 +3,20 @@
 //
 
 import SwiftUI
-import NukeUI
+import NukeUI; import Nuke
+
+#Preview {
+    PhotoView(
+        photo: .init(url: URL(string: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png")),
+        configuration: .init(
+            placeholder: .init(shape: .rectangle),
+            aspectRatio: nil,
+            contentMode: .fit,
+            shouldRemoveBackground: false
+        )
+    )
+    .frame(width: 300)
+}
 
 /// Displays a `Photo` in `SwiftUI`
 public struct PhotoView: View {
@@ -18,14 +31,17 @@ public struct PhotoView: View {
     @Environment(\.redactionReasons) var reasons: RedactionReasons
     
     public var body: some View {
-        Group {
-            if shouldShowPlaceholder {
-                placeholder
-            } else {
-                photoView
-            }
+        contentView
+            .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        if shouldShowPlaceholder {
+            placeholder
+        } else {
+            photoView
         }
-        .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
     }
     
     private var shouldShowPlaceholder: Bool {
@@ -49,12 +65,23 @@ public struct PhotoView: View {
         switch photo.kind {
         case .url(let url, _):
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
+                #if canImport(UIKit)
+                if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
+                    RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
+                } else if let image = state.image {
+                    image
+                        .resizable()
+                } else {
+                    placeholder
+                }
+                #else
                 if let image = state.image {
                     image
                         .resizable()
                 } else {
                     placeholder
                 }
+                #endif
             }
         case .image(let image):
             #if canImport(UIKit)
@@ -77,17 +104,91 @@ public struct PhotoView: View {
     }
 }
 
+#if canImport(UIKit)
+private extension PhotoView {
+    
+    @available(iOS 17, *)
+    struct RemoveBackgroundView: View {
+        
+        let image: UIImage
+        let placeholder: PhotoView.Configuration.Placeholder
+        
+        @State var decodedImage: UIImage?
+        
+        var body: some View {
+            Group {
+                if let decodedImage {
+                    Image(uiImage: decodedImage)
+                        .resizable()
+                } else {
+                    placeholder.body()
+                }
+            }
+            .task {
+                self.decodedImage = await image.extractSubject()
+            }
+        }
+    }
+}
+
+import Vision
+import CoreImage
+import CoreImage.CIFilterBuiltins
+
+@available(iOS 17.0, *)
+private extension UIImage {
+    
+    #if targetEnvironment(simulator)
+    nonisolated func extractSubject() async -> UIImage? {
+        self
+    }
+    #else
+    nonisolated func extractSubject() async -> UIImage? {
+        guard let inputImage = CIImage(image: self) else { return nil }
+        let request = VNGenerateForegroundInstanceMaskRequest()
+        let handler = VNImageRequestHandler(ciImage: inputImage)
+        
+        do {
+            try handler.perform([request])
+            guard let result = request.results?.first,
+                  let mask = try? result.generateScaledMaskForImage(
+                    forInstances: result.allInstances,
+                    from: handler
+                  ) else {
+                return nil
+            }
+            let maskImage = CIImage(cvPixelBuffer: mask)
+            let filter = CIFilter.blendWithMask()
+            filter.inputImage = inputImage
+            filter.maskImage = maskImage
+            filter.backgroundImage = CIImage.empty()
+            
+            guard let outputImage = filter.outputImage,
+                  let cgImage = CIContext(options: nil).createCGImage(outputImage, from: outputImage.extent)
+            else { return nil }
+            
+            return UIImage(cgImage: cgImage)
+        } catch {
+            return nil
+        }
+    }
+    #endif
+}
+#endif
+
 extension PhotoView {
         
     public struct Configuration: Sendable {
         let placeholder: Placeholder
         let aspectRatio: CGFloat?
         let contentMode: ContentMode
+        let shouldRemoveBackground: Bool
         
-        public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit) {
+        public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit, shouldRemoveBackground: Bool = false) {
             self.placeholder = placeholder
             self.aspectRatio = aspectRatio
             self.contentMode = contentMode
+            self.shouldRemoveBackground = shouldRemoveBackground
         }
         
         public struct Placeholder: Sendable {
