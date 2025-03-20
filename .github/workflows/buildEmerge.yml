@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Build XCFramework
-    runs-on: ios
+    runs-on: mobile
     env:
       PRODUCT_NAME: BSWInterfaceKit
 

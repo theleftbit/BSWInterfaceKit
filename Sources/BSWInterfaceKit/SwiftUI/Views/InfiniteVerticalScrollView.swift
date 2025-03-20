@@ -186,6 +186,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 ProgressView()
             }
         }
+        .defaultScrollAnchor(.bottom, for: .initialOffset)
         .scrollPosition($scrollPosition, anchor: (direction == .downwards) ? .bottom : .top)
         .onScrollTargetVisibilityChange(idType: Item.ID.self, threshold: 0.9) { ids in
             if redactionReasons.contains(.placeholder) { return }
@@ -193,7 +194,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         }
         .scrollDismissesKeyboard(.interactively)
         .onScrollPhaseChange { _, newPhase in
-            isScrolling = (newPhase != .idle)
+            self.isScrolling = (newPhase != .idle)
         }
         .onChange(of: visibleItemIDs) { _, newValue in
             if let anchorItemID, newValue.contains(anchorItemID), phase == .idle, isScrolling {
@@ -201,42 +202,8 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 self.phase = newPhase
             }
         }
-        .onAppear {
-            /// The first time we're shown on screen, scroll to where we should
-            /// We had a _lot_ of weird issues because we were using these two modifiers:
-            /// https://developer.apple.com/documentation/swiftui/view/defaultscrollanchor(_:)
-            /// https://developer.apple.com/documentation/swiftui/view/scrollposition(_:anchor:)
-            /// Using only the iOS 18 version and this workaround seems to alleviate the issues
-            if visibleItemIDs.isEmpty, redactionReasons.isEmpty {
-                scrollPosition.scrollTo(edge: (direction == .downwards) ? .top : .bottom)
-            }
-        }
         .task(id: phase) {
-            if redactionReasons.contains(.placeholder) { return }
-            try? await Task.sleep(for: .seconds(0.15))
-            guard case let .paging(itemID) = phase else {
-                return
-            }
-            do {
-                let (newItems, areThereMorePages) = try await nextPageFetcher(itemID)
-                withAnimation {
-                    self.phase = areThereMorePages ? .idle : .noMorePages
-                } completion: {
-                    switch direction {
-                    case .downwards:
-                        self.items.append(contentsOf: newItems)
-                    case .upwards:
-                        self.items.insert(contentsOf: newItems, at: 0)
-                    }
-                    self.scrollPosition.scrollTo(id: itemID, anchor: (direction == .downwards) ? .bottom : .top)
-                }
-            } catch {
-                self.phase = .idle
-                if error is CancellationError {
-                    return
-                }
-                self.error = error
-            }
+            await fetchData()
         }
 #if canImport(UIKit.UIResponder)
         .onReceive(keyboardPublisher) { newIsKeyboardVisible in
@@ -264,6 +231,34 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         }
     }
     
+    private func fetchData() async {
+        if redactionReasons.contains(.placeholder) { return }
+        try? await Task.sleep(for: .seconds(0.15))
+        guard case let .paging(itemID) = phase else {
+            return
+        }
+        do {
+            let (newItems, areThereMorePages) = try await nextPageFetcher(itemID)
+            withAnimation {
+                self.phase = areThereMorePages ? .idle : .noMorePages
+            } completion: {
+                switch direction {
+                case .downwards:
+                    self.items.append(contentsOf: newItems)
+                case .upwards:
+                    self.items.insert(contentsOf: newItems, at: 0)
+                }
+                self.scrollPosition.scrollTo(id: itemID, anchor: (direction == .downwards) ? .bottom : .top)
+            }
+        } catch {
+            self.phase = .idle
+            if error is CancellationError {
+                return
+            }
+            self.error = error
+        }
+    }
+    
     private var anchorItemID: Item.ID? {
         switch direction {
         case .downwards:
@@ -274,7 +269,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     }
     
 #if canImport(UIKit.UIResponder)
-    var keyboardPublisher: AnyPublisher<Bool, Never> {
+    private var keyboardPublisher: AnyPublisher<Bool, Never> {
         Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardDidShowNotification)
