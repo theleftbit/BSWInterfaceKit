@@ -59,6 +59,9 @@ public struct PhotoView: View {
         configuration.placeholder.body()
     }
     
+    @Environment(\.colorScheme)
+    private var colorScheme
+    
     @ViewBuilder
     @MainActor
     private var photoView: some View {
@@ -66,8 +69,14 @@ public struct PhotoView: View {
         case .url(let url, _):
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
                 #if canImport(UIKit)
-                if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
-                    RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
+                if #available(iOS 17.0, *),
+                   colorScheme == .dark,
+                   configuration.shouldRemoveBackground,
+                   let uiImage = state.imageContainer?.image {
+                    RemoveBackgroundView(
+                        image: uiImage,
+                        placeholder: configuration.placeholder
+                    )
                 } else if let image = state.image {
                     image
                         .resizable()
