@@ -6,11 +6,6 @@ import UIKit
 class AvatarViewTests: BSWSnapshotTest {
 
     @Test
-    func error() {
-        #expect(Bool(false))
-    }
-
-    @Test
     func layoutHuge() {
         verifyAvatarForSize(.huge)
     }
