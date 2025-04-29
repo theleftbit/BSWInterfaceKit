@@ -1,4 +1,4 @@
-import SkipFuseUI
+import SwiftUI
 import Combine
 
 #if canImport(Darwin)
