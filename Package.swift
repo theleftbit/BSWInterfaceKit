@@ -20,18 +20,24 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.4"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", branch: "bump-skip"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.8.0"),
+        
+        .package(url: "https://source.skip.tools/skip.git", from: "1.5.5"),
+        .package(url: "https://source.skip.tools/skip-fuse-ui.git", "0.0.0"..<"2.0.0")
+
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
         .target(
             name: "BSWInterfaceKit",
             dependencies: [
+                .product(name: "SkipFuseUI", package: "skip-fuse-ui"),
                 .product(name: "Nuke", package: "Nuke"),
                 .product(name: "NukeExtensions", package: "Nuke"),
                 .product(name: "NukeUI", package: "Nuke"),
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
-            ]
+            ],
+            plugins: [.plugin(name: "skipstone", package: "skip")]
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",

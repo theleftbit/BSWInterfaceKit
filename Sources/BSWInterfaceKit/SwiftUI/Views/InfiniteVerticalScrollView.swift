@@ -1,6 +1,7 @@
-import SwiftUI
+import SkipFuseUI
 import Combine
 
+#if canImport(Darwin)
 @available(iOS 18, macOS 15, watchOS 11, *)
 #Preview {
     
@@ -96,6 +97,7 @@ import Combine
         .navigationTitle("Hello")
     }
 }
+#endif
 
 @available(iOS 18, macOS 15, watchOS 11, *)
 public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView: View>: View where Item.ID : Sendable {

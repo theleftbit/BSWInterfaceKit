@@ -2,7 +2,7 @@
 //  Created by Michele Restuccia on 20/6/22.
 //
 
-import SwiftUI
+import SkipFuseUI
 import NukeUI; import Nuke
 
 #Preview {

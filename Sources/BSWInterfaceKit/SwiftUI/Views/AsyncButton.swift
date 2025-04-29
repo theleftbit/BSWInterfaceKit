@@ -1,6 +1,7 @@
 
-import SwiftUI
+import SkipFuseUI
 
+#if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     AsyncButton {
@@ -28,6 +29,7 @@ import SwiftUI
         )
     )
 }
+#endif
 
 /// A button that performs an `async throws` operation. It will show an alert in case the operation fails.
 ///
@@ -45,7 +47,7 @@ public struct AsyncButton<Label: View>: View {
     public let action: Action
     public let label: Label
     
-    private enum ButtonState: Equatable {
+    enum ButtonState: Equatable {
         case idle
         case loading
     }
@@ -53,8 +55,8 @@ public struct AsyncButton<Label: View>: View {
     @ObservedObject
     private var hudWrapper = SwiftUIHUD.StateWrapper(isSuccess: false)
 
-    @State private var state: ButtonState = .idle
-    @State private var error: Swift.Error?
+    @State var state: ButtonState = .idle
+    @State var error: Swift.Error?
     @Environment(\.asyncButtonLoadingConfiguration) var loadingConfiguration
     
     public var body: some View {
@@ -144,9 +146,9 @@ public struct AsyncButton<Label: View>: View {
                     case .blocking: return nil
                     }
                 }())
-#if canImport(AppKit)
+                #if canImport(AppKit)
                 .scaleEffect(x: 0.5, y: 0.5)
-#endif
+                #endif
             if let loadingMessage = loadingConfiguration.message {
                 Text(loadingMessage)
             }
@@ -154,7 +156,7 @@ public struct AsyncButton<Label: View>: View {
     }
     
     @Environment(\.asyncButtonOperationIdentifierKey)
-    private var operationKey
+    var operationKey
     
     private var operation: AsyncOperationTracer.Operation? {
         guard let operationKey else {

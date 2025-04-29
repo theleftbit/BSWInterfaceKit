@@ -1,6 +1,5 @@
-#if canImport(SwiftUI)
 
-import SwiftUI
+import SkipFuseUI
 
 struct RecipeListView: View, PlaceholderDataProvider {
     
@@ -18,6 +17,7 @@ struct RecipeListView: View, PlaceholderDataProvider {
     }
 }
 
+#if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     AsyncView(id: "some-id", dataGenerator: {
@@ -27,6 +27,7 @@ struct RecipeListView: View, PlaceholderDataProvider {
         RecipeListView(recipes: $0)
     })
 }
+#endif
 
 /// A SwiftUI View with an async state.
 ///
@@ -84,7 +85,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @State private var currentOperation: Operation
+    @State var currentOperation: Operation
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
@@ -136,7 +137,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     
     //MARK: Private
     
-    @Environment(\.redactionReasons) private var reasons
+    @Environment(\.redactionReasons) var reasons
     @Environment(\.debounceOperationForMilliseconds) var debounceOperationForMilliseconds
 
     private func fetchData() {
@@ -336,5 +337,3 @@ private extension AsyncView.Operation {
         }
     }
 }
-
-#endif
