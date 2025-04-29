@@ -2,6 +2,7 @@
 //  UIViewController+Utilities.m
 //  Created by Pierluigi Cifani on 18/04/2019.
 //
+#ifdef __APPLE__
 
 #include <TargetConditionals.h>
 
@@ -89,4 +90,5 @@
 
 @end
 
+#endif
 #endif

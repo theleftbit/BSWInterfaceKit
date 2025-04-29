@@ -2,6 +2,7 @@
 //  Created by Pierluigi Cifani on 02/08/15.
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
+#ifdef __APPLE__
 
 #include <TargetConditionals.h>
 
@@ -38,4 +39,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
+#endif
 #endif
