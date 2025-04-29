@@ -63,7 +63,10 @@ private struct PerformBlockingModifier: ViewModifier {
     
     @State
     private var taskError: Error? = nil
-    
+
+    @State
+    private var hudState = HUDState.none
+
     func body(content: Content) -> some View {
         content
             .task(id: readyToPerform) {
@@ -84,21 +87,18 @@ private struct PerformBlockingModifier: ViewModifier {
                         return
                     }
                 }
-                async let ___vc = SwiftUIHUD.presentHUDViewController()
                 #endif
+                self.hudState = .loading()
+
                 do {
                     try await task()
                 } catch {
                     taskError = error
                 }
-                #if canImport(UIKit.UIViewController)
-                let vc = await ___vc
-                if let vc {
-                    await SwiftUIHUD.dismissHUDViewController(hudVC: vc)
-                }
-                #endif
+                self.hudState = .none
             }
             .errorAlert(error: $taskError)
+            .hud(hudState: $hudState)
     }
 }
 
@@ -114,6 +114,9 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     @State
     private var taskError: Error? = nil
     
+    @State
+    private var hudState = HUDState.none
+
     func body(content: Content) -> some View {
         content
             .task(id: value) {
@@ -135,21 +138,18 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
                         return
                     }
                 }
-                async let ___vc = SwiftUIHUD.presentHUDViewController()
                 #endif
+                self.hudState = .loading()
+
                 do {
                     try await task(value)
                 } catch {
                     taskError = error
                 }
-                #if canImport(UIKit.UIViewController)
-                let vc = await ___vc
-                if let vc {
-                    await SwiftUIHUD.dismissHUDViewController(hudVC: vc)
-                }
-                #endif
+                self.hudState = .none
             }
             .errorAlert(error: $taskError)
+            .hud(hudState: $hudState)
     }
 }
 
