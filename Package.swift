@@ -30,10 +30,11 @@ let package = Package(
         .target(
             name: "BSWInterfaceKit",
             dependencies: [
+                .product(name: "Nuke", package: "Nuke", condition: .when(platforms: [.iOS, .macOS])),
+                .product(name: "NukeExtensions", package: "Nuke", condition: .when(platforms: [.iOS, .macOS])),
+                .product(name: "NukeUI", package: "Nuke", condition: .when(platforms: [.iOS, .macOS])),
+
                 .product(name: "SkipFuseUI", package: "skip-fuse-ui"),
-                .product(name: "Nuke", package: "Nuke"),
-                .product(name: "NukeExtensions", package: "Nuke"),
-                .product(name: "NukeUI", package: "Nuke"),
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
             ],

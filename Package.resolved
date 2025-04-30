@@ -1,5 +1,5 @@
 {
-  "originHash" : "dc8c9394b4ac0053f19046642d0a58af4d9739b10e055677551d547494f699dc",
+  "originHash" : "b7b3652229e80c0147426f05cb420873391a458cb1adb7592ff203468ab3e579",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -80,15 +80,6 @@
       "state" : {
         "revision" : "5b56035f7d45711f107e6482ff258ed614d8c51e",
         "version" : "0.13.0"
-      }
-    },
-    {
-      "identity" : "skip-keychain",
-      "kind" : "remoteSourceControl",
-      "location" : "https://source.skip.tools/skip-keychain.git",
-      "state" : {
-        "revision" : "6789e9171d2fee8f2932e9685d94bd8daf6eb7fc",
-        "version" : "0.3.0"
       }
     },
     {

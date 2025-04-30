@@ -1,5 +1,5 @@
 
-import SwiftUI
+import SkipFuseUI
 
 #if canImport(UIKit.UIViewController)
 
@@ -15,8 +15,6 @@ public extension SwiftUI.View {
 
 #endif
 
-import SwiftUI
-
 public extension View {
     func errorAlert(error: Binding<Error?>) -> some View {
         modifier(ErrorAwareView(errorBinding: error))
@@ -27,7 +25,7 @@ public extension View {
     }
 }
 
-private struct ErrorAwareView: ViewModifier {
+struct ErrorAwareView: ViewModifier {
     
     let errorBinding: Binding<Error?>
     

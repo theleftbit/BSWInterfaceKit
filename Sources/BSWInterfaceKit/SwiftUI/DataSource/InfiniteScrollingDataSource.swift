@@ -1,4 +1,4 @@
-#if canImport(SwiftUI)
+#if canImport(Darwin)
 
 import SwiftUI
 import Combine
@@ -106,5 +106,4 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         }
     }
 }
-
 #endif

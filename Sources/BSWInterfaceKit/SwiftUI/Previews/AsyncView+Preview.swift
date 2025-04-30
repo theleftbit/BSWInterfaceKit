@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 
 import SwiftUI
 
@@ -64,3 +65,4 @@ import SwiftUI
         .border(Color.red)
     }
 }
+#endif
