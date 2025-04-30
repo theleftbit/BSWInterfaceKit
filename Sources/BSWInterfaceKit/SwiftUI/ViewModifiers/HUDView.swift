@@ -99,7 +99,7 @@ struct HUDModifier: ViewModifier {
                         showFullScreenCover = true
                     }
                 case .none:
-                    if #available(iOS 17.0, *) {
+                    if #available(iOS 17.0, macOS 14.0, *) {
                         withAnimation(completionCriteria: .removed) {
                             animatedValue = false
                         } completion: {
