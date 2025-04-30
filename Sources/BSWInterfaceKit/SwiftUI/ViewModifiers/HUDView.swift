@@ -6,23 +6,27 @@ import SwiftUI
     @State
     var state = HUDState.none
     
-    AsyncButton {
-        state = .loading("Loading...")
-        try await Task.sleep(for: .seconds(3))
-        state = .success("Success!")
-        try await Task.sleep(for: .seconds(3))
-        state = .none
-    } label: {
-        Label(
-            title: { Text("Let's go") },
-            icon: { Image(systemName: "42.circle") }
-        )
-        .frame(maxWidth: .infinity)
+    VStack {
+        Spacer()
+        AsyncButton {
+            state = .loading("Loading...")
+            try await Task.sleep(for: .seconds(1))
+            state = .success("Success!")
+            try await Task.sleep(for: .seconds(1))
+            state = .none
+        } label: {
+            Label(
+                title: { Text("Let's go") },
+                icon: { Image(systemName: "42.circle") }
+            )
+            .frame(maxWidth: .infinity)
+        }
+        .padding()
+        .font(.headline)
+        .buttonStyle(BorderedProminentButtonStyle())
+        .hud(hudState: $state, configuration: .init(dimsBackground: true))
+
     }
-    .padding()
-    .font(.headline)
-    .buttonStyle(BorderedProminentButtonStyle())
-    .hud(hudState: $state, configuration: .init(dimsBackground: true))
 }
 
 public extension View {
@@ -56,29 +60,74 @@ struct HUDModifier: ViewModifier {
     var hudState: HUDState
 
     let configuration: HUDConfiguration
+
+    @State
+    var showFullScreenCover = false
     
+    @State
+    var animatedValue = false
+
+    @Environment(\.colorScheme)
+    var colorScheme
+
     func body(content: Content) -> some View {
-        ZStack {
-            content
-
-            if hudState != .none {
-                ZStack {
-                    if configuration.dimsBackground {
-                        Color.black
-                            .opacity(0.2)
-                            .ignoresSafeArea()
-                            .transition(.opacity)
+        content
+            .fullScreenCover(isPresented: $showFullScreenCover) {
+                HUDView(state: hudState)
+                    .font(configuration.font)
+                    .opacity(animatedValue ? 1 : 0)
+                    .backwards_presentationBackground {
+                        if configuration.dimsBackground {
+                            backgroundColor
+                                .opacity(animatedValue ? 0.25 : 0)
+                        }
                     }
-
-                    HUDView(state: hudState)
-                        .transition(.opacity)
-                        .font(configuration.font)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
+                    .preferredColorScheme(.light)
+                    .task {
+                        try? await Task.sleep(for: .seconds(0.1))
+                        withAnimation {
+                            animatedValue = true
+                        }
+                    }
             }
-        }
-        .animation(.easeInOut(duration: 0.3), value: hudState)
+            .onChange(of: hudState) { newValue in
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                switch newValue {
+                case .loading:
+                    withTransaction(transaction) {
+                        showFullScreenCover = true
+                    }
+                case .none:
+                    if #available(iOS 17.0, *) {
+                        withAnimation(completionCriteria: .removed) {
+                            animatedValue = false
+                        } completion: {
+                            withTransaction(transaction) {
+                                showFullScreenCover = false
+                            }
+                        }
+                    } else {
+                        let duration: TimeInterval = 0.2
+                        let animation: Animation = .easeOut(duration: duration)
+                        withAnimation(animation) {
+                            animatedValue = false
+                        }
+                        Task {
+                            try await Task.sleep(for: .seconds(duration))
+                            withTransaction(transaction) {
+                                showFullScreenCover = false
+                            }
+                        }
+                    }
+                case .success:
+                    break
+                }
+            }
+    }
+    
+    var backgroundColor: Color {
+        colorScheme == .dark ? .white : .black
     }
 
     struct HUDView: View {
@@ -90,7 +139,7 @@ struct HUDModifier: ViewModifier {
         
         @ScaledMetric
         private var hudContentSize = 120.0
-        
+
         var body: some View {
             VStack(alignment: .center) {
                 hudImage
@@ -104,8 +153,6 @@ struct HUDModifier: ViewModifier {
             .padding()
             .frame(minWidth: hudContentSize, minHeight: hudContentSize)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .ignoresSafeArea()
         }
         
         private var textMessage: String? {
@@ -132,6 +179,19 @@ struct HUDModifier: ViewModifier {
                 Image(systemName: "checkmark")
                     .font(.largeTitle)
             }
+        }
+    }
+}
+
+private extension View {
+    
+    @ViewBuilder
+    func backwards_presentationBackground<T: View>(alignment: Alignment = .center, @ViewBuilder content:  () -> T) -> some View {
+        if #available(iOS 16.4, *) {
+            self
+                .presentationBackground(alignment: alignment, content: content)
+        } else {
+            self
         }
     }
 }
