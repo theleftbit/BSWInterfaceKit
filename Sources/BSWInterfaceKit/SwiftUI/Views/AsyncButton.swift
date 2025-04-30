@@ -1,5 +1,5 @@
 
-import SkipFuseUI
+import SwiftUI
 
 #if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
