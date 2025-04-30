@@ -25,13 +25,16 @@ import SwiftUI
         .font(.headline)
         .buttonStyle(BorderedProminentButtonStyle())
         .hud(hudState: $state, configuration: .init(dimsBackground: true))
-
     }
 }
 
 public extension View {
     func hud(hudState: Binding<HUDState>, configuration: HUDConfiguration? = nil) -> some View {
-        modifier(HUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        #if os(iOS)
+        modifier(iOSHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        #else
+        modifier(MacHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        #endif
     }
 }
 
@@ -54,7 +57,8 @@ public struct HUDConfiguration: Sendable {
     let successMessageInterval: TimeInterval
 }
 
-struct HUDModifier: ViewModifier {
+#if os(iOS)
+struct iOSHUDModifier: ViewModifier {
 
     @Binding
     var hudState: HUDState
@@ -129,69 +133,101 @@ struct HUDModifier: ViewModifier {
     var backgroundColor: Color {
         colorScheme == .dark ? .white : .black
     }
-
-    struct HUDView: View {
-
-        let state: HUDState
-
-        @ScaledMetric
-        private var hudImageSize = 60.0
-        
-        @ScaledMetric
-        private var hudContentSize = 120.0
-
-        var body: some View {
-            VStack(alignment: .center) {
-                hudImage
-                    .frame(width: hudImageSize, height: hudImageSize)
-                if let textMessage {
-                    Text(textMessage)
-                }
-            }
-            .transition(.scale.combined(with: .opacity))
-            .animation(.default, value: state)
-            .padding()
-            .frame(minWidth: hudContentSize, minHeight: hudContentSize)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-        }
-        
-        private var textMessage: String? {
-            switch state {
-            case .none:
-                return nil
-            case .loading(let loadingMessage):
-                return loadingMessage
-            case .success(let successMessage):
-                return successMessage
-            }
-        }
-        
-        @ViewBuilder
-        private var hudImage: some View {
-            switch state {
-            case .none:
-                EmptyView()
-            case .loading:
-                ProgressView()
-                    .tint(.primary)
-                    .scaleEffect(1.5)
-            case .success:
-                Image(systemName: "checkmark")
-                    .font(.largeTitle)
-            }
-        }
-    }
 }
 
 private extension View {
     
     @ViewBuilder
     func backwards_presentationBackground<T: View>(alignment: Alignment = .center, @ViewBuilder content:  () -> T) -> some View {
-        if #available(iOS 16.4, *) {
+        if #available(iOS 16.4, macOS 13.3, *) {
             self
                 .presentationBackground(alignment: alignment, content: content)
         } else {
             self
+        }
+    }
+}
+#elseif os(macOS)
+/// This kind of sucks, so please fix
+struct MacHUDModifier: ViewModifier {
+    @Binding
+    var hudState: HUDState
+
+    let configuration: HUDConfiguration
+
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+            
+            if hudState != .none {
+                ZStack {
+                    if configuration.dimsBackground {
+                        Color.black
+                            .opacity(0.2)
+                            .ignoresSafeArea()
+                            .transition(.opacity)
+                    }
+                    
+                    HUDView(state: hudState)
+                        .transition(.opacity)
+                        .font(configuration.font)
+                }
+            }
+        }
+    }
+}
+
+#endif
+
+
+struct HUDView: View {
+
+    let state: HUDState
+
+    @ScaledMetric
+    private var hudImageSize = 60.0
+    
+    @ScaledMetric
+    private var hudContentSize = 120.0
+
+    var body: some View {
+        VStack(alignment: .center) {
+            hudImage
+                .frame(width: hudImageSize, height: hudImageSize)
+            if let textMessage {
+                Text(textMessage)
+            }
+        }
+        .transition(.scale.combined(with: .opacity))
+        .animation(.default, value: state)
+        .padding()
+        .frame(minWidth: hudContentSize, minHeight: hudContentSize)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+    }
+    
+    private var textMessage: String? {
+        switch state {
+        case .none:
+            return nil
+        case .loading(let loadingMessage):
+            return loadingMessage
+        case .success(let successMessage):
+            return successMessage
+        }
+    }
+    
+    @ViewBuilder
+    private var hudImage: some View {
+        switch state {
+        case .none:
+            EmptyView()
+        case .loading:
+            ProgressView()
+                .tint(.primary)
+                .scaleEffect(1.5)
+        case .success:
+            Image(systemName: "checkmark")
+                .font(.largeTitle)
         }
     }
 }
