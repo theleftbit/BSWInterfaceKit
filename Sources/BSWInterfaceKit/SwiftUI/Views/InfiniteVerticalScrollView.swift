@@ -188,7 +188,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 ProgressView()
             }
         }
-        .defaultScrollAnchor(.bottom, for: .initialOffset)
+        .defaultScrollAnchor((direction == .downwards) ? .top : .bottom, for: .initialOffset)
         .scrollPosition($scrollPosition, anchor: (direction == .downwards) ? .bottom : .top)
         .onScrollTargetVisibilityChange(idType: Item.ID.self, threshold: 0.9) { ids in
             if redactionReasons.contains(.placeholder) { return }

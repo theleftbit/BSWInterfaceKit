@@ -1,11 +1,11 @@
 
-import SkipFuseUI
+import SwiftUI
 
 #if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     AsyncButton {
-        try await Task.sleep(for: .seconds(0.5))
+        try await Task.sleep(for: .seconds(1.5))
         struct SomeError: Swift.Error {}
 //        throw SomeError()
     } label: {
@@ -23,7 +23,7 @@ import SkipFuseUI
 //        style: .inline(tint: .red)
 
         style: .blocking(
-            font: .callout,
+            font: .headline,
             dimsBackground: true,
             successMessage: .init(message: "Done!")
         )
@@ -52,13 +52,18 @@ public struct AsyncButton<Label: View>: View {
         case loading
     }
     
-    @ObservedObject
-    private var hudWrapper = SwiftUIHUD.StateWrapper(isSuccess: false)
-
-    @State var state: ButtonState = .idle
-    @State var error: Swift.Error?
-    @Environment(\.asyncButtonLoadingConfiguration) var loadingConfiguration
+    @State
+    var state: ButtonState = .idle
     
+    @State
+    var error: Swift.Error?
+    
+    @Environment(\.asyncButtonLoadingConfiguration)
+    var loadingConfiguration
+
+    @State
+    var hudState = HUDState.none
+
     public var body: some View {
         Button(
             action: {
@@ -76,6 +81,10 @@ public struct AsyncButton<Label: View>: View {
                     }
             }
         )
+        .hud(
+            hudState: $hudState,
+            configuration: hudConfiguration
+        )
         .disabled((state == .loading) || (error != nil))
         .errorAlert(error: $error)
         .task(id: state) {
@@ -88,13 +97,10 @@ public struct AsyncButton<Label: View>: View {
     @MainActor
     private func performAction() async {
         
-        #if canImport(UIKit.UIViewController)
-        var hudVC: UIViewController?
-        if let hudConfiguration {
-            hudVC = await SwiftUIHUD.presentHUDViewController(hudWrapper, configuration: hudConfiguration)
+        if let hudLoadingConfiguration {
+            self.hudState = hudLoadingConfiguration
         }
-        #endif
-        
+
         let result: Swift.Result<Void, Swift.Error> = await {
             if let operation = operation {
                 await AsyncOperationTracer.operationDidBegin(operation)
@@ -113,24 +119,20 @@ public struct AsyncButton<Label: View>: View {
                 return .failure(error)
             }
         }()
-        
-        #if canImport(UIKit.UIViewController)
-        if let hudVC, let hudConfiguration {
-            await SwiftUIHUD.dismissHUDViewController(
-                hudVC: hudVC,
-                stateWrapper: result.isError ? nil : hudWrapper,
-                configuration: hudConfiguration
-            )
+
+        if let hudSuccessConfiguration, let hudConfiguration {
+            self.hudState = hudSuccessConfiguration
+            try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval) )
         }
-        #endif
-        
+        self.hudState = .none
+
         switch result {
         case .success:
             break
         case .failure(let failure):
             self.error = failure
         }
-        
+
         withAnimation {
             self.state = .idle
         }
@@ -165,24 +167,37 @@ public struct AsyncButton<Label: View>: View {
         return .init(kind: .buttonAction, id: operationKey)
     }
     
-    private var hudConfiguration: SwiftUIHUD.Configuration? {
+    private var hudLoadingConfiguration: HUDState? {
+        switch loadingConfiguration.style {
+        case .blocking:
+            return .loading( loadingConfiguration.message)
+        case .inline:
+            return nil
+        }
+    }
+    
+    private var hudSuccessConfiguration: HUDState? {
         switch loadingConfiguration.style {
         case .blocking(let config):
-            return .init(
-                font: config.font,
-                dimsBackground: config.dimsBackground,
-                loadingMessage: loadingConfiguration.message,
-                successMessage: {
-                guard let successMessage = config.successMessage else {
-                    return nil
-                }
-                return .init(message: successMessage.message, timeInterval: successMessage.timeInterval)
-            }())
+            guard let successMessage = config.successMessage else {
+                return nil
+            }
+            return .success(successMessage.message)
+        case .inline:
+            return nil
+        }
+    }
+
+    private var hudConfiguration: HUDConfiguration? {
+        switch loadingConfiguration.style {
+        case .blocking(let config):
+            return .init(font: config.font, dimsBackground: config.dimsBackground)
         case .inline:
             return nil
         }
     }
 }
+
 
 public extension AsyncButton where Label == Text {
     init(_ label: String,
@@ -248,7 +263,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
         }
         
         public struct BlockingSuccessMessage: Sendable {
-            public init(message: String, timeInterval: TimeInterval = 3) {
+            public init(message: String, timeInterval: TimeInterval = 2) {
                 self.message = message
                 self.timeInterval = timeInterval
             }
