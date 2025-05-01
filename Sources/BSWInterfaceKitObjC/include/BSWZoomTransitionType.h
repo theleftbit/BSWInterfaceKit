@@ -4,6 +4,7 @@
 //
 //  Created by Pierluigi Cifani on 31/10/2018.
 //
+#ifdef __APPLE__
 
 @import Foundation;
 
@@ -16,3 +17,4 @@ typedef NS_ENUM(NSInteger, BSWZoomTransitionType) {
 };
 
 #endif /* BSWZoomTransitionType_h */
+#endif

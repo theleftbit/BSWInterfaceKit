@@ -23,6 +23,7 @@
  *
  *  Based on http://stackoverflow.com/questions/13017257/how-do-you-determine-spacing-between-cells-in-uicollectionview-flowlayout
  */
+#ifdef __APPLE__
 
 #include <TargetConditionals.h>
 
@@ -41,4 +42,5 @@
 @protocol BSWCollectionViewDelegateLeftAlignedLayout <UICollectionViewDelegateFlowLayout>
 
 @end
+#endif
 #endif

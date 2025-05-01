@@ -1,6 +1,7 @@
 //
 //  Created by Pierluigi Cifani on 18/04/2019.
 //
+#ifdef __APPLE__
 
 #include <TargetConditionals.h>
 
@@ -18,4 +19,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
+#endif
 #endif

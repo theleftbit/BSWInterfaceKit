@@ -163,21 +163,12 @@ extension Photo {
         return [photo1, photo2, photo3, photo4]
     }
 }
-#if swift(>=6.0)
-extension CGSize: @retroactive Hashable { // For some reason `CGSize` isn't `Hashable`
-}
+
+// For some reason `CGSize` isn't `Hashable`
+extension CGSize: @retroactive Hashable { }
+
 #if canImport(AppKit)
 extension PlatformImage: @retroactive @unchecked Sendable {}
-#endif
-
-#else
-extension CGSize: Hashable { // For some reason `CGSize` isn't `Hashable`
-}
-
-#if canImport(AppKit)
-extension PlatformImage: @unchecked Sendable {}
-#endif
-
 #endif
 
 extension CGSize {
