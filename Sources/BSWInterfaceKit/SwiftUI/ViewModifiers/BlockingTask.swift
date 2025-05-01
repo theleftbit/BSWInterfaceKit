@@ -20,7 +20,7 @@ import SwiftUI
     .performBlockingTask(
         readyToPerform: $perform,
         confirmationStrategy: .confirmWith(title: "Are you sure?", message: "This will block the main thread for 2 seconds.", confirmButtonTitle: "Yes", cancelButtonTitle: "No"),
-        task: { _ in
+        task: {
             try await Task.sleep(for: .seconds(2))
         }
     )
@@ -39,7 +39,7 @@ public extension View {
         self.modifier(PerformEquatableBlockingModifier(value: value, task: task, confirmationStrategy: confirmationStrategy))
     }
 
-    func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<Bool>) -> some View {
+    func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
         self.modifier(
             PerformEquatableBlockingModifier(
                 value: .init(
@@ -53,7 +53,7 @@ public extension View {
                             readyToPerform.wrappedValue = false
                         }
                     }),
-                task: task,
+                task: { _ in try await task() },
                 confirmationStrategy: confirmationStrategy
             )
         )
