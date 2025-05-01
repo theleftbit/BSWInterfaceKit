@@ -18,7 +18,7 @@ import SwiftUI
         Text("Trigger job")
     }
     .performBlockingTask(
-        value: $perform,
+        readyToPerform: $perform,
         confirmationStrategy: .confirmWith(title: "Are you sure?", message: "This will block the main thread for 2 seconds.", confirmButtonTitle: "Yes", cancelButtonTitle: "No"),
         task: { _ in
             try await Task.sleep(for: .seconds(2))
@@ -39,18 +39,18 @@ public extension View {
         self.modifier(PerformEquatableBlockingModifier(value: value, task: task, confirmationStrategy: confirmationStrategy))
     }
 
-    func performBlockingTask(value: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<Bool>) -> some View {
+    func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<Bool>) -> some View {
         self.modifier(
             PerformEquatableBlockingModifier(
                 value: .init(
                     get: {
-                        value.wrappedValue ? true : nil
+                        readyToPerform.wrappedValue ? true : nil
                     },
                     set: {
                         if let _ = $0 {
-                            value.wrappedValue = true
+                            readyToPerform.wrappedValue = true
                         } else {
-                            value.wrappedValue = false
+                            readyToPerform.wrappedValue = false
                         }
                     }),
                 task: task,
