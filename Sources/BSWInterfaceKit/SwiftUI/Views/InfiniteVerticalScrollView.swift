@@ -106,6 +106,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
         spacing: CGFloat? = nil,
         pinnedViews: PinnedScrollableViews = .init(),
         items: Binding<[Item]>,
+        morePagesAvailable: Bool = true,
         nextPageFetcher: @escaping NextPageFetcher,
         @ViewBuilder itemViewBuilder: @escaping ItemViewBuilder) {
             self.alignment = alignment
@@ -113,6 +114,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
             self.pinnedViews = pinnedViews
             self.direction = direction
             self._items = items
+            self._phase = State(initialValue: morePagesAvailable ? .idle : .noMorePages)
             self.nextPageFetcher = nextPageFetcher
             self.itemViewBuilder = itemViewBuilder
         }
@@ -136,7 +138,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     private var items: [Item]
     
     @State
-    private var phase: Phase = .idle
+    private var phase: Phase
     
     @State
     private var scrollPosition = ScrollPosition(idType: Item.ID.self)
