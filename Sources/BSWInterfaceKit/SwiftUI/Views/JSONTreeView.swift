@@ -134,6 +134,8 @@ public extension JSONTreeView {
 
 // MARK: Mock
 
+#if DEBUG
+
 private enum MockData {
     
     static var rawJSON: Data {
@@ -266,3 +268,5 @@ private enum MockData {
         """.data(using: .utf8)!
     }
 }
+
+#endif
