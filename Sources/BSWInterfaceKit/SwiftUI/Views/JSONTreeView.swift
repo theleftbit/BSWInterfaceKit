@@ -5,13 +5,14 @@
 import SwiftUI
 
 /// A SwiftUI view that displays hierarchical JSON data as an expandable tree structure.
-/// It supports nested objects and arrays, and renders them using OutlineGroup.
+/// It supports nested objects and arrays, and renders them using `OutlineGroup`.
 /// Keys are displayed in alphabetical order, and the layout uses monospaced text for clarity.
 /// Ideal for debugging or visualizing structured configuration files.
-
+#if DEBUG
 #Preview {
     JSONTreeView.Async(rawJSON: MockData.rawJSON)
 }
+#endif
 
 // MARK: JSONTreeView
 
@@ -54,34 +55,14 @@ public extension JSONTreeView {
             self.rawJSON = rawJSON
         }
         
-        @State
-        private var phase: Phase = .loading
-        private enum Phase {
-            case loading
-            case error(Error)
-            case loaded([JSONTreeView.Node])
-        }
-        
         public var body: some View {
-            ___body
-                .task {
-                    do {
-                        self.phase = try .loaded(parseJSONData(rawJSON))
-                    } catch {
-                        self.phase = .error(error)
-                    }
-                }
-        }
-        
-        @ViewBuilder
-        private var ___body: some View {
-            switch phase {
-            case .loading:
+            AsyncView(id: .constant("JSONTreeView.rawJSON")) {
+                let values = try parseJSONData(rawJSON)
+                return values.sorted(by: { $1.key > $0.key })
+            } hostedViewGenerator: {
+                JSONTreeView(topLevel: $0)
+            } loadingViewGenerator: {
                 ProgressView()
-            case .error(let err):
-                Text(err.localizedDescription)
-            case .loaded(let array):
-                JSONTreeView(topLevel: array)
             }
         }
     }
