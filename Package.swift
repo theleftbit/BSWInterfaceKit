@@ -17,8 +17,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.4"),
-        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "7.0.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.18.3"),
+        .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "7.1.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.8.0"),
     ],
     targets: [

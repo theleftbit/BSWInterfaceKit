@@ -31,6 +31,7 @@ modify_package_swift() {
 }
 
 build_framework() {
+    export SKIP_ZERO=1
     local sdk="$1"
     local destination="$2"
     local scheme="$3"
