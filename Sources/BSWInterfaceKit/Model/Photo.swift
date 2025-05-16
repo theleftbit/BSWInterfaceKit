@@ -181,3 +181,39 @@ extension CGSize {
 extension Photo: Equatable, Hashable {}
 extension Photo.Kind: Equatable, Hashable {}
 extension Photo.PlaceholderImage: Equatable, Hashable {}
+
+
+#if canImport(SwiftUI)
+
+import SwiftUI
+
+public extension Photo {
+    
+    init(url: URL?, averageColor: Color, placeholderImage: PlaceholderImage? = nil, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
+        self.init(
+            url: url,
+            averageColor: PlatformColor(averageColor),
+            placeholderImage: placeholderImage,
+            size: size,
+            preferredContentMode: preferredContentMode
+        )
+    }
+    
+    init(kind: Kind, averageColor: Color, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
+        self.init(
+            kind: kind,
+            averageColor: PlatformColor(averageColor),
+            size: size,
+            preferredContentMode: preferredContentMode
+        )
+    }
+    
+    init(image: PlatformImage, averageColor: Color, preferredContentMode: PlatformContentMode? = nil) {
+        self.init(
+            image: image,
+            averageColor: PlatformColor(averageColor),
+            preferredContentMode: preferredContentMode
+        )
+    }
+}
+#endif
