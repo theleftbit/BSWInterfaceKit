@@ -4,14 +4,6 @@
 //
 
 import SwiftUI
-
-#if canImport(UIKit.UIView)
-public typealias PlatformContentMode = UIView.ContentMode
-#else
-public typealias PlatformContentMode = Int
-#endif
-
-import Nuke
 import Foundation
 
 /// This represents an image to be displayed in the app.
@@ -21,8 +13,8 @@ public struct Photo: Sendable {
     
     /// The source of the Photo.
     public enum Kind: Sendable {
-        /// The Photo is in a remote URL and there's an Optional `PlaceholderImage` to be shown while the Photo is loading.
-        case url(Foundation.URL, placeholderImage: PlaceholderImage?)
+        /// The Photo is in a remote URL.
+        case url(Foundation.URL)
         
         /// There's a `SwiftUI.Image` representing this Photo.
         case image(Image)
@@ -40,27 +32,21 @@ public struct Photo: Sendable {
     /// The size of the image if known
     public let size: CGSize?
     
-    /// The `UIView.ContentMode` that will be used to display the `Photo`
-    public let preferredContentMode: PlatformContentMode?
-
-    public init(kind: Kind, averageColor: Color = .randomColor(), size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
+    public init(kind: Kind, averageColor: Color = .randomColor(), size: CGSize? = nil) {
         self.kind = kind
         self.averageColor = averageColor
-        self.preferredContentMode = preferredContentMode
         self.size = size
     }
 
-    public init(image: Image, averageColor: Color = .randomColor(), preferredContentMode: PlatformContentMode? = nil) {
+    public init(image: Image, averageColor: Color = .randomColor()) {
         self.kind = .image(image)
         self.averageColor = averageColor
-        self.preferredContentMode = preferredContentMode
         self.size = nil
     }
 
-    public init(url: URL?, averageColor: Color = .randomColor(), placeholderImage: PlaceholderImage? = nil, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
-        self.kind = (url == nil) ? .empty : .url(url!, placeholderImage: placeholderImage)
+    public init(url: URL?, averageColor: Color = .randomColor(), size: CGSize? = nil) {
+        self.kind = (url == nil) ? .empty : .url(url!)
         self.averageColor = averageColor
-        self.preferredContentMode = preferredContentMode
         self.size = size
     }
     
@@ -98,19 +84,8 @@ public extension Photo {
             return nil
         case .image:
             return nil
-        case .url(let url, _):
+        case .url(let url):
             return url
-        }
-    }
-}
-
-public extension Photo {
-    struct PlaceholderImage: Sendable {
-        public let image: Image
-        public let preferredContentMode: PlatformContentMode
-        public init(image: Image, preferredContentMode: PlatformContentMode) {
-            self.image = image
-            self.preferredContentMode = preferredContentMode
         }
     }
 }
@@ -157,4 +132,3 @@ extension Image: @retroactive Hashable {
 
 extension Photo: Equatable, Hashable {}
 extension Photo.Kind: Equatable, Hashable {}
-extension Photo.PlaceholderImage: Equatable, Hashable {}

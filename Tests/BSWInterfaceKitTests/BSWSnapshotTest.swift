@@ -27,7 +27,7 @@ open class BSWSnapshotTest {
         // Disable downloading images from web to avoid flaky tests.
         UIImageView.disableWebDownloads()
         RandomColorFactory.isOn = false
-        RandomColorFactory.defaultColor = UIColor.init(r: 255, g: 149, b: 0)
+        RandomColorFactory.defaultColor = .init(r: 255, g: 149, b: 0)
     }
 
     private let currentWindow = UIWindow()

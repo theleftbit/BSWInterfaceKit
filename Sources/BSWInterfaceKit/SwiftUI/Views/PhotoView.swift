@@ -64,7 +64,7 @@ public struct PhotoView: View {
     @MainActor
     private var photoView: some View {
         switch photo.kind {
-        case .url(let url, _):
+        case .url(let url):
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
                 #if canImport(UIKit)
                 if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {

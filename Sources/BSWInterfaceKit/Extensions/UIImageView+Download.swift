@@ -63,30 +63,28 @@ extension UIImageView {
             completedBlock?(taskResult)
         }
     }
-    
-    public func setPhoto(_ photo: Photo) {
-        if let preferredContentMode = photo.preferredContentMode {
+
+    public func setPhoto(_ photo: Photo, preferredContentMode: UIView.ContentMode? = nil, placeholderImage: UIImage? = nil) {
+        if let preferredContentMode = preferredContentMode {
             contentMode = preferredContentMode
         }
         switch photo.kind {
         case .image(let image):
             #warning("TODO")
             // self.image = image
-        case .url(let url, let _placeholderImage):
-            if let placeholderImage = _placeholderImage {
-                image = placeholderImage.image
-                contentMode = placeholderImage.preferredContentMode
+        case .url(let url):
+            if let placeholderImage {
+                image = placeholderImage
             }
             backgroundColor = UIColor(photo.averageColor)
             setImageWithURL(url) { result in
                 switch result {
                 case .failure:
-                    if let placeholderImage = _placeholderImage {
-                        self.image = placeholderImage.image
-                        self.contentMode = placeholderImage.preferredContentMode
+                    if let placeholderImage {
+                        self.image = placeholderImage
                     }
                 case .success:
-                    if let preferredContentMode = photo.preferredContentMode {
+                    if let preferredContentMode {
                         self.contentMode = preferredContentMode
                     }
                     self.backgroundColor = nil
