@@ -8,6 +8,7 @@
 import BSWFoundation
 import Nuke; import NukeExtensions
 import UIKit
+import SwiftUI
 
 @MainActor
 extension UIImageView {
@@ -70,8 +71,15 @@ extension UIImageView {
         }
         switch photo.kind {
         case .image(let image):
-            #warning("TODO")
-            // self.image = image
+            self.image = {
+                let renderer = ImageRenderer(content: image)
+                renderer.scale = UIScreen.main.scale
+                if let uiImage = renderer.uiImage {
+                    return uiImage
+                } else {
+                    return nil
+                }
+            }()
         case .url(let url):
             if let placeholderImage {
                 image = placeholderImage
