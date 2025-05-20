@@ -175,7 +175,7 @@ extension PhotoGalleryView: UICollectionViewDataSourcePrefetching {
             .compactMap({ self.photos[safe: $0.item] })
             .compactMap({
                 switch $0.kind {
-                case .url(let url, _):
+                case .url(let url):
                     return url
                 default:
                     return nil

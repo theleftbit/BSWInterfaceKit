@@ -3,23 +3,7 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
-#if canImport(UIKit.UIImage) && canImport(UIKit.UIColor)
-import UIKit
-public typealias PlatformImage = UIImage
-public typealias PlatformColor = UIColor
-#elseif canImport(AppKit)
-import AppKit
-public typealias PlatformImage = NSImage
-public typealias PlatformColor = NSColor
- #endif
-
-#if canImport(UIKit.UIView)
-public typealias PlatformContentMode = UIView.ContentMode
-#else
-public typealias PlatformContentMode = Int
-#endif
-
-import Nuke
+import SwiftUI
 import Foundation
 
 /// This represents an image to be displayed in the app.
@@ -29,11 +13,11 @@ public struct Photo: Sendable {
     
     /// The source of the Photo.
     public enum Kind: Sendable {
-        /// The Photo is in a remote URL and there's an Optional `PlaceholderImage` to be shown while the Photo is loading.
-        case url(Foundation.URL, placeholderImage: PlaceholderImage?)
+        /// The Photo is in a remote URL.
+        case url(Foundation.URL)
         
-        /// There's a `UIImage` representing this Photo.
-        case image(PlatformImage)
+        /// There's a `SwiftUI.Image` representing this Photo.
+        case image(Image)
         
         /// Just an empty Photo.
         case empty
@@ -43,32 +27,32 @@ public struct Photo: Sendable {
     public let kind: Kind
     
     /// The averageColor of the `Photo`. Will be shown during loading if appropiate.
-    public let averageColor: PlatformColor
+    public let averageColor: Color
     
     /// The size of the image if known
     public let size: CGSize?
     
-    /// The `UIView.ContentMode` that will be used to display the `Photo`
-    public let preferredContentMode: PlatformContentMode?
-
-    public init(kind: Kind, averageColor: PlatformColor = .randomColor(), size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
+    public init(kind: Kind, averageColor: Color = .randomColor(), size: CGSize? = nil) {
         self.kind = kind
         self.averageColor = averageColor
-        self.preferredContentMode = preferredContentMode
         self.size = size
     }
 
-    public init(image: PlatformImage, averageColor: PlatformColor = .randomColor(), preferredContentMode: PlatformContentMode? = nil) {
+    public init(image: Image, averageColor: Color = .randomColor()) {
         self.kind = .image(image)
         self.averageColor = averageColor
-        self.preferredContentMode = preferredContentMode
-        self.size = image.size
+        self.size = nil
     }
 
-    public init(url: URL?, averageColor: PlatformColor = .randomColor(), placeholderImage: PlaceholderImage? = nil, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
-        self.kind = (url == nil) ? .empty : .url(url!, placeholderImage: placeholderImage)
+    #if canImport(UIKit.UIImage)
+    public init(image: UIImage, averageColor: UIColor = .randomColor()) {
+        self.init(image: Image(uiImage: image), averageColor: Color(uiColor: averageColor))
+    }
+    #endif
+    
+    public init(url: URL?, averageColor: Color = .randomColor(), size: CGSize? = nil) {
+        self.kind = (url == nil) ? .empty : .url(url!)
         self.averageColor = averageColor
-        self.preferredContentMode = preferredContentMode
         self.size = size
     }
     
@@ -80,76 +64,34 @@ public struct Photo: Sendable {
 public enum RandomColorFactory: @unchecked Sendable {
 
     public static nonisolated(unsafe) var isOn: Bool = true
-#if canImport(UIKit.UIColor)
-    public static nonisolated(unsafe) var defaultColor = UIColor(r: 255, g: 149, b: 0)
+    public static nonisolated(unsafe) var defaultColor = Color(r: 255, g: 149, b: 0)
     
     /// Generates a random pastel color
     /// - Returns: a UIColor
-    public static func randomColor() -> PlatformColor {
+    public static func randomColor() -> Color {
         guard isOn else {
             return defaultColor
         }
         /// Source: https://twitter.com/manuelmaly/status/1523335860258705408
-        return UIColor(
+        return Color(
             hue: .random(in: 0.0...1.0),
             saturation: .random(in: 0.2...0.55),
             brightness: 0.9,
-            alpha: 1
+            opacity: 1
         )
     }
-    #elseif canImport(AppKit)
-    public static var defaultColor: PlatformColor { .systemBlue }
-
-    public static func randomColor() -> PlatformColor {
-        Self.defaultColor
-    }
-    #endif
 }
 
 public extension Photo {
-    var estimatedSize: CGSize? {
-        guard size == nil else {
-            return size
-        }
-
-        return self.uiImage?.size
-    }
     
-    var uiImage: PlatformImage? {
-        switch self.kind {
-        case .empty:
-            return nil
-        case .image(let image):
-            return image
-        case .url(let url, _):
-            // This dependency should be removed
-            let imageCache = ImagePipeline.shared.cache
-            guard let request = imageCache[ImageRequest(url: url)] else {
-                return nil
-            }
-            return request.image
-        }
-    }
-
     var url: URL? {
         switch self.kind {
         case .empty:
             return nil
         case .image:
             return nil
-        case .url(let url, _):
+        case .url(let url):
             return url
-        }
-    }
-}
-
-public extension Photo {
-    struct PlaceholderImage: Sendable {
-        public let image: PlatformImage
-        public let preferredContentMode: PlatformContentMode
-        public init(image: PlatformImage, preferredContentMode: PlatformContentMode) {
-            self.image = image
-            self.preferredContentMode = preferredContentMode
         }
     }
 }
@@ -165,55 +107,34 @@ extension Photo {
 }
 
 // For some reason `CGSize` isn't `Hashable`
-extension CGSize: @retroactive Hashable { }
-
-#if canImport(AppKit)
-extension PlatformImage: @retroactive @unchecked Sendable {}
-#endif
-
-extension CGSize {
+extension CGSize: @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(width)
         hasher.combine(height)
     }
 }
 
-extension Photo: Equatable, Hashable {}
-extension Photo.Kind: Equatable, Hashable {}
-extension Photo.PlaceholderImage: Equatable, Hashable {}
-
-
-#if canImport(SwiftUI)
-
-import SwiftUI
-
-public extension Photo {
-    
-    init(url: URL?, averageColor: Color, placeholderImage: PlaceholderImage? = nil, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
-        self.init(
-            url: url,
-            averageColor: PlatformColor(averageColor),
-            placeholderImage: placeholderImage,
-            size: size,
-            preferredContentMode: preferredContentMode
-        )
+// This was generated with ChatGPT o4-mini-high, so take with a grain of salt
+extension Image: @retroactive Hashable {
+    public static func == (lhs: Image, rhs: Image) -> Bool {
+        return Mirror(reflecting: lhs).children.elementsEqual(Mirror(reflecting: rhs).children) { (lChild, rChild) in
+            if let lh = lChild.value as? AnyHashable, let rh = rChild.value as? AnyHashable {
+                return lh == rh
+            }
+            return String(describing: lChild.value) == String(describing: rChild.value)
+        }
     }
-    
-    init(kind: Kind, averageColor: Color, size: CGSize? = nil, preferredContentMode: PlatformContentMode? = nil) {
-        self.init(
-            kind: kind,
-            averageColor: PlatformColor(averageColor),
-            size: size,
-            preferredContentMode: preferredContentMode
-        )
-    }
-    
-    init(image: PlatformImage, averageColor: Color, preferredContentMode: PlatformContentMode? = nil) {
-        self.init(
-            image: image,
-            averageColor: PlatformColor(averageColor),
-            preferredContentMode: preferredContentMode
-        )
+
+    public func hash(into hasher: inout Hasher) {
+        for child in Mirror(reflecting: self).children {
+            if let value = child.value as? AnyHashable {
+                hasher.combine(value)
+            } else {
+                hasher.combine(String(describing: child.value))
+            }
+        }
     }
 }
-#endif
+
+extension Photo: Equatable, Hashable {}
+extension Photo.Kind: Equatable, Hashable {}

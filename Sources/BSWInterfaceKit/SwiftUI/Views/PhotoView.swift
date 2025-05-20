@@ -16,6 +16,7 @@ import NukeUI; import Nuke
         )
     )
     .frame(width: 300)
+    .border(Color.red)
 }
 
 /// Displays a `Photo` in `SwiftUI`
@@ -63,7 +64,7 @@ public struct PhotoView: View {
     @MainActor
     private var photoView: some View {
         switch photo.kind {
-        case .url(let url, _):
+        case .url(let url):
             LazyImage(url: url, transaction: .init(animation: .default)) { state in
                 #if canImport(UIKit)
                 if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
@@ -84,12 +85,8 @@ public struct PhotoView: View {
                 #endif
             }
         case .image(let image):
-            #if canImport(UIKit)
-            Image(uiImage: image)
+            image
                 .resizable()
-            #elseif canImport(AppKit)
-            Image(nsImage: image)
-            #endif
         default:
             placeholder
         }
@@ -104,7 +101,52 @@ public struct PhotoView: View {
     }
 }
 
+extension PhotoView {
+        
+    public struct Configuration: Sendable {
+        let placeholder: Placeholder
+        let aspectRatio: CGFloat?
+        let contentMode: ContentMode
+        let shouldRemoveBackground: Bool
+        
+        public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit, shouldRemoveBackground: Bool = false) {
+            self.placeholder = placeholder
+            self.aspectRatio = aspectRatio
+            self.contentMode = contentMode
+            self.shouldRemoveBackground = shouldRemoveBackground
+        }
+        
+        public struct Placeholder: Sendable {
+            
+            public init(shape: PhotoView.Configuration.Placeholder.Shape, color: Color = RandomColorFactory.defaultColor) {
+                self.shape = shape
+                self.color = color
+            }
+            
+            let shape: Shape
+            let color: Color
+            
+            public enum Shape: Sendable {
+                case circle, rectangle
+            }
+            
+            func body() -> some View {
+                Group {
+                    switch self.shape {
+                    case .circle:
+                        Circle()
+                    case .rectangle:
+                        Rectangle()
+                    }
+                }
+                .foregroundColor(color)
+            }
+        }
+    }
+}
+
 #if canImport(UIKit)
+
 private extension PhotoView {
     
     @available(iOS 17, *)
@@ -175,47 +217,3 @@ private extension UIImage {
     #endif
 }
 #endif
-
-extension PhotoView {
-        
-    public struct Configuration: Sendable {
-        let placeholder: Placeholder
-        let aspectRatio: CGFloat?
-        let contentMode: ContentMode
-        let shouldRemoveBackground: Bool
-        
-        public init(placeholder: Placeholder = .init(shape: .rectangle), aspectRatio: CGFloat? = nil, contentMode: ContentMode = .fit, shouldRemoveBackground: Bool = false) {
-            self.placeholder = placeholder
-            self.aspectRatio = aspectRatio
-            self.contentMode = contentMode
-            self.shouldRemoveBackground = shouldRemoveBackground
-        }
-        
-        public struct Placeholder: Sendable {
-            
-            public init(shape: PhotoView.Configuration.Placeholder.Shape, color: Color = Color(RandomColorFactory.defaultColor)) {
-                self.shape = shape
-                self.color = color
-            }
-            
-            let shape: Shape
-            let color: Color
-            
-            public enum Shape: Sendable {
-                case circle, rectangle
-            }
-            
-            func body() -> some View {
-                Group {
-                    switch self.shape {
-                    case .circle:
-                        Circle()
-                    case .rectangle:
-                        Rectangle()
-                    }
-                }
-                .foregroundColor(color)
-            }
-        }
-    }
-}
