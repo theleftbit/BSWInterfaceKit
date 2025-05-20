@@ -3,6 +3,43 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+import SwiftUI
+
+public extension Color {
+    /// Initialize with 0–255 RGB values and optional opacity (0–1)
+    init(r: Int, g: Int, b: Int, opacity: Double = 1) {
+        self.init(
+            .sRGB,
+            red: Double(r)   / 255,
+            green: Double(g) / 255,
+            blue: Double(b)  / 255,
+            opacity: opacity
+        )
+    }
+    
+    /// Initialize with 0–360 H, 0–100 S/B values and optional opacity (0–1)
+    init(h: Int, s: Int, b: Int, opacity: Double = 1) {
+        self.init(
+            hue:        Double(h) / 360,
+            saturation: Double(s) / 100,
+            brightness: Double(b) / 100,
+            opacity:    opacity
+        )
+    }
+    
+    /// Initialize with 0xRRGGBB and optional opacity (0–1)
+    init(rgb: UInt, opacity: Double = 1) {
+        let red   = Double((rgb & 0xFF0000) >> 16) / 255
+        let green = Double((rgb & 0x00FF00) >>  8) / 255
+        let blue  = Double( rgb & 0x0000FF        ) / 255
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
+    }
+
+    static func randomColor() -> Color {
+        return RandomColorFactory.randomColor()
+    }
+}
+
 #if canImport(UIKit.UIColor)
 
 import UIKit
@@ -94,7 +131,7 @@ public extension UIColor {
     /// Creates a random color using `RandomColorFactory`
     /// - Returns: a `UIColor`
     class func randomColor() -> UIColor {
-        return RandomColorFactory.randomColor()
+        return UIColor(RandomColorFactory.randomColor())
     }
 }
 
@@ -106,7 +143,7 @@ public extension NSColor {
     /// Creates a random color using `RandomColorFactory`
     /// - Returns: a `NSColor`
     class func randomColor() -> NSColor {
-        return RandomColorFactory.randomColor()
+        return NSColor(RandomColorFactory.randomColor())
     }
 }
 

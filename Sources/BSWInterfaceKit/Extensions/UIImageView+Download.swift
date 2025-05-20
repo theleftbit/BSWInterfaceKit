@@ -70,13 +70,14 @@ extension UIImageView {
         }
         switch photo.kind {
         case .image(let image):
-            self.image = image
+            #warning("TODO")
+            // self.image = image
         case .url(let url, let _placeholderImage):
             if let placeholderImage = _placeholderImage {
                 image = placeholderImage.image
                 contentMode = placeholderImage.preferredContentMode
             }
-            backgroundColor = photo.averageColor
+            backgroundColor = UIColor(photo.averageColor)
             setImageWithURL(url) { result in
                 switch result {
                 case .failure:
@@ -93,7 +94,7 @@ extension UIImageView {
             }
         case .empty:
             image = nil
-            backgroundColor = photo.averageColor
+            backgroundColor = UIColor(photo.averageColor)
         }
     }
     
