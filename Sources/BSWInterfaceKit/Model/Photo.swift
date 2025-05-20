@@ -44,6 +44,12 @@ public struct Photo: Sendable {
         self.size = nil
     }
 
+    #if canImport(UIKit.UIImage)
+    public init(image: UIImage, averageColor: UIColor = .randomColor()) {
+        self.init(image: Image(uiImage: image), averageColor: Color(uiColor: averageColor))
+    }
+    #endif
+    
     public init(url: URL?, averageColor: Color = .randomColor(), size: CGSize? = nil) {
         self.kind = (url == nil) ? .empty : .url(url!)
         self.averageColor = averageColor
