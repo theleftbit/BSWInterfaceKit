@@ -3,7 +3,11 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if os(Android)
+import SkipFuseUI
+#else
 import SwiftUI
+#endif
 
 public extension Color {
     /// Initialize with 0–255 RGB values and optional opacity (0–1)

@@ -1,5 +1,9 @@
 
+#if os(Android)
+import SkipFuseUI
+#else
 import SwiftUI
+#endif
 
 #if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
@@ -230,7 +234,7 @@ public extension AsyncButton where Label == Image {
 }
 
 /// Describes how an `AsyncButton` will show it's "loading" state.
-public struct AsyncButtonLoadingConfiguration: Sendable {
+public struct AsyncButtonLoadingConfiguration {
     
     public init(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) {
         self.message = message
@@ -238,7 +242,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
     }
     
     /// Describes what kind of loading will be shown to the user during the "loading" state.
-    public enum Style: Sendable {
+    public enum Style {
         /// The rest of the UI in the screen will still be interactable using this style
         case inline(tint: Color? = nil)
         /// Will show a HUD in order to let the user know that an operation is ongoing.
@@ -250,7 +254,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
         @usableFromInline
         static func blocking(font: Font = .headline, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground, successMessage: successMessage)) }
         
-        public struct BlockingConfiguration: Sendable {
+        public struct BlockingConfiguration {
             public init(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) {
                 self.dimsBackground = dimsBackground
                 self.font = font
@@ -262,7 +266,7 @@ public struct AsyncButtonLoadingConfiguration: Sendable {
             let successMessage: BlockingSuccessMessage?
         }
         
-        public struct BlockingSuccessMessage: Sendable {
+        public struct BlockingSuccessMessage {
             public init(message: String, timeInterval: TimeInterval = 2) {
                 self.message = message
                 self.timeInterval = timeInterval
@@ -296,10 +300,32 @@ public extension View {
     }
 }
 
+#if canImport(Darwin)
 private extension EnvironmentValues {
     @Entry var asyncButtonLoadingConfiguration = AsyncButtonLoadingConfiguration()
     @Entry var asyncButtonOperationIdentifierKey: String? = nil
 }
+#else
+private struct AsyncButtonLoadingConfigurationKey: EnvironmentKey {
+    static let defaultValue = AsyncButtonLoadingConfiguration()
+}
+
+private struct AsyncButtonOperationIdentifierKey: EnvironmentKey {
+    static let defaultValue: String? = nil
+}
+
+extension EnvironmentValues {
+    var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
+        get { self[AsyncButtonLoadingConfigurationKey.self] }
+        set { self[AsyncButtonLoadingConfigurationKey.self] = newValue }
+    }
+
+    var asyncButtonOperationIdentifierKey: String? {
+        get { self[AsyncButtonOperationIdentifierKey.self] }
+        set { self[AsyncButtonOperationIdentifierKey.self] = newValue }
+    }
+}
+#endif
 
 private extension Swift.Result {
     var isError: Bool {
@@ -311,3 +337,15 @@ private extension Swift.Result {
         }
     }
 }
+
+#if canImport(Darwin)
+extension AsyncButtonLoadingConfiguration: Sendable {}
+extension AsyncButtonLoadingConfiguration.Style: Sendable {}
+extension AsyncButtonLoadingConfiguration.Style.BlockingConfiguration: Sendable {}
+extension AsyncButtonLoadingConfiguration.Style.BlockingSuccessMessage: Sendable {}
+#else
+extension AsyncButtonLoadingConfiguration: @unchecked Sendable {}
+extension AsyncButtonLoadingConfiguration.Style: @unchecked Sendable {}
+extension AsyncButtonLoadingConfiguration.Style.BlockingConfiguration: @unchecked Sendable {}
+extension AsyncButtonLoadingConfiguration.Style.BlockingSuccessMessage: @unchecked Sendable {}
+#endif

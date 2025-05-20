@@ -1,7 +1,11 @@
-#if canImport(SwiftUI)
 
+#if os(Android)
+import SkipFuseUI
+#else
 import SwiftUI
+#endif
 
+#if canImport(Darwin)
 struct RecipeListView: View, PlaceholderDataProvider {
     
     let recipes: [String]
@@ -27,6 +31,7 @@ struct RecipeListView: View, PlaceholderDataProvider {
         RecipeListView(recipes: $0)
     })
 }
+#endif
 
 /// A SwiftUI View with an async state.
 ///
@@ -84,7 +89,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     let hostedViewGenerator: HostedViewGenerator
     let errorViewGenerator: ErrorViewGenerator
     let loadingView: LoadingView
-    @State private var currentOperation: Operation
+    @State var currentOperation: Operation
     
     /// Creates a new `AsyncStateView`
     /// - Parameters:
@@ -136,7 +141,6 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     
     //MARK: Private
     
-    @Environment(\.redactionReasons) private var reasons
     @Environment(\.debounceOperationForMilliseconds) var debounceOperationForMilliseconds
 
     private func fetchData() {
@@ -147,7 +151,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     private func fetchData() async {
         /// Make sure no request is fired in case that this view
         /// is used to compose a sub-section of the view hierarchy.
-        if reasons.contains(.placeholder) { return }
+        if isPlaceholder { return }
         
         /// Turns out `.task { }` is called also
         /// when the view appears so if we're already
@@ -185,6 +189,18 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
         }
         await AsyncOperationTracer.operationDidEnd(operation)
     }
+    
+    #if canImport(Darwin)
+    @Environment(\.redactionReasons) var reasons
+
+    var isPlaceholder: Bool {
+        reasons.contains(.placeholder)
+    }
+    #else
+    var isPlaceholder: Bool {
+        false
+    }
+    #endif
 }
 
 public extension AsyncView where ErrorView == AsyncStatePlainErrorView {
@@ -310,7 +326,9 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
         contentView
             .redacted(reason: .placeholder)
             .disabled(true)
+            #if canImport(Darwin)
             .shimmering()
+            #endif
     }
 }
 
@@ -320,9 +338,22 @@ public extension View {
     }
 }
 
+#if canImport(Darwin)
 private extension EnvironmentValues {
     @Entry var debounceOperationForMilliseconds: Double? = nil
 }
+#else
+private struct DebounceOperationForMillisecondsKey: EnvironmentKey {
+    static let defaultValue: Double? = nil
+}
+
+extension EnvironmentValues {
+    var debounceOperationForMilliseconds: Double? {
+        get { self[DebounceOperationForMillisecondsKey.self] }
+        set { self[DebounceOperationForMillisecondsKey.self] = newValue }
+    }
+}
+#endif
 
 private extension AsyncView.Operation {
     
@@ -336,5 +367,3 @@ private extension AsyncView.Operation {
         }
     }
 }
-
-#endif

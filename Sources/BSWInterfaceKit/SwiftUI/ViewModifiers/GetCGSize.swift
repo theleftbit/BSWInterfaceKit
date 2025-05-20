@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import SwiftUI
 
 private struct CGSizeKey: PreferenceKey {
@@ -22,3 +23,4 @@ public extension View {
         )
     }
 }
+#endif

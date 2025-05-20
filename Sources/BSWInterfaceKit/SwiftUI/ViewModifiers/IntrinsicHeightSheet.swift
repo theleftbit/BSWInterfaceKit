@@ -1,4 +1,5 @@
 
+#if canImport(Darwin)
 import SwiftUI
 
 @available(iOS 18.0, macOS 14, watchOS 10, *)
@@ -21,7 +22,7 @@ import SwiftUI
 }
 
 @available(iOS 16.0, macOS 13, watchOS 9, *)
-public extension SwiftUI.View {
+public extension View {
     
     /// Presents a sheet where the sheet's height is the contained view's intrinsic height
     /// **Note:** It doesn't work if `Content` is embedded in a `NavigationView`
@@ -55,13 +56,13 @@ public extension SwiftUI.View {
 }
 
 @available(iOS 16.0, macOS 13, watchOS 9, *)
-private struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
+struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     
     let hostView: Host
     let contentView: () -> Content
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
-    @State private var sheetSize: CGSize = .zero
+    @State var sheetSize: CGSize = .zero
 
     var body: some View {
         hostView
@@ -75,13 +76,13 @@ private struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: Vie
 }
 
 @available(iOS 16.0, macOS 13, watchOS 9, *)
-private struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
+struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
     
     let hostView: Host
     let contentView: (Item) -> Content
     @Binding var isPresented: Item?
     let onDismiss: (() -> Void)?
-    @State private var sheetSize: CGSize = .zero
+    @State var sheetSize: CGSize = .zero
 
     var body: some View {
         hostView
@@ -93,3 +94,4 @@ private struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Ite
             }
     }
 }
+#endif

@@ -2,17 +2,16 @@
 //  Created by Michele Restuccia on 12/5/25.
 //
 
+#if canImport(Darwin)
 import SwiftUI
 
 /// A SwiftUI view that displays hierarchical JSON data as an expandable tree structure.
 /// It supports nested objects and arrays, and renders them using `OutlineGroup`.
 /// Keys are displayed in alphabetical order, and the layout uses monospaced text for clarity.
 /// Ideal for debugging or visualizing structured configuration files.
-#if DEBUG
 #Preview {
     JSONTreeView.Async(rawJSON: MockData.rawJSON)
 }
-#endif
 
 // MARK: JSONTreeView
 
@@ -250,4 +249,5 @@ private enum MockData {
     }
 }
 
+#endif
 #endif

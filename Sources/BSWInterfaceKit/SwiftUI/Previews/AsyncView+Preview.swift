@@ -1,6 +1,11 @@
 
+#if os(Android)
+import SkipFuseUI
+#else
 import SwiftUI
+#endif
 
+#if canImport(Darwin)
 /// Example of how to reload `AsyncView`
 /// when the ID of the operation changes.
 @available(iOS 17, macOS 14, watchOS 9, *)
@@ -64,3 +69,4 @@ import SwiftUI
         .border(Color.red)
     }
 }
+#endif

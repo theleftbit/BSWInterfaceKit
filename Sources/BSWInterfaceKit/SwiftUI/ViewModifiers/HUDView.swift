@@ -1,5 +1,4 @@
-import SwiftUI
-
+#if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     @Previewable
@@ -27,6 +26,13 @@ import SwiftUI
         .hud(hudState: $state, configuration: .init(dimsBackground: true))
     }
 }
+#endif
+
+#if os(Android)
+import SkipFuseUI
+#else
+import SwiftUI
+#endif
 
 public extension View {
     func hud(hudState: Binding<HUDState>, configuration: HUDConfiguration? = nil) -> some View {
@@ -44,7 +50,7 @@ public enum HUDState: Equatable {
     case success(String?)
 }
 
-public struct HUDConfiguration: Sendable {
+public struct HUDConfiguration {
     
     public init(font: Font = .body, dimsBackground: Bool = false, successMessageInterval: TimeInterval = 3) {
         self.dimsBackground = dimsBackground
@@ -56,6 +62,12 @@ public struct HUDConfiguration: Sendable {
     let dimsBackground: Bool
     let successMessageInterval: TimeInterval
 }
+
+#if canImport(Darwin)
+extension HUDConfiguration: Sendable {}
+#else
+extension HUDConfiguration: @unchecked Sendable {}
+#endif
 
 #if os(iOS)
 struct iOSHUDModifier: ViewModifier {
@@ -147,7 +159,7 @@ private extension View {
         }
     }
 }
-#elseif os(macOS)
+#else
 /// This kind of sucks, so please fix
 struct MacHUDModifier: ViewModifier {
     @Binding
@@ -182,14 +194,23 @@ struct MacHUDModifier: ViewModifier {
 
 struct HUDView: View {
 
+    init(state: HUDState) {
+        self.state = state
+    }
+
     let state: HUDState
 
+    #if canImport(Darwin)
     @ScaledMetric
     private var hudImageSize = 60.0
     
     @ScaledMetric
     private var hudContentSize = 120.0
-
+    #else
+    private var hudImageSize = 60.0
+    private var hudContentSize = 120.0
+    #endif
+    
     var body: some View {
         VStack(alignment: .center) {
             hudImage
@@ -202,7 +223,11 @@ struct HUDView: View {
         .animation(.default, value: state)
         .padding()
         .frame(minWidth: hudContentSize, minHeight: hudContentSize)
+        #if os(Android)
+        .background(.gray, in: RoundedRectangle(cornerRadius: 8))
+        #else
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+        #endif
     }
     
     private var textMessage: String? {

@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 
 import SwiftUI
 
@@ -115,4 +116,4 @@ private struct Shimmer: ViewModifier {
             }
     }
 }
-
+#endif

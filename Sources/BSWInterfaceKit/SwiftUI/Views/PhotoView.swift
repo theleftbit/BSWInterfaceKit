@@ -2,9 +2,16 @@
 //  Created by Michele Restuccia on 20/6/22.
 //
 
+#if os(Android)
+import SkipFuseUI
+#else
 import SwiftUI
+#endif
+#if canImport(Nuke)
 import NukeUI; import Nuke
+#endif
 
+#if canImport(Darwin)
 #Preview {
     PhotoView(
         photo: .init(url: URL(string: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png")),
@@ -18,6 +25,7 @@ import NukeUI; import Nuke
     .frame(width: 300)
     .border(Color.red)
 }
+#endif
 
 /// Displays a `Photo` in `SwiftUI`
 public struct PhotoView: View {
@@ -29,11 +37,13 @@ public struct PhotoView: View {
     
     let photo: Photo
     let configuration: Configuration
-    @Environment(\.redactionReasons) var reasons: RedactionReasons
     
     public var body: some View {
         contentView
-            .aspectRatio(configuration.aspectRatio, contentMode: configuration.contentMode)
+            .aspectRatio(
+                configuration.aspectRatio,
+                contentMode: configuration.contentMode
+            )
     }
     
     @ViewBuilder
@@ -46,9 +56,7 @@ public struct PhotoView: View {
     }
     
     private var shouldShowPlaceholder: Bool {
-        if isRunningTests {
-            return true
-        } else if reasons.isEmpty == false {
+        if isRunningTests || isPlaceholder {
             return true
         } else {
             return false
@@ -61,29 +69,14 @@ public struct PhotoView: View {
     }
     
     @ViewBuilder
-    @MainActor
     private var photoView: some View {
         switch photo.kind {
         case .url(let url):
-            LazyImage(url: url, transaction: .init(animation: .default)) { state in
-                #if canImport(UIKit)
-                if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
-                    RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
-                } else if let image = state.image {
-                    image
-                        .resizable()
-                } else {
-                    placeholder
-                }
-                #else
-                if let image = state.image {
-                    image
-                        .resizable()
-                } else {
-                    placeholder
-                }
-                #endif
-            }
+            #if canImport(Nuke)
+            nukePhotoView(url: url)
+            #else
+            AsyncImage(url: url)
+            #endif
         case .image(let image):
             image
                 .resizable()
@@ -99,11 +92,49 @@ public struct PhotoView: View {
         false
         #endif
     }
+    
+    #if canImport(Nuke)
+    @ViewBuilder
+    func nukePhotoView(url: URL) -> some View {
+        LazyImage(url: url, transaction: .init(animation: .default)) { state in
+            #if canImport(UIKit)
+            if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
+                RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
+            } else if let image = state.image {
+                image
+                    .resizable()
+            } else {
+                placeholder
+            }
+            #else
+            if let image = state.image {
+                image
+                    .resizable()
+            } else {
+                placeholder
+            }
+            #endif
+        }
+    }
+    #endif
+    
+    #if canImport(Darwin)
+    @Environment(\.redactionReasons) var reasons
+    
+    var isPlaceholder: Bool {
+        reasons.contains(.placeholder)
+    }
+    #else
+    var isPlaceholder: Bool {
+        false
+    }
+    #endif
+    
 }
 
 extension PhotoView {
         
-    public struct Configuration: Sendable {
+    public struct Configuration {
         let placeholder: Placeholder
         let aspectRatio: CGFloat?
         let contentMode: ContentMode
@@ -116,7 +147,7 @@ extension PhotoView {
             self.shouldRemoveBackground = shouldRemoveBackground
         }
         
-        public struct Placeholder: Sendable {
+        public struct Placeholder {
             
             public init(shape: PhotoView.Configuration.Placeholder.Shape, color: Color = RandomColorFactory.defaultColor) {
                 self.shape = shape
@@ -126,7 +157,7 @@ extension PhotoView {
             let shape: Shape
             let color: Color
             
-            public enum Shape: Sendable {
+            public enum Shape {
                 case circle, rectangle
             }
             
@@ -144,6 +175,16 @@ extension PhotoView {
         }
     }
 }
+
+#if canImport(Darwin)
+extension PhotoView.Configuration: Sendable {}
+extension PhotoView.Configuration.Placeholder: Sendable {}
+extension PhotoView.Configuration.Placeholder.Shape: Sendable {}
+#else
+extension PhotoView.Configuration: @unchecked Sendable {}
+extension PhotoView.Configuration.Placeholder: @unchecked Sendable {}
+extension PhotoView.Configuration.Placeholder.Shape: @unchecked Sendable {}
+#endif
 
 #if canImport(UIKit)
 

@@ -1,4 +1,4 @@
-
+#if canImport(Darwin)
 import SwiftUI
 
 extension EnvironmentObject {
@@ -62,3 +62,4 @@ private extension EnvironmentObject {
         return (_store.value as? ObjectType) != nil
     }
 }
+#endif

@@ -2,8 +2,7 @@
 //  Created by Michele Restuccia on 13/1/25.
 //
 
-#if canImport(SwiftUI)
-
+#if canImport(Darwin)
 import SwiftUI
 
 @available(iOS 17.0, macOS 14.0, *)
@@ -62,7 +61,7 @@ public extension View {
 
 // MARK: Private
 
-private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
+struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     
     @Binding
     var value: T?
@@ -72,18 +71,31 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     let confirmationStrategy: AsyncBlockingTaskConfirmationStrategy
     
     @State
-    private var taskError: Error? = nil
+    var taskError: Error? = nil
     
     @State
-    private var hudState = HUDState.none
+    var hudState = HUDState.none
     
-    @State private var isShowingConfirmation: Bool = false
-    @State private var confirmationContinuation: CheckedContinuation<Bool, Never>? = nil
-    @State private var confirmationTitle: String = ""
-    @State private var confirmationMessage: String? = nil
-    @State private var confirmationConfirmButtonTitle: String = ""
-    @State private var confirmationCancelButtonTitle: String = ""
-    @State private var isConfirmationDestructive: Bool = false
+    @State
+    var isShowingConfirmation: Bool = false
+    
+    @State
+    var confirmationContinuation: CheckedContinuation<Bool, Never>? = nil
+    
+    @State
+    var confirmationTitle: String = ""
+    
+    @State
+    var confirmationMessage: String? = nil
+    
+    @State
+    var confirmationConfirmButtonTitle: String = ""
+    
+    @State
+    var confirmationCancelButtonTitle: String = ""
+    
+    @State
+    var isConfirmationDestructive: Bool = false
     
     func body(content: Content) -> some View {
         content
@@ -132,6 +144,7 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
             }
     }
     
+    @MainActor
     private func confirmAction(confirmationTitle: String, confirmationMessage: String?, confirmationConfirmButtonTitle: String, confirmationCancelButtonTitle: String, isConfirmationDestructive: Bool) async -> Bool {
         self.confirmationTitle = confirmationTitle
         self.confirmationMessage = confirmationMessage
@@ -150,5 +163,4 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         confirmationContinuation = nil
     }
 }
-
 #endif

@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import SwiftUI
 import Combine
 
@@ -285,3 +286,4 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
     }
 #endif
 }
+#endif

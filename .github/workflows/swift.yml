@@ -21,3 +21,42 @@ jobs:
         lfs: true
     - name: Test BSWInterfaceKit macOS
       run: set -o pipefail && swift build | xcbeautify --renderer github-actions
+
+  android-build:
+    runs-on: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - name: List Available AVDs
+        run: |
+          echo "Listing available AVDs..."
+          ~/Library/Android/sdk/emulator/emulator -list-avds
+      - name: Launch Emulator
+        id: launch_emulator
+        run: |
+          echo "Launching the first available emulator..."
+          AVD_NAME=$(~/Library/Android/sdk/emulator/emulator -list-avds | head -n 1)
+          if [ -z "$AVD_NAME" ]; then
+            echo "No AVDs found. Exiting."
+            exit 1
+          fi
+          echo "Launching $AVD_NAME"
+          nohup ~/Library/Android/sdk/emulator/emulator -avd "$AVD_NAME" -no-snapshot-load -no-audio -no-window &
+      - name: Wait for Emulator to Boot
+        run: |
+          echo "Waiting for emulator to boot..."
+          boot_completed=false
+          for i in {1..30}; do
+            if adb shell getprop sys.boot_completed | grep -q "1"; then
+              echo "Emulator booted!"
+              boot_completed=true
+              break
+            fi
+            echo "Still waiting for emulator to boot..."
+            sleep 10
+          done
+          if [ "$boot_completed" = false ]; then
+            echo "Emulator did not boot in time. Exiting."
+            exit 1
+          fi
+      - name: Build on Android
+        run: skip android build

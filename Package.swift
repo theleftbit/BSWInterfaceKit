@@ -3,6 +3,17 @@
 
 import PackageDescription
 
+let applePlatforms = TargetDependencyCondition.when(
+    platforms: [
+        .iOS,
+        .macOS,
+        .macCatalyst,
+        .tvOS,
+        .watchOS,
+        .visionOS
+    ]
+)
+
 let package = Package(
     name: "BSWInterfaceKit",
     platforms: [
@@ -20,24 +31,27 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.18.3"),
         .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "7.1.0"),
         .package(url: "https://github.com/kean/Nuke.git", from: "12.8.0"),
+        .package(url: "https://source.skip.tools/skip.git", from: "1.5.14"),
+        .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "0.14.0"),
     ],
     targets: [
         .target(name: "BSWInterfaceKitObjC"),
         .target(
             name: "BSWInterfaceKit",
             dependencies: [
-                .product(name: "Nuke", package: "Nuke"),
-                .product(name: "NukeExtensions", package: "Nuke"),
-                .product(name: "NukeUI", package: "Nuke"),
+                .product(name: "SkipFuseUI", package: "skip-fuse-ui"),
+                .product(name: "Nuke", package: "Nuke", condition: applePlatforms),
+                .product(name: "NukeExtensions", package: "Nuke", condition: applePlatforms),
+                .product(name: "NukeUI", package: "Nuke", condition: applePlatforms),
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
-            ]
+            ],
+            plugins: [.plugin(name: "skipstone", package: "skip")]
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
             dependencies: ["BSWInterfaceKit", .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
             exclude: ["Suite/__Snapshots__/"]
         ),
-    ],
-    swiftLanguageModes: [.v6]
+    ]
 )
