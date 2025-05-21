@@ -1,5 +1,5 @@
 {
-  "originHash" : "7175bc50d6d2babb749ea9c79d989ab5d447d6d74c6052b2c52027a04b54197a",
+  "originHash" : "540489b5a412a9e47e8fac08e2958665a6b54665f3600264d662693cfb35bba0",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -22,10 +22,10 @@
     {
       "identity" : "nuke",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MarcHidalgo5/Nuke.git",
+      "location" : "https://github.com/kean/Nuke.git",
       "state" : {
-        "branch" : "only-ios",
-        "revision" : "ca68c4cef140c6323c3c9ed40e767f00035d7bed"
+        "revision" : "0ead44350d2737db384908569c012fe67c421e4d",
+        "version" : "12.8.0"
       }
     },
     {
