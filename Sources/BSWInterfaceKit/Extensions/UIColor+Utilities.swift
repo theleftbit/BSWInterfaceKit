@@ -39,6 +39,14 @@ public extension Color {
         self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
     }
 
+    init(light: Color, dark: Color) {
+        #if canImport(UIKit)
+        self.init(uiColor: UIColor(light: UIColor(light), dark: UIColor(dark)))
+        #else
+        self = light
+        #endif
+    }
+    
     static func randomColor() -> Color {
         return RandomColorFactory.randomColor()
     }
