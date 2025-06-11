@@ -6,9 +6,13 @@
 #if canImport(UIKit.UIImageView)
 
 import BSWFoundation
-import Nuke; import NukeExtensions
+import Nuke
 import UIKit
 import SwiftUI
+
+#if !swift(>=6.2)
+import NukeExtensions
+#endif
 
 @MainActor
 extension UIImageView {
@@ -38,7 +42,9 @@ extension UIImageView {
 
     @objc(bsw_cancelImageLoadFromURL)
     public func cancelImageLoadFromURL() {
+        #if !swift(>=6.2)
         NukeExtensions.cancelRequest(for: self)
+        #endif
     }
     
     enum ImageDownloadError: Swift.Error {
@@ -47,8 +53,12 @@ extension UIImageView {
 
     @nonobjc
     public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        guard UIImageView.webDownloadsEnabled else { return }
+        guard UIImageView.webDownloadsEnabled else {
+            completedBlock?(.failure(CancellationError()))
+            return
+        }
 
+        #if !swift(>=6.2)
         let options = ImageLoadingOptions(
             transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
         )
@@ -63,6 +73,7 @@ extension UIImageView {
             }
             completedBlock?(taskResult)
         }
+        #endif
     }
 
     public func setPhoto(_ photo: Photo, preferredContentMode: UIView.ContentMode? = nil, placeholderImage: UIImage? = nil) {

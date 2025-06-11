@@ -113,7 +113,9 @@ open class ContainerViewController: UIViewController {
             }
             
             animator.addCompletion { _ in
-                completion()
+                MainActor.assumeIsolated {
+                    completion()
+                }
             }
             animator.startAnimation()
         } else {
