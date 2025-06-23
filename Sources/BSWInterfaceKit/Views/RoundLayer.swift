@@ -35,7 +35,7 @@ public class RoundLayer: CALayer {
         get {
             return self.frame.size.width/2
         } set {
-            fatalError()
+            // NO OP
         }
     }
 }
