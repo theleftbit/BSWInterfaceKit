@@ -97,7 +97,7 @@ open class ContainerViewController: UIViewController {
         }
         newVC.didMove(toParent: self)
         
-        let completion = {
+        let completion: @MainActor () -> () = {
             oldVC.view.removeFromSuperview()
             oldVC.removeFromParent()
             self.setNeedsStatusBarAppearanceUpdate()

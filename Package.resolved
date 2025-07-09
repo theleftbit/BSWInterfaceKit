@@ -1,13 +1,13 @@
 {
-  "originHash" : "eaf58e9cba1c2bbe2913ccb4752908f4a23ec291a787faff8af1f77effebca3f",
+  "originHash" : "06317766e1aa4fbd6f748c8f76678e57a6c4e78b152c224aa458e434b041c0f3",
   "pins" : [
     {
       "identity" : "bswfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "revision" : "0c08a587a2f4ee10811606bfc85fad129104ba01",
-        "version" : "7.1.0"
+        "revision" : "5e9f46e5e744cf23cae721c61db8668ef1451cf0",
+        "version" : "7.2.3"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip.git",
       "state" : {
-        "revision" : "05556ff97d7ebf9dd98df6bc1472dd972a17f465",
-        "version" : "1.5.11"
+        "revision" : "479ee2ee097b2704f64520eb1b73758c46f1e60e",
+        "version" : "1.6.5"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-android-bridge.git",
       "state" : {
-        "revision" : "48e8540c6b949652d8224cf5d00e0a87aea037b8",
-        "version" : "0.4.6"
+        "revision" : "fd1df7487629bb37bf521b719ec3ee03d0446487",
+        "version" : "0.6.0"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-bridge.git",
       "state" : {
-        "revision" : "7ce2abbe797f9ac6f3f93478d5cd640a9c0d61a3",
-        "version" : "0.14.1"
+        "revision" : "01d1d26d784a7c940a06bce0dab87a93b04d4537",
+        "version" : "0.15.0"
       }
     },
     {
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-foundation.git",
       "state" : {
-        "revision" : "645a937228b233a2743ccb85d746b6d20535fe77",
-        "version" : "1.3.4"
+        "revision" : "e521bf22a1ac1fcc0ae0d944a1b8417114415fe8",
+        "version" : "1.3.8"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-lib.git",
       "state" : {
-        "revision" : "443b05bfa861d58824ce6c24bed181caf7484c21",
-        "version" : "1.3.5"
+        "revision" : "30c97059e731f1b42a5ea1ead50b9e03fef3a7a4",
+        "version" : "1.3.7"
       }
     },
     {
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-unit.git",
       "state" : {
-        "revision" : "d7988bf16a3cfb6d0956bf378044cb258ea9312e",
-        "version" : "1.1.2"
+        "revision" : "0ed0649a680186b227e5ee14fd2f32ce2c8a1879",
+        "version" : "1.2.1"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-asn1.git",
       "state" : {
-        "revision" : "a54383ada6cecde007d374f58f864e29370ba5c3",
-        "version" : "1.3.2"
+        "revision" : "f70225981241859eb4aa1a18a75531d26637c8cc",
+        "version" : "1.4.0"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/swift-jni.git",
       "state" : {
-        "revision" : "614139a1ad5d590d89b47ec8385907e9b9284174",
-        "version" : "0.2.1"
+        "revision" : "747b4999e9426bafb6fa676f5989b33694fba8ad",
+        "version" : "0.3.0"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing.git",
       "state" : {
-        "revision" : "1be8144023c367c5de701a6313ed29a3a10bf59b",
-        "version" : "1.18.3"
+        "revision" : "37230a37e83f1b7023be08e1b1a2603fcb1567fb",
+        "version" : "1.18.4"
       }
     },
     {
