@@ -25,8 +25,6 @@ extension UIImageView {
         }
     }
 
-    public static var fadeImageDuration: TimeInterval? = nil
-
     private nonisolated(unsafe) static var webDownloadsEnabled = true
     
     public typealias BSWImageCompletionBlock = (Swift.Result<UIImage, Swift.Error>) -> Void
@@ -64,6 +62,7 @@ extension UIImageView {
             completedBlock?(.failure(CancellationError()))
             return
         }
+        bsw_imageDownloadCancellable?.cancel()
 
         let task = ImagePipeline.shared.loadImage(with: url) { [weak self] result in
             let taskResult: Swift.Result<UIImage, Swift.Error>
@@ -75,8 +74,8 @@ extension UIImageView {
                 taskResult = .success(response.image)
             }
             completedBlock?(taskResult)
+            self?.bsw_imageDownloadCancellable = nil
         }
-
         bsw_imageDownloadCancellable = task
     }
 
