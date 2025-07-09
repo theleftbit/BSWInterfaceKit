@@ -234,88 +234,93 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         lowerThumbLayer.highlighted = false
         upperThumbLayer.highlighted = false
     }
-    
-    struct Wrapper: @unchecked Sendable {
-        let ctx: CGContext
-    }
-    
+        
     class RangeSliderThumbLayer: CALayer, @unchecked Sendable {
         
+        struct Wrapper: @unchecked Sendable {
+            let ctx: CGContext
+            let layer: RangeSliderThumbLayer
+        }
+
         weak var rangeSlider: RangeSlider?
         var highlighted: Bool = false {
             didSet { setNeedsDisplay() }
         }
         
         override func draw(in ctx: CGContext) {
-            guard let rangeSlider else { return }
-            let bounds = self.bounds
-            let highlighted = self.highlighted
-            let wrapper = Wrapper(ctx: ctx)
+            let wrapper = Wrapper.init(ctx: ctx, layer: self)
             MainActor.assumeIsolated {
-                Self._draw(in: wrapper.ctx, slider: rangeSlider, bounds: bounds, highlighted: highlighted)
+                wrapper.layer._draw(in: wrapper.ctx)
             }
         }
         
         @MainActor
-        private static func _draw(in ctx: CGContext, slider: RangeSlider, bounds: CGRect, highlighted: Bool) {
-            let thumbFrame = bounds.insetBy(dx: 2.0, dy: 2.0)
-            let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
-            let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
-            
-            // Fill - with a subtle shadow
-            let shadowColor = UIColor.gray
-            ctx.setShadow(offset: CGSize(width: 0.0, height: 1.0), blur: 1.0, color: shadowColor.cgColor)
-            ctx.setFillColor(slider.thumbTintColor.cgColor)
-            ctx.addPath(thumbPath.cgPath)
-            ctx.fillPath()
-            
-            // Outline
-            ctx.setStrokeColor(shadowColor.cgColor)
-            ctx.setLineWidth(0.5)
-            ctx.addPath(thumbPath.cgPath)
-            ctx.strokePath()
-            
-            if highlighted {
-                ctx.setFillColor(UIColor(white: 0.0, alpha: 0.1).cgColor)
+        private func _draw(in ctx: CGContext) {
+            if let slider = rangeSlider {
+                let thumbFrame = bounds.insetBy(dx: 2.0, dy: 2.0)
+                let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
+                let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
+                
+                // Fill - with a subtle shadow
+                let shadowColor = UIColor.gray
+                ctx.setShadow(offset: CGSize(width: 0.0, height: 1.0), blur: 1.0, color: shadowColor.cgColor)
+                ctx.setFillColor(slider.thumbTintColor.cgColor)
                 ctx.addPath(thumbPath.cgPath)
                 ctx.fillPath()
+                
+                // Outline
+                ctx.setStrokeColor(shadowColor.cgColor)
+                ctx.setLineWidth(0.5)
+                ctx.addPath(thumbPath.cgPath)
+                ctx.strokePath()
+                
+                if highlighted {
+                    ctx.setFillColor(UIColor(white: 0.0, alpha: 0.1).cgColor)
+                    ctx.addPath(thumbPath.cgPath)
+                    ctx.fillPath()
+                }
             }
         }
     }
     
     class RangeSliderTrackLayer: CALayer, @unchecked Sendable {
+        
+        struct Wrapper: @unchecked Sendable {
+            let ctx: CGContext
+            let layer: RangeSliderTrackLayer
+        }
+
         weak var rangeSlider: RangeSlider?
         private let heightTrackLine: CGFloat = 3
         
         override func draw(in ctx: CGContext) {
-            guard let rangeSlider else { return }
-            let heightTrackLine: CGFloat = self.heightTrackLine
-            let bounds = self.bounds
-            let wrapper = Wrapper(ctx: ctx)
+            let wrapper = Wrapper(ctx: ctx, layer: self)
             MainActor.assumeIsolated {
-                Self._draw(in: wrapper.ctx, slider: rangeSlider, bounds: bounds, heightTrackLine: heightTrackLine)
+                wrapper.layer._draw(in: wrapper.ctx)
             }
         }
         
         @MainActor
-        private static func _draw(in ctx: CGContext, slider: RangeSlider, bounds: CGRect, heightTrackLine: CGFloat) {
-            // Clip
-            let cornerRadius = bounds.height * slider.curvaceousness / 2.0
-            let mainRect = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: heightTrackLine)
-            let path = UIBezierPath(roundedRect: mainRect, cornerRadius: cornerRadius)
-            ctx.addPath(path.cgPath)
-            
-            // Fill the track
-            ctx.setFillColor(slider.trackTintColor.cgColor)
-            ctx.addPath(path.cgPath)
-            ctx.fillPath()
-            
-            // Fill the highlighted range
-            ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
-            let lowerValuePosition = CGFloat(slider.positionForValue(slider.lowerValue))
-            let upperValuePosition = CGFloat(slider.positionForValue(slider.upperValue))
-            let rect = CGRect(x: lowerValuePosition, y: 0.0, width: upperValuePosition - lowerValuePosition, height: heightTrackLine)
-            ctx.fill(rect)
+        private func _draw(in ctx: CGContext) {
+            if let slider = rangeSlider {
+                // Clip
+                let cornerRadius = bounds.height * slider.curvaceousness / 2.0
+                let mainRect = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: heightTrackLine)
+                let path = UIBezierPath(roundedRect: mainRect, cornerRadius: cornerRadius)
+                ctx.addPath(path.cgPath)
+                
+                // Fill the track
+                ctx.setFillColor(slider.trackTintColor.cgColor)
+                ctx.addPath(path.cgPath)
+                ctx.fillPath()
+                
+                // Fill the highlighted range
+                ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
+                let lowerValuePosition = CGFloat(slider.positionForValue(slider.lowerValue))
+                let upperValuePosition = CGFloat(slider.positionForValue(slider.upperValue))
+                let rect = CGRect(x: lowerValuePosition, y: 0.0, width: upperValuePosition - lowerValuePosition, height: heightTrackLine)
+                ctx.fill(rect)
+            }
         }
     }
 }
