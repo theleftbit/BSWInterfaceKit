@@ -8,6 +8,7 @@
 import UIKit
 
 /// This `CALayer` subclass will ensure that the `UIView` backed by this layer will always be rounded.
+@objc(BSWRoundLayer)
 public class RoundLayer: CALayer {
     
     override init() {

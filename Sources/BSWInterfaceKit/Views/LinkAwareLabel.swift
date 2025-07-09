@@ -23,6 +23,7 @@ import UIKit
 /// `UILabel` subclass that when touched, iterates
 /// through the attachments in it's `attributedString`, and
 /// if it's a URL, executes the `didTapOnURL` handler
+@objc(BSWLinkAwareLabel)
 open class LinkAwareLabel: UILabel {
     
     public override init(frame: CGRect) {

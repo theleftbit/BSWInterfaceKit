@@ -18,6 +18,7 @@ import QuartzCore
 }
 
 /// Creates a `UIControl` that allows the user to select a Range.
+@objc(BSWRangeSlider)
 public class RangeSlider: UIControl, ViewModelConfigurable {
     
     /// All the properties that can be configured
@@ -235,6 +236,7 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         upperThumbLayer.highlighted = false
     }
         
+    @objc(BSWRangeSliderThumbLayer)
     class RangeSliderThumbLayer: CALayer, @unchecked Sendable {
         
         struct Wrapper: @unchecked Sendable {
@@ -283,6 +285,7 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         }
     }
     
+    @objc(BSWRangeSliderTrackLayer)
     class RangeSliderTrackLayer: CALayer, @unchecked Sendable {
         
         struct Wrapper: @unchecked Sendable {
