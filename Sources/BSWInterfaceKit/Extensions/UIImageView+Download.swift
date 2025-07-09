@@ -6,12 +6,24 @@
 #if canImport(UIKit.UIImageView)
 
 import BSWFoundation
-import Nuke; import NukeExtensions
+import Nuke
 import UIKit
 import SwiftUI
+import ObjectiveC
 
 @MainActor
 extension UIImageView {
+
+    private static var bsw_cancellableKey: UInt8 = 0
+
+    private var bsw_imageDownloadCancellable: Cancellable? {
+        get {
+            objc_getAssociatedObject(self, &UIImageView.bsw_cancellableKey) as? Cancellable
+        }
+        set {
+            objc_setAssociatedObject(self, &UIImageView.bsw_cancellableKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
 
     public static var fadeImageDuration: TimeInterval? = nil
 
@@ -38,7 +50,8 @@ extension UIImageView {
 
     @objc(bsw_cancelImageLoadFromURL)
     public func cancelImageLoadFromURL() {
-        NukeExtensions.cancelRequest(for: self)
+        bsw_imageDownloadCancellable?.cancel()
+        bsw_imageDownloadCancellable = nil
     }
     
     enum ImageDownloadError: Swift.Error {
@@ -47,22 +60,24 @@ extension UIImageView {
 
     @nonobjc
     public func setImageWithURL(_ url: URL, completed completedBlock: BSWImageCompletionBlock? = nil) {
-        guard UIImageView.webDownloadsEnabled else { return }
+        guard UIImageView.webDownloadsEnabled else {
+            completedBlock?(.failure(CancellationError()))
+            return
+        }
 
-        let options = ImageLoadingOptions(
-            transition: (UIImageView.fadeImageDuration != nil) ? .fadeIn(duration: UIImageView.fadeImageDuration!) : nil
-        )
-        
-        NukeExtensions.loadImage(with: url, options: options, into: self) { (result) in
+        let task = ImagePipeline.shared.loadImage(with: url) { [weak self] result in
             let taskResult: Swift.Result<UIImage, Swift.Error>
             switch result {
             case .failure(let error):
                 taskResult = .failure(error)
             case .success(let response):
+                self?.image = response.image
                 taskResult = .success(response.image)
             }
             completedBlock?(taskResult)
         }
+
+        bsw_imageDownloadCancellable = task
     }
 
     public func setPhoto(_ photo: Photo, preferredContentMode: UIView.ContentMode? = nil, placeholderImage: UIImage? = nil) {
@@ -111,5 +126,6 @@ extension UIImageView {
 }
 
 private let preheater = Nuke.ImagePrefetcher(destination: .diskCache)
+extension Nuke.ImageTask: @retroactive Cancellable {}
 
 #endif

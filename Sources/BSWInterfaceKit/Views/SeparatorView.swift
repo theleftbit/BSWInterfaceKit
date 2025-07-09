@@ -8,6 +8,7 @@ import UIKit
 }
 
 /// This `UIView` subclass can be used as a horizontal separator to divide logical parts of your view.
+@objc(BSWSeparatorView)
 public class SeparatorView: UIView {
     public init(color: UIColor = .separator) {
         super.init(frame: .zero)

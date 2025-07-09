@@ -18,6 +18,7 @@ import QuartzCore
 }
 
 /// Creates a `UIControl` that allows the user to select a Range.
+@objc(BSWRangeSlider)
 public class RangeSlider: UIControl, ViewModelConfigurable {
     
     /// All the properties that can be configured
@@ -234,22 +235,24 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         lowerThumbLayer.highlighted = false
         upperThumbLayer.highlighted = false
     }
-    
-    struct Wrapper: @unchecked Sendable {
-        let ctx: CGContext
-    }
-    
+        
+    @objc(BSWRangeSliderThumbLayer)
     class RangeSliderThumbLayer: CALayer, @unchecked Sendable {
         
+        struct Wrapper: @unchecked Sendable {
+            let ctx: CGContext
+            let layer: RangeSliderThumbLayer
+        }
+
         weak var rangeSlider: RangeSlider?
         var highlighted: Bool = false {
             didSet { setNeedsDisplay() }
         }
         
         override func draw(in ctx: CGContext) {
-            let wrapper = Wrapper.init(ctx: ctx)
+            let wrapper = Wrapper.init(ctx: ctx, layer: self)
             MainActor.assumeIsolated {
-                _draw(in: wrapper.ctx)
+                wrapper.layer._draw(in: wrapper.ctx)
             }
         }
         
@@ -282,14 +285,21 @@ public class RangeSlider: UIControl, ViewModelConfigurable {
         }
     }
     
+    @objc(BSWRangeSliderTrackLayer)
     class RangeSliderTrackLayer: CALayer, @unchecked Sendable {
+        
+        struct Wrapper: @unchecked Sendable {
+            let ctx: CGContext
+            let layer: RangeSliderTrackLayer
+        }
+
         weak var rangeSlider: RangeSlider?
         private let heightTrackLine: CGFloat = 3
         
         override func draw(in ctx: CGContext) {
-            let wrapper = Wrapper(ctx: ctx)
+            let wrapper = Wrapper(ctx: ctx, layer: self)
             MainActor.assumeIsolated {
-                _draw(in: wrapper.ctx)
+                wrapper.layer._draw(in: wrapper.ctx)
             }
         }
         

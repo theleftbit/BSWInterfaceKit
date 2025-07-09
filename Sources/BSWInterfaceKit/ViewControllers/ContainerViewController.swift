@@ -97,7 +97,7 @@ open class ContainerViewController: UIViewController {
         }
         newVC.didMove(toParent: self)
         
-        let completion = {
+        let completion: @MainActor () -> () = {
             oldVC.view.removeFromSuperview()
             oldVC.removeFromParent()
             self.setNeedsStatusBarAppearanceUpdate()
@@ -113,7 +113,9 @@ open class ContainerViewController: UIViewController {
             }
             
             animator.addCompletion { _ in
-                completion()
+                MainActor.assumeIsolated {
+                    completion()
+                }
             }
             animator.startAnimation()
         } else {
