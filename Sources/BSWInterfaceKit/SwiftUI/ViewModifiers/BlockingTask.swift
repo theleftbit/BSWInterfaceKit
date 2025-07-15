@@ -24,6 +24,9 @@ import SwiftUI
         }
     )
 }
+#else
+import SkipFuseUI
+#endif
 
 public typealias AsyncBlockingTask = @MainActor () async throws -> ()
 public typealias AsyncBlockingTaskWithValue<T: Equatable> = @MainActor (T) async throws -> ()
@@ -163,4 +166,4 @@ struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         confirmationContinuation = nil
     }
 }
-#endif
+
