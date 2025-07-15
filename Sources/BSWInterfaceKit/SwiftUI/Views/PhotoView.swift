@@ -226,8 +226,8 @@ private extension UIImage {
         self
     }
     #else
-    nonisolated func extractSubject() async -> UIImage? {
-        guard let inputImage = CIImage(image: self) else { return nil }
+    nonisolated func extractSubject() async -> UIImage {
+        guard let inputImage = CIImage(image: self) else { return self }
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(ciImage: inputImage)
         
@@ -238,7 +238,7 @@ private extension UIImage {
                     forInstances: result.allInstances,
                     from: handler
                   ) else {
-                return nil
+                return self
             }
             let maskImage = CIImage(cvPixelBuffer: mask)
             let filter = CIFilter.blendWithMask()
@@ -248,11 +248,11 @@ private extension UIImage {
             
             guard let outputImage = filter.outputImage,
                   let cgImage = CIContext(options: nil).createCGImage(outputImage, from: outputImage.extent)
-            else { return nil }
+            else { return self }
             
             return UIImage(cgImage: cgImage)
         } catch {
-            return nil
+            return self
         }
     }
     #endif
