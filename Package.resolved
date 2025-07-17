@@ -1,5 +1,5 @@
 {
-  "originHash" : "f55c7dcc63f0dfcee41dde7189d9dca4ee3d484e60f80cb4dfea5620847867b1",
+  "originHash" : "596726c63750a26c435e56c8b2074df977390eacc88b070aee34c9afaf080d0a",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-fuse-ui.git",
       "state" : {
-        "revision" : "3e343be0fbe08c7e101040f2f2f72fd619669893",
-        "version" : "0.14.0"
+        "revision" : "759828c8256db1611b6e78027c4f1435d736c2e7",
+        "version" : "1.6.3"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-model.git",
       "state" : {
-        "revision" : "fb31356a6cf595b5feb7bef7e3d45e455d15bf46",
-        "version" : "1.4.2"
+        "revision" : "1a90655e5296e8524f9e76074b198a525c5e216b",
+        "version" : "1.5.0"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-ui.git",
       "state" : {
-        "revision" : "c111ed1816e4d6a9ca6460a0177e32710e27f6e3",
-        "version" : "1.28.20"
+        "revision" : "0293a3ddd14ac7272c9e39e1c4001644e3e73120",
+        "version" : "1.35.2"
       }
     },
     {
