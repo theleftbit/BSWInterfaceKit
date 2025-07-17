@@ -46,7 +46,6 @@ let package = Package(
                 "BSWInterfaceKitObjC",
                 "BSWFoundation"
             ],
-            plugins: [.plugin(name: "skipstone", package: "skip")]
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
