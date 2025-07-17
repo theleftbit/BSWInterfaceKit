@@ -38,10 +38,15 @@ public enum AsyncBlockingTaskConfirmationStrategy {
 public extension View {
     
     func performBlockingTask<T: Equatable>(value: Binding<T?>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
+        #if canImport(Darwin)
         self.modifier(PerformEquatableBlockingModifier(value: value, task: task, confirmationStrategy: confirmationStrategy))
+        #else
+        self
+        #endif
     }
 
     func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
+        #if canImport(Darwin)
         self.modifier(
             PerformEquatableBlockingModifier(
                 value: .init(
@@ -59,11 +64,16 @@ public extension View {
                 confirmationStrategy: confirmationStrategy
             )
         )
+        #else
+        self
+        #endif
     }
 }
 
 // MARK: Private
 
+#if canImport(Darwin)
+/// Not available on Android until https://github.com/skiptools/skip/issues/466 is addressed
 struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     
     @Binding
@@ -166,4 +176,4 @@ struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         confirmationContinuation = nil
     }
 }
-
+#endif
