@@ -38,43 +38,34 @@ public enum AsyncBlockingTaskConfirmationStrategy {
 public extension View {
     
     func performBlockingTask<T: Equatable>(value: Binding<T?>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
-        #if canImport(Darwin)
-        self.modifier(PerformEquatableBlockingModifier(value: value, task: task, confirmationStrategy: confirmationStrategy))
-        #else
-        self
-        #endif
+        PerformEquatableBlockingView(content: self, value: value, task: task, confirmationStrategy: confirmationStrategy)
     }
 
     func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
-        #if canImport(Darwin)
-        self.modifier(
-            PerformEquatableBlockingModifier(
-                value: .init(
-                    get: {
-                        readyToPerform.wrappedValue ? true : nil
-                    },
-                    set: {
-                        if let _ = $0 {
-                            readyToPerform.wrappedValue = true
-                        } else {
-                            readyToPerform.wrappedValue = false
-                        }
-                    }),
-                task: { _ in try await task() },
-                confirmationStrategy: confirmationStrategy
-            )
+        PerformEquatableBlockingView(
+            content: self,
+            value: .init(
+                get: {
+                    readyToPerform.wrappedValue ? true : nil
+                },
+                set: {
+                    if let _ = $0 {
+                        readyToPerform.wrappedValue = true
+                    } else {
+                        readyToPerform.wrappedValue = false
+                    }
+                }),
+            task: { _ in try await task() },
+            confirmationStrategy: confirmationStrategy
         )
-        #else
-        self
-        #endif
     }
 }
 
 // MARK: Private
 
-#if canImport(Darwin)
-/// Not available on Android until https://github.com/skiptools/skip/issues/466 is addressed
-struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
+struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
+    
+    let content: V
     
     @Binding
     var value: T?
@@ -110,7 +101,7 @@ struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     @State
     var isConfirmationDestructive: Bool = false
     
-    func body(content: Content) -> some View {
+    var body: some View {
         content
             .task(id: value) {
                 guard let value = self.value else { return }
@@ -176,4 +167,3 @@ struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         confirmationContinuation = nil
     }
 }
-#endif
