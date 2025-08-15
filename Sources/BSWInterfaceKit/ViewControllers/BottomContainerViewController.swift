@@ -7,11 +7,19 @@
 import UIKit
 import BSWInterfaceKitObjC
 
-
 /// This `UIViewController` subclass allows you to write the common UI pattern where the "Top" VC is the content and at the bottom you have a button.
 @objc(BSWBottomContainerViewController)
 open class BottomContainerViewController: UIViewController {
     
+    /// Determines whether the bottom container should adopt a "glass" interface appearance by providing a translucent, blurred
+    /// background effect for the bottom view.
+    ///
+    /// When set to `true`, and if supported by the current platform and configuration,
+    /// the bottom view's background will be set to transparent and will visually float above the main content with a glass-like effect, enhancing visual separation.
+    /// 
+    /// Defaults to `true`.
+    /// - note: This property will be read in `viewDidLoad` so set this *before* this ViewController is added into the hierarchy.
+    public var shouldAdoptGlassInterface = true
     public let containedViewController: UIViewController
     public var button: UIButton? {
         guard case .button(let button, _) = bottomViewKind else {
@@ -94,6 +102,16 @@ open class BottomContainerViewController: UIViewController {
             ])
         containedViewController.didMove(toParent: self)
         buttonContainer.didMove(toParent: self)
+        
+        #if swift(>=6.2)
+        if #available(iOS 26.0, *), shouldAdoptGlassInterface, let scrollView = containedViewController.findFirstScrollView() {
+            let interaction = UIScrollEdgeElementContainerInteraction()
+            interaction.scrollView = scrollView
+            interaction.edge = .bottom
+            buttonContainer.view.backgroundColor = nil
+            buttonContainer.view.addInteraction(interaction)
+        }
+        #endif
     }
     
     open override func viewDidLayoutSubviews() {
@@ -216,5 +234,114 @@ public extension BottomContainerViewController {
         animator.startAnimation()
     }
 }
+
+private extension UIViewController {
+    func findFirstScrollView() -> UIScrollView? {
+        if let scrollView = self.view as? UIScrollView {
+            return scrollView
+        }
+        return self.view.findFirstScrollView()
+    }
+}
+
+private extension UIView {
+    func findFirstScrollView() -> UIScrollView? {
+        if let scrollView = self as? UIScrollView {
+            return scrollView
+        }
+        for subview in subviews {
+            if let scrollView = subview.findFirstScrollView() {
+                return scrollView
+            }
+        }
+        return nil
+    }
+}
+
+#if DEBUG
+
+@available(iOS 17, *)
+#Preview {
+    class PreviewScrollableStackVC: UIViewController {
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = .systemBackground
+            title = "Hello man"
+            let scrollView = UIScrollView()
+            scrollView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(scrollView)
+            NSLayoutConstraint.activate([
+                scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+                scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            ])
+            
+            let stackView = UIStackView()
+            stackView.axis = .vertical
+            stackView.spacing = 16
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview(stackView)
+            
+            NSLayoutConstraint.activate([
+                stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
+                stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+                stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
+                stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
+                stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32)
+            ])
+            
+            let colors: [UIColor] = [
+                .systemRed, .systemBlue, .systemGreen, .systemOrange, .systemPurple,
+                .systemTeal, .systemYellow, .systemPink, .systemIndigo, .systemGray
+            ]
+            
+            for i in 0..<10 {
+                let view = UIView()
+                view.backgroundColor = colors[i % colors.count]
+                view.layer.cornerRadius = 16
+                view.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    view.heightAnchor.constraint(equalToConstant: 80)
+                ])
+                stackView.addArrangedSubview(view)
+            }
+        }
+    }
+    class PreviewBottomButtonVC: UIViewController {
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = .systemBackground
+            
+            let actionButton = UIButton(configuration: .borderedProminent())
+            actionButton.configuration?.title = "Push Me"
+            actionButton.translatesAutoresizingMaskIntoConstraints = false
+            actionButton.backgroundColor = .systemBlue
+            actionButton.clipsToBounds = true
+            
+            view.addSubview(actionButton)
+            
+            NSLayoutConstraint.activate([
+                actionButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+                actionButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
+                actionButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+                actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24)
+            ])
+        }
+    }
+
+    let bottomVC = BottomContainerViewController(
+        containedViewController: PreviewScrollableStackVC(),
+        bottomViewController: PreviewBottomButtonVC()
+    )
+    bottomVC.shouldAdoptGlassInterface = false
+    let navController = UINavigationController(
+        rootViewController: bottomVC
+    )
+    navController.navigationBar.prefersLargeTitles = true
+    return navController
+}
+#endif
 
 #endif
