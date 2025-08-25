@@ -103,15 +103,10 @@ open class BottomContainerViewController: UIViewController {
         containedViewController.didMove(toParent: self)
         buttonContainer.didMove(toParent: self)
         
-        #if swift(>=6.2)
-        if #available(iOS 26.0, *), shouldAdoptGlassInterface, let scrollView = containedViewController.findFirstScrollView() {
-            let interaction = UIScrollEdgeElementContainerInteraction()
-            interaction.scrollView = scrollView
-            interaction.edge = .bottom
-            buttonContainer.view.backgroundColor = nil
-            buttonContainer.view.addInteraction(interaction)
+        if shouldAdoptGlassInterface,
+           let scrollView = containedViewController.findFirstScrollView() {
+            buttonContainer.addEdgeElementContainerInteraction(for: scrollView)
         }
-        #endif
     }
     
     open override func viewDidLayoutSubviews() {
