@@ -149,6 +149,21 @@ public extension UIViewController {
     }
 }
 
+public extension UIViewController {
+    
+    func addEdgeElementContainerInteraction(for scrollView: UIScrollView) {
+        #if swift(>=6.2)
+        if #available(iOS 26.0, *) {
+            let interaction = UIScrollEdgeElementContainerInteraction()
+            interaction.scrollView = scrollView
+            interaction.edge = .bottom
+            self.view.backgroundColor = nil
+            self.view.addInteraction(interaction)
+        }
+        #endif
+    }
+}
+
 // MARK: Private
 
 private let alertQueue: OperationQueue = {
