@@ -141,10 +141,5 @@ extension Image: @retroactive Hashable {
     }
 }
 
-#if canImport(Darwin)
 extension Photo: Equatable, Hashable, Sendable {}
 extension Photo.Kind: Equatable, Hashable, Sendable {}
-#else
-extension Photo: Equatable, Hashable, @unchecked Sendable {}
-extension Photo.Kind: Equatable, Hashable, @unchecked Sendable {}
-#endif

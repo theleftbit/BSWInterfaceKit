@@ -176,15 +176,9 @@ extension PhotoView {
     }
 }
 
-#if canImport(Darwin)
 extension PhotoView.Configuration: Sendable {}
 extension PhotoView.Configuration.Placeholder: Sendable {}
 extension PhotoView.Configuration.Placeholder.Shape: Sendable {}
-#else
-extension PhotoView.Configuration: @unchecked Sendable {}
-extension PhotoView.Configuration.Placeholder: @unchecked Sendable {}
-extension PhotoView.Configuration.Placeholder.Shape: @unchecked Sendable {}
-#endif
 
 #if canImport(UIKit)
 

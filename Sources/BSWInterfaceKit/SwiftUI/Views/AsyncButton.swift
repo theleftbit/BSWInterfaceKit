@@ -338,14 +338,7 @@ private extension Swift.Result {
     }
 }
 
-#if canImport(Darwin)
 extension AsyncButtonLoadingConfiguration: Sendable {}
 extension AsyncButtonLoadingConfiguration.Style: Sendable {}
 extension AsyncButtonLoadingConfiguration.Style.BlockingConfiguration: Sendable {}
 extension AsyncButtonLoadingConfiguration.Style.BlockingSuccessMessage: Sendable {}
-#else
-extension AsyncButtonLoadingConfiguration: @unchecked Sendable {}
-extension AsyncButtonLoadingConfiguration.Style: @unchecked Sendable {}
-extension AsyncButtonLoadingConfiguration.Style.BlockingConfiguration: @unchecked Sendable {}
-extension AsyncButtonLoadingConfiguration.Style.BlockingSuccessMessage: @unchecked Sendable {}
-#endif

@@ -1,13 +1,13 @@
 {
-  "originHash" : "d1ca8703a5edcbc7432395f5d83a0c3549bcb435f4742a174c601ecc404957ef",
+  "originHash" : "cda3b28c57c7164ee9ce26de2ccf4e1fdca106fcbeb227e1810506cb51e273ae",
   "pins" : [
     {
       "identity" : "bswfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "revision" : "5e9f46e5e744cf23cae721c61db8668ef1451cf0",
-        "version" : "7.2.3"
+        "revision" : "f69ec4016fe85b9f843fa812c0ded21fed05d796",
+        "version" : "7.2.4"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-model.git",
       "state" : {
-        "revision" : "1a90655e5296e8524f9e76074b198a525c5e216b",
-        "version" : "1.5.0"
+        "revision" : "4e70ab47cad35fd175dc38adf846fa5f0f75e86b",
+        "version" : "1.6.0"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-ui.git",
       "state" : {
-        "revision" : "783bb4c18382f6d75b899aa06cc8e694e6caa031",
-        "version" : "1.37.2"
+        "revision" : "1bd8c9f202dca5f27a8fa43aeb8d4eb2795f5356",
+        "version" : "1.39.0"
       }
     },
     {
@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-unit.git",
       "state" : {
-        "revision" : "0ed0649a680186b227e5ee14fd2f32ce2c8a1879",
-        "version" : "1.2.1"
+        "revision" : "27cb30ff1415102e7b4cce7c8889740ee972e367",
+        "version" : "1.3.7"
       }
     },
     {
@@ -150,8 +150,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
-        "version" : "3.12.3"
+        "revision" : "334e682869394ee239a57dbe9262bff3cd9495bd",
+        "version" : "3.14.0"
+      }
+    },
+    {
+      "identity" : "swift-custom-dump",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-custom-dump",
+      "state" : {
+        "revision" : "82645ec760917961cfa08c9c0c7104a57a0fa4b1",
+        "version" : "1.3.3"
       }
     },
     {
@@ -161,6 +170,33 @@
       "state" : {
         "revision" : "747b4999e9426bafb6fa676f5989b33694fba8ad",
         "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing.git",
+      "state" : {
+        "revision" : "d7e40607dcd6bc26543f5d9433103f06e0b28f8f",
+        "version" : "1.18.6"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax",
+      "state" : {
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "b2ed9eabefe56202ee4939dd9fc46b6241c88317",
+        "version" : "1.6.1"
       }
     }
   ],

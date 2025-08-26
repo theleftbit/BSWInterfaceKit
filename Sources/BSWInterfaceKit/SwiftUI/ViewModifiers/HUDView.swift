@@ -46,7 +46,7 @@ public extension View {
     }
 }
 
-public enum HUDState: Equatable {
+public enum HUDState: Equatable, Sendable {
     case none
     case loading(String? = nil)
     case success(String?)
@@ -55,15 +55,15 @@ public enum HUDState: Equatable {
         switch self {
         case .none:
             return false
-        case .loading(let string):
+        case .loading:
             return true
-        case .success(let string):
+        case .success:
             return true
         }
     }
 }
 
-public struct HUDConfiguration {
+public struct HUDConfiguration: Sendable {
     
     public init(font: Font = .body, dimsBackground: Bool = false, successMessageInterval: TimeInterval = 3) {
         self.dimsBackground = dimsBackground
@@ -75,12 +75,6 @@ public struct HUDConfiguration {
     let dimsBackground: Bool
     let successMessageInterval: TimeInterval
 }
-
-#if canImport(Darwin)
-extension HUDConfiguration: Sendable {}
-#else
-extension HUDConfiguration: @unchecked Sendable {}
-#endif
 
 #if os(iOS)
 struct iOSHUDModifier: ViewModifier {
