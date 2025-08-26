@@ -172,7 +172,37 @@ private extension View {
         }
     }
 }
-#endif
+#elseif os(Android)
+struct AndroidHUDModifier: ViewModifier {
+    @Binding
+    var hudState: HUDState
+
+    let configuration: HUDConfiguration
+
+    func body(content: Content) -> some View {
+        content.overlay {
+            ComposeView {
+                AndroidHUD(visible: hudState.shouldShow, text: "Loading...")
+            }
+        }
+    }
+    
+    #if SKIP
+    struct AndroidHUD: ContentComposer {
+        let visible: Bool
+        let text: String
+        
+        @Composable
+        func Compose(context: ComposeContext) {
+            bswinterface.kit.BlockingHudDialog(
+                visible: visible,
+                text: text
+            )
+        }
+    }
+    #endif
+}
+#else
 /// This kind of sucks, so please fix
 struct MacHUDModifier: ViewModifier {
     @Binding
@@ -201,38 +231,7 @@ struct MacHUDModifier: ViewModifier {
         }
     }
 }
-
-struct AndroidHUDModifier: ViewModifier {
-    @Binding
-    var hudState: HUDState
-
-    let configuration: HUDConfiguration
-
-    func body(content: Content) -> some View {
-        content.overlay {
-            #if os(Android)
-            ComposeView {
-                AndroidHUD(visible: hudState.shouldShow, text: "Loading...")
-            }
-            #endif
-        }
-    }
-    
-    #if SKIP
-    struct AndroidHUD: ContentComposer {
-        let visible: Bool
-        let text: String
-        
-        @Composable
-        func Compose(context: ComposeContext) {
-            bswinterface.kit.BlockingHudDialog(
-                visible: visible,
-                text: text
-            )
-        }
-    }
-    #endif
-}
+#endif
 
 struct HUDView: View {
 

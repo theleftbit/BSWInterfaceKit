@@ -323,12 +323,14 @@ public struct AsyncStatePlainLoadingView<T: View>: View {
     
     let contentView: T
     public var body: some View {
+        #if canImport(Darwin)
         contentView
             .redacted(reason: .placeholder)
             .disabled(true)
-            #if canImport(Darwin)
             .shimmering()
-            #endif
+        #else
+        ProgressView()
+        #endif
     }
 }
 
