@@ -74,7 +74,10 @@ let package = Package(
         ),
         .testTarget(
             name: "BSWInterfaceKitTests",
-            dependencies: ["BSWInterfaceKit", .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
+            dependencies: [
+                "BSWInterfaceKit",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
             exclude: ["Suite/__Snapshots__/"]
         ),
     ]
