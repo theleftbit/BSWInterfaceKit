@@ -61,6 +61,28 @@ public enum HUDState: Equatable, Sendable {
             return true
         }
     }
+    
+    var isSuccess: Bool {
+        switch self {
+        case .none:
+            return false
+        case .loading(let string):
+            return false
+        case .success(let string):
+            return true
+        }
+    }
+    
+    var text: String {
+        switch self {
+        case .none:
+            return ""
+        case .loading(let string):
+            return string ?? ""
+        case .success(let string):
+            return string ?? ""
+        }
+    }
 }
 
 public struct HUDConfiguration: Sendable {
@@ -176,7 +198,7 @@ struct AndroidHUDModifier: ViewModifier {
     func body(content: Content) -> some View {
         content.overlay {
             ComposeView {
-                AndroidHUD(visible: hudState.shouldShow, text: "Loading...")
+                AndroidHUD(visible: hudState.shouldShow, text: hudState.text, isSuccess: hudState.isSuccess)
             }
         }
     }
@@ -185,12 +207,14 @@ struct AndroidHUDModifier: ViewModifier {
     struct AndroidHUD: ContentComposer {
         let visible: Bool
         let text: String
+        let isSuccess: Bool
         
         @Composable
         func Compose(context: ComposeContext) {
             bswinterface.kit.BlockingHudDialog(
                 visible: visible,
-                text: text
+                text: text,
+                isSuccess: isSuccess
             )
         }
     }

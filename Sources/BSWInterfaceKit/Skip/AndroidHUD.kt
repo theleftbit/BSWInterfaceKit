@@ -17,10 +17,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.delay
 
+// Opcional (si usas Material Icons):
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.ui.draw.scale
+
 @Composable
 fun BlockingHudDialog(
     visible: Boolean,
     text: String = "Loading…",
+    isSuccess: Boolean = false,
     scrimAlpha: Float = 0.35f
 ) {
     if (!visible) return
@@ -53,12 +59,25 @@ fun BlockingHudDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                    Text(
-                        text = text,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    if (isSuccess) {
+                        // Icono de éxito (usa Material Icons; si no las tienes, ver fallback abajo)
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    } else {
+                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    }
+
+                    if (text.isNotEmpty()) {
+                        Text(
+                            text = text,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
         }
