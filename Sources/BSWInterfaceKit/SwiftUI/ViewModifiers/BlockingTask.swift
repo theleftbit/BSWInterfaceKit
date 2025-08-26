@@ -36,12 +36,34 @@ public enum AsyncBlockingTaskConfirmationStrategy {
 }
 
 public extension View {
-    
-    func performBlockingTask<T: Equatable>(value: Binding<T?>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
-        PerformEquatableBlockingView(content: self, value: value, task: task, confirmationStrategy: confirmationStrategy)
+
+    func performBlockingTask<T: Equatable>(
+        value: Binding<T?>,
+        confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired,
+        loadingMessage: String? = nil,
+        successMessage: String? = nil,
+        successDisplaySeconds: TimeInterval = 1.0,
+        task: @escaping AsyncBlockingTaskWithValue<T>
+    ) -> some View {
+        PerformEquatableBlockingView(
+            content: self,
+            value: value,
+            task: task,
+            confirmationStrategy: confirmationStrategy,
+            loadingMessage: loadingMessage,
+            successMessage: successMessage,
+            successDisplaySeconds: successDisplaySeconds
+        )
     }
 
-    func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
+    func performBlockingTask(
+        readyToPerform: Binding<Bool>,
+        confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired,
+        loadingMessage: String? = nil,
+        successMessage: String? = nil,
+        successDisplaySeconds: TimeInterval = 1.0,
+        task: @escaping AsyncBlockingTask
+    ) -> some View {
         PerformEquatableBlockingView(
             content: self,
             value: .init(
@@ -54,13 +76,16 @@ public extension View {
                     } else {
                         readyToPerform.wrappedValue = false
                     }
-                }),
+                }
+            ),
             task: { _ in try await task() },
-            confirmationStrategy: confirmationStrategy
+            confirmationStrategy: confirmationStrategy,
+            loadingMessage: loadingMessage,
+            successMessage: successMessage,
+            successDisplaySeconds: successDisplaySeconds
         )
     }
 }
-
 // MARK: Private
 
 struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
@@ -101,31 +126,39 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
     @State
     var isConfirmationDestructive: Bool = false
     
+    let loadingMessage: String?
+    let successMessage: String?
+    let successDisplaySeconds: TimeInterval
+    
     var body: some View {
         content
             .task(id: value) {
                 guard let value = self.value else { return }
-                defer {
-                    self.value = nil
-                }
+                defer { self.value = nil }
                 
                 switch confirmationStrategy {
-                case .notRequired:
-                    break
-                case .confirmWith(let title, let message, let confirmButtonTitle, let cancelButtonTitle, let isDestructiveAction):
-                    let didConfirm = await confirmAction(confirmationTitle: title, confirmationMessage: message, confirmationConfirmButtonTitle: confirmButtonTitle, confirmationCancelButtonTitle: cancelButtonTitle, isConfirmationDestructive: isDestructiveAction)
-                    if didConfirm == false {
-                        return
-                    }
+                case .notRequired: break
+                case .confirmWith(let title, let message, let confirm, let cancel, let destructive):
+                    let didConfirm = await confirmAction(
+                        confirmationTitle: title,
+                        confirmationMessage: message,
+                        confirmationConfirmButtonTitle: confirm,
+                        confirmationCancelButtonTitle: cancel,
+                        isConfirmationDestructive: destructive
+                    )
+                    if !didConfirm { return }
                 }
-
-                self.hudState = .loading()
+                
+                self.hudState = .loading(loadingMessage)
                 
                 do {
                     try await task(value)
+                    self.hudState = .success(successMessage)
+                    try? await Task.sleep(for: .seconds(successDisplaySeconds))
                 } catch {
                     taskError = error
                 }
+                
                 self.hudState = .none
             }
             .errorAlert(error: $taskError)
@@ -133,18 +166,12 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
             .alert(confirmationTitle, isPresented: $isShowingConfirmation) {
                 Button(role: isConfirmationDestructive ? .destructive : nil) {
                     handleConfirmation(true)
-                } label: {
-                    Text(confirmationConfirmButtonTitle)
-                }
+                } label: { Text(confirmationConfirmButtonTitle) }
                 Button(role: .cancel) {
                     handleConfirmation(false)
-                } label: {
-                    Text(confirmationCancelButtonTitle)
-                }
+                } label: { Text(confirmationCancelButtonTitle) }
             } message: {
-                if let confirmationMessage {
-                    Text(confirmationMessage)
-                }
+                if let confirmationMessage { Text(confirmationMessage) }
             }
     }
     
