@@ -38,6 +38,8 @@ public extension View {
     func hud(hudState: Binding<HUDState>, configuration: HUDConfiguration? = nil) -> some View {
         #if os(iOS)
         modifier(iOSHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        #elseif os(Android)
+        modifier(AndroidHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
         #else
         modifier(MacHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
         #endif
@@ -48,6 +50,17 @@ public enum HUDState: Equatable {
     case none
     case loading(String? = nil)
     case success(String?)
+    
+    var shouldShow: Bool {
+        switch self {
+        case .none:
+            return false
+        case .loading(let string):
+            return true
+        case .success(let string):
+            return true
+        }
+    }
 }
 
 public struct HUDConfiguration {
@@ -159,7 +172,7 @@ private extension View {
         }
     }
 }
-#else
+#endif
 /// This kind of sucks, so please fix
 struct MacHUDModifier: ViewModifier {
     @Binding
@@ -189,8 +202,37 @@ struct MacHUDModifier: ViewModifier {
     }
 }
 
-#endif
+struct AndroidHUDModifier: ViewModifier {
+    @Binding
+    var hudState: HUDState
 
+    let configuration: HUDConfiguration
+
+    func body(content: Content) -> some View {
+        content.overlay {
+            #if os(Android)
+            ComposeView {
+                AndroidHUD(visible: hudState.shouldShow, text: "Loading...")
+            }
+            #endif
+        }
+    }
+    
+    #if SKIP
+    struct AndroidHUD: ContentComposer {
+        let visible: Bool
+        let text: String
+        
+        @Composable
+        func Compose(context: ComposeContext) {
+            bswinterface.kit.BlockingHudDialog(
+                visible: visible,
+                text: text
+            )
+        }
+    }
+    #endif
+}
 
 struct HUDView: View {
 
