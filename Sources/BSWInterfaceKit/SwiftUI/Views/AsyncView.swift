@@ -263,56 +263,7 @@ public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingVie
     }
 }
 
-#if os(Android)
-import SkipFuseUI
-
-public struct AndroidProgressLoadingView: View {
-    public var body: some View {
-        ProgressView()
-    }
-}
-#endif
-
-#if os(Android)
-public extension AsyncView
-where HostedView: PlaceholderDataProvider,
-      HostedView.PlaceholderData == Data,
-      LoadingView == AndroidProgressLoadingView,
-      ErrorView == AsyncStatePlainErrorView
-{
-    init(id: Binding<ID>,
-         dataGenerator: @escaping DataGenerator,
-         hostedViewGenerator: @escaping HostedViewGenerator) {
-
-        self.init(
-            id: id,
-            dataGenerator: dataGenerator,
-            hostedViewGenerator: hostedViewGenerator,
-            errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1) },
-            loadingViewGenerator: { AndroidProgressLoadingView() }
-        )
-    }
-
-    init(id: ID,
-         dataGenerator: @escaping DataGenerator,
-         hostedViewGenerator: @escaping HostedViewGenerator) {
-
-        self.init(
-            id: id,
-            dataGenerator: dataGenerator,
-            hostedViewGenerator: hostedViewGenerator,
-            errorViewGenerator: { AsyncStatePlainErrorView(error: $0, onRetry: $1) },
-            loadingViewGenerator: { AndroidProgressLoadingView() }
-        )
-    }
-}
-#else
-public extension AsyncView
-where HostedView: PlaceholderDataProvider,
-      LoadingView == AsyncStatePlainLoadingView<HostedView>,
-      HostedView.PlaceholderData == Data,
-      ErrorView == AsyncStatePlainErrorView
-{
+public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.PlaceholderData == Data, ErrorView == AsyncStatePlainErrorView {
     init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
          hostedViewGenerator: @escaping HostedViewGenerator) {
@@ -341,7 +292,6 @@ where HostedView: PlaceholderDataProvider,
         )
     }
 }
-#endif
 
 public struct AsyncStatePlainErrorView: View {
     
