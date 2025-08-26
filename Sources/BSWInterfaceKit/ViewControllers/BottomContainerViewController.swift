@@ -88,7 +88,13 @@ open class BottomContainerViewController: UIViewController {
             if isiOSAppOnMac() {
                 return containedViewController.view.bottomAnchor.constraint(equalTo: buttonContainer.view.topAnchor)
             } else {
-                return containedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                let k = view.keyboardLayoutGuide
+                if #available(iOS 17.0, *) {
+                    /// Needed to preserve the real bottom edge for
+                    /// `UIScrollEdgeElementContainerInteraction`.
+                    k.usesBottomSafeArea = false
+                }
+                return containedViewController.view.bottomAnchor.constraint(equalTo: k.topAnchor)
             }
         }()
         NSLayoutConstraint.activate([
