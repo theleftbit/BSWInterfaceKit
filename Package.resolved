@@ -1,5 +1,5 @@
 {
-  "originHash" : "cda3b28c57c7164ee9ce26de2ccf4e1fdca106fcbeb227e1810506cb51e273ae",
+  "originHash" : "14e387fb2e27692ff05836017ddb0b2be4bdc961c7cf23f17935164ce1492994",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-bridge.git",
       "state" : {
-        "revision" : "3e0f8f1464a62bf46f1e56b76620fdf64d790258",
-        "version" : "0.16.0"
+        "revision" : "cbd6eb0daae69226d29c008a0efc521b34fe0d45",
+        "version" : "0.16.1"
       }
     },
     {
