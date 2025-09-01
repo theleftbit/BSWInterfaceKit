@@ -16,8 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.delay
-
-// Opcional (si usas Material Icons):
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.draw.scale
@@ -36,14 +34,14 @@ fun BlockingHudDialog(
         properties = DialogProperties(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,
-            usePlatformDefaultWidth = false // allow full-screen content
+            usePlatformDefaultWidth = false
         )
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = scrimAlpha))
-                .clickable( // consume all touches
+                .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) { }
@@ -60,7 +58,6 @@ fun BlockingHudDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     if (isSuccess) {
-                        // Icono de éxito (usa Material Icons; si no las tienes, ver fallback abajo)
                         Icon(
                             imageVector = Icons.Filled.Check,
                             contentDescription = null,
