@@ -1,7 +1,7 @@
 
-#if canImport(Darwin)
 import SwiftUI
 
+#if canImport(Darwin)
 @available(iOS 18.0, macOS 14, watchOS 10, *)
 #Preview {
     
@@ -20,6 +20,7 @@ import SwiftUI
         presentSheet = true
     }
 }
+#endif
 
 @available(iOS 16.0, macOS 13, watchOS 9, *)
 public extension View {
@@ -55,27 +56,32 @@ public extension View {
     }
 }
 
-@available(iOS 16.0, macOS 13, watchOS 9, *)
 struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     
     let hostView: Host
     let contentView: () -> Content
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
+    
+    #if canImport(Darwin)
     @State var sheetSize: CGSize = .zero
+    #endif
 
     var body: some View {
         hostView
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
                 .fixedSize(horizontal: false, vertical: true)
+            #if os(Android)
+                .presentationDetents([.medium])
+            #else
                 .getCGSize($sheetSize)
                 .presentationDetents([.height(sheetSize.height)])
+            #endif
         }
     }
 }
 
-@available(iOS 16.0, macOS 13, watchOS 9, *)
 struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
     
     let hostView: Host
@@ -89,9 +95,40 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
                     .fixedSize(horizontal: false, vertical: true)
+                #if os(Android)
+                    .presentationDetents([.medium])
+                #else
                     .getCGSize($sheetSize)
                     .presentationDetents([.height(sheetSize.height)])
+                #endif
             }
+    }
+}
+
+#if canImport(Darwin)
+import SwiftUI
+
+private struct CGSizeKey: PreferenceKey {
+    nonisolated(unsafe) static var defaultValue = CGSize.zero
+    static func reduce (value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
+    }
+}
+
+private extension View {
+    /// Sets the `View`'s size to the passed `Binding`
+    /// - Parameter viewSize: The `Binding` where to store the value
+    /// - Returns: a `SwiftUI.View`.
+    @available(*, deprecated, message: "Avoid using getCGSize; prefer standard presentationDetents like .medium/.large.")
+    func getCGSize(_ viewSize: Binding<CGSize>) -> some View {
+        background(
+            GeometryReader { proxy in
+                Color.clear
+                    .preference(key: CGSizeKey.self, value: proxy.size)
+            }.onPreferenceChange(CGSizeKey.self) { value in
+                viewSize.wrappedValue = value
+            }
+        )
     }
 }
 #endif

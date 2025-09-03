@@ -66,9 +66,9 @@ public enum HUDState: Equatable, Sendable {
         switch self {
         case .none:
             return false
-        case .loading(let string):
+        case .loading:
             return false
-        case .success(let string):
+        case .success:
             return true
         }
     }
@@ -262,12 +262,13 @@ struct HUDView: View {
     #if canImport(Darwin)
     @ScaledMetric
     private var hudImageSize = 60.0
-    
     @ScaledMetric
     private var hudContentSize = 120.0
+    private let backgroundColor = Material.regularMaterial
     #else
     private var hudImageSize = 60.0
     private var hudContentSize = 120.0
+    private let backgroundColor = Color.gray
     #endif
     
     var body: some View {
@@ -282,11 +283,7 @@ struct HUDView: View {
         .animation(.default, value: state)
         .padding()
         .frame(minWidth: hudContentSize, minHeight: hudContentSize)
-        #if os(Android)
-        .background(.gray, in: RoundedRectangle(cornerRadius: 8))
-        #else
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-        #endif
+        .background(backgroundColor, in: RoundedRectangle(cornerRadius: 8))
     }
     
     private var textMessage: String? {

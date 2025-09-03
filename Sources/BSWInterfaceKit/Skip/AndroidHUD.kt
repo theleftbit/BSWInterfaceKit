@@ -23,7 +23,7 @@ import androidx.compose.ui.draw.scale
 @Composable
 fun BlockingHudDialog(
     visible: Boolean,
-    text: String = "Loading…",
+    text: String? = null,
     isSuccess: Boolean = false,
     scrimAlpha: Float = 0.35f
 ) {
@@ -68,9 +68,9 @@ fun BlockingHudDialog(
                         CircularProgressIndicator(modifier = Modifier.size(32.dp))
                     }
 
-                    if (text.isNotEmpty()) {
+                    text?.takeIf { it.isNotBlank() }?.let {
                         Text(
-                            text = text,
+                            text = it,
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.bodyMedium
                         )
