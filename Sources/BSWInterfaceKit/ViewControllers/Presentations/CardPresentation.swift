@@ -223,9 +223,7 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         }
         animator.addCompletion { (position) in
             guard position == .end else { return }
-            MainActor.assumeIsolated {
-                transitionContext.completeTransition(true)
-            }
+            transitionContext.completeTransition(true)
         }
         animator.startAnimation()
     }
@@ -265,10 +263,8 @@ private class CardDismissAnimationController: NSObject, UIViewControllerAnimated
         }
         animator.addCompletion { (position) in
             guard position == .end else { return }
-            MainActor.assumeIsolated {
-                fromViewController.view.removeFromSuperview()
-                transitionContext.completeTransition(true)
-            }
+            fromViewController.view.removeFromSuperview()
+            transitionContext.completeTransition(true)
         }
         animator.startAnimation()
     }

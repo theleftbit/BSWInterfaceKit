@@ -98,9 +98,7 @@ extension UIViewController {
             stateContainer.view.alpha = 0
         }
         animator.addCompletion { (_) in
-            MainActor.assumeIsolated {
-                stateContainer.view.removeFromSuperview()
-            }
+            stateContainer.view.removeFromSuperview()
         }
         animator.startAnimation()
     }
