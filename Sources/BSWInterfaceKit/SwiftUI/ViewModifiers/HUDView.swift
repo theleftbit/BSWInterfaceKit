@@ -206,7 +206,7 @@ struct AndroidHUDModifier: ViewModifier {
     #if SKIP
     struct AndroidHUD: ContentComposer {
         let visible: Bool
-        let text: String
+        let text: String?
         let isSuccess: Bool
         
         @Composable
