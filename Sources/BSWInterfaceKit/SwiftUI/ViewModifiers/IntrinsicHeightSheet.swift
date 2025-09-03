@@ -71,13 +71,13 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
         hostView
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
-                .fixedSize(horizontal: false, vertical: true)
-            #if os(Android)
-                .presentationDetents([.medium])
-            #else
+                #if canImport(Darwin)
                 .getCGSize($sheetSize)
                 .presentationDetents([.height(sheetSize.height)])
-            #endif
+                .fixedSize(horizontal: false, vertical: true)
+                #else
+                .presentationDetents([.medium])
+                #endif
         }
     }
 }
@@ -94,13 +94,13 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
         hostView
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
-                    .fixedSize(horizontal: false, vertical: true)
-                #if os(Android)
-                    .presentationDetents([.medium])
-                #else
+                    #if canImport(Darwin)
                     .getCGSize($sheetSize)
                     .presentationDetents([.height(sheetSize.height)])
-                #endif
+                    .fixedSize(horizontal: false, vertical: true)
+                    #else
+                    .presentationDetents([.medium])
+                    #endif
             }
     }
 }
