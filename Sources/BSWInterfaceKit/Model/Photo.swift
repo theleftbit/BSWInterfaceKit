@@ -3,16 +3,19 @@
 //  Copyright © 2018 TheLeftBit SL. All rights reserved.
 //
 
+#if os(Android)
+import SkipFuseUI
+#else
 import SwiftUI
-import Foundation
+#endif
 
 /// This represents an image to be displayed in the app.
 ///
 /// Please do not use this to represent Symbols, but rather large Bitmaps.
-public struct Photo: Sendable {
+public struct Photo {
     
     /// The source of the Photo.
-    public enum Kind: Sendable {
+    public enum Kind {
         /// The Photo is in a remote URL.
         case url(Foundation.URL)
         
@@ -107,12 +110,14 @@ extension Photo {
 }
 
 // For some reason `CGSize` isn't `Hashable`
+#if canImport(Darwin)
 extension CGSize: @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(width)
         hasher.combine(height)
     }
 }
+#endif
 
 // This was generated with ChatGPT o4-mini-high, so take with a grain of salt
 extension Image: @retroactive Hashable {
@@ -136,5 +141,5 @@ extension Image: @retroactive Hashable {
     }
 }
 
-extension Photo: Equatable, Hashable {}
-extension Photo.Kind: Equatable, Hashable {}
+extension Photo: Equatable, Hashable, Sendable {}
+extension Photo.Kind: Equatable, Hashable, Sendable {}

@@ -1,4 +1,4 @@
-
+#if canImport(Darwin)
 import SwiftUI
 
 struct BSWInterfaceKit_SwiftUILibrary: LibraryContentProvider {
@@ -14,3 +14,4 @@ struct BSWInterfaceKit_SwiftUILibrary: LibraryContentProvider {
 }
 
 extension LibraryItem: @unchecked @retroactive Sendable {}
+#endif

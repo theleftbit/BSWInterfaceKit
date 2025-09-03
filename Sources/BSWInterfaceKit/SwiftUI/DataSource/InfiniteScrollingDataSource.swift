@@ -1,4 +1,4 @@
-#if canImport(SwiftUI)
+#if canImport(Darwin)
 
 import SwiftUI
 import Combine

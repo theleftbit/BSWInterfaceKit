@@ -2,8 +2,7 @@
 //  Created by Michele Restuccia on 13/1/25.
 //
 
-#if canImport(SwiftUI)
-
+#if canImport(Darwin)
 import SwiftUI
 
 @available(iOS 17.0, macOS 14.0, *)
@@ -25,6 +24,9 @@ import SwiftUI
         }
     )
 }
+#else
+import SkipFuseUI
+#endif
 
 public typealias AsyncBlockingTask = @MainActor () async throws -> ()
 public typealias AsyncBlockingTaskWithValue<T: Equatable> = @MainActor (T) async throws -> ()
@@ -34,35 +36,61 @@ public enum AsyncBlockingTaskConfirmationStrategy {
 }
 
 public extension View {
-    
-    func performBlockingTask<T: Equatable>(value: Binding<T?>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTaskWithValue<T>) -> some View {
-        self.modifier(PerformEquatableBlockingModifier(value: value, task: task, confirmationStrategy: confirmationStrategy))
+
+    func performBlockingTask<T: Equatable>(
+        value: Binding<T?>,
+        confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired,
+        loadingMessage: String? = nil,
+        successMessage: String? = nil,
+        successDisplaySeconds: TimeInterval = 1.0,
+        task: @escaping AsyncBlockingTaskWithValue<T>
+    ) -> some View {
+        PerformEquatableBlockingView(
+            content: self,
+            value: value,
+            task: task,
+            confirmationStrategy: confirmationStrategy,
+            loadingMessage: loadingMessage,
+            successMessage: successMessage,
+            successDisplaySeconds: successDisplaySeconds
+        )
     }
 
-    func performBlockingTask(readyToPerform: Binding<Bool>, confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired, task: @escaping AsyncBlockingTask) -> some View {
-        self.modifier(
-            PerformEquatableBlockingModifier(
-                value: .init(
-                    get: {
-                        readyToPerform.wrappedValue ? true : nil
-                    },
-                    set: {
-                        if let _ = $0 {
-                            readyToPerform.wrappedValue = true
-                        } else {
-                            readyToPerform.wrappedValue = false
-                        }
-                    }),
-                task: { _ in try await task() },
-                confirmationStrategy: confirmationStrategy
-            )
+    func performBlockingTask(
+        readyToPerform: Binding<Bool>,
+        confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = .notRequired,
+        loadingMessage: String? = nil,
+        successMessage: String? = nil,
+        successDisplaySeconds: TimeInterval = 1.0,
+        task: @escaping AsyncBlockingTask
+    ) -> some View {
+        PerformEquatableBlockingView(
+            content: self,
+            value: .init(
+                get: {
+                    readyToPerform.wrappedValue ? true : nil
+                },
+                set: {
+                    if let _ = $0 {
+                        readyToPerform.wrappedValue = true
+                    } else {
+                        readyToPerform.wrappedValue = false
+                    }
+                }
+            ),
+            task: { _ in try await task() },
+            confirmationStrategy: confirmationStrategy,
+            loadingMessage: loadingMessage,
+            successMessage: successMessage,
+            successDisplaySeconds: successDisplaySeconds
         )
     }
 }
-
 // MARK: Private
 
-private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
+struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
+    
+    let content: V
     
     @Binding
     var value: T?
@@ -72,44 +100,65 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
     let confirmationStrategy: AsyncBlockingTaskConfirmationStrategy
     
     @State
-    private var taskError: Error? = nil
+    var taskError: Error? = nil
     
     @State
-    private var hudState = HUDState.none
+    var hudState = HUDState.none
     
-    @State private var isShowingConfirmation: Bool = false
-    @State private var confirmationContinuation: CheckedContinuation<Bool, Never>? = nil
-    @State private var confirmationTitle: String = ""
-    @State private var confirmationMessage: String? = nil
-    @State private var confirmationConfirmButtonTitle: String = ""
-    @State private var confirmationCancelButtonTitle: String = ""
-    @State private var isConfirmationDestructive: Bool = false
+    @State
+    var isShowingConfirmation: Bool = false
     
-    func body(content: Content) -> some View {
+    @State
+    var confirmationContinuation: CheckedContinuation<Bool, Never>? = nil
+    
+    @State
+    var confirmationTitle: String = ""
+    
+    @State
+    var confirmationMessage: String? = nil
+    
+    @State
+    var confirmationConfirmButtonTitle: String = ""
+    
+    @State
+    var confirmationCancelButtonTitle: String = ""
+    
+    @State
+    var isConfirmationDestructive: Bool = false
+    
+    let loadingMessage: String?
+    let successMessage: String?
+    let successDisplaySeconds: TimeInterval
+    
+    var body: some View {
         content
             .task(id: value) {
                 guard let value = self.value else { return }
-                defer {
-                    self.value = nil
-                }
+                defer { self.value = nil }
                 
                 switch confirmationStrategy {
-                case .notRequired:
-                    break
-                case .confirmWith(let title, let message, let confirmButtonTitle, let cancelButtonTitle, let isDestructiveAction):
-                    let didConfirm = await confirmAction(confirmationTitle: title, confirmationMessage: message, confirmationConfirmButtonTitle: confirmButtonTitle, confirmationCancelButtonTitle: cancelButtonTitle, isConfirmationDestructive: isDestructiveAction)
-                    if didConfirm == false {
-                        return
-                    }
+                case .notRequired: break
+                case .confirmWith(let title, let message, let confirm, let cancel, let destructive):
+                    let didConfirm = await confirmAction(
+                        confirmationTitle: title,
+                        confirmationMessage: message,
+                        confirmationConfirmButtonTitle: confirm,
+                        confirmationCancelButtonTitle: cancel,
+                        isConfirmationDestructive: destructive
+                    )
+                    if !didConfirm { return }
                 }
-
-                self.hudState = .loading()
+                
+                self.hudState = .loading(loadingMessage)
                 
                 do {
                     try await task(value)
+                    self.hudState = .success(successMessage)
+                    try? await Task.sleep(for: .seconds(successDisplaySeconds))
                 } catch {
                     taskError = error
                 }
+                
                 self.hudState = .none
             }
             .errorAlert(error: $taskError)
@@ -117,21 +166,16 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
             .alert(confirmationTitle, isPresented: $isShowingConfirmation) {
                 Button(role: isConfirmationDestructive ? .destructive : nil) {
                     handleConfirmation(true)
-                } label: {
-                    Text(confirmationConfirmButtonTitle)
-                }
+                } label: { Text(confirmationConfirmButtonTitle) }
                 Button(role: .cancel) {
                     handleConfirmation(false)
-                } label: {
-                    Text(confirmationCancelButtonTitle)
-                }
+                } label: { Text(confirmationCancelButtonTitle) }
             } message: {
-                if let confirmationMessage {
-                    Text(confirmationMessage)
-                }
+                if let confirmationMessage { Text(confirmationMessage) }
             }
     }
     
+    @MainActor
     private func confirmAction(confirmationTitle: String, confirmationMessage: String?, confirmationConfirmButtonTitle: String, confirmationCancelButtonTitle: String, isConfirmationDestructive: Bool) async -> Bool {
         self.confirmationTitle = confirmationTitle
         self.confirmationMessage = confirmationMessage
@@ -150,5 +194,3 @@ private struct PerformEquatableBlockingModifier<T: Equatable>: ViewModifier {
         confirmationContinuation = nil
     }
 }
-
-#endif

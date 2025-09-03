@@ -1,4 +1,4 @@
-#if DEBUG
+#if canImport(Darwin)
 
 /// Example of how to use `InfiniteScrollingDataSource`
 /// Note: as of Xcode 14.3.1 this code is not transitioning to .loaded

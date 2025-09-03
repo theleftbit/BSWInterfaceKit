@@ -1,5 +1,4 @@
-import SwiftUI
-
+#if canImport(Darwin)
 @available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     @Previewable
@@ -27,21 +26,63 @@ import SwiftUI
         .hud(hudState: $state, configuration: .init(dimsBackground: true))
     }
 }
+#endif
+
+#if os(Android)
+import SkipFuseUI
+#else
+import SwiftUI
+#endif
 
 public extension View {
     func hud(hudState: Binding<HUDState>, configuration: HUDConfiguration? = nil) -> some View {
         #if os(iOS)
         modifier(iOSHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        #elseif os(Android)
+        modifier(AndroidHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
         #else
         modifier(MacHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
         #endif
     }
 }
 
-public enum HUDState: Equatable {
+public enum HUDState: Equatable, Sendable {
     case none
     case loading(String? = nil)
     case success(String?)
+    
+    var shouldShow: Bool {
+        switch self {
+        case .none:
+            return false
+        case .loading:
+            return true
+        case .success:
+            return true
+        }
+    }
+    
+    var isSuccess: Bool {
+        switch self {
+        case .none:
+            return false
+        case .loading:
+            return false
+        case .success:
+            return true
+        }
+    }
+    
+    var text: String? {
+        switch self {
+        case .none:
+            return nil
+        case .loading(let string):
+            return string ?? ""
+        case .success(let string):
+            return string ?? ""
+        }
+    }
 }
 
 public struct HUDConfiguration: Sendable {
@@ -147,7 +188,39 @@ private extension View {
         }
     }
 }
-#elseif os(macOS)
+#elseif os(Android)
+struct AndroidHUDModifier: ViewModifier {
+    @Binding
+    var hudState: HUDState
+
+    let configuration: HUDConfiguration
+
+    func body(content: Content) -> some View {
+        content.overlay {
+            ComposeView {
+                AndroidHUD(visible: hudState.shouldShow, text: hudState.text, isSuccess: hudState.isSuccess)
+            }
+        }
+    }
+    
+    #if SKIP
+    struct AndroidHUD: ContentComposer {
+        let visible: Bool
+        let text: String?
+        let isSuccess: Bool
+        
+        @Composable
+        func Compose(context: ComposeContext) {
+            bswinterface.kit.BlockingHudDialog(
+                visible: visible,
+                text: text,
+                isSuccess: isSuccess
+            )
+        }
+    }
+    #endif
+}
+#else
 /// This kind of sucks, so please fix
 struct MacHUDModifier: ViewModifier {
     @Binding
@@ -176,20 +249,23 @@ struct MacHUDModifier: ViewModifier {
         }
     }
 }
-
 #endif
 
-
+#if canImport(Darwin)
 struct HUDView: View {
+
+    init(state: HUDState) {
+        self.state = state
+    }
 
     let state: HUDState
 
     @ScaledMetric
     private var hudImageSize = 60.0
-    
     @ScaledMetric
     private var hudContentSize = 120.0
-
+    private let backgroundColor = Material.regularMaterial
+    
     var body: some View {
         VStack(alignment: .center) {
             hudImage
@@ -202,7 +278,7 @@ struct HUDView: View {
         .animation(.default, value: state)
         .padding()
         .frame(minWidth: hudContentSize, minHeight: hudContentSize)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+        .background(backgroundColor, in: RoundedRectangle(cornerRadius: 8))
     }
     
     private var textMessage: String? {
@@ -231,3 +307,4 @@ struct HUDView: View {
         }
     }
 }
+#endif
