@@ -73,10 +73,10 @@ public enum HUDState: Equatable, Sendable {
         }
     }
     
-    var text: String {
+    var text: String? {
         switch self {
         case .none:
-            return ""
+            return nil
         case .loading(let string):
             return string ?? ""
         case .success(let string):
@@ -251,6 +251,7 @@ struct MacHUDModifier: ViewModifier {
 }
 #endif
 
+#if canImport(Darwin)
 struct HUDView: View {
 
     init(state: HUDState) {
@@ -259,17 +260,11 @@ struct HUDView: View {
 
     let state: HUDState
 
-    #if canImport(Darwin)
     @ScaledMetric
     private var hudImageSize = 60.0
     @ScaledMetric
     private var hudContentSize = 120.0
     private let backgroundColor = Material.regularMaterial
-    #else
-    private var hudImageSize = 60.0
-    private var hudContentSize = 120.0
-    private let backgroundColor = Color.gray
-    #endif
     
     var body: some View {
         VStack(alignment: .center) {
@@ -312,3 +307,4 @@ struct HUDView: View {
         }
     }
 }
+#endif
