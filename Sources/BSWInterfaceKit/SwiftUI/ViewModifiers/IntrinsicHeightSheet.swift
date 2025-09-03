@@ -56,7 +56,7 @@ public extension View {
     }
 }
 
-fileprivate struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
+struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     
     let hostView: Host
     let contentView: () -> Content
@@ -82,7 +82,7 @@ fileprivate struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>:
     }
 }
 
-fileprivate struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
+struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
     
     let hostView: Host
     let contentView: (Item) -> Content
