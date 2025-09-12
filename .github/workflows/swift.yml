@@ -27,4 +27,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build on Android
-        run: skip android build
+        run: DEVELOPER_DIR="$/Applications/Xcode_16.app/Contents/Developer" skip android build
