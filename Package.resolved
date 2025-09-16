@@ -1,5 +1,5 @@
 {
-  "originHash" : "14e387fb2e27692ff05836017ddb0b2be4bdc961c7cf23f17935164ce1492994",
+  "originHash" : "5d324d92d077e95ba42170d0b2af4b546216b7b68ef690c815d0d05ef94c6ff2",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip.git",
       "state" : {
-        "revision" : "6f8b0f1f1f9b3360126f115e2a44d6370308f9ed",
-        "version" : "1.6.14"
+        "revision" : "16da26f72ca78f793f795df7a9be73fdc707f0e1",
+        "version" : "1.6.17"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-fuse-ui.git",
       "state" : {
-        "revision" : "b460cda8d300938125f665d905da6d154f22262c",
-        "version" : "1.7.1"
+        "revision" : "923777280fbbc4931aa3b58d09a5ca6a9a935c7a",
+        "version" : "1.9.1"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip-ui.git",
       "state" : {
-        "revision" : "1bd8c9f202dca5f27a8fa43aeb8d4eb2795f5356",
-        "version" : "1.39.0"
+        "revision" : "e729455bbc6a6defa661cb22ac783ec8463ecde6",
+        "version" : "1.40.2"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "334e682869394ee239a57dbe9262bff3cd9495bd",
-        "version" : "3.14.0"
+        "revision" : "d1c6b70f7c5f19fb0b8750cb8dcdf2ea6e2d8c34",
+        "version" : "3.15.0"
       }
     },
     {
