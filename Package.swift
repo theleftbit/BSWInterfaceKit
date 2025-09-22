@@ -1,4 +1,4 @@
-// swift-tools-version:6.1
+// swift-tools-version:6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -25,7 +25,7 @@ var packageDependencies: [Package.Dependency] = [
 
 if !zero {
     packageDependencies.append(contentsOf: [
-        .package(url: "https://source.skip.tools/skip.git", from: "1.6.7"),
+        .package(url: "https://source.skip.tools/skip.git", from: "1.6.21"),
         .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.9.1"),
     ])
 }

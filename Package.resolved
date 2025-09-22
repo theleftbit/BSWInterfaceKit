@@ -1,5 +1,5 @@
 {
-  "originHash" : "5d324d92d077e95ba42170d0b2af4b546216b7b68ef690c815d0d05ef94c6ff2",
+  "originHash" : "0343ec8e8ff1ba8073b3edbf048d1c889ce290e9907d35d02f54938ad72aaf21",
   "pins" : [
     {
       "identity" : "bswfoundation",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://source.skip.tools/skip.git",
       "state" : {
-        "revision" : "16da26f72ca78f793f795df7a9be73fdc707f0e1",
-        "version" : "1.6.17"
+        "revision" : "459959eb10872bfe0d5d6615267721b121ec5f15",
+        "version" : "1.6.21"
       }
     },
     {
