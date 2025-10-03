@@ -157,9 +157,8 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
                     try? await Task.sleep(for: .seconds(successDisplaySeconds))
                 } catch {
                     taskError = error
+                    self.hudState = .none
                 }
-                
-                self.hudState = .none
             }
             .errorAlert(error: $taskError)
             .hud(hudState: $hudState)
