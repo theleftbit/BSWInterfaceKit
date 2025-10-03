@@ -1,6 +1,7 @@
 #if DEBUG
 import SwiftUI
 
+#if canImport(Darwin)
 #Preview {
     ContentView(items: [
         .init(
@@ -10,6 +11,7 @@ import SwiftUI
         )
     ])
 }
+#endif
 
 struct ContentView: View {
     
