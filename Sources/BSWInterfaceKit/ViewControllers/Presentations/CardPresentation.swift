@@ -169,8 +169,22 @@ private class CardPresentAnimationController: NSObject, UIViewControllerAnimated
         containerView.addAutolayoutSubview(toViewController.view)
 
         /// Override size classes if required
-        toViewController.presentationController?.overrideTraitCollection = properties.overridenTraits
-            
+        if let sizeClass = properties.overridenTraits?.horizontalSizeClass, sizeClass != .unspecified {
+            toViewController.presentationController?.traitOverrides.horizontalSizeClass = sizeClass
+        }
+        if let sizeClass = properties.overridenTraits?.verticalSizeClass, sizeClass != .unspecified {
+            toViewController.presentationController?.traitOverrides.verticalSizeClass = sizeClass
+        }
+        if let style = properties.overridenTraits?.userInterfaceStyle, style != .unspecified {
+            toViewController.presentationController?.traitOverrides.userInterfaceStyle = style
+        }
+        if let category = properties.overridenTraits?.preferredContentSizeCategory, category != .unspecified {
+            toViewController.presentationController?.traitOverrides.preferredContentSizeCategory = category
+        }
+        if let direction = properties.overridenTraits?.layoutDirection, direction != .unspecified {
+            toViewController.presentationController?.traitOverrides.layoutDirection = direction
+        }
+        
         /// Pin to the bottom or top
         let anchorConstraint: NSLayoutConstraint = {
              switch (position) {
