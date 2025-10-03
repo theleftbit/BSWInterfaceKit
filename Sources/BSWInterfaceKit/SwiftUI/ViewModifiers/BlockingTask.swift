@@ -158,11 +158,17 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
                     try? await Task.sleep(for: .seconds(successDisplaySeconds))
                     self.hudState = .none
                 } catch {
+                    #if canImport(Darwin)
                     withAnimation {
                         self.hudState = .none
                     } completion: {
                         taskError = error
                     }
+                    #else
+                    self.hudState = .none
+                    try? await Task.sleep(for: .milliseconds(300))
+                    taskError = error
+                    #endif
                 }
             }
             .errorAlert(error: $taskError)
