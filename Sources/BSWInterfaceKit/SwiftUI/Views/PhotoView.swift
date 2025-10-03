@@ -98,7 +98,7 @@ public struct PhotoView: View {
     func nukePhotoView(url: URL) -> some View {
         LazyImage(url: url, transaction: .init(animation: .default)) { state in
             #if canImport(UIKit)
-            if #available(iOS 17.0, *), configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
+            if configuration.shouldRemoveBackground, let uiImage = state.imageContainer?.image {
                 RemoveBackgroundView(image: uiImage, placeholder: configuration.placeholder)
             } else if let image = state.image {
                 image
@@ -184,7 +184,6 @@ extension PhotoView.Configuration.Placeholder.Shape: Sendable {}
 
 private extension PhotoView {
     
-    @available(iOS 17, *)
     struct RemoveBackgroundView: View {
         
         let image: UIImage
@@ -212,7 +211,6 @@ import Vision
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
-@available(iOS 17.0, *)
 private extension UIImage {
     
     #if targetEnvironment(simulator)

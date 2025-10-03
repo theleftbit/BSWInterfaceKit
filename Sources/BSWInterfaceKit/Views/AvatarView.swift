@@ -6,9 +6,8 @@
 
 import UIKit
 
-@available(iOS 17, *)
 #Preview {
-    return AvatarView(size: .big, photo: .emptyPhoto())
+    AvatarView(size: .big, photo: .emptyPhoto())
 }
 
 /// This subclass of `UIView` displays it's `Photo` as a round image, perfect for showing avatars.

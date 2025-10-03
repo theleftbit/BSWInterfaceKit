@@ -22,7 +22,6 @@ struct RecipeListView: View, PlaceholderDataProvider {
     }
 }
 
-@available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     AsyncView(id: "some-id", dataGenerator: {
         try await Task.sleep(for: .seconds(1))

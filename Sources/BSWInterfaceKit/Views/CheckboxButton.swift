@@ -6,7 +6,6 @@
 
 import UIKit
 
-@available(iOS 17, *)
 #Preview {
     let b = CheckboxButton()
     b.configuration?.imagePadding = 8

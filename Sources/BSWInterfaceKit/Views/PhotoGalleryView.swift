@@ -7,7 +7,6 @@
 import UIKit
 import BSWFoundation
 
-@available(iOS 17, *)
 #Preview {
     PhotoGalleryView(photos: [
         .init(url: .init(string: "https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")!),

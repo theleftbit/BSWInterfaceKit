@@ -10,7 +10,6 @@
 import UIKit
 import QuartzCore
 
-@available(iOS 17, *)
 #Preview {
     let v = RangeSlider(configuration: RangeSlider.Configuration(range: .init(uncheckedBounds: (0, 10)), trackTintColor: .systemGray, trackHighlightTintColor: .systemBlue, thumbTintColor: .white))
     v.configureFor(viewModel: .init(selectedRange: .init(uncheckedBounds: (4,8))))
