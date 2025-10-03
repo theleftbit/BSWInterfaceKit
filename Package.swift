@@ -25,8 +25,8 @@ var packageDependencies: [Package.Dependency] = [
 
 if !zero {
     packageDependencies.append(contentsOf: [
-        .package(url: "https://source.skip.tools/skip.git", from: "1.6.21"),
-        .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.9.1"),
+        .package(url: "https://source.skip.tools/skip.git", from: "1.6.27"),
+        .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.10.0"),
     ])
 }
 
@@ -54,8 +54,8 @@ if !zero {
 let package = Package(
     name: "BSWInterfaceKit",
     platforms: [
-        .iOS(.v16),
-        .macOS(.v13),
+        .iOS(.v17),
+        .macOS(.v14),
         .watchOS(.v11)
     ],
     products: [
