@@ -2,9 +2,8 @@
 
 import UIKit
 
-@available(iOS 17, *)
 #Preview {
-    return SeparatorView()
+    SeparatorView()
 }
 
 /// This `UIView` subclass can be used as a horizontal separator to divide logical parts of your view.

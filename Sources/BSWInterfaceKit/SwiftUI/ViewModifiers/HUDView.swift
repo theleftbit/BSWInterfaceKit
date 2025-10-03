@@ -1,5 +1,4 @@
 #if canImport(Darwin)
-@available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     @Previewable
     @State
@@ -135,7 +134,7 @@ struct iOSHUDModifier: ViewModifier {
                         }
                     }
             }
-            .onChange(of: hudState) { newValue in
+            .onChange(of: hudState) { _, newValue in
                 var transaction = Transaction()
                 transaction.disablesAnimations = true
                 switch newValue {
@@ -144,25 +143,11 @@ struct iOSHUDModifier: ViewModifier {
                         showFullScreenCover = true
                     }
                 case .none:
-                    if #available(iOS 17.0, macOS 14.0, *) {
-                        withAnimation(completionCriteria: .removed) {
-                            animatedValue = false
-                        } completion: {
-                            withTransaction(transaction) {
-                                showFullScreenCover = false
-                            }
-                        }
-                    } else {
-                        let duration: TimeInterval = 0.2
-                        let animation: Animation = .easeOut(duration: duration)
-                        withAnimation(animation) {
-                            animatedValue = false
-                        }
-                        Task {
-                            try await Task.sleep(for: .seconds(duration))
-                            withTransaction(transaction) {
-                                showFullScreenCover = false
-                            }
+                    withAnimation(completionCriteria: .removed) {
+                        animatedValue = false
+                    } completion: {
+                        withTransaction(transaction) {
+                            showFullScreenCover = false
                         }
                     }
                 case .success:

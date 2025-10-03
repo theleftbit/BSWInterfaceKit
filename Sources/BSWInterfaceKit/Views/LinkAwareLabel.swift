@@ -6,7 +6,6 @@
 
 import UIKit
 
-@available(iOS 17, *)
 #Preview {
     let l = LinkAwareLabel()
     l.didTapOnURL = {

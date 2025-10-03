@@ -8,7 +8,6 @@ import SwiftUI
 #if canImport(Darwin)
 /// Example of how to reload `AsyncView`
 /// when the ID of the operation changes.
-@available(iOS 17, macOS 14, watchOS 9, *)
 #Preview {
     
     @Previewable

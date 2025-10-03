@@ -20,7 +20,7 @@ jobs:
       with:
         lfs: true
     - name: Test BSWInterfaceKit macOS
-      run: set -o pipefail && swift build | xcbeautify --renderer github-actions
+      run: set -o pipefail && SKIP_ZERO=1 swift build | xcbeautify --renderer github-actions
 
   android-build:
     runs-on: mobile

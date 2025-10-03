@@ -5,7 +5,6 @@
 #if canImport(Darwin)
 import SwiftUI
 
-@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     @State
     @Previewable
@@ -20,7 +19,9 @@ import SwiftUI
         readyToPerform: $perform,
         confirmationStrategy: .confirmWith(title: "Are you sure?", message: "This will block the main thread for 2 seconds.", confirmButtonTitle: "Yes", cancelButtonTitle: "No"),
         task: {
-            try await Task.sleep(for: .seconds(2))
+            struct SomeError: Swift.Error {}
+            try await Task.sleep(for: .seconds(1))
+            throw SomeError()
         }
     )
 }
@@ -155,11 +156,20 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
                     try await task(value)
                     self.hudState = .success(successMessage)
                     try? await Task.sleep(for: .seconds(successDisplaySeconds))
+                    self.hudState = .none
                 } catch {
+                    #if canImport(Darwin)
+                    withAnimation {
+                        self.hudState = .none
+                    } completion: {
+                        taskError = error
+                    }
+                    #else
+                    self.hudState = .none
+                    try? await Task.sleep(for: .milliseconds(300))
                     taskError = error
+                    #endif
                 }
-                
-                self.hudState = .none
             }
             .errorAlert(error: $taskError)
             .hud(hudState: $hudState)
@@ -171,7 +181,9 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
                     handleConfirmation(false)
                 } label: { Text(confirmationCancelButtonTitle) }
             } message: {
-                if let confirmationMessage { Text(confirmationMessage) }
+                if let confirmationMessage {
+                    Text(confirmationMessage)
+                }
             }
     }
     

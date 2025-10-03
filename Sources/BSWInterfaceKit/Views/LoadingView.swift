@@ -6,9 +6,11 @@
 
 import UIKit
 
-@available(iOS 17, *)
 #Preview {
-    return LoadingView(loadingMessage: nil, activityIndicatorStyle: .large)
+    LoadingView(
+        loadingMessage: nil,
+        activityIndicatorStyle: .large
+    )
 }
 
 /// A simple view that represents the loading state in your app.

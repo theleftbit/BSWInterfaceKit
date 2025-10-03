@@ -89,11 +89,9 @@ open class BottomContainerViewController: UIViewController {
                 return containedViewController.view.bottomAnchor.constraint(equalTo: buttonContainer.view.topAnchor)
             } else {
                 let k = view.keyboardLayoutGuide
-                if #available(iOS 17.0, *) {
-                    /// Needed to preserve the real bottom edge for
-                    /// `UIScrollEdgeElementContainerInteraction`.
-                    k.usesBottomSafeArea = false
-                }
+                /// Needed to preserve the real bottom edge for
+                /// `UIScrollEdgeElementContainerInteraction`.
+                k.usesBottomSafeArea = false
                 return containedViewController.view.bottomAnchor.constraint(equalTo: k.topAnchor)
             }
         }()
@@ -261,7 +259,6 @@ private extension UIView {
 
 #if DEBUG
 
-@available(iOS 17, *)
 #Preview {
     class PreviewScrollableStackVC: UIViewController {
         override func viewDidLoad() {
