@@ -123,15 +123,13 @@ public struct AsyncButton<Label: View>: View {
             }
         }()
 
-        if let hudSuccessConfiguration, let hudConfiguration {
-            self.hudState = hudSuccessConfiguration
-            try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval) )
-        }
-        self.hudState = .none
-
         switch result {
         case .success:
-            break
+            if let hudSuccessConfiguration, let hudConfiguration {
+                self.hudState = hudSuccessConfiguration
+                try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval) )
+            }
+            self.hudState = .none
         case .failure(let failure):
             self.error = failure
         }
