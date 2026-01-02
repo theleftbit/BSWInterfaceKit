@@ -46,7 +46,7 @@ public extension View {
     ///   - item: the Binding to the Item being presented
     ///   - onDismiss: a callback to be called on dismissal
     ///   - content: the content to be presented
-    func intrinsicHeightSheet<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil, content: @escaping (Item) -> Content) -> some View {
+    func intrinsicHeightSheet<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
         IntrinsicHeightDetentView_ForItems(
             hostView: self,
             contentView: content,
@@ -85,7 +85,7 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
 struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Identifiable>: View {
     
     let hostView: Host
-    let contentView: (Item) -> Content
+    @ViewBuilder let contentView: (Item) -> Content
     @Binding var isPresented: Item?
     let onDismiss: (() -> Void)?
     @State var sheetSize: CGSize = .zero
