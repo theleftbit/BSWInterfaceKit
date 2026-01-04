@@ -123,17 +123,25 @@ public struct AsyncButton<Label: View>: View {
             }
         }()
 
-        if let hudSuccessConfiguration, let hudConfiguration {
-            self.hudState = hudSuccessConfiguration
-            try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval) )
-        }
-        self.hudState = .none
-
         switch result {
         case .success:
-            break
+            if let hudSuccessConfiguration, let hudConfiguration {
+                self.hudState = hudSuccessConfiguration
+                try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval) )
+            }
+            self.hudState = .none
         case .failure(let failure):
-            self.error = failure
+            #if canImport(Darwin)
+            withAnimation {
+                self.hudState = .none
+            } completion: {
+                error = failure
+            }
+            #else
+            self.hudState = .none
+            try? await Task.sleep(for: .milliseconds(300))
+            error = failure
+            #endif
         }
 
         withAnimation {
