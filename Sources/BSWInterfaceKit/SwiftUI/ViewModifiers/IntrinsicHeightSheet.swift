@@ -119,7 +119,6 @@ private extension View {
     /// Sets the `View`'s size to the passed `Binding`
     /// - Parameter viewSize: The `Binding` where to store the value
     /// - Returns: a `SwiftUI.View`.
-    @available(*, deprecated, message: "Avoid using getCGSize; prefer standard presentationDetents like .medium/.large.")
     func getCGSize(_ viewSize: Binding<CGSize>) -> some View {
         background(
             GeometryReader { proxy in
