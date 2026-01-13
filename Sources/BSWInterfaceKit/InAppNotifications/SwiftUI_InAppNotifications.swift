@@ -13,27 +13,24 @@ import SwiftUI
 }
 
 private struct SampleView: View {
-
-    @State
-    var message: String?
     
     @State
-    var kind: ToastView.Kind = .message
-
+    var event: InAppNotificationEvent?
+    
+    @State
+    var count: Int = 0
+    
     var body: some View {
         VStack(spacing: 16) {
             Button("Show Message") {
-                kind = .message
-                message = "Forza Milan"
+                event = .message("Forza Milan")
             }
             Button("Show Error") {
-                kind = .error
-                message = "Something went wrong"
+                count += 1
+                event = .error("Error #\(count)")
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .modifier(ToastView(message: $message, kind: kind))
+        .showInAppNotification($event)
     }
 }
 
@@ -43,89 +40,84 @@ private struct SampleView: View {
 
 public extension View {
     
-    func showNotification(message: Binding<String?>) -> some View {
-        modifier(ToastView(message: message, kind: .message))
+    func showInAppNotification(_ event: Binding<InAppNotificationEvent?>) -> some View {
+        modifier(ToastView(event: event))
     }
+}
+
+// MARK: InAppNotificationEvent
+
+public struct InAppNotificationEvent: Equatable, Identifiable {
+    public let id = UUID()
+    let text: String
+    let kind: Kind
+    enum Kind { case message, error }
     
-    func showNotificationError(message: Binding<String?>) -> some View {
-        modifier(ToastView(message: message, kind: .error))
+    public static func message(_ txt: String) -> InAppNotificationEvent {
+        .init(text: txt, kind: .message)
+    }
+    public static func error(_ txt: String) -> InAppNotificationEvent {
+        .init(text: txt, kind: .error)
     }
 }
 
 // MARK: ToastView
 
 struct ToastView: ViewModifier {
-
-    let message: Binding<String?>
     
-    let kind: Kind
-    enum Kind {
-        case message, error
-        
-        var bgColor: Color {
-            switch self {
-            case .message: return .green
-            case .error: return .red
-            }
-        }
-    }
-
-    @State
-    var isVisible: Bool = false
+    @Binding
+    var event: InAppNotificationEvent?
     
     @State
-    var dismissTask: Task<Void, Never>?
-
+    var isVisible = false
+    
     func body(content: Content) -> some View {
         ZStack {
             content
             
-            if let message = message.wrappedValue {
-                toastView(message)
-                    .frame(
-                        maxWidth: .infinity,
-                        maxHeight: .infinity,
-                        alignment: .top
-                    )
+            if let event {
+                toastView(event)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .padding(16)
                     .opacity(isVisible ? 1 : 0)
                     .offset(y: isVisible ? 0 : -40)
                     #if canImport(Darwin)
                     .allowsHitTesting(false)
                     #endif
-                    .onAppear { scheduleDismiss() }
             }
         }
-    }
-    
-    // MARK: ViewBuilders
-
-    @ViewBuilder
-    private func toastView(_ message: String) -> some View {
-        Text(message)
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(.white)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(
-                Capsule()
-                    .fill(kind.bgColor.opacity(0.85))
-            )
-            .shadow(radius: 8)
-    }
-        
-    private func scheduleDismiss() {
-        dismissTask?.cancel()
-        withAnimation(.easeOut(duration: 0.2)) {
-            isVisible = true
-        }
-        dismissTask = Task { @MainActor in
+        .task(id: event?.id) {
+            guard event != nil else { return }
+            withAnimation(.easeOut(duration: 0.2)) {
+                isVisible = true
+            }
             try? await Task.sleep(for: .seconds(2))
             withAnimation(.easeIn(duration: 0.2)) {
                 isVisible = false
             }
-            try? await Task.sleep(for: .seconds(2))
-            message.wrappedValue = nil
+        }
+    }
+    
+    @ViewBuilder
+    private func toastView(_ event: InAppNotificationEvent) -> some View {
+        Text(event.text)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(Capsule().fill(event.kind.bgColor.opacity(0.85)))
+            .shadow(radius: 8)
+    }
+}
+
+// MARK: Extensions
+
+private extension InAppNotificationEvent.Kind {
+    
+    var bgColor: Color {
+        switch self {
+        case .message: return .green
+        case .error: return .red
         }
     }
 }
