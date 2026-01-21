@@ -75,7 +75,7 @@ public struct PhotoView: View {
             #if os(Android)
             androidPhotoView(url)
             #else
-            iosPhotoView(url)
+            iOSPhotoView(url)
             #endif
         case .image(let image):
             #if os(Android)
@@ -89,7 +89,7 @@ public struct PhotoView: View {
     }
     
     @ViewBuilder
-    private func iosPhotoView(_ url: URL) -> some View {
+    private func iOSPhotoView(_ url: URL) -> some View {
         #if canImport(Nuke)
         nukePhotoView(url: url)
         #else
