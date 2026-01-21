@@ -40,8 +40,8 @@ public struct PhotoView: View {
     
     public var body: some View {
         contentView
-            .aspectRatio(
-                configuration.aspectRatio,
+            .applyPhotoLayout(
+                aspectRatio: configuration.aspectRatio,
                 contentMode: configuration.contentMode
             )
     }
@@ -72,18 +72,41 @@ public struct PhotoView: View {
     private var photoView: some View {
         switch photo.kind {
         case .url(let url):
-            #if canImport(Nuke)
-            nukePhotoView(url: url)
+            #if os(Android)
+            androidPhotoView(url)
             #else
-            AsyncImage(url: url)
+            iosPhotoView(url)
             #endif
         case .image(let image):
-            image
-                .resizable()
+            #if os(Android)
+            image.photoStyle()
+            #else
+            image.resizable()
+            #endif
         default:
             placeholder
         }
     }
+    
+    @ViewBuilder
+    private func iosPhotoView(_ url: URL) -> some View {
+    #if canImport(Nuke)
+        nukePhotoView(url: url)
+    #else
+        AsyncImage(url: url)
+    #endif
+    }
+    
+    #if os(Android)
+    @ViewBuilder
+    private func androidPhotoView(_ url: URL) -> some View {
+    #if canImport(Nuke)
+        nukePhotoView(url: url)
+    #else
+        basicAsyncImage(url: url)
+    #endif
+    }
+    #endif
     
     var isRunningTests: Bool {
         #if canImport(UIKit.UIApplication)
@@ -113,7 +136,23 @@ public struct PhotoView: View {
             } else {
                 placeholder
             }
-            #endif
+    #endif
+        }
+    }
+    #endif
+    
+    #if os(Android)
+    @ViewBuilder
+    private func basicAsyncImage(url: URL) -> some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .success(let image):
+                image.photoStyle()
+            case .failure(_):
+                configuration.placeholder.body()
+            default:
+                configuration.placeholder.body()
+            }
         }
     }
     #endif
@@ -179,6 +218,39 @@ extension PhotoView {
 extension PhotoView.Configuration: Sendable {}
 extension PhotoView.Configuration.Placeholder: Sendable {}
 extension PhotoView.Configuration.Placeholder.Shape: Sendable {}
+
+#if os(Android)
+private extension Image {
+    func photoStyle() -> some View {
+        self
+            .resizable()
+            .interpolation(.high)
+            .antialiased(true)
+    }
+}
+#endif
+
+private extension View {
+    @ViewBuilder
+    func applyPhotoLayout(aspectRatio: CGFloat?, contentMode: ContentMode) -> some View {
+        #if os(Android)
+        if let ratio = aspectRatio {
+            self.aspectRatio(ratio, contentMode: contentMode)
+        } else {
+            switch contentMode {
+            case .fit:
+                self.scaledToFit()
+            case .fill:
+                self.scaledToFill().clipped()
+            @unknown default:
+                self.scaledToFit()
+            }
+        }
+        #else
+        self.aspectRatio(aspectRatio, contentMode: contentMode)
+        #endif
+    }
+}
 
 #if canImport(UIKit)
 
