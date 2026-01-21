@@ -90,21 +90,21 @@ public struct PhotoView: View {
     
     @ViewBuilder
     private func iosPhotoView(_ url: URL) -> some View {
-    #if canImport(Nuke)
+        #if canImport(Nuke)
         nukePhotoView(url: url)
-    #else
+        #else
         AsyncImage(url: url)
-    #endif
+        #endif
     }
     
     #if os(Android)
     @ViewBuilder
     private func androidPhotoView(_ url: URL) -> some View {
-    #if canImport(Nuke)
+        #if canImport(Nuke)
         nukePhotoView(url: url)
-    #else
+        #else
         basicAsyncImage(url: url)
-    #endif
+        #endif
     }
     #endif
     
