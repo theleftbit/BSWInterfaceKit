@@ -40,8 +40,8 @@ public struct PhotoView: View {
     
     public var body: some View {
         contentView
-            .applyPhotoLayout(
-                aspectRatio: configuration.aspectRatio,
+            .aspectRatio(
+                configuration.aspectRatio,
                 contentMode: configuration.contentMode
             )
     }
@@ -73,41 +73,25 @@ public struct PhotoView: View {
         switch photo.kind {
         case .url(let url):
             #if os(Android)
-            androidPhotoView(url)
+            androidPhotoView(url: url)
             #else
-            iOSPhotoView(url)
+            #if canImport(Nuke)
+            nukePhotoView(url: url)
+            #else
+            AsyncImage(url: url)
+            #endif
             #endif
         case .image(let image):
             #if os(Android)
             image.photoStyle()
             #else
-            image.resizable()
+            image
+                .resizable()
             #endif
         default:
             placeholder
         }
     }
-    
-    @ViewBuilder
-    private func iOSPhotoView(_ url: URL) -> some View {
-        #if canImport(Nuke)
-        nukePhotoView(url: url)
-        #else
-        AsyncImage(url: url)
-        #endif
-    }
-    
-    #if os(Android)
-    @ViewBuilder
-    private func androidPhotoView(_ url: URL) -> some View {
-        #if canImport(Nuke)
-        nukePhotoView(url: url)
-        #else
-        basicAsyncImage(url: url)
-        #endif
-    }
-    #endif
-    
     var isRunningTests: Bool {
         #if canImport(UIKit.UIApplication)
         UIApplication.shared.isRunningTests
@@ -116,6 +100,26 @@ public struct PhotoView: View {
         #endif
     }
     
+    // MARK: - Android
+
+    #if os(Android)
+    @ViewBuilder
+    private func androidPhotoView(url: URL) -> some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .success(let image):
+                image.photoStyle()
+            case .failure(_):
+                configuration.placeholder.body()
+            default:
+                configuration.placeholder.body()
+            }
+        }
+    }
+    #endif
+
+    // MARK: - iOS
+
     #if canImport(Nuke)
     @ViewBuilder
     func nukePhotoView(url: URL) -> some View {
@@ -136,23 +140,7 @@ public struct PhotoView: View {
             } else {
                 placeholder
             }
-    #endif
-        }
-    }
-    #endif
-    
-    #if os(Android)
-    @ViewBuilder
-    private func basicAsyncImage(url: URL) -> some View {
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case .success(let image):
-                image.photoStyle()
-            case .failure(_):
-                configuration.placeholder.body()
-            default:
-                configuration.placeholder.body()
-            }
+            #endif
         }
     }
     #endif
@@ -219,6 +207,8 @@ extension PhotoView.Configuration: Sendable {}
 extension PhotoView.Configuration.Placeholder: Sendable {}
 extension PhotoView.Configuration.Placeholder.Shape: Sendable {}
 
+// MARK: - Android image styling
+
 #if os(Android)
 private extension Image {
     func photoStyle() -> some View {
@@ -229,28 +219,6 @@ private extension Image {
     }
 }
 #endif
-
-private extension View {
-    @ViewBuilder
-    func applyPhotoLayout(aspectRatio: CGFloat?, contentMode: ContentMode) -> some View {
-        #if os(Android)
-        if let ratio = aspectRatio {
-            self.aspectRatio(ratio, contentMode: contentMode)
-        } else {
-            switch contentMode {
-            case .fit:
-                self.scaledToFit()
-            case .fill:
-                self.scaledToFill().clipped()
-            @unknown default:
-                self.scaledToFit()
-            }
-        }
-        #else
-        self.aspectRatio(aspectRatio, contentMode: contentMode)
-        #endif
-    }
-}
 
 #if canImport(UIKit)
 
