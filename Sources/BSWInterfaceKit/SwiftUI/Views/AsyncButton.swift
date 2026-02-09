@@ -1,4 +1,3 @@
-
 #if os(Android)
 import SkipFuseUI
 #else
@@ -31,6 +30,9 @@ import SwiftUI
             successMessage: .init(message: "Done!")
         )
     )
+//    .asyncButtonProgressView { style in
+//        ProgressView().scaleEffect(1.2)
+//    }
 }
 #endif
 
@@ -66,6 +68,9 @@ public struct AsyncButton<Label: View>: View {
 
     @State
     var hudState = HUDState.none
+
+    @Environment(\.asyncButtonProgressViewProvider)
+    var progressViewProvider
 
     public var body: some View {
         Button(
@@ -150,8 +155,10 @@ public struct AsyncButton<Label: View>: View {
     }
     
     @ViewBuilder
-    private var loadingView: some View {
-        HStack(spacing: 8) {
+    private var progressView: some View {
+        if let progressViewProvider {
+            progressViewProvider(loadingConfiguration.style)
+        } else {
             ProgressView()
                 .tint({
                     switch loadingConfiguration.style {
@@ -162,6 +169,15 @@ public struct AsyncButton<Label: View>: View {
                 #if canImport(AppKit)
                 .scaleEffect(x: 0.5, y: 0.5)
                 #endif
+        }
+    }
+
+    @ViewBuilder
+    private var loadingView: some View {
+        HStack(spacing: 8) {
+            // CHANGED: only ProgressView() -> progressView
+            progressView
+
             if let loadingMessage = loadingConfiguration.message {
                 Text(loadingMessage)
             }
@@ -297,6 +313,8 @@ public struct AsyncButtonLoadingConfiguration {
     }
 }
 
+public typealias AsyncButtonProgressViewProvider = @Sendable (_ style: AsyncButtonLoadingConfiguration.Style) -> AnyView
+
 public extension View {
     func asyncButtonLoadingConfiguration(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) -> some View {
         self.environment(\.asyncButtonLoadingConfiguration, .init(message: message, style: style))
@@ -305,12 +323,25 @@ public extension View {
     func asyncButtonOperationIdentifierKey(_ key: String) -> some View {
         self.environment(\.asyncButtonOperationIdentifierKey, key)
     }
+
+    func asyncButtonProgressView(_ provider: @escaping AsyncButtonProgressViewProvider) -> some View {
+        self.environment(\.asyncButtonProgressViewProvider, provider)
+    }
+
+    func asyncButtonProgressView<Content: View>(
+        @ViewBuilder _ content: @escaping (_ style: AsyncButtonLoadingConfiguration.Style) -> Content
+    ) -> some View {
+        self.environment(\.asyncButtonProgressViewProvider) { style in
+            AnyView(content(style))
+        }
+    }
 }
 
 #if canImport(Darwin)
 private extension EnvironmentValues {
     @Entry var asyncButtonLoadingConfiguration = AsyncButtonLoadingConfiguration()
     @Entry var asyncButtonOperationIdentifierKey: String? = nil
+    @Entry var asyncButtonProgressViewProvider: AsyncButtonProgressViewProvider? = nil
 }
 #else
 private struct AsyncButtonLoadingConfigurationKey: EnvironmentKey {
@@ -319,6 +350,10 @@ private struct AsyncButtonLoadingConfigurationKey: EnvironmentKey {
 
 private struct AsyncButtonOperationIdentifierKey: EnvironmentKey {
     static let defaultValue: String? = nil
+}
+
+private struct AsyncButtonProgressViewProviderKey: EnvironmentKey {
+    static let defaultValue: AsyncButtonProgressViewProvider? = nil
 }
 
 extension EnvironmentValues {
@@ -330,6 +365,11 @@ extension EnvironmentValues {
     var asyncButtonOperationIdentifierKey: String? {
         get { self[AsyncButtonOperationIdentifierKey.self] }
         set { self[AsyncButtonOperationIdentifierKey.self] = newValue }
+    }
+
+    var asyncButtonProgressViewProvider: AsyncButtonProgressViewProvider? {
+        get { self[AsyncButtonProgressViewProviderKey.self] }
+        set { self[AsyncButtonProgressViewProviderKey.self] = newValue }
     }
 }
 #endif
