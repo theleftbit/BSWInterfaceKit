@@ -58,7 +58,11 @@ public struct DefaultAsyncButtonProgressView: View {
     }
 }
 
-// MARK: - AsyncButton
+/// A button that performs an `async throws` operation. It will show an alert in case the operation fails.
+///
+/// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
+///
+/// In order to customize it's appereance, use the `.asyncButtonLoadingConfiguration` method
 public struct AsyncButton<Label: View, Progress: View>: View {
 
     public typealias Action = () async throws -> Void
@@ -263,7 +267,7 @@ public extension AsyncButton where Label == Image, Progress == DefaultAsyncButto
     }
 }
 
-// MARK: - AsyncButtonLoadingConfiguration
+/// Describes how an `AsyncButton` will show it's "loading" state.
 public struct AsyncButtonLoadingConfiguration {
 
     public init(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) {
@@ -336,7 +340,7 @@ public extension View {
 }
 
 #if canImport(Darwin)
-extension EnvironmentValues {
+private extension EnvironmentValues {
     @Entry var asyncButtonLoadingConfiguration = AsyncButtonLoadingConfiguration()
     @Entry var asyncButtonOperationIdentifierKey: String? = nil
 }
