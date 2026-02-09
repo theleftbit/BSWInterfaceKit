@@ -32,7 +32,6 @@ import SwiftUI
     .asyncButtonProgressView { style in
         ProgressView()
             .tint(.red)
-            .scaleEffect(1.5)
     }
 }
 #endif
@@ -90,7 +89,7 @@ public struct AsyncButton<Label: View>: View {
         .hud(
             hudState: $hudState,
             configuration: hudConfiguration
-        )
+        ) { progressView }
         .disabled((state == .loading) || (error != nil))
         .errorAlert(error: $error)
         .task(id: state) {
@@ -326,7 +325,7 @@ public struct AsyncButtonLoadingConfiguration {
 
 // MARK: - Environment + modifiers
 
-#if os(iOS)
+#if canImport(Darwin)
 public typealias AsyncButtonProgressViewProvider = @Sendable (_ style: AsyncButtonLoadingConfiguration.Style) -> AnyView
 #endif
 
@@ -343,7 +342,7 @@ public extension View {
         self.environment(\.asyncButtonOperationIdentifierKey, key)
     }
 
-    #if os(iOS)
+    #if canImport(Darwin)
     func asyncButtonProgressView(_ provider: @escaping AsyncButtonProgressViewProvider) -> some View {
         self.environment(\.asyncButtonProgressViewProvider, provider)
     }
@@ -362,10 +361,7 @@ public extension View {
 extension EnvironmentValues {
     @Entry var asyncButtonLoadingConfiguration = AsyncButtonLoadingConfiguration()
     @Entry var asyncButtonOperationIdentifierKey: String? = nil
-
-    #if os(iOS)
     @Entry var asyncButtonProgressViewProvider: AsyncButtonProgressViewProvider? = nil
-    #endif
 }
 #else
 private struct AsyncButtonLoadingConfigurationKey: EnvironmentKey {
@@ -375,12 +371,6 @@ private struct AsyncButtonLoadingConfigurationKey: EnvironmentKey {
 private struct AsyncButtonOperationIdentifierKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
-
-#if os(iOS)
-private struct AsyncButtonProgressViewProviderKey: EnvironmentKey {
-    static let defaultValue: AsyncButtonProgressViewProvider? = nil
-}
-#endif
 
 extension EnvironmentValues {
     var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
@@ -392,13 +382,6 @@ extension EnvironmentValues {
         get { self[AsyncButtonOperationIdentifierKey.self] }
         set { self[AsyncButtonOperationIdentifierKey.self] = newValue }
     }
-
-    #if os(iOS)
-    var asyncButtonProgressViewProvider: AsyncButtonProgressViewProvider? {
-        get { self[AsyncButtonProgressViewProviderKey.self] }
-        set { self[AsyncButtonProgressViewProviderKey.self] = newValue }
-    }
-    #endif
 }
 #endif
 

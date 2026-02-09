@@ -22,7 +22,10 @@
         .padding()
         .font(.headline)
         .buttonStyle(BorderedProminentButtonStyle())
-        .hud(hudState: $state, configuration: .init(dimsBackground: true))
+        .hud(hudState: $state, configuration: .init(dimsBackground: true)) {
+            ProgressView()
+                .tint(.red)
+        }
     }
 }
 #endif
@@ -34,14 +37,27 @@ import SwiftUI
 #endif
 
 public extension View {
-    func hud(hudState: Binding<HUDState>, configuration: HUDConfiguration? = nil) -> some View {
+
+    func hud<Loader: View>(
+        hudState: Binding<HUDState>,
+        configuration: HUDConfiguration? = nil,
+        @ViewBuilder loader: @escaping () -> Loader
+    ) -> some View {
         #if os(iOS)
-        modifier(iOSHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        modifier(iOSHUDModifier(hudState: hudState, configuration: configuration ?? .init(), loader: loader))
         #elseif os(Android)
         modifier(AndroidHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
         #else
-        modifier(MacHUDModifier(hudState: hudState, configuration: configuration ?? .init()))
+        modifier(MacHUDModifier(hudState: hudState, configuration: configuration ?? .init(), loader: loader))
         #endif
+    }
+
+    func hud(hudState: Binding<HUDState>, configuration: HUDConfiguration? = nil) -> some View {
+        hud(hudState: hudState, configuration: configuration) {
+            ProgressView()
+                .tint(.primary)
+                .scaleEffect(1.5)
+        }
     }
 }
 
@@ -52,34 +68,23 @@ public enum HUDState: Equatable, Sendable {
 
     var shouldShow: Bool {
         switch self {
-        case .none:
-            return false
-        case .loading:
-            return true
-        case .success:
-            return true
+        case .none: return false
+        case .loading, .success: return true
         }
     }
 
     var isSuccess: Bool {
         switch self {
-        case .none:
-            return false
-        case .loading:
-            return false
-        case .success:
-            return true
+        case .success: return true
+        case .none, .loading: return false
         }
     }
 
     var text: String? {
         switch self {
-        case .none:
-            return nil
-        case .loading(let string):
-            return string ?? ""
-        case .success(let string):
-            return string ?? ""
+        case .none: return nil
+        case .loading(let s): return s ?? ""
+        case .success(let s): return s ?? ""
         }
     }
 }
@@ -98,12 +103,13 @@ public struct HUDConfiguration: Sendable {
 }
 
 #if os(iOS)
-struct iOSHUDModifier: ViewModifier {
+struct iOSHUDModifier<Loader: View>: ViewModifier {
 
     @Binding
     var hudState: HUDState
 
     let configuration: HUDConfiguration
+    let loader: () -> Loader
 
     @State
     var showFullScreenCover = false
@@ -117,7 +123,7 @@ struct iOSHUDModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $showFullScreenCover) {
-                HUDView(state: hudState)
+                HUDView(state: hudState, loader: loader)
                     .font(configuration.font)
                     .opacity(animatedValue ? 1 : 0)
                     .backwards_presentationBackground {
@@ -139,16 +145,12 @@ struct iOSHUDModifier: ViewModifier {
                 transaction.disablesAnimations = true
                 switch newValue {
                 case .loading:
-                    withTransaction(transaction) {
-                        showFullScreenCover = true
-                    }
+                    withTransaction(transaction) { showFullScreenCover = true }
                 case .none:
                     withAnimation(completionCriteria: .removed) {
                         animatedValue = false
                     } completion: {
-                        withTransaction(transaction) {
-                            showFullScreenCover = false
-                        }
+                        withTransaction(transaction) { showFullScreenCover = false }
                     }
                 case .success:
                     break
@@ -164,10 +166,12 @@ struct iOSHUDModifier: ViewModifier {
 private extension View {
 
     @ViewBuilder
-    func backwards_presentationBackground<T: View>(alignment: Alignment = .center, @ViewBuilder content:  () -> T) -> some View {
+    func backwards_presentationBackground<T: View>(
+        alignment: Alignment = .center,
+        @ViewBuilder content:  () -> T
+    ) -> some View {
         if #available(iOS 16.4, macOS 13.3, *) {
-            self
-                .presentationBackground(alignment: alignment, content: content)
+            self.presentationBackground(alignment: alignment, content: content)
         } else {
             self
         }
@@ -206,12 +210,12 @@ struct AndroidHUDModifier: ViewModifier {
     #endif
 }
 #else
-/// This kind of sucks, so please fix
-struct MacHUDModifier: ViewModifier {
+struct MacHUDModifier<Loader: View>: ViewModifier {
     @Binding
     var hudState: HUDState
 
     let configuration: HUDConfiguration
+    let loader: () -> Loader
 
     func body(content: Content) -> some View {
         ZStack {
@@ -226,7 +230,7 @@ struct MacHUDModifier: ViewModifier {
                             .transition(.opacity)
                     }
 
-                    HUDView(state: hudState)
+                    HUDView(state: hudState, loader: loader)
                         .transition(.opacity)
                         .font(configuration.font)
                 }
@@ -237,24 +241,21 @@ struct MacHUDModifier: ViewModifier {
 #endif
 
 #if canImport(Darwin)
-struct HUDView: View {
+struct HUDView<Loader: View>: View {
 
-    init(state: HUDState) {
+    init(state: HUDState, @ViewBuilder loader: @escaping () -> Loader) {
         self.state = state
+        self.loader = loader
     }
 
     let state: HUDState
+    let loader: () -> Loader
 
     @ScaledMetric
     private var hudImageSize = 60.0
     @ScaledMetric
     private var hudContentSize = 120.0
     private let backgroundColor = Material.regularMaterial
-
-    #if os(iOS)
-    @Environment(\.asyncButtonProgressViewProvider)
-    private var progressViewProvider
-    #endif
 
     var body: some View {
         VStack(alignment: .center) {
@@ -273,12 +274,9 @@ struct HUDView: View {
 
     private var textMessage: String? {
         switch state {
-        case .none:
-            return nil
-        case .loading(let loadingMessage):
-            return loadingMessage
-        case .success(let successMessage):
-            return successMessage
+        case .none: return nil
+        case .loading(let loadingMessage): return loadingMessage
+        case .success(let successMessage): return successMessage
         }
     }
 
@@ -288,31 +286,11 @@ struct HUDView: View {
         case .none:
             EmptyView()
         case .loading:
-            hudLoadingSpinner
+            loader()
         case .success:
             Image(systemName: "checkmark")
                 .font(.largeTitle)
         }
-    }
-
-    @ViewBuilder
-    private var hudLoadingSpinner: some View {
-        #if os(iOS)
-        if let progressViewProvider {
-            progressViewProvider(.blocking(.init()))
-        } else {
-            defaultHUDProgressView
-        }
-        #else
-        defaultHUDProgressView
-        #endif
-    }
-
-    @ViewBuilder
-    private var defaultHUDProgressView: some View {
-        ProgressView()
-            .tint(.primary)
-            .scaleEffect(1.5)
     }
 }
 #endif
