@@ -23,54 +23,52 @@ import SwiftUI
     .asyncButtonLoadingConfiguration(
         message: "Loading...",
 //        style: .inline(tint: .red)
-
         style: .blocking(
             font: .headline,
             dimsBackground: true,
             successMessage: .init(message: "Done!")
         )
     )
-//    .asyncButtonProgressView { style in
-//        ProgressView().scaleEffect(1.2)
-//    }
+    .asyncButtonProgressView { style in
+        ProgressView()
+            .tint(.red)
+            .scaleEffect(1.5)
+    }
 }
 #endif
 
-/// A button that performs an `async throws` operation. It will show an alert in case the operation fails.
-///
-/// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
-///
-/// In order to customize it's appereance, use the `.asyncButtonLoadingConfiguration` method
 public struct AsyncButton<Label: View>: View {
-    
+
     public init(action: @escaping Action, label: @escaping () -> Label) {
         self.action = action
         self.label = label()
     }
-    
+
     public typealias Action = () async throws -> Void
     public let action: Action
     public let label: Label
-    
+
     enum ButtonState: Equatable {
         case idle
         case loading
     }
-    
+
     @State
     var state: ButtonState = .idle
-    
+
     @State
     var error: Swift.Error?
-    
+
     @Environment(\.asyncButtonLoadingConfiguration)
     var loadingConfiguration
 
     @State
     var hudState = HUDState.none
 
+    #if os(iOS)
     @Environment(\.asyncButtonProgressViewProvider)
     var progressViewProvider
+    #endif
 
     public var body: some View {
         Button(
@@ -101,10 +99,10 @@ public struct AsyncButton<Label: View>: View {
             }
         }
     }
-    
+
     @MainActor
     private func performAction() async {
-        
+
         if let hudLoadingConfiguration {
             self.hudState = hudLoadingConfiguration
         }
@@ -132,7 +130,7 @@ public struct AsyncButton<Label: View>: View {
         case .success:
             if let hudSuccessConfiguration, let hudConfiguration {
                 self.hudState = hudSuccessConfiguration
-                try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval) )
+                try? await Task.sleep(for: .seconds(hudConfiguration.successMessageInterval))
             }
             self.hudState = .none
         case .failure(let failure):
@@ -153,29 +151,10 @@ public struct AsyncButton<Label: View>: View {
             self.state = .idle
         }
     }
-    
-    @ViewBuilder
-    private var progressView: some View {
-        if let progressViewProvider {
-            progressViewProvider(loadingConfiguration.style)
-        } else {
-            ProgressView()
-                .tint({
-                    switch loadingConfiguration.style {
-                    case .inline(let tint): return tint
-                    case .blocking: return nil
-                    }
-                }())
-                #if canImport(AppKit)
-                .scaleEffect(x: 0.5, y: 0.5)
-                #endif
-        }
-    }
 
     @ViewBuilder
     private var loadingView: some View {
         HStack(spacing: 8) {
-            // CHANGED: only ProgressView() -> progressView
             progressView
 
             if let loadingMessage = loadingConfiguration.message {
@@ -183,26 +162,53 @@ public struct AsyncButton<Label: View>: View {
             }
         }
     }
-    
+
+    @ViewBuilder
+    private var progressView: some View {
+        #if os(iOS)
+        if let progressViewProvider {
+            progressViewProvider(loadingConfiguration.style)
+        } else {
+            defaultProgressView
+        }
+        #else
+        defaultProgressView
+        #endif
+    }
+
+    @ViewBuilder
+    private var defaultProgressView: some View {
+        ProgressView()
+            .tint({
+                switch loadingConfiguration.style {
+                case .inline(let tint): return tint
+                case .blocking: return nil
+                }
+            }())
+            #if canImport(AppKit)
+            .scaleEffect(x: 0.5, y: 0.5)
+            #endif
+    }
+
     @Environment(\.asyncButtonOperationIdentifierKey)
     var operationKey
-    
+
     private var operation: AsyncOperationTracer.Operation? {
         guard let operationKey else {
             return nil
         }
         return .init(kind: .buttonAction, id: operationKey)
     }
-    
+
     private var hudLoadingConfiguration: HUDState? {
         switch loadingConfiguration.style {
         case .blocking:
-            return .loading( loadingConfiguration.message)
+            return .loading(loadingConfiguration.message)
         case .inline:
             return nil
         }
     }
-    
+
     private var hudSuccessConfiguration: HUDState? {
         switch loadingConfiguration.style {
         case .blocking(let config):
@@ -224,7 +230,6 @@ public struct AsyncButton<Label: View>: View {
         }
     }
 }
-
 
 public extension AsyncButton where Label == Text {
     init(_ label: String,
@@ -256,9 +261,11 @@ public extension AsyncButton where Label == Image {
     }
 }
 
-/// Describes how an `AsyncButton` will show it's "loading" state.
+
+// MARK: - AsyncButtonLoadingConfiguration
+
 public struct AsyncButtonLoadingConfiguration {
-    
+
     public init(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) {
         self.message = message
         self.style = style
@@ -273,57 +280,70 @@ public struct AsyncButtonLoadingConfiguration {
         
         @usableFromInline
         static var nonblocking: Style { .inline(tint: nil) }
-        
+
         @usableFromInline
-        static func blocking(font: Font = .headline, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) -> Style { .blocking(.init(font: font, dimsBackground: dimsBackground, successMessage: successMessage)) }
-        
+        static func blocking(
+            font: Font = .headline,
+            dimsBackground: Bool = false,
+            successMessage: BlockingSuccessMessage? = nil
+        ) -> Style {
+            .blocking(.init(font: font, dimsBackground: dimsBackground, successMessage: successMessage))
+        }
+
         public struct BlockingConfiguration {
             public init(font: Font = .body, dimsBackground: Bool = false, successMessage: BlockingSuccessMessage? = nil) {
                 self.dimsBackground = dimsBackground
                 self.font = font
                 self.successMessage = successMessage
             }
-            
+
             let font: Font
             let dimsBackground: Bool
             let successMessage: BlockingSuccessMessage?
         }
-        
+
         public struct BlockingSuccessMessage {
             public init(message: String, timeInterval: TimeInterval = 2) {
                 self.message = message
                 self.timeInterval = timeInterval
             }
-            
+
             let message: String
             let timeInterval: TimeInterval
         }
     }
-    
+
     public let message: String?
     public let style: Style
-    
+
     public var isBlocking: Bool {
         switch style {
-        case .inline:
-            return false
-        case .blocking:
-            return true
+        case .inline: return false
+        case .blocking: return true
         }
     }
 }
 
+// MARK: - Environment + modifiers
+
+#if os(iOS)
 public typealias AsyncButtonProgressViewProvider = @Sendable (_ style: AsyncButtonLoadingConfiguration.Style) -> AnyView
+#endif
 
 public extension View {
-    func asyncButtonLoadingConfiguration(message: String? = nil, style: AsyncButtonLoadingConfiguration.Style = .nonblocking) -> some View {
+
+    func asyncButtonLoadingConfiguration(
+        message: String? = nil,
+        style: AsyncButtonLoadingConfiguration.Style = .nonblocking
+    ) -> some View {
         self.environment(\.asyncButtonLoadingConfiguration, .init(message: message, style: style))
     }
-    
+
     func asyncButtonOperationIdentifierKey(_ key: String) -> some View {
         self.environment(\.asyncButtonOperationIdentifierKey, key)
     }
 
+    #if os(iOS)
     func asyncButtonProgressView(_ provider: @escaping AsyncButtonProgressViewProvider) -> some View {
         self.environment(\.asyncButtonProgressViewProvider, provider)
     }
@@ -335,13 +355,17 @@ public extension View {
             AnyView(content(style))
         }
     }
+    #endif
 }
 
 #if canImport(Darwin)
-private extension EnvironmentValues {
+extension EnvironmentValues {
     @Entry var asyncButtonLoadingConfiguration = AsyncButtonLoadingConfiguration()
     @Entry var asyncButtonOperationIdentifierKey: String? = nil
+
+    #if os(iOS)
     @Entry var asyncButtonProgressViewProvider: AsyncButtonProgressViewProvider? = nil
+    #endif
 }
 #else
 private struct AsyncButtonLoadingConfigurationKey: EnvironmentKey {
@@ -352,9 +376,11 @@ private struct AsyncButtonOperationIdentifierKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
+#if os(iOS)
 private struct AsyncButtonProgressViewProviderKey: EnvironmentKey {
     static let defaultValue: AsyncButtonProgressViewProvider? = nil
 }
+#endif
 
 extension EnvironmentValues {
     var asyncButtonLoadingConfiguration: AsyncButtonLoadingConfiguration {
@@ -367,10 +393,12 @@ extension EnvironmentValues {
         set { self[AsyncButtonOperationIdentifierKey.self] = newValue }
     }
 
+    #if os(iOS)
     var asyncButtonProgressViewProvider: AsyncButtonProgressViewProvider? {
         get { self[AsyncButtonProgressViewProviderKey.self] }
         set { self[AsyncButtonProgressViewProviderKey.self] = newValue }
     }
+    #endif
 }
 #endif
 

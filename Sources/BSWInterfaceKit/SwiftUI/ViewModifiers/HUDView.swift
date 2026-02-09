@@ -3,7 +3,7 @@
     @Previewable
     @State
     var state = HUDState.none
-    
+
     VStack {
         Spacer()
         AsyncButton {
@@ -49,7 +49,7 @@ public enum HUDState: Equatable, Sendable {
     case none
     case loading(String? = nil)
     case success(String?)
-    
+
     var shouldShow: Bool {
         switch self {
         case .none:
@@ -60,7 +60,7 @@ public enum HUDState: Equatable, Sendable {
             return true
         }
     }
-    
+
     var isSuccess: Bool {
         switch self {
         case .none:
@@ -71,7 +71,7 @@ public enum HUDState: Equatable, Sendable {
             return true
         }
     }
-    
+
     var text: String? {
         switch self {
         case .none:
@@ -85,13 +85,13 @@ public enum HUDState: Equatable, Sendable {
 }
 
 public struct HUDConfiguration: Sendable {
-    
+
     public init(font: Font = .body, dimsBackground: Bool = false, successMessageInterval: TimeInterval = 3) {
         self.dimsBackground = dimsBackground
         self.font = font
         self.successMessageInterval = successMessageInterval
     }
-    
+
     let font: Font
     let dimsBackground: Bool
     let successMessageInterval: TimeInterval
@@ -107,7 +107,7 @@ struct iOSHUDModifier: ViewModifier {
 
     @State
     var showFullScreenCover = false
-    
+
     @State
     var animatedValue = false
 
@@ -155,14 +155,14 @@ struct iOSHUDModifier: ViewModifier {
                 }
             }
     }
-    
+
     var backgroundColor: Color {
         colorScheme == .dark ? .white : .black
     }
 }
 
 private extension View {
-    
+
     @ViewBuilder
     func backwards_presentationBackground<T: View>(alignment: Alignment = .center, @ViewBuilder content:  () -> T) -> some View {
         if #available(iOS 16.4, macOS 13.3, *) {
@@ -187,13 +187,13 @@ struct AndroidHUDModifier: ViewModifier {
             }
         }
     }
-    
+
     #if SKIP
     struct AndroidHUD: ContentComposer {
         let visible: Bool
         let text: String?
         let isSuccess: Bool
-        
+
         @Composable
         func Compose(context: ComposeContext) {
             bswinterface.kit.BlockingHudDialog(
@@ -216,7 +216,7 @@ struct MacHUDModifier: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
             content
-            
+
             if hudState != .none {
                 ZStack {
                     if configuration.dimsBackground {
@@ -225,7 +225,7 @@ struct MacHUDModifier: ViewModifier {
                             .ignoresSafeArea()
                             .transition(.opacity)
                     }
-                    
+
                     HUDView(state: hudState)
                         .transition(.opacity)
                         .font(configuration.font)
@@ -250,7 +250,12 @@ struct HUDView: View {
     @ScaledMetric
     private var hudContentSize = 120.0
     private let backgroundColor = Material.regularMaterial
-    
+
+    #if os(iOS)
+    @Environment(\.asyncButtonProgressViewProvider)
+    private var progressViewProvider
+    #endif
+
     var body: some View {
         VStack(alignment: .center) {
             hudImage
@@ -265,7 +270,7 @@ struct HUDView: View {
         .frame(minWidth: hudContentSize, minHeight: hudContentSize)
         .background(backgroundColor, in: RoundedRectangle(cornerRadius: 8))
     }
-    
+
     private var textMessage: String? {
         switch state {
         case .none:
@@ -276,20 +281,38 @@ struct HUDView: View {
             return successMessage
         }
     }
-    
+
     @ViewBuilder
     private var hudImage: some View {
         switch state {
         case .none:
             EmptyView()
         case .loading:
-            ProgressView()
-                .tint(.primary)
-                .scaleEffect(1.5)
+            hudLoadingSpinner
         case .success:
             Image(systemName: "checkmark")
                 .font(.largeTitle)
         }
+    }
+
+    @ViewBuilder
+    private var hudLoadingSpinner: some View {
+        #if os(iOS)
+        if let progressViewProvider {
+            progressViewProvider(.blocking(.init()))
+        } else {
+            defaultHUDProgressView
+        }
+        #else
+        defaultHUDProgressView
+        #endif
+    }
+
+    @ViewBuilder
+    private var defaultHUDProgressView: some View {
+        ProgressView()
+            .tint(.primary)
+            .scaleEffect(1.5)
     }
 }
 #endif
