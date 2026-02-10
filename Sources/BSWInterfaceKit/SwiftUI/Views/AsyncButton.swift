@@ -36,28 +36,6 @@ import SwiftUI
 }
 #endif
 
-// MARK: - Default progress view
-public struct DefaultAsyncButtonProgressView: View {
-    public init(style: AsyncButtonLoadingConfiguration.Style) {
-        self.style = style
-    }
-
-    let style: AsyncButtonLoadingConfiguration.Style
-
-    public var body: some View {
-        ProgressView()
-            .tint({
-                switch style {
-                case .inline(let tint): return tint
-                case .blocking: return nil
-                }
-            }())
-            #if canImport(AppKit)
-            .scaleEffect(x: 0.5, y: 0.5)
-            #endif
-    }
-}
-
 /// A button that performs an `async throws` operation. It will show an alert in case the operation fails.
 ///
 /// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
@@ -219,7 +197,7 @@ public struct AsyncButton<Label: View, Progress: View>: View {
 }
 
 // MARK: - Public default init
-public extension AsyncButton where Progress == DefaultAsyncButtonProgressView {
+extension AsyncButton where Progress == DefaultAsyncButtonProgressView {
 
     init(action: @escaping Action, label: @escaping () -> Label) {
         self.init(
@@ -247,7 +225,7 @@ public extension AsyncButton {
 }
 
 // MARK: - Convenience inits
-public extension AsyncButton where Label == Text, Progress == DefaultAsyncButtonProgressView {
+extension AsyncButton where Label == Text, Progress == DefaultAsyncButtonProgressView {
     init(_ label: String, action: @escaping Action) {
         self.init(action: action) { Text(label) }
     }
@@ -261,7 +239,7 @@ public extension AsyncButton where Label == Text, Progress == DefaultAsyncButton
     }
 }
 
-public extension AsyncButton where Label == Image, Progress == DefaultAsyncButtonProgressView {
+extension AsyncButton where Label == Image, Progress == DefaultAsyncButtonProgressView {
     init(systemImageName: String, action: @escaping Action) {
         self.init(action: action) { Image(systemName: systemImageName) }
     }
@@ -324,6 +302,28 @@ public struct AsyncButtonLoadingConfiguration {
         case .inline: return false
         case .blocking: return true
         }
+    }
+}
+
+// MARK: - Default progress view
+internal struct DefaultAsyncButtonProgressView: View {
+    init(style: AsyncButtonLoadingConfiguration.Style) {
+        self.style = style
+    }
+
+    let style: AsyncButtonLoadingConfiguration.Style
+
+    var body: some View {
+        ProgressView()
+            .tint({
+                switch style {
+                case .inline(let tint): return tint
+                case .blocking: return nil
+                }
+            }())
+            #if canImport(AppKit)
+            .scaleEffect(x: 0.5, y: 0.5)
+            #endif
     }
 }
 
