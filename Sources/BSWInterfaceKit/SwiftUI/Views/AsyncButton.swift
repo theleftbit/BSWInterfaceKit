@@ -36,7 +36,7 @@ import SwiftUI
 }
 #endif
 
-// MARK: - Default progress view (no Environment needed)
+// MARK: - Default progress view
 public struct DefaultAsyncButtonProgressView: View {
     public init(style: AsyncButtonLoadingConfiguration.Style) {
         self.style = style
@@ -127,7 +127,7 @@ public struct AsyncButton<Label: View, Progress: View>: View {
             self.hudState = hudLoadingConfiguration
         }
 
-        let result: Result<Void, Swift.Error> = await {
+        let result: Swift.Result<Void, Swift.Error> = await {
             if let operation = operation {
                 await AsyncOperationTracer.operationDidBegin(operation)
             }
@@ -274,9 +274,11 @@ public struct AsyncButtonLoadingConfiguration {
         self.message = message
         self.style = style
     }
-
+    
     public enum Style {
+        /// The rest of the UI in the screen will still be interactable using this style
         case inline(tint: Color? = nil)
+        /// Will show a HUD in order to let the user know that an operation is ongoing.
         case blocking(BlockingConfiguration)
 
         @usableFromInline

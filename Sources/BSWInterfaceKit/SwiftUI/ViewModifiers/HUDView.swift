@@ -83,8 +83,8 @@ public enum HUDState: Equatable, Sendable {
     var text: String? {
         switch self {
         case .none: return nil
-        case .loading(let s): return s ?? ""
-        case .success(let s): return s ?? ""
+        case .loading(let string): return string ?? ""
+        case .success(let string): return string ?? ""
         }
     }
 }
