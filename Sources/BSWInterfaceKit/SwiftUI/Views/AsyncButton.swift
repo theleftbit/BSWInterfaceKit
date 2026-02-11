@@ -50,7 +50,7 @@ public struct AsyncButton<Label: View, Progress: View>: View {
 
     private let progressViewProvider: (_ style: AsyncButtonLoadingConfiguration.Style) -> Progress
 
-    public init(
+    internal init(
         action: @escaping Action,
         label: Label,
         progressViewProvider: @escaping (_ style: AsyncButtonLoadingConfiguration.Style) -> Progress
@@ -199,7 +199,7 @@ public struct AsyncButton<Label: View, Progress: View>: View {
 // MARK: - Public default init
 extension AsyncButton where Progress == DefaultAsyncButtonProgressView {
 
-    init(action: @escaping Action, label: @escaping () -> Label) {
+    public init(action: @escaping Action, label: @escaping () -> Label) {
         self.init(
             action: action,
             label: label(),
@@ -306,14 +306,14 @@ public struct AsyncButtonLoadingConfiguration {
 }
 
 // MARK: - Default progress view
-internal struct DefaultAsyncButtonProgressView: View {
+public struct DefaultAsyncButtonProgressView: View {
     init(style: AsyncButtonLoadingConfiguration.Style) {
         self.style = style
     }
 
     let style: AsyncButtonLoadingConfiguration.Style
 
-    var body: some View {
+    public var body: some View {
         ProgressView()
             .tint({
                 switch style {
