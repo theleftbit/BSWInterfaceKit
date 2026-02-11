@@ -225,7 +225,7 @@ public extension AsyncButton {
 }
 
 // MARK: - Convenience inits
-extension AsyncButton where Label == Text, Progress == DefaultAsyncButtonProgressView {
+public extension AsyncButton where Label == Text, Progress == DefaultAsyncButtonProgressView {
     init(_ label: String, action: @escaping Action) {
         self.init(action: action) { Text(label) }
     }
