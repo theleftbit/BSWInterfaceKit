@@ -22,11 +22,27 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
     
     public typealias ItemFetcher = (Int) async throws -> ([ListItem], Bool)
     
-    public init(currentPage: Int = 0, itemFetcher: @escaping ItemFetcher) async throws {
+    // SKIP @nobridge
+    public init(
+        currentPage: Int = 0,
+        itemFetcher: @escaping ItemFetcher
+    ) async throws {
         self.itemFetcher = itemFetcher
         self.state = State.canLoadMorePages(currentPage: currentPage)
         try await loadMoreContent()
     }
+    
+    #if os(Android)
+    public static func create(
+        currentPage: Int = 0,
+        itemFetcher: @escaping ItemFetcher
+    ) async throws -> InfiniteScrollingDataSource {
+        return try await InfiniteScrollingDataSource(
+            currentPage: currentPage,
+            itemFetcher: itemFetcher
+        )
+    }
+    #endif
     
     public init(mockItems: [ListItem]) {
         self.items = mockItems
