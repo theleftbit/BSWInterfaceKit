@@ -48,7 +48,7 @@ struct InfiniteDataSource_Previews: PreviewProvider {
 
     struct ItemListView: View {
 
-        @StateObject var dataSource: ItemInfiniteDataSource
+        var dataSource: ItemInfiniteDataSource
 
         var body: some View {
             List {
@@ -67,7 +67,7 @@ struct InfiniteDataSource_Previews: PreviewProvider {
 
         struct FooterView: View {
 
-            @ObservedObject var dataSource: ItemInfiniteDataSource
+            var dataSource: ItemInfiniteDataSource
 
             var body: some View {
                 HStack(spacing: 8) {

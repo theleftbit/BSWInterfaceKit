@@ -1,16 +1,17 @@
-#if canImport(Darwin)
 
 import SwiftUI
-import Combine
+import Observation
 
 /// As of iOS 18 and aligned releases, this is no longer recommended as
 /// there are cleaner alternatives like `InfiniteVerticalScrollView`
 @MainActor
-open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: ObservableObject {
+@Observable
+open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
     
-    @Published public private(set) var items = [ListItem]()
-    @Published public private(set) var state: State
-    @Published public var paginationError: Error?
+    public private(set) var items = [ListItem]()
+    public private(set) var state: State
+    public var paginationError: Error?
+    @ObservationIgnored
     private var itemFetcher: ItemFetcher
     
     public enum State: Equatable {
@@ -106,5 +107,3 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable>: Obser
         }
     }
 }
-
-#endif
