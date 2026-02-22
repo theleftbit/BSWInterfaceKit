@@ -82,7 +82,11 @@ public extension View {
             )
         }
         #else
-        self.bottomActionBarInset(actionButton)
+        self.actionBarInset(
+            actionButton,
+            edge: .bottom,
+            dividerAlignment: .top
+        )
         #endif
     }
 
@@ -101,31 +105,16 @@ public extension View {
             )
         }
         #else
-        self.topActionBarInset(actionTopBar)
-        #endif
-    }
-}
-
-#if os(iOS)
-private extension View {
-
-    @ViewBuilder
-    func bottomActionBarInset<T: View>(_ actionButton: T) -> some View {
-        self.actionBarInset(
-            actionButton,
-            edge: .bottom,
-            dividerAlignment: .top
-        )
-    }
-
-    @ViewBuilder
-    func topActionBarInset<T: View>(_ actionTopBar: T) -> some View {
         self.actionBarInset(
             actionTopBar,
             edge: .top,
             dividerAlignment: .bottom
         )
+        #endif
     }
+}
+
+private extension View {
 
     @ViewBuilder
     func actionBarInset<T: View>(
@@ -148,7 +137,6 @@ private extension View {
         }
     }
 }
-#endif
 
 #if os(Android)
 #if SKIP
