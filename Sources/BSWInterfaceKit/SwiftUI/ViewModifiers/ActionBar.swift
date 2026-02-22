@@ -114,6 +114,7 @@ public extension View {
     }
 }
 
+#if os(iOS) || os(macOS)
 private extension View {
 
     @ViewBuilder
@@ -137,6 +138,7 @@ private extension View {
         }
     }
 }
+#endif
 
 #if os(Android)
 #if SKIP
