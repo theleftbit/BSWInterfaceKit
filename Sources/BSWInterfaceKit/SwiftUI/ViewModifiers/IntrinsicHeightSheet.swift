@@ -63,20 +63,16 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
     
-    #if canImport(Darwin)
     @State var sheetSize: CGSize = .zero
-    #endif
 
     var body: some View {
         hostView
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
-                #if canImport(Darwin)
                 .getCGSize($sheetSize)
                 .presentationDetents([.height(sheetSize.height)])
+                #if canImport(Darwin)
                 .fixedSize(horizontal: false, vertical: true)
-                #else
-                .presentationDetents([.medium])
                 #endif
         }
     }
@@ -94,19 +90,14 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
         hostView
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
-                    #if canImport(Darwin)
                     .getCGSize($sheetSize)
                     .presentationDetents([.height(sheetSize.height)])
+                    #if canImport(Darwin)
                     .fixedSize(horizontal: false, vertical: true)
-                    #else
-                    .presentationDetents([.medium])
                     #endif
             }
     }
 }
-
-#if canImport(Darwin)
-import SwiftUI
 
 private struct CGSizeKey: PreferenceKey {
     nonisolated(unsafe) static var defaultValue = CGSize.zero
@@ -125,9 +116,23 @@ private extension View {
                 Color.clear
                     .preference(key: CGSizeKey.self, value: proxy.size)
             }.onPreferenceChange(CGSizeKey.self) { value in
-                viewSize.wrappedValue = value
+                updateSheetSize(viewSize, newSize: value)
             }
         )
     }
+
+    func updateSheetSize(_ viewSize: Binding<CGSize>, newSize: CGSize) {
+        guard newSize.height > 0 else {
+            return
+        }
+
+        #if canImport(Darwin)
+        viewSize.wrappedValue = newSize
+        #else
+        guard viewSize.wrappedValue.height <= 0 else {
+            return
+        }
+        viewSize.wrappedValue = newSize
+        #endif
+    }
 }
-#endif
