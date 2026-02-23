@@ -63,21 +63,14 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
     
-    #if canImport(Darwin)
     @State var sheetSize: CGSize = .zero
-    #endif
 
     var body: some View {
         hostView
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
-                #if canImport(Darwin)
                 .getCGSize($sheetSize)
-                .presentationDetents([.height(sheetSize.height)])
-                .fixedSize(horizontal: false, vertical: true)
-                #else
-                .presentationDetents([.medium])
-                #endif
+                .intrinsicSheetDetents(sheetSize)
         }
     }
 }
@@ -94,19 +87,11 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
         hostView
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
-                    #if canImport(Darwin)
                     .getCGSize($sheetSize)
-                    .presentationDetents([.height(sheetSize.height)])
-                    .fixedSize(horizontal: false, vertical: true)
-                    #else
-                    .presentationDetents([.medium])
-                    #endif
+                    .intrinsicSheetDetents(sheetSize)
             }
     }
 }
-
-#if canImport(Darwin)
-import SwiftUI
 
 private struct CGSizeKey: PreferenceKey {
     nonisolated(unsafe) static var defaultValue = CGSize.zero
@@ -116,6 +101,18 @@ private struct CGSizeKey: PreferenceKey {
 }
 
 private extension View {
+    @ViewBuilder
+    func intrinsicSheetDetents(_ sheetSize: CGSize) -> some View {
+        if sheetSize.height > 0 {
+            self
+                .presentationDetents([.height(sheetSize.height)])
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            self
+                .presentationDetents([.medium])
+        }
+    }
+
     /// Sets the `View`'s size to the passed `Binding`
     /// - Parameter viewSize: The `Binding` where to store the value
     /// - Returns: a `SwiftUI.View`.
@@ -130,4 +127,3 @@ private extension View {
         )
     }
 }
-#endif
