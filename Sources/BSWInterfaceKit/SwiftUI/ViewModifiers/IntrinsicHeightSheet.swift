@@ -113,17 +113,12 @@ private struct CGSizeKey: PreferenceKey {
 }
 
 private extension View {
-    static var androidBottomCompensation: CGFloat { 24.0 }
+    static var androidBottomCompensation: CGFloat { 20.0 }
 
     @ViewBuilder
     func intrinsicSheetDetents(_ sheetSize: CGSize) -> some View {
-        if sheetSize.height > 0 {
-            self
-                .presentationDetents([.height(sheetSize.height + Self.androidBottomCompensation)])
-        } else {
-            self
-                .presentationDetents([.height(1)])
-        }
+        self
+            .presentationDetents([.height(sheetSize.height + Self.androidBottomCompensation)])
     }
 
     /// Sets the `View`'s size to the passed `Binding`
