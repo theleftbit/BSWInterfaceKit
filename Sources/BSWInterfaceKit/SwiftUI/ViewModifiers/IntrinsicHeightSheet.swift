@@ -71,9 +71,7 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
             guard newValue else {
                 return
             }
-            #if canImport(Darwin)
             sheetSize = .zero
-            #endif
         }
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
@@ -97,9 +95,7 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
                 guard newValue else {
                     return
                 }
-                #if canImport(Darwin)
                 sheetSize = .zero
-                #endif
             }
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
@@ -138,14 +134,8 @@ private extension View {
                 .presentationDetents([.height(sheetSize.height + Self.androidBottomCompensation)])
             #endif
         } else {
-            #if canImport(Darwin)
             self
                 .presentationDetents([.medium])
-            #else
-            // Android: avoid opening at .medium to prevent visible jump down when real height arrives.
-            self
-                .presentationDetents([.height(1)])
-            #endif
         }
     }
 
@@ -168,16 +158,8 @@ private extension View {
             return
         }
 
-        #if canImport(Darwin)
         if isSignificantSizeChange(from: viewSize.wrappedValue, to: newSize) {
             viewSize.wrappedValue = newSize
         }
-        #else
-        // Android: lock to the first measured value to avoid recomposition loops.
-        guard viewSize.wrappedValue.height <= 0 else {
-            return
-        }
-        viewSize.wrappedValue = newSize
-        #endif
     }
 }
