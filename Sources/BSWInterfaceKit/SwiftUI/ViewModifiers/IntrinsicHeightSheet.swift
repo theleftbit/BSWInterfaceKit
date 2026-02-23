@@ -104,9 +104,14 @@ private extension View {
     @ViewBuilder
     func intrinsicSheetDetents(_ sheetSize: CGSize) -> some View {
         if sheetSize.height > 0 {
+            #if canImport(Darwin)
             self
                 .presentationDetents([.height(sheetSize.height)])
                 .fixedSize(horizontal: false, vertical: true)
+            #else
+            self
+                .presentationDetents([.height(sheetSize.height)])
+            #endif
         } else {
             self
                 .presentationDetents([.medium])
