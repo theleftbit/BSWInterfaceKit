@@ -69,13 +69,10 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
         hostView
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
-                #if canImport(Darwin)
                 .getCGSize($sheetSize)
                 .presentationDetents([.height(sheetSize.height)])
+                #if canImport(Darwin)
                 .fixedSize(horizontal: false, vertical: true)
-                #else
-                .getCGSize($sheetSize)
-                .intrinsicSheetDetents(sheetSize)
                 #endif
         }
     }
@@ -93,13 +90,10 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
         hostView
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
-                    #if canImport(Darwin)
                     .getCGSize($sheetSize)
                     .presentationDetents([.height(sheetSize.height)])
+                    #if canImport(Darwin)
                     .fixedSize(horizontal: false, vertical: true)
-                    #else
-                    .getCGSize($sheetSize)
-                    .intrinsicSheetDetents(sheetSize)
                     #endif
             }
     }
@@ -113,14 +107,6 @@ private struct CGSizeKey: PreferenceKey {
 }
 
 private extension View {
-    static var androidBottomCompensation: CGFloat { 20.0 }
-
-    @ViewBuilder
-    func intrinsicSheetDetents(_ sheetSize: CGSize) -> some View {
-        self
-            .presentationDetents([.height(sheetSize.height + Self.androidBottomCompensation)])
-    }
-
     /// Sets the `View`'s size to the passed `Binding`
     /// - Parameter viewSize: The `Binding` where to store the value
     /// - Returns: a `SwiftUI.View`.
