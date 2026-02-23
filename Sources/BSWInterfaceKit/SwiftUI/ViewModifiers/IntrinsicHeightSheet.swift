@@ -67,16 +67,16 @@ struct IntrinsicHeightDetentView_ForBool<Host: View, Content: View>: View {
 
     var body: some View {
         hostView
-        .onChange(of: isPresented) { _, newValue in
-            guard newValue else {
-                return
-            }
-            sheetSize = .zero
-        }
         .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
             contentView()
+                #if canImport(Darwin)
+                .getCGSize($sheetSize)
+                .presentationDetents([.height(sheetSize.height)])
+                .fixedSize(horizontal: false, vertical: true)
+                #else
                 .getCGSize($sheetSize)
                 .intrinsicSheetDetents(sheetSize)
+                #endif
         }
     }
 }
@@ -91,16 +91,16 @@ struct IntrinsicHeightDetentView_ForItems<Host: View, Content: View, Item: Ident
 
     var body: some View {
         hostView
-            .onChange(of: isPresented != nil) { _, newValue in
-                guard newValue else {
-                    return
-                }
-                sheetSize = .zero
-            }
             .sheet(item: $isPresented, onDismiss: onDismiss) { item in
                 contentView(item)
+                    #if canImport(Darwin)
+                    .getCGSize($sheetSize)
+                    .presentationDetents([.height(sheetSize.height)])
+                    .fixedSize(horizontal: false, vertical: true)
+                    #else
                     .getCGSize($sheetSize)
                     .intrinsicSheetDetents(sheetSize)
+                    #endif
             }
     }
 }
@@ -113,29 +113,16 @@ private struct CGSizeKey: PreferenceKey {
 }
 
 private extension View {
-    static var sizeChangeTolerance: CGFloat { 0.5 }
     static var androidBottomCompensation: CGFloat { 24.0 }
-
-    func isSignificantSizeChange(from current: CGSize, to next: CGSize) -> Bool {
-        let widthDiff = abs(current.width - next.width)
-        let heightDiff = abs(current.height - next.height)
-        return widthDiff > Self.sizeChangeTolerance || heightDiff > Self.sizeChangeTolerance
-    }
 
     @ViewBuilder
     func intrinsicSheetDetents(_ sheetSize: CGSize) -> some View {
         if sheetSize.height > 0 {
-            #if canImport(Darwin)
-            self
-                .presentationDetents([.height(sheetSize.height)])
-                .fixedSize(horizontal: false, vertical: true)
-            #else
             self
                 .presentationDetents([.height(sheetSize.height + Self.androidBottomCompensation)])
-            #endif
         } else {
             self
-                .presentationDetents([.medium])
+                .presentationDetents([.height(1)])
         }
     }
 
@@ -158,8 +145,13 @@ private extension View {
             return
         }
 
-        if isSignificantSizeChange(from: viewSize.wrappedValue, to: newSize) {
-            viewSize.wrappedValue = newSize
+        #if canImport(Darwin)
+        viewSize.wrappedValue = newSize
+        #else
+        guard viewSize.wrappedValue.height <= 0 else {
+            return
         }
+        viewSize.wrappedValue = newSize
+        #endif
     }
 }
