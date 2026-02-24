@@ -152,14 +152,6 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     @State
     var dragOffsetX: Double = 0
     
-    private let actionButtonSize: Double = 44
-    private let actionSpacing: Double = 16
-    private let trailingPadding: Double = 16
-    
-    
-    private let openThreshold: Double = -60
-    private let deleteThreshold: Double = -240
-    
     private let id: ID
     private let onDelete: (ID) -> ()
     private let content: () -> Content
@@ -206,14 +198,17 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     
     @ViewBuilder
     private var actionsView: some View {
-        HStack(spacing: actionSpacing) {
+        HStack(spacing: 16) {
             Button {
                 onDelete(id)
             } label: {
                 ZStack {
                     Circle()
                         .fill(.red.opacity(0.18))
-                        .frame(width: actionButtonSize, height: actionButtonSize)
+                        .frame(
+                            width: Constants.actionButtonSize,
+                            height: Constants.actionButtonSize
+                        )
                     
                     Image(systemName: "trash")
                         .font(.system(size: 18, weight: .semibold))
@@ -222,7 +217,7 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.trailing, trailingPadding)
+        .padding(.trailing, Constants.trailingPadding)
         .frame(width: actionTrayWidth, alignment: .trailing)
     }
     
@@ -245,12 +240,12 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
                     closeAndClearOpen(animated: true)
                     return
                 }
-                if effectiveOffsetX <= deleteThreshold || predicted <= deleteThreshold {
+                if effectiveOffsetX <= Constants.deleteThreshold || predicted <= Constants.deleteThreshold {
                     closeAndClearOpen(animated: false)
                     onDelete(id)
                     return
                 }
-                if effectiveOffsetX <= openThreshold || predicted <= openThreshold {
+                if effectiveOffsetX <= Constants.openThreshold || predicted <= Constants.openThreshold {
                     withAnimation(.swipeable) { baseOffsetX = openSnapX }
                     openRowID = id
                 } else {
@@ -291,12 +286,19 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     }
     
     private var actionTrayWidth: Double {
-        actionButtonSize + (trailingPadding * 2)
+        Constants.actionButtonSize + (Constants.trailingPadding * 2)
     }
     
     private func clamp(_ value: Double, min: Double, max: Double) -> Double {
         Swift.min(Swift.max(value, min), max)
     }
+}
+
+private enum Constants {
+    static let trailingPadding: Double = 16
+    static let actionButtonSize: Double = 44
+    static let openThreshold: Double = -60
+    static let deleteThreshold: Double = -240
 }
 
 // MARK: - Extensions
