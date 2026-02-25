@@ -81,25 +81,33 @@ private struct Item: Identifiable, Equatable {
                 items: items,
                 isSwipeDisabled: { $0.id == "milan" },
                 rowContent: { item in
-                    HStack(alignment: .top, spacing: 16) {
-                        if let icon = item.icon {
-                            icon
-                                .font(.system(size: 16, weight: .semibold))
-                                .padding(8)
-                                .background(.secondary.opacity(0.15), in: Circle())
-                                .frame(width: 44, height: 44)
+                    /// This is intentionally a Button to prove the swipe still works.
+                    Button {} label: {
+                        HStack(alignment: .top, spacing: 16) {
+                            if let icon = item.icon {
+                                icon
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .padding(8)
+                                    .background(.black.opacity(0.15), in: Circle())
+                                    .foregroundStyle(.black)
+                                    .frame(width: 44, height: 44)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(item.title)
+                                    .bold()
+                                    .foregroundStyle(.black)
+                                
+                                Text(item.detail)
+                                    .font(.caption)
+                                    .foregroundStyle(.black.opacity(0.5))
+                            }
+                            .multilineTextAlignment(.leading)
+                            
+                            Spacer(minLength: 0)
                         }
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.title).bold()
-                            Text(item.detail)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        Spacer(minLength: 0)
+                        .padding(16)
                     }
-                    .padding(16)
                     .background(Color(uiColor: UIColor.systemBackground))
                     .overlay(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -126,33 +134,32 @@ private struct Item: Identifiable, Equatable {
 
 public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
     
+    @State
+    var items: [Item]
+    
+    @State
+    var openRowID: ID?
+    
     private let spacing: Double
     
-    private let items: [Item]
     private let rowContent: (Item) -> RowContent
     private let isSwipeDisabled: (Item) -> Bool
     
     public typealias ID = Item.ID
     public typealias Handler = (ID) -> ()
-    private let onTap: Handler?
     private let onDelete: Handler
-    
-    @State
-    var openRowID: ID?
     
     public init(
         spacing: Double = 4,
         items: [Item],
         isSwipeDisabled: @escaping (Item) -> Bool = { _ in false },
         @ViewBuilder rowContent: @escaping (Item) -> RowContent,
-        onTap: Handler? = nil,
         onDelete: @escaping Handler
     ) {
         self.spacing = spacing
         self.items = items
         self.isSwipeDisabled = isSwipeDisabled
         self.rowContent = rowContent
-        self.onTap = onTap
         self.onDelete = onDelete
     }
     
@@ -164,8 +171,14 @@ public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
                     isDisabled: isSwipeDisabled(item),
                     openRowID: $openRowID,
                     content: { rowContent(item) },
-                    onTap: onTap,
-                    onDelete: onDelete
+                    handler: { id in
+                        /// Remove locally to keep UI consistency while
+                        /// the parent-owned source of truth updates.
+                        onDelete(id)
+                        withAnimation(.swipeable) {
+                            items.removeAll { $0.id == id }
+                        }
+                    }
                 )
                 .transition(.swipeableRow)
             }
@@ -189,30 +202,26 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     private let id: ID
     private let isDisabled: Bool
     private let content: () -> Content
-    private let onTap: ((ID) -> ())?
-    private let onDelete: (ID) -> ()
+    private let handler: (ID) -> ()
     
     init(
         id: ID,
         isDisabled: Bool,
         openRowID: Binding<ID?>,
         @ViewBuilder content: @escaping () -> Content,
-        onTap: ((ID) -> ())?,
-        onDelete: @escaping (ID) -> Void,
+        handler: @escaping (ID) -> Void
     ) {
         self.id = id
         self.isDisabled = isDisabled
         self._openRowID = openRowID
         self.content = content
-        self.onTap = onTap
-        self.onDelete = onDelete
+        self.handler = handler
     }
     
     var body: some View {
         ZStack(alignment: .trailing) {
             actionsView
             contentView
-            swipeHitArea
         }
         .onChange(of: openRowID) { _, newValue in
             guard newValue != id, (baseOffsetX != 0 || dragOffsetX != 0) else { return }
@@ -229,38 +238,27 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     
     @ViewBuilder
     private var contentView: some View {
-        Button {
-            openRowID = nil
-            onTap?(id)
-        } label: {
-            content()
-                .contentRectangleShape()
-                #if os(Android)
-                .zIndex(baseOffsetX != 0 ? 0.0 : 1.0)
-                #endif
-        }
-        .buttonStyle(.plain)
-        .offset(x: effectiveOffsetX)
-        .animation(.swipeable, value: effectiveOffsetX)
-    }
-    
-    @ViewBuilder
-    private var swipeHitArea: some View {
-        if !isDisabled {
-            Rectangle()
-                .fill(Color.clear)
-                .frame(width: 60)
-                .contentRectangleShape()
-                .gesture(dragGesture)
-                .offset(x: effectiveOffsetX)
-        }
+        content()
+            .contentRectangleShape()
+            .offset(x: effectiveOffsetX)
+            .animation(.swipeable, value: effectiveOffsetX)
+            .zIndex(baseOffsetX != 0 ? 0 : 1)
+            .overlay(alignment: .trailing) {
+                if !isDisabled {
+                    Color.clear
+                        .frame(width: Constants.swipeActivationWidth)
+                        .contentRectangleShape()
+                        .gesture(dragGesture)
+                        .zIndex(999)
+                }
+            }
     }
     
     @ViewBuilder
     private var actionsView: some View {
         HStack(spacing: 16) {
             Button {
-                onDelete(id)
+                handler(id)
             } label: {
                 ZStack {
                     Circle()
@@ -275,14 +273,10 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
                         .foregroundStyle(.red)
                 }
             }
-            .buttonStyle(.plain)
         }
-        .padding(.trailing, Constants.trailingPadding)
-        .frame(width: actionTrayWidth, alignment: .trailing)
+        .frame(width: Constants.swipeActivationWidth, alignment: .trailing)
         .opacity(revealProgress)
-        #if os(Android)
-        .zIndex(baseOffsetX != 0 ? 1.0 : 0.0)
-        #endif
+        .zIndex(baseOffsetX != 0 ? 1 : 0)
     }
     
     // MARK: - Gesture
@@ -310,12 +304,12 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
                     close(animated: true, clearOpen: true)
                     return
                 }
-                if effectiveOffsetX <= Constants.deleteThreshold || predicted <= Constants.deleteThreshold {
+                if effectiveOffsetX <= -Constants.destructiveSwipeThreshold || predicted <= -Constants.destructiveSwipeThreshold {
                     close(animated: false, clearOpen: true)
-                    onDelete(id)
+                    handler(id)
                     return
                 }
-                if effectiveOffsetX <= Constants.openThreshold || predicted <= Constants.openThreshold {
+                if effectiveOffsetX <= -Constants.swipeActivationWidth || predicted <= -Constants.swipeActivationWidth {
                     withAnimation(.swipeable) { baseOffsetX = openSnapX }
                     openRowID = id
                 } else {
@@ -335,26 +329,40 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
         }
     }
 
-    private var openSnapX: Double { -actionTrayWidth }
+    private var openSnapX: Double { -Constants.swipeActivationWidth }
     
-    private var actionTrayWidth: Double {
-        Constants.actionButtonSize + (Constants.trailingPadding * 2)
-    }
-
     private var revealProgress: Double {
-        (-effectiveOffsetX / actionTrayWidth).clamped(to: 0...1)
+        (-effectiveOffsetX / Constants.swipeActivationWidth).clamped(to: 0...1)
     }
-    
     private var effectiveOffsetX: Double {
-        (baseOffsetX + dragOffsetX).clamped(to: (openSnapX - 80)...0)
+        (baseOffsetX + dragOffsetX).clamped(to: (openSnapX - Constants.swipeOvershoot)...0)
     }
 }
 
 private enum Constants {
-    static let trailingPadding: Double = 16
+
+    /// Width of the invisible swipe hit area on the trailing edge.
+    /// Defines how far the user must drag horizontally for the swipe
+    /// gesture to be considered intentional.
+    static let swipeActivationWidth: Double = 60
+
+    /// Maximum extra distance the row can be dragged beyond its final
+    /// resting position. Provides a subtle elastic "overshoot" effect
+    /// during the swipe interaction.
+    static let swipeOvershoot: Double = 80
+
+    /// Horizontal distance required to trigger a destructive action
+    /// (e.g. delete) when releasing the swipe gesture.
+    /// Larger than the activation width to avoid accidental deletions.
+    static let destructiveSwipeThreshold: Double = 260
+
+    /// Padding applied to the action tray to keep destructive
+    /// actions visually separated from the row content.
+    static let padding: Double = 16
+
+    /// Size of the circular action button (e.g. delete).
+    /// Aligned with platform touch target recommendations.
     static let actionButtonSize: Double = 44
-    static let openThreshold: Double = -60
-    static let deleteThreshold: Double = -240
 }
 
 // MARK: - Extensions
