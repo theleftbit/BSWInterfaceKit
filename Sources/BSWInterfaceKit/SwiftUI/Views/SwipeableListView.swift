@@ -22,7 +22,7 @@ private struct Item: Identifiable, Equatable {
         .init(
             id: "milan",
             title: "AC Milan ❤️🖤",
-            detail: "Rossoneri. Sette Champions.",
+            detail: "Rossoneri. Sette Champions. Incancellabile. Controlled by `isSwipeDisabled`",
             icon: Image(systemName: "flame.fill")
         ),
         .init(
@@ -34,52 +34,92 @@ private struct Item: Identifiable, Equatable {
         .init(
             id: "inter",
             title: "Inter",
-            detail: "Nerazzurri. Pazza Inter",
+            detail: "Nerazzurri. Pazza Inter.",
             icon: Image(systemName: "bolt.fill")
+        ),
+        .init(
+            id: "real_madrid",
+            title: "Real Madrid",
+            detail: "Blancos. Reyes de Europa.",
+            icon: Image(systemName: "crown.fill")
+        ),
+        .init(
+            id: "barcelona",
+            title: "FC Barcelona",
+            detail: "Blaugrana. Més que un club.",
+            icon: Image(systemName: "circle.grid.cross.fill")
+        ),
+        .init(
+            id: "atletico",
+            title: "Atlético de Madrid",
+            detail: "Colchoneros. Coraje y corazón.",
+            icon: Image(systemName: "heart.fill")
+        ),
+        .init(
+            id: "bayern",
+            title: "Bayern München",
+            detail: "Rekordmeister. Dominio alemán.",
+            icon: Image(systemName: "star.fill")
+        ),
+        .init(
+            id: "liverpool",
+            title: "Liverpool",
+            detail: "Reds. You'll Never Walk Alone.",
+            icon: Image(systemName: "music.note.list")
+        ),
+        .init(
+            id: "manchester",
+            title: "Manchester United",
+            detail: "Red Devils. Theatre of Dreams.",
+            icon: Image(systemName: "suit.spade.fill")
         )
     ]
     
-    ScrollView {
-        SwipeableListView(
-            items: items,
-            isSwipeDisabled: { $0.id == "milan" },
-            rowContent: { item in
-                /// This is intentionally a Button to prove the swipe still works.
-                Button {} label: {
-                    HStack(alignment: .top, spacing: 16) {
-                        if let icon = item.icon {
-                            icon
-                                .font(.system(size: 16, weight: .semibold))
-                                .padding(8)
-                                .background(.secondary.opacity(0.15), in: Circle())
+    NavigationStack {
+        ScrollView {
+            SwipeableListView(
+                items: items,
+                isSwipeDisabled: { $0.id == "milan" },
+                rowContent: { item in
+                    /// This is intentionally a Button to prove the swipe still works.
+                    Button {} label: {
+                        HStack(alignment: .top, spacing: 16) {
+                            if let icon = item.icon {
+                                icon
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .padding(8)
+                                    .background(.secondary.opacity(0.15), in: Circle())
+                                    .frame(width: 44, height: 44)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(item.title).bold()
+                                Text(item.detail)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Spacer(minLength: 0)
                         }
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.title).bold()
-                            Text(item.detail)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        Spacer(minLength: 0)
+                        .padding(16)
                     }
-                    .padding(16)
+                    .buttonStyle(.plain)
+                    .background(Color(uiColor: UIColor.systemBackground))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .strokeBorder(.separator.opacity(0.25), lineWidth: 1)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                },
+                onDelete: { id in
+                    withAnimation(.swipeable) {
+                        items.removeAll { $0.id == id }
+                    }
                 }
-                .buttonStyle(.plain)
-                .background(Color(uiColor: UIColor.systemBackground))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .strokeBorder(.separator.opacity(0.25), lineWidth: 1)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            },
-            onDelete: { id in
-                withAnimation(.swipeable) {
-                    items.removeAll { $0.id == id }
-                }
-            }
-        )
-        .padding(16)
+            )
+            .padding(16)
+        }
+        .navigationTitle("Top Football Teams")
         .background(Color(uiColor: UIColor.secondarySystemBackground))
     }
 }

@@ -6,6 +6,8 @@ import SwiftUI
 
 public extension View {
     
+    /// Expands the hit-testing area of a `Button` to the full view on iOS.
+    /// Not required on Android, where the default behavior already covers the whole view.
     @ViewBuilder
     func contentRectangleShape() -> some View {
         #if canImport(Darwin)
