@@ -81,29 +81,25 @@ private struct Item: Identifiable, Equatable {
                 items: items,
                 isSwipeDisabled: { $0.id == "milan" },
                 rowContent: { item in
-                    /// This is intentionally a Button to prove the swipe still works.
-                    Button {} label: {
-                        HStack(alignment: .top, spacing: 16) {
-                            if let icon = item.icon {
-                                icon
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .padding(8)
-                                    .background(.secondary.opacity(0.15), in: Circle())
-                                    .frame(width: 44, height: 44)
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(item.title).bold()
-                                Text(item.detail)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            
-                            Spacer(minLength: 0)
+                    HStack(alignment: .top, spacing: 16) {
+                        if let icon = item.icon {
+                            icon
+                                .font(.system(size: 16, weight: .semibold))
+                                .padding(8)
+                                .background(.secondary.opacity(0.15), in: Circle())
+                                .frame(width: 44, height: 44)
                         }
-                        .padding(16)
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(item.title).bold()
+                            Text(item.detail)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        Spacer(minLength: 0)
                     }
-                    .buttonStyle(.plain)
+                    .padding(16)
                     .background(Color(uiColor: UIColor.systemBackground))
                     .overlay(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -137,8 +133,9 @@ public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
     private let isSwipeDisabled: (Item) -> Bool
     
     public typealias ID = Item.ID
-    public typealias DeleteHandler = (ID) -> Void
-    private let onDelete: DeleteHandler
+    public typealias Handler = (ID) -> ()
+    private let onTap: Handler?
+    private let onDelete: Handler
     
     @State
     var openRowID: ID?
@@ -148,12 +145,14 @@ public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
         items: [Item],
         isSwipeDisabled: @escaping (Item) -> Bool = { _ in false },
         @ViewBuilder rowContent: @escaping (Item) -> RowContent,
-        onDelete: @escaping DeleteHandler
+        onTap: Handler? = nil,
+        onDelete: @escaping Handler
     ) {
         self.spacing = spacing
         self.items = items
         self.isSwipeDisabled = isSwipeDisabled
         self.rowContent = rowContent
+        self.onTap = onTap
         self.onDelete = onDelete
     }
     
@@ -165,6 +164,7 @@ public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
                     isDisabled: isSwipeDisabled(item),
                     openRowID: $openRowID,
                     content: { rowContent(item) },
+                    onTap: onTap,
                     onDelete: onDelete
                 )
                 .transition(.swipeableRow)
@@ -187,55 +187,74 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     var dragOffsetX: Double = 0
     
     private let id: ID
-    private let onDelete: (ID) -> ()
-    private let content: () -> Content
     private let isDisabled: Bool
+    private let content: () -> Content
+    private let onTap: ((ID) -> ())?
+    private let onDelete: (ID) -> ()
     
     init(
         id: ID,
         isDisabled: Bool,
         openRowID: Binding<ID?>,
         @ViewBuilder content: @escaping () -> Content,
+        onTap: ((ID) -> ())?,
         onDelete: @escaping (ID) -> Void,
     ) {
         self.id = id
         self.isDisabled = isDisabled
         self._openRowID = openRowID
         self.content = content
+        self.onTap = onTap
         self.onDelete = onDelete
     }
     
     var body: some View {
-        ZStack {
-            HStack {
-                Spacer()
-                actionsView
-            }
-            #if os(Android)
-            .zIndex(baseOffsetX != 0 ? 1.0 : 0.0)
-            #endif
-
-            content()
-                .contentRectangleShape()
-                .offset(x: effectiveOffsetX)
-                .animation(.swipeable, value: effectiveOffsetX)
-                #if canImport(Darwin)
-                .highPriorityGesture(dragGesture)
-                #else
-                .zIndex(baseOffsetX != 0 ? 0.0 : 1.0)
-                .gesture(dragGesture)
-                #endif
+        ZStack(alignment: .trailing) {
+            actionsView
+            contentView
+            swipeHitArea
         }
-        .contentRectangleShape()
         .onChange(of: openRowID) { _, newValue in
-            guard newValue != id, baseOffsetX != 0 else { return }
+            guard newValue != id, (baseOffsetX != 0 || dragOffsetX != 0) else { return }
             close(animated: true)
+            dragOffsetX = 0
         }
         .onChange(of: isDisabled) { _, newValue in
-            close(animated: true)
+            guard newValue else { return }
+            close(animated: true, clearOpen: true)
         }
     }
+    
     // MARK: - ViewBuilders
+    
+    @ViewBuilder
+    private var contentView: some View {
+        Button {
+            openRowID = nil
+            onTap?(id)
+        } label: {
+            content()
+                .contentRectangleShape()
+                #if os(Android)
+                .zIndex(baseOffsetX != 0 ? 0.0 : 1.0)
+                #endif
+        }
+        .buttonStyle(.plain)
+        .offset(x: effectiveOffsetX)
+        .animation(.swipeable, value: effectiveOffsetX)
+    }
+    
+    @ViewBuilder
+    private var swipeHitArea: some View {
+        if !isDisabled {
+            Rectangle()
+                .fill(Color.clear)
+                .frame(width: 60)
+                .contentRectangleShape()
+                .gesture(dragGesture)
+                .offset(x: effectiveOffsetX)
+        }
+    }
     
     @ViewBuilder
     private var actionsView: some View {
@@ -260,6 +279,10 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
         }
         .padding(.trailing, Constants.trailingPadding)
         .frame(width: actionTrayWidth, alignment: .trailing)
+        .opacity(revealProgress)
+        #if os(Android)
+        .zIndex(baseOffsetX != 0 ? 1.0 : 0.0)
+        #endif
     }
     
     // MARK: - Gesture
@@ -270,24 +293,25 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
                 guard !isDisabled else { return }
                 let x = value.translation.width
                 let y = value.translation.height
-                guard abs(x) > abs(y) else { return }
+                guard abs(x) > abs(y), x <= 0 else { return }
+                if openRowID != id { openRowID = id }
                 dragOffsetX = x
             }
             .onEnded { value in
                 guard !isDisabled else {
-                    finishDrag()
+                    dragOffsetX = 0
                     return
                 }
-                defer { finishDrag() }
-                
+                defer { dragOffsetX = 0 }
+
                 let x = value.translation.width
                 let predicted = x + (value.predictedEndTranslation.width - x) * 0.25
                 guard x <= 0 || predicted <= 0 else {
-                    closeAndClearOpen(animated: true)
+                    close(animated: true, clearOpen: true)
                     return
                 }
                 if effectiveOffsetX <= Constants.deleteThreshold || predicted <= Constants.deleteThreshold {
-                    closeAndClearOpen(animated: false)
+                    close(animated: false, clearOpen: true)
                     onDelete(id)
                     return
                 }
@@ -295,48 +319,34 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
                     withAnimation(.swipeable) { baseOffsetX = openSnapX }
                     openRowID = id
                 } else {
-                    closeAndClearOpen(animated: true)
+                    close(animated: true, clearOpen: true)
                 }
             }
     }
-    
-    private func close(animated: Bool) {
+
+    private func close(animated: Bool, clearOpen: Bool = false) {
         if animated {
             withAnimation(.swipeable) { baseOffsetX = 0 }
         } else {
             baseOffsetX = 0
         }
-    }
-    
-    private func clearOpenIfNeeded() {
-        if openRowID == id {
+        if clearOpen && openRowID == id {
             openRowID = nil
         }
     }
-    
-    private func closeAndClearOpen(animated: Bool) {
-        close(animated: animated)
-        clearOpenIfNeeded()
-    }
-    
-    private func finishDrag() {
-        dragOffsetX = 0
-    }
-    
-    private var openSnapX: Double {
-        -actionTrayWidth
-    }
-    
-    private var effectiveOffsetX: Double {
-        clamp(baseOffsetX + dragOffsetX, min: openSnapX - 80, max: 0)
-    }
+
+    private var openSnapX: Double { -actionTrayWidth }
     
     private var actionTrayWidth: Double {
         Constants.actionButtonSize + (Constants.trailingPadding * 2)
     }
+
+    private var revealProgress: Double {
+        (-effectiveOffsetX / actionTrayWidth).clamped(to: 0...1)
+    }
     
-    private func clamp(_ value: Double, min: Double, max: Double) -> Double {
-        Swift.min(Swift.max(value, min), max)
+    private var effectiveOffsetX: Double {
+        (baseOffsetX + dragOffsetX).clamped(to: (openSnapX - 80)...0)
     }
 }
 
@@ -348,6 +358,12 @@ private enum Constants {
 }
 
 // MARK: - Extensions
+
+extension Double {
+    func clamped(to range: ClosedRange<Double>) -> Double {
+        Swift.min(Swift.max(self, range.lowerBound), range.upperBound)
+    }
+}
 
 extension Animation {
     static var swipeable: Animation {
