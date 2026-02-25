@@ -4,23 +4,19 @@
 
 import SwiftUI
 
-#if canImport(Darwin)
+#if canImport(UIKit)
 
 // MARK: - Previews
 
-#Preview(traits: .sizeThatFitsLayout) {
-    DemoSwipeableListView()
+private struct Item: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let detail: String
+    let icon: Image?
 }
 
-private struct DemoSwipeableListView: View {
-    
-    struct Item: Identifiable, Equatable {
-        let id: String
-        let title: String
-        let detail: String
-        let icon: Image?
-    }
-    
+#Preview {
+    @Previewable
     @State
     var items: [Item] = [
         .init(
@@ -43,11 +39,40 @@ private struct DemoSwipeableListView: View {
         )
     ]
     
-    var body: some View {
+    ScrollView {
         SwipeableListView(
             items: items,
             isSwipeDisabled: { $0.id == "milan" },
-            rowContent: { itemView($0) },
+            rowContent: { item in
+                /// This is intentionally a Button to prove the swipe still works.
+                Button {} label: {
+                    HStack(alignment: .top, spacing: 16) {
+                        if let icon = item.icon {
+                            icon
+                                .font(.system(size: 16, weight: .semibold))
+                                .padding(8)
+                                .background(.secondary.opacity(0.15), in: Circle())
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(item.title).bold()
+                            Text(item.detail)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        Spacer(minLength: 0)
+                    }
+                    .padding(16)
+                }
+                .buttonStyle(.plain)
+                .background(Color(uiColor: UIColor.systemBackground))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(.separator.opacity(0.25), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            },
             onDelete: { id in
                 withAnimation(.swipeable) {
                     items.removeAll { $0.id == id }
@@ -55,40 +80,7 @@ private struct DemoSwipeableListView: View {
             }
         )
         .padding(16)
-        .background(.primary)
-    }
-    
-    @ViewBuilder
-    private func itemView(_ item: Item) -> some View {
-        /// This is intentionally a Button to prove the swipe still works.
-        Button {} label: {
-            HStack(alignment: .top, spacing: 16) {
-                if let icon = item.icon {
-                    icon
-                        .font(.system(size: 16, weight: .semibold))
-                        .padding(8)
-                        .background(.secondary.opacity(0.15), in: Circle())
-                }
-                
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(item.title).bold()
-                    Text(item.detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Spacer(minLength: 0)
-            }
-            .padding(16)
-        }
-        .buttonStyle(.plain)
-        .background(.white)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .strokeBorder(.separator.opacity(0.25), lineWidth: 1)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        
+        .background(Color(uiColor: UIColor.secondarySystemBackground))
     }
 }
 
