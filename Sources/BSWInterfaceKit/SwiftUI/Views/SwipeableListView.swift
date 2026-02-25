@@ -92,6 +92,8 @@ private struct DemoSwipeableListView: View {
     }
 }
 
+#endif
+
 // MARK: - SwipeableListView
 
 public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
@@ -177,23 +179,30 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
                 Spacer()
                 actionsView
             }
+            #if os(Android)
+            .zIndex(baseOffsetX != 0 ? 1.0 : 0.0)
+            #endif
+
             content()
-                .contentShape(Rectangle())
+                .contentRectangleShape()
                 .offset(x: effectiveOffsetX)
                 .animation(.swipeable, value: effectiveOffsetX)
-                .highPriorityGesture(dragGesture, including: isDisabled ? .none : .all)
+                #if canImport(Darwin)
+                .highPriorityGesture(dragGesture)
+                #else
+                .zIndex(baseOffsetX != 0 ? 0.0 : 1.0)
+                .gesture(dragGesture)
+                #endif
         }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            guard baseOffsetX != 0 else { return }
-            closeAndClearOpen(animated: true)
-        }
+        .contentRectangleShape()
         .onChange(of: openRowID) { _, newValue in
             guard newValue != id, baseOffsetX != 0 else { return }
             close(animated: true)
         }
+        .onChange(of: isDisabled) { _, newValue in
+            close(animated: true)
+        }
     }
-    
     // MARK: - ViewBuilders
     
     @ViewBuilder
@@ -226,12 +235,17 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 8, coordinateSpace: .local)
             .onChanged { value in
+                guard !isDisabled else { return }
                 let x = value.translation.width
                 let y = value.translation.height
                 guard abs(x) > abs(y) else { return }
                 dragOffsetX = x
             }
             .onEnded { value in
+                guard !isDisabled else {
+                    finishDrag()
+                    return
+                }
                 defer { finishDrag() }
                 
                 let x = value.translation.width
@@ -303,13 +317,13 @@ private enum Constants {
 
 // MARK: - Extensions
 
-private extension Animation {
+extension Animation {
     static var swipeable: Animation {
         .interactiveSpring(response: 0.25, dampingFraction: 0.92)
     }
 }
 
-private extension AnyTransition {
+extension AnyTransition {
     static var swipeableRow: AnyTransition {
         .asymmetric(
             insertion: .move(edge: .top),
@@ -317,5 +331,3 @@ private extension AnyTransition {
         )
     }
 }
-
-#endif
