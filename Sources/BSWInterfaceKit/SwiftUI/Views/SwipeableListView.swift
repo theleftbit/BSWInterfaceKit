@@ -133,7 +133,7 @@ private struct Item: Identifiable, Equatable {
 
 // MARK: - SwipeableListView
 
-public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
+public struct SwipeableListView<Item: Identifiable & Equatable, RowContent: View>: View {
     
     @Binding
     var items: [Item]
@@ -177,6 +177,7 @@ public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
                 .transition(.swipeableRow)
             }
         }
+        .animation(.swipeable, value: items)
     }
     
     @ViewBuilder
