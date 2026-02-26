@@ -16,6 +16,7 @@ private struct Item: Identifiable, Equatable {
 }
 
 #Preview {
+    
     @Previewable
     @State
     var items: [Item] = [
@@ -78,7 +79,7 @@ private struct Item: Identifiable, Equatable {
     NavigationStack {
         ScrollView {
             SwipeableListView(
-                items: items,
+                items: $items,
                 isSwipeDisabled: { $0.id == "milan" },
                 rowContent: { item in
                     /// This is intentionally a Button to prove the swipe still works.
@@ -134,7 +135,7 @@ private struct Item: Identifiable, Equatable {
 
 public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
     
-    @State
+    @Binding
     var items: [Item]
     
     @State
@@ -151,38 +152,47 @@ public struct SwipeableListView<Item: Identifiable, RowContent: View>: View {
     
     public init(
         spacing: Double = 4,
-        items: [Item],
+        items: Binding<[Item]>,
         isSwipeDisabled: @escaping (Item) -> Bool = { _ in false },
         @ViewBuilder rowContent: @escaping (Item) -> RowContent,
         onDelete: @escaping Handler
     ) {
         self.spacing = spacing
-        self.items = items
+        self._items = items
         self.isSwipeDisabled = isSwipeDisabled
         self.rowContent = rowContent
         self.onDelete = onDelete
     }
     
     public var body: some View {
-        LazyVStack(spacing: spacing) {
+        listStack(spacing: spacing) {
             ForEach(items) { item in
                 SwipeableRow(
                     id: item.id,
                     isDisabled: isSwipeDisabled(item),
                     openRowID: $openRowID,
                     content: { rowContent(item) },
-                    handler: { id in
-                        /// Remove locally to keep UI consistency while
-                        /// the parent-owned source of truth updates.
-                        onDelete(id)
-                        withAnimation(.swipeable) {
-                            items.removeAll { $0.id == id }
-                        }
-                    }
+                    handler: onDelete
                 )
                 .transition(.swipeableRow)
             }
         }
+    }
+    
+    @ViewBuilder
+    private func listStack<Content: View>(
+        spacing: Double,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        #if os(Android)
+        VStack(spacing: spacing) {
+            content()
+        }
+        #else
+        LazyVStack(spacing: spacing) {
+            content()
+        }
+        #endif
     }
 }
 
@@ -246,7 +256,11 @@ struct SwipeableRow<ID: Hashable, Content: View>: View {
             .overlay(alignment: .trailing) {
                 if !isDisabled {
                     Color.clear
-                        .frame(width: Constants.swipeActivationWidth)
+                        .frame(
+                            maxWidth: baseOffsetX != 0
+                            ? .infinity
+                            : Constants.swipeActivationWidth
+                        )
                         .contentRectangleShape()
                         .gesture(dragGesture)
                         .zIndex(999)
