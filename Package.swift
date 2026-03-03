@@ -4,8 +4,7 @@
 import PackageDescription
 import Foundation
 
-let isAndroidBuild = (ProcessInfo.processInfo.environment["TARGET_OS_ANDROID"] ?? "0") != "0"
-let skipIsEnabled = (ProcessInfo.processInfo.environment["SKIP_ENABLED"] != nil) || isAndroidBuild
+let skipIsEnabled = (ProcessInfo.processInfo.environment["SKIP_ENABLED"] != nil)
 
 let applePlatforms = TargetDependencyCondition.when(
     platforms: [
