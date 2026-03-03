@@ -4,7 +4,7 @@
 import PackageDescription
 import Foundation
 
-let zero = ProcessInfo.processInfo.environment["SKIP_ZERO"] != nil
+let skipIsEnabled = (ProcessInfo.processInfo.environment["SKIP_ENABLED"] != nil)
 
 let applePlatforms = TargetDependencyCondition.when(
     platforms: [
@@ -23,7 +23,7 @@ var packageDependencies: [Package.Dependency] = [
     .package(url: "https://github.com/kean/Nuke.git", from: "12.8.0"),
 ]
 
-if !zero {
+if skipIsEnabled {
     packageDependencies.append(contentsOf: [
         .package(url: "https://source.skip.tools/skip.git", from: "1.6.27"),
         .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.10.0"),
@@ -38,14 +38,14 @@ var targetDependencies: [Target.Dependency] = [
     "BSWFoundation"
 ]
 
-if !zero {
+if skipIsEnabled {
     targetDependencies.append(contentsOf: [
         .product(name: "SkipFuseUI", package: "skip-fuse-ui"),
     ])
 }
 
 var plugins: [Target.PluginUsage] = [ ]
-if !zero {
+if skipIsEnabled {
     plugins.append(
         .plugin(name: "skipstone", package: "skip")
     )
