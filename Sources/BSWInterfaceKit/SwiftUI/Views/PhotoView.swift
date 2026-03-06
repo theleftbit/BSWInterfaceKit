@@ -251,20 +251,35 @@ import Vision
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
+private enum SubjectMaskConfig {
+    static let minRelativeWidth: CGFloat = 0.75
+    static let minRelativeHeight: CGFloat = 0.75
+    static let growRadius: Float = 2
+    static let featherRadius: Float = 1
+    static let sampleSize = 64
+    static let maskThreshold: UInt8 = 32
+    static let whiteThreshold: UInt8 = 235
+    static let neutralTolerance: UInt8 = 22
+}
+
 private extension UIImage {
     
+    static let ciContext = CIContext(options: nil)
+    
     #if targetEnvironment(simulator)
-    nonisolated func extractSubject() async -> UIImage? {
+    nonisolated func extractSubject() async -> UIImage {
         self
     }
     #else
     nonisolated func extractSubject() async -> UIImage {
         guard let inputImage = CIImage(image: self) else { return self }
+        
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(ciImage: inputImage)
         
         do {
             try handler.perform([request])
+            
             guard let result = request.results?.first,
                   let mask = try? result.generateScaledMaskForImage(
                     forInstances: result.allInstances,
@@ -272,20 +287,115 @@ private extension UIImage {
                   ) else {
                 return self
             }
+            
             let maskImage = CIImage(cvPixelBuffer: mask)
+                .applyingFilter("CIMorphologyMaximum", parameters: [
+                    kCIInputRadiusKey: SubjectMaskConfig.growRadius
+                ])
+                .applyingFilter("CIGaussianBlur", parameters: [
+                    kCIInputRadiusKey: SubjectMaskConfig.featherRadius
+                ])
+                .cropped(to: inputImage.extent)
+            
+            guard Self.matchesProductBounds(maskImage, in: inputImage, extent: inputImage.extent) else {
+                return self
+            }
+            
             let filter = CIFilter.blendWithMask()
             filter.inputImage = inputImage
             filter.maskImage = maskImage
-            filter.backgroundImage = CIImage.empty()
+            filter.backgroundImage = CIImage(color: .clear).cropped(to: inputImage.extent)
             
             guard let outputImage = filter.outputImage,
-                  let cgImage = CIContext(options: nil).createCGImage(outputImage, from: outputImage.extent)
+                  let cgImage = Self.ciContext.createCGImage(outputImage, from: inputImage.extent)
             else { return self }
             
-            return UIImage(cgImage: cgImage)
+            return UIImage(cgImage: cgImage, scale: self.scale, orientation: self.imageOrientation)
         } catch {
             return self
         }
+    }
+    
+    nonisolated private static func matchesProductBounds(
+        _ maskImage: CIImage,
+        in inputImage: CIImage,
+        extent: CGRect
+    ) -> Bool {
+        guard let maskBounds = bounds(for: maskImage, extent: extent, isMask: true),
+              let contentBounds = bounds(for: inputImage, extent: extent, isMask: false)
+        else {
+            return false
+        }
+        
+        return maskBounds.width >= contentBounds.width * SubjectMaskConfig.minRelativeWidth &&
+            maskBounds.height >= contentBounds.height * SubjectMaskConfig.minRelativeHeight
+    }
+    
+    nonisolated private static func bounds(
+        for image: CIImage,
+        extent: CGRect,
+        isMask: Bool
+    ) -> CGRect? {
+        guard extent.width > 0, extent.height > 0 else { return nil }
+        
+        let sampleSize = SubjectMaskConfig.sampleSize
+        let sampleDimension = CGFloat(sampleSize)
+        let scaledImage = image
+            .transformed(by: CGAffineTransform(
+                scaleX: sampleDimension / extent.width,
+                y: sampleDimension / extent.height
+            ))
+            .cropped(to: CGRect(x: 0, y: 0, width: sampleDimension, height: sampleDimension))
+        
+        var pixels = [UInt8](repeating: 0, count: sampleSize * sampleSize * 4)
+        ciContext.render(
+            scaledImage,
+            toBitmap: &pixels,
+            rowBytes: sampleSize * 4,
+            bounds: CGRect(x: 0, y: 0, width: sampleDimension, height: sampleDimension),
+            format: .RGBA8,
+            colorSpace: nil
+        )
+        
+        var minX = sampleSize
+        var minY = sampleSize
+        var maxX = -1
+        var maxY = -1
+        
+        for y in 0..<sampleSize {
+            for x in 0..<sampleSize {
+                let index = ((y * sampleSize) + x) * 4
+                let red = pixels[index]
+                let green = pixels[index + 1]
+                let blue = pixels[index + 2]
+                
+                let isActive: Bool
+                if isMask {
+                    isActive = red >= SubjectMaskConfig.maskThreshold
+                } else {
+                    let minComponent = min(red, min(green, blue))
+                    let maxComponent = max(red, max(green, blue))
+                    isActive = !(minComponent >= SubjectMaskConfig.whiteThreshold &&
+                        Int(maxComponent) - Int(minComponent) <= Int(SubjectMaskConfig.neutralTolerance))
+                }
+                
+                guard isActive else { continue }
+                
+                minX = min(minX, x)
+                minY = min(minY, y)
+                maxX = max(maxX, x)
+                maxY = max(maxY, y)
+            }
+        }
+        
+        guard maxX >= 0, maxY >= 0 else { return nil }
+        
+        return CGRect(
+            x: CGFloat(minX) / sampleDimension,
+            y: CGFloat(minY) / sampleDimension,
+            width: CGFloat(maxX - minX + 1) / sampleDimension,
+            height: CGFloat(maxY - minY + 1) / sampleDimension
+        )
     }
     #endif
 }
