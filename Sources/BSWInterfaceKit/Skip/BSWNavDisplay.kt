@@ -26,18 +26,21 @@ import androidx.navigationevent.NavigationEvent
 
 private const val BSW_BACK_ANIMATION_DURATION_MS = 450
 
-private fun <T : Any> AnimatedContentTransitionScope<T>.bswBackTransform(
+private fun bswBackTransform(
+    scope: AnimatedContentTransitionScope<*>,
     towards: AnimatedContentTransitionScope.SlideDirection,
 ): ContentTransform =
-    slideIntoContainer(
-        towards = towards,
-        animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS),
-        initialOffset = { it / 3 },
-    ) + fadeIn(animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS)) togetherWith
-        slideOutOfContainer(
+    with(scope) {
+        slideIntoContainer(
             towards = towards,
             animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS),
-        ) + fadeOut(animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS))
+            initialOffset = { it / 3 },
+        ) + fadeIn(animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS)) togetherWith
+            slideOutOfContainer(
+                towards = towards,
+                animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS),
+            ) + fadeOut(animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS))
+    }
 
 @Composable
 fun <T : Any> rememberBSWNavEntryDecorators(): List<NavEntryDecorator<T>> =
@@ -103,10 +106,13 @@ fun <T : Any> BSWNavDisplay(
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = spring(),
-            ) togetherWith ExitTransition.KeepUntilTransitionsFinished
+            ) togetherWith ExitTransition.None
         },
         popTransitionSpec = {
-            bswBackTransform(AnimatedContentTransitionScope.SlideDirection.Right)
+            bswBackTransform(
+                scope = this,
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+            )
         },
         predictivePopTransitionSpec = { swipeEdge ->
             val towards =
@@ -116,7 +122,7 @@ fun <T : Any> BSWNavDisplay(
                     AnimatedContentTransitionScope.SlideDirection.Right
                 }
 
-            bswBackTransform(towards)
+            bswBackTransform(scope = this, towards = towards)
         },
         entryProvider = entryProvider,
     )

@@ -1,2 +1,25 @@
 skip:
   mode: 'native'
+
+settings:
+  contents:
+    - block: 'dependencyResolutionManagement'
+      contents:
+        - block: 'versionCatalogs'
+          contents:
+            - block: 'create("libs")'
+              contents:
+                - 'version("androidx-navigation3", "1.0.0")'
+                - 'version("androidx-navigationevent", "1.0.0")'
+                - 'library("androidx-navigation3-runtime", "androidx.navigation3", "navigation3-runtime").versionRef("androidx-navigation3")'
+                - 'library("androidx-navigation3-ui", "androidx.navigation3", "navigation3-ui").versionRef("androidx-navigation3")'
+                - 'library("androidx-navigationevent", "androidx.navigationevent", "navigationevent").versionRef("androidx-navigationevent")'
+
+build:
+  contents:
+    - block: 'dependencies'
+      export: false
+      contents:
+        - 'api(libs.androidx.navigation3.runtime)'
+        - 'api(libs.androidx.navigation3.ui)'
+        - 'api(libs.androidx.navigationevent)'
