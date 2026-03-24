@@ -33,7 +33,7 @@ internal val LocalSwiftViewModelRetention =
     staticCompositionLocalOf { SwiftViewModelRetention.Owner }
 
 @Composable
-fun BSWWithSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
+fun BSWSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
     CompositionLocalProvider(
         LocalSwiftViewModelRetention provides SwiftViewModelRetention.Owner,
     ) {
