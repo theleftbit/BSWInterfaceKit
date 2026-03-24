@@ -42,6 +42,20 @@ fun BSWSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
 }
 
 @Composable
+fun BSWWithScopedSwiftViewModelOwner(
+    scopeKey: Any?,
+    content: @Composable () -> Unit,
+) {
+    val owner = rememberBSWScopedViewModelStoreOwner(scopeKey)
+
+    CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
+        BSWSwiftViewModelOwnerRetention {
+            content()
+        }
+    }
+}
+
+@Composable
 fun rememberBSWScopedViewModelStoreOwner(scopeKey: Any?): ViewModelStoreOwner {
     val viewModelStore = remember(scopeKey) { ViewModelStore() }
 
