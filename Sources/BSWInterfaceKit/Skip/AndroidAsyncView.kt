@@ -1,7 +1,13 @@
 package bswinterface.kit
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+private const val PHASE_CROSSFADE_DURATION_MS = 220
 
 sealed interface AsyncPhase<out D : Any> {
     data object Idle : AsyncPhase<Nothing>
@@ -97,9 +105,30 @@ fun <Data : Any, ID : Any> AsyncView(
         }
     }
 
-    LaunchedEffect(id) { fetchData() }
+    LaunchedEffect(id) {
+        fetchData()
+    }
 
-    Crossfade(targetState = operation.phase) { phase ->
+    AnimatedContent(
+        targetState = operation.phase,
+        transitionSpec = {
+            val shouldCrossfade =
+                initialState is AsyncPhase.Loading &&
+                    (targetState is AsyncPhase.Loaded<*> || targetState is AsyncPhase.Error)
+
+            if (shouldCrossfade) {
+                (
+                    fadeIn(animationSpec = tween(durationMillis = PHASE_CROSSFADE_DURATION_MS)) togetherWith
+                    fadeOut(animationSpec = tween(durationMillis = PHASE_CROSSFADE_DURATION_MS))
+                    )
+            } else {
+                (
+                    EnterTransition.None togetherWith ExitTransition.None
+                    )
+            }
+        },
+        label = "AsyncViewPhase"
+    ) { phase ->
         when (phase) {
             is AsyncPhase.Idle,
             is AsyncPhase.Loading -> loadingView()
