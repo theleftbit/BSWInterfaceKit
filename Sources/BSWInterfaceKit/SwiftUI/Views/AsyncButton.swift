@@ -41,6 +41,7 @@ import SwiftUI
 /// Use this button when the action requires asynchronous work, which will be shown using a `ProgressView`.
 ///
 /// In order to customize it's appereance, use the `.asyncButtonLoadingConfiguration` method
+
 public struct AsyncButton<Label: View, Progress: View>: View {
 
     public typealias Action = () async throws -> Void
@@ -50,6 +51,7 @@ public struct AsyncButton<Label: View, Progress: View>: View {
 
     private let progressViewProvider: (_ style: AsyncButtonLoadingConfiguration.Style) -> Progress
 
+    // SKIP @nobridge
     internal init(
         action: @escaping Action,
         label: Label,
@@ -225,6 +227,7 @@ public extension AsyncButton {
 }
 
 // MARK: - Convenience inits
+// SKIP @nobridge
 public extension AsyncButton where Label == Text, Progress == DefaultAsyncButtonProgressView {
     init(_ label: String, action: @escaping Action) {
         self.init(action: action) { Text(label) }
@@ -239,6 +242,7 @@ public extension AsyncButton where Label == Text, Progress == DefaultAsyncButton
     }
 }
 
+// SKIP @nobridge
 extension AsyncButton where Label == Image, Progress == DefaultAsyncButtonProgressView {
     init(systemImageName: String, action: @escaping Action) {
         self.init(action: action) { Image(systemName: systemImageName) }

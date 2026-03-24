@@ -97,6 +97,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     ///   - hostedViewGenerator: The function that creates the `HostedView`.
     ///   - errorViewGenerator: The function that creates the `ErrorView`.
     ///   - loadingViewGenerator: The function that creates the `LoadingView`.
+    // SKIP @nobridge
     public init(id: Binding<ID>,
                 dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
@@ -110,6 +111,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
         self.loadingView = loadingViewGenerator()
     }
 
+    // SKIP @nobridge
     public init(id: ID,
                 dataGenerator: @escaping DataGenerator,
                 @ViewBuilder hostedViewGenerator: @escaping HostedViewGenerator,
@@ -202,6 +204,7 @@ public struct AsyncView<Data: Sendable, HostedView: View, ErrorView: View, Loadi
     #endif
 }
 
+// SKIP @nobridge
 public extension AsyncView where ErrorView == AsyncStatePlainErrorView {
     init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
@@ -230,6 +233,7 @@ public extension AsyncView where ErrorView == AsyncStatePlainErrorView {
     }
 }
 
+// SKIP @nobridge
 public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.PlaceholderData == Data {
     init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
@@ -262,6 +266,7 @@ public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingVie
     }
 }
 
+// SKIP @nobridge
 public extension AsyncView where HostedView: PlaceholderDataProvider, LoadingView == AsyncStatePlainLoadingView<HostedView>, HostedView.PlaceholderData == Data, ErrorView == AsyncStatePlainErrorView {
     init(id: Binding<ID>,
          dataGenerator: @escaping DataGenerator,
