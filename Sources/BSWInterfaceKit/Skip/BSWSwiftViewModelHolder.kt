@@ -13,13 +13,13 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-class AndroidSwiftViewModelHolder<SW : Any>(val swiftViewModel: SW) : ViewModel()
+class BSWSwiftViewModelHolder<SW : Any>(val swiftViewModel: SW) : ViewModel()
 
-class AndroidSwiftViewModelFactory<SW : Any>(
+class BSWSwiftViewModelFactory<SW : Any>(
     private val creator: () -> SW,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <VM : ViewModel> create(modelClass: Class<VM>): VM = AndroidSwiftViewModelHolder(creator()) as VM
+    override fun <VM : ViewModel> create(modelClass: Class<VM>): VM = BSWSwiftViewModelHolder(creator()) as VM
 }
 
 @PublishedApi
@@ -33,7 +33,7 @@ internal val LocalSwiftViewModelRetention =
     staticCompositionLocalOf { SwiftViewModelRetention.Owner }
 
 @Composable
-fun AndroidWithSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
+fun BSWWithSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
     CompositionLocalProvider(
         LocalSwiftViewModelRetention provides SwiftViewModelRetention.Owner,
     ) {
@@ -42,7 +42,7 @@ fun AndroidWithSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun rememberAndroidScopedViewModelStoreOwner(scopeKey: Any?): ViewModelStoreOwner {
+fun rememberBSWScopedViewModelStoreOwner(scopeKey: Any?): ViewModelStoreOwner {
     val viewModelStore = remember(scopeKey) { ViewModelStore() }
 
     DisposableEffect(viewModelStore) {
@@ -65,7 +65,7 @@ inline fun <reified SW : Any> swiftViewModel(
 ): SW {
     val owner = when (LocalSwiftViewModelRetention.current) {
         SwiftViewModelRetention.Composition -> {
-            rememberAndroidScopedViewModelStoreOwner(scopeKey = currentCompositeKeyHashCode)
+            rememberBSWScopedViewModelStoreOwner(scopeKey = currentCompositeKeyHashCode)
         }
         SwiftViewModelRetention.Owner -> {
             checkNotNull(LocalViewModelStoreOwner.current) {
@@ -73,11 +73,11 @@ inline fun <reified SW : Any> swiftViewModel(
             }
         }
     }
-    val holder: AndroidSwiftViewModelHolder<SW> =
+    val holder: BSWSwiftViewModelHolder<SW> =
         viewModel(
             viewModelStoreOwner = owner,
             key = key,
-            factory = AndroidSwiftViewModelFactory { factory() },
+            factory = BSWSwiftViewModelFactory { factory() },
         )
     return holder.swiftViewModel
 }

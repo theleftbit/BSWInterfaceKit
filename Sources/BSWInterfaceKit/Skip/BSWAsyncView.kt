@@ -61,23 +61,23 @@ data class AsyncOperation<ID, Data : Any>(
 }
 
 @Composable
-fun <Data : Any, ID : Any> AndroidAsyncView(
+fun <Data : Any, ID : Any> BSWAsyncView(
     id: ID,
     showBackButton: Boolean = true,
     dataGenerator: suspend () -> Data,
     hostedView: @Composable (Data) -> Unit,
     errorView: @Composable (Throwable, onRetry: () -> Unit) -> Unit = { error, onRetry ->
-        AndroidDefaultAsyncErrorView(
+        BSWDefaultAsyncErrorView(
             error = error,
             onRetry = onRetry,
             showBackButton = showBackButton
         )
     },
-    loadingView: @Composable () -> Unit = { AndroidDefaultAsyncLoadingView(showBackButton) },
+    loadingView: @Composable () -> Unit = { BSWDefaultAsyncLoadingView(showBackButton) },
     debounceMillis: Long? = null
 ) {
     val scope = rememberCoroutineScope()
-    val composedKey = "AndroidAsyncView:$id"
+    val composedKey = "BSWAsyncView:$id"
 
     var operation by swiftViewModel(
         key = composedKey,
@@ -127,7 +127,7 @@ fun <Data : Any, ID : Any> AndroidAsyncView(
                     )
             }
         },
-        label = "AndroidAsyncViewPhase"
+        label = "BSWAsyncViewPhase"
     ) { phase ->
         when (phase) {
             is AsyncPhase.Idle,
@@ -140,7 +140,7 @@ fun <Data : Any, ID : Any> AndroidAsyncView(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AndroidDefaultAsyncErrorView(
+fun BSWDefaultAsyncErrorView(
     error: Throwable,
     onRetry: () -> Unit,
     showBackButton: Boolean = true,
@@ -210,7 +210,7 @@ private fun Throwable.toDisplayMessage(): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AndroidDefaultAsyncLoadingView(
+fun BSWDefaultAsyncLoadingView(
     showBackButton: Boolean = true
 ) {
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
