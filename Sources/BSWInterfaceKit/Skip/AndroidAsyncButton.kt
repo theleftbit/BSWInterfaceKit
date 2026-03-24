@@ -52,7 +52,7 @@ enum class AsyncButtonHudKind { Loading, Success, Error }
 enum class AsyncButtonState { Idle, Loading }
 
 @Stable
-data class AsyncButtonLoadingConfiguration(
+data class AndroidAsyncButtonLoadingConfiguration(
     val message: String? = null,
     val style: Style = Style.Inline(tint = null)
 ) {
@@ -76,7 +76,7 @@ data class AsyncButtonLoadingConfiguration(
 }
 
 val LocalAsyncButtonLoadingConfiguration =
-    staticCompositionLocalOf { AsyncButtonLoadingConfiguration() }
+    staticCompositionLocalOf { AndroidAsyncButtonLoadingConfiguration() }
 
 val LocalAsyncButtonOperationKey =
     staticCompositionLocalOf<String?> { null }
@@ -84,11 +84,11 @@ val LocalAsyncButtonOperationKey =
 @Composable
 fun ProvideAsyncButtonLoadingConfiguration(
     message: String? = null,
-    style: AsyncButtonLoadingConfiguration.Style = AsyncButtonLoadingConfiguration.Style.Inline(),
+    style: AndroidAsyncButtonLoadingConfiguration.Style = AndroidAsyncButtonLoadingConfiguration.Style.Inline(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
-        LocalAsyncButtonLoadingConfiguration provides AsyncButtonLoadingConfiguration(message, style),
+        LocalAsyncButtonLoadingConfiguration provides AndroidAsyncButtonLoadingConfiguration(message, style),
         content = content
     )
 }
@@ -121,7 +121,7 @@ fun normalizeAsyncButtonErrorMessage(raw: String?): String {
 
 @Stable
 class AsyncButtonController internal constructor(
-    loadingConfiguration: AsyncButtonLoadingConfiguration,
+    loadingConfiguration: AndroidAsyncButtonLoadingConfiguration,
     private var onClickImpl: () -> Unit
 ) {
     var loadingConfiguration by mutableStateOf(loadingConfiguration)
@@ -176,7 +176,7 @@ fun rememberAsyncButtonController(
             val styleLocal = controller.loadingConfiguration.style
             val startNanos = SystemClock.elapsedRealtimeNanos()
 
-            if (styleLocal is AsyncButtonLoadingConfiguration.Style.Blocking) {
+            if (styleLocal is AndroidAsyncButtonLoadingConfiguration.Style.Blocking) {
                 controller.hudKind = AsyncButtonHudKind.Loading
                 controller.hudText = controller.loadingConfiguration.message
             }
@@ -199,8 +199,8 @@ fun rememberAsyncButtonController(
                 }
 
                 val errorMillis = when (styleLocal) {
-                    is AsyncButtonLoadingConfiguration.Style.Blocking -> styleLocal.errorMessageMillis
-                    is AsyncButtonLoadingConfiguration.Style.Inline -> styleLocal.errorMessageMillis
+                    is AndroidAsyncButtonLoadingConfiguration.Style.Blocking -> styleLocal.errorMessageMillis
+                    is AndroidAsyncButtonLoadingConfiguration.Style.Inline -> styleLocal.errorMessageMillis
                 }
 
                 controller.hudKind = AsyncButtonHudKind.Error
@@ -208,7 +208,7 @@ fun rememberAsyncButtonController(
                 delay(errorMillis)
                 controller.hudKind = null
                 controller.hudText = null
-            } else if (styleLocal is AsyncButtonLoadingConfiguration.Style.Blocking) {
+            } else if (styleLocal is AndroidAsyncButtonLoadingConfiguration.Style.Blocking) {
                 val successMessage = styleLocal.successMessage
                 if (!successMessage.isNullOrBlank()) {
                     controller.hudKind = AsyncButtonHudKind.Success
@@ -228,13 +228,13 @@ fun rememberAsyncButtonController(
 
 @Composable
 fun DefaultAsyncButtonProgressView(
-    style: AsyncButtonLoadingConfiguration.Style
+    style: AndroidAsyncButtonLoadingConfiguration.Style
 ) {
     val (tint, size) = when (style) {
-        is AsyncButtonLoadingConfiguration.Style.Inline -> {
+        is AndroidAsyncButtonLoadingConfiguration.Style.Inline -> {
             (style.tint ?: MaterialTheme.colorScheme.onPrimary) to 16.dp
         }
-        is AsyncButtonLoadingConfiguration.Style.Blocking -> {
+        is AndroidAsyncButtonLoadingConfiguration.Style.Blocking -> {
             MaterialTheme.colorScheme.primary to 32.dp
         }
     }
@@ -257,7 +257,7 @@ fun AndroidAsyncButton(
     errorMessageResolver: (Throwable?) -> String = { throwable ->
         normalizeAsyncButtonErrorMessage(throwable?.localizedMessage ?: throwable?.message)
     },
-    progressView: @Composable (AsyncButtonLoadingConfiguration.Style) -> Unit = { style ->
+    progressView: @Composable (AndroidAsyncButtonLoadingConfiguration.Style) -> Unit = { style ->
         DefaultAsyncButtonProgressView(style = style)
     },
     label: @Composable RowScope.() -> Unit
@@ -280,7 +280,7 @@ fun AndroidAsyncButton(
     }
 
     val blockingStyle =
-        controller.loadingConfiguration.style as? AsyncButtonLoadingConfiguration.Style.Blocking
+        controller.loadingConfiguration.style as? AndroidAsyncButtonLoadingConfiguration.Style.Blocking
 
     AsyncButtonBlockingHudDialog(
         visible = controller.hudKind != null,
@@ -324,8 +324,8 @@ fun AndroidAsyncButton(
 @Composable
 private fun AsyncButtonInlineLoadingView(
     message: String?,
-    style: AsyncButtonLoadingConfiguration.Style,
-    progressView: @Composable (AsyncButtonLoadingConfiguration.Style) -> Unit
+    style: AndroidAsyncButtonLoadingConfiguration.Style,
+    progressView: @Composable (AndroidAsyncButtonLoadingConfiguration.Style) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         progressView(style)
