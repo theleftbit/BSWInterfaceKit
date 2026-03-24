@@ -55,19 +55,21 @@ data class AsyncOperation<ID, Data : Any>(
 @Composable
 fun <Data : Any, ID : Any> AsyncView(
     id: ID,
-    instanceKey: Any = "",
-    isNotRootView: Boolean = true,
+    showBackButton: Boolean = true,
     dataGenerator: suspend () -> Data,
     hostedView: @Composable (Data) -> Unit,
     errorView: @Composable (Throwable, onRetry: () -> Unit) -> Unit = { error, onRetry ->
-        DefaultAsyncErrorView(error = error, onRetry = onRetry)
+        DefaultAsyncErrorView(
+            error = error,
+            onRetry = onRetry,
+            showBackButton = showBackButton
+        )
     },
-    loadingView: @Composable () -> Unit = { DefaultAsyncLoadingView(isNotRootView) },
+    loadingView: @Composable () -> Unit = { DefaultAsyncLoadingView(showBackButton) },
     debounceMillis: Long? = null
 ) {
     val scope = rememberCoroutineScope()
-    val instanceIdentity = remember(instanceKey) { System.identityHashCode(instanceKey) }
-    val composedKey = "AsyncView:$instanceIdentity:$id"
+    val composedKey = "AsyncView:$id"
 
     var operation by swiftViewModel(
         key = composedKey,
@@ -112,6 +114,7 @@ fun <Data : Any, ID : Any> AsyncView(
 fun DefaultAsyncErrorView(
     error: Throwable,
     onRetry: () -> Unit,
+    showBackButton: Boolean = true,
 ) {
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val displayMessage = remember(error) { error.toDisplayMessage() }
@@ -123,19 +126,21 @@ fun DefaultAsyncErrorView(
         modifier = Modifier.fillMaxWidth(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets(0, 0, 0, 0),
-                title = {},
-                navigationIcon = {
-                    BSWBackButton(
-                        onClick = onBackStack,
-                        tint = MaterialTheme.colorScheme.primary
+            if (showBackButton) {
+                TopAppBar(
+                    windowInsets = WindowInsets(0, 0, 0, 0),
+                    title = {},
+                    navigationIcon = {
+                        BSWBackButton(
+                            onClick = onBackStack,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
                 )
-            )
+            }
         }
     ) { paddingValues ->
         Column(
@@ -177,7 +182,7 @@ private fun Throwable.toDisplayMessage(): String {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultAsyncLoadingView(
-    isNotRootView: Boolean = true
+    showBackButton: Boolean = true
 ) {
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val onBackStack: () -> Unit = {
@@ -188,7 +193,7 @@ fun DefaultAsyncLoadingView(
         modifier = Modifier.fillMaxWidth(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            if (isNotRootView) {
+            if (showBackButton) {
                 TopAppBar(
                     windowInsets = WindowInsets(0, 0, 0, 0),
                     title = {},
