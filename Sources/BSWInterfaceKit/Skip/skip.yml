@@ -1,2 +1,11 @@
 skip:
   mode: 'native'
+
+build:
+  contents:
+    - block: 'dependencies'
+      export: false
+      contents:
+        - 'api("androidx.navigation3:navigation3-runtime:1.0.0")'
+        - 'api("androidx.navigation3:navigation3-ui:1.0.0")'
+        - 'api("androidx.navigationevent:navigationevent:1.0.0")'
