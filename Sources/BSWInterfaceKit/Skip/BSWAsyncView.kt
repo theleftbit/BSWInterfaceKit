@@ -60,6 +60,13 @@ data class AsyncOperation<ID, Data : Any>(
     }
 }
 
+/**
+ * Plain Android async container for Compose screens.
+ *
+ * The defaults in this file are intentionally minimal so apps can wrap this API
+ * with their own localized loading and error views without reimplementing the
+ * Swift view-model retention and async state handling.
+ */
 @Composable
 fun <Data : Any, ID : Any> BSWAsyncView(
     id: ID,
@@ -138,6 +145,10 @@ fun <Data : Any, ID : Any> BSWAsyncView(
     }
 }
 
+/**
+ * Fallback error UI used by [BSWAsyncView] when the consumer does not inject a
+ * custom error view. Product apps are expected to override this with localized UI.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BSWDefaultAsyncErrorView(
@@ -208,6 +219,10 @@ private fun Throwable.toDisplayMessage(): String {
     return fallback
 }
 
+/**
+ * Fallback loading UI used by [BSWAsyncView] when the consumer does not inject a
+ * custom loading view.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BSWDefaultAsyncLoadingView(

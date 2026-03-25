@@ -13,6 +13,10 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+/**
+ * Android `ViewModel` wrapper used to retain a Swift-backed object inside a
+ * Compose-managed [ViewModelStoreOwner].
+ */
 class BSWSwiftViewModelHolder<SW : Any>(val swiftViewModel: SW) : ViewModel()
 
 class BSWSwiftViewModelFactory<SW : Any>(
@@ -32,6 +36,10 @@ internal enum class SwiftViewModelRetention {
 internal val LocalSwiftViewModelRetention =
     staticCompositionLocalOf { SwiftViewModelRetention.Owner }
 
+/**
+ * Forces `swiftViewModel(...)` to bind to the nearest provided owner instead of
+ * creating a composition-scoped store.
+ */
 @Composable
 fun BSWSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
     CompositionLocalProvider(
@@ -41,6 +49,9 @@ fun BSWSwiftViewModelOwnerRetention(content: @Composable () -> Unit) {
     }
 }
 
+/**
+ * Creates and provides a dedicated [ViewModelStoreOwner] for a navigation or sheet scope.
+ */
 @Composable
 fun BSWWithScopedSwiftViewModelOwner(
     scopeKey: Any?,
@@ -55,6 +66,9 @@ fun BSWWithScopedSwiftViewModelOwner(
     }
 }
 
+/**
+ * Returns a [ViewModelStoreOwner] that is recreated whenever [scopeKey] changes.
+ */
 @Composable
 fun rememberBSWScopedViewModelStoreOwner(scopeKey: Any?): ViewModelStoreOwner {
     val viewModelStore = remember(scopeKey) { ViewModelStore() }
@@ -72,6 +86,13 @@ fun rememberBSWScopedViewModelStoreOwner(scopeKey: Any?): ViewModelStoreOwner {
     }
 }
 
+/**
+ * Android entry point used by shared code to retain Swift-backed state.
+ *
+ * When the current context is marked with [BSWSwiftViewModelOwnerRetention], the
+ * object is stored in the nearest owner. Otherwise it falls back to a
+ * composition-scoped owner.
+ */
 @Composable
 inline fun <reified SW : Any> swiftViewModel(
     key: String = SW::class.java.name,

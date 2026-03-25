@@ -42,6 +42,12 @@ private fun bswBackTransform(
             ) + fadeOut(animationSpec = tween(durationMillis = BSW_BACK_ANIMATION_DURATION_MS))
     }
 
+/**
+ * Default entry decorators used by [BSWNavDisplay].
+ *
+ * This combines saveable state with a per-entry [ViewModelStoreOwner] so screens
+ * using `swiftViewModel(...)` keep the expected lifecycle on Android.
+ */
 @Composable
 fun <T : Any> rememberBSWNavEntryDecorators(): List<NavEntryDecorator<T>> =
     listOf(
@@ -81,6 +87,12 @@ private fun <T : Any> rememberBSWScopedViewModelStoreNavEntryDecorator(): NavEnt
     }
 }
 
+/**
+ * Shared Navigation 3 display with the default BSW push/pop behavior for Android.
+ *
+ * Apps are expected to supply only their back stack and entry provider unless they
+ * need a custom list of entry decorators.
+ */
 @Composable
 fun <T : Any> BSWNavDisplay(
     backStack: List<T>,

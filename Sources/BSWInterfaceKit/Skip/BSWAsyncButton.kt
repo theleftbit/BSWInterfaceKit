@@ -51,6 +51,12 @@ enum class AsyncButtonHudKind { Loading, Success, Error }
 
 enum class AsyncButtonState { Idle, Loading }
 
+/**
+ * Describes how [BSWAsyncButton] exposes loading state on Android.
+ *
+ * This is the plain shared configuration that app-level wrappers can reuse while
+ * still drawing their own branded button UI.
+ */
 @Stable
 data class BSWAsyncButtonLoadingConfiguration(
     val message: String? = null,
@@ -81,6 +87,10 @@ val LocalAsyncButtonLoadingConfiguration =
 val LocalAsyncButtonOperationKey =
     staticCompositionLocalOf<String?> { null }
 
+/**
+ * Provides the loading configuration consumed by [BSWAsyncButton] and
+ * [rememberAsyncButtonController].
+ */
 @Composable
 fun ProvideAsyncButtonLoadingConfiguration(
     message: String? = null,
@@ -93,6 +103,9 @@ fun ProvideAsyncButtonLoadingConfiguration(
     )
 }
 
+/**
+ * Adds an identifier used only for debug tracing of async button operations.
+ */
 @Composable
 fun ProvideAsyncButtonOperationIdentifierKey(
     key: String?,
@@ -119,6 +132,12 @@ fun normalizeAsyncButtonErrorMessage(raw: String?): String {
     return trimmed
 }
 
+/**
+ * Shared async state holder used by Android button wrappers.
+ *
+ * The idea is that product-specific buttons can reuse the async behavior from BSW
+ * without having to duplicate loading, error and blocking HUD orchestration.
+ */
 @Stable
 class AsyncButtonController internal constructor(
     loadingConfiguration: BSWAsyncButtonLoadingConfiguration,
@@ -147,6 +166,9 @@ class AsyncButtonController internal constructor(
     }
 }
 
+/**
+ * Creates the controller used by [BSWAsyncButton] and by custom app-level wrappers.
+ */
 @Composable
 fun rememberAsyncButtonController(
     action: suspend () -> Unit,
@@ -245,6 +267,12 @@ fun DefaultAsyncButtonProgressView(
     )
 }
 
+/**
+ * Plain Compose async button.
+ *
+ * Consumers can use it directly or build custom buttons on top of
+ * [rememberAsyncButtonController] when they need a branded layout.
+ */
 @Composable
 fun BSWAsyncButton(
     modifier: Modifier = Modifier,

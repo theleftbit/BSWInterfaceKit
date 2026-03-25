@@ -18,6 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 
+/**
+ * Shared modal bottom sheet helpers for Android.
+ *
+ * The sheet content is wrapped in a scoped Swift view-model owner so Swift-backed
+ * state behaves the same way in sheet presentations as it does in pushed screens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 object BSWSheet {
     @Composable

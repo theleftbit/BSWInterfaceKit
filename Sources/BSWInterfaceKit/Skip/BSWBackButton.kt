@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Shared Android back button that always uses the system Material icon.
+ */
 @Composable
 fun BSWBackButton(
     onClick: () -> Unit,
