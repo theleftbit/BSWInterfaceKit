@@ -19,7 +19,7 @@ These types are intentionally kept as plain infrastructure components so product
 - `BSWAsyncView`: async loading/error/content container with built-in Swift `ViewModel` retention.
 - `BSWAsyncButton`: async action core for Compose buttons, including inline and blocking loading styles.
 - `BSWSheet`: modal bottom sheet wrapper that scopes Swift-backed view models correctly for sheet presentations.
-- `BSWNavDisplay`: shared Navigation 3 setup with MediQuo-style push/pop transitions and entry decorators.
+- `BSWNavDisplay`: shared Navigation 3 setup with UIKit-style push/pop transitions and entry decorators.
 - `BSWBackButton`: system Material back button used by the default Android views in this package.
 - `BSWSwiftViewModelOwnerRetention` and `swiftViewModel(...)`: bridge helpers used to retain Swift-backed state correctly on Android.
 
