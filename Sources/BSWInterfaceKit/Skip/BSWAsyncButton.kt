@@ -46,6 +46,9 @@ import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import skip.foundation.LocalizedError
+import skip.foundation.NSError
+import skip.lib.aserror
 
 enum class AsyncButtonHudKind { Loading, Success, Error }
 
@@ -118,18 +121,118 @@ fun ProvideAsyncButtonOperationIdentifierKey(
 }
 
 fun normalizeAsyncButtonErrorMessage(raw: String?): String {
-    if (raw.isNullOrBlank()) return "Something went wrong"
+    return extractAsyncButtonErrorMessage(raw) ?: "Something went wrong"
+}
+
+fun normalizeAsyncButtonErrorMessage(throwable: Throwable?): String {
+    return extractAsyncButtonErrorMessage(throwable) ?: "Something went wrong"
+}
+
+fun extractAsyncButtonErrorMessage(throwable: Throwable?): String? {
+    if (throwable == null) return null
+
+    return throwable.errorChain()
+        .flatMap { current -> current.messageCandidates().asSequence() }
+        .mapNotNull(::extractAsyncButtonErrorMessage)
+        .firstOrNull()
+}
+
+private fun parseAsyncButtonErrorMessage(raw: String): String? {
+    // Compatibility fallback for bridged errors already flattened into strings.
+    val patterns = listOf(
+        Regex("errorDescription:\\s*Optional\\(\"(.+?)\"\\)"),
+        Regex("errorDescription:\\s*\"(.+?)\""),
+        Regex("\\\\\"message\\\\\"\\s*:\\s*\\\\\"(.+?)\\\\\""),
+        Regex("\"message\"\\s*:\\s*\"(.+?)\""),
+        Regex("Optional\\(\"(.+?)\"\\)"),
+        Regex("Optional\\((.+?)\\)")
+    )
+
+    return patterns
+        .firstNotNullOfOrNull { pattern ->
+            pattern.find(raw)?.groupValues?.getOrNull(1)?.trim()?.trim('"')
+        }
+        ?.takeIf { it.isNotBlank() }
+}
+
+private fun Throwable.errorChain(): Sequence<Throwable> = sequence {
+    val visited = LinkedHashSet<Throwable>()
+    var current: Throwable? = this@errorChain
+
+    while (current != null && visited.add(current)) {
+        yield(current)
+        current = current.cause
+    }
+}
+
+private fun Throwable.messageCandidates(): List<String?> = buildList {
+    if (this@messageCandidates is LocalizedError) {
+        add(errorDescription)
+        add(failureReason)
+        add(recoverySuggestion)
+    }
+
+    if (this@messageCandidates is NSError) {
+        add(localizedDescription)
+        add(localizedFailureReason)
+        add(localizedRecoverySuggestion)
+    }
+
+    if (this@messageCandidates is skip.lib.Error) {
+        add(localizedDescription)
+    }
+
+    add(aserror().localizedDescription)
+    add(localizedMessage)
+    add(message)
+    add(reflectiveString("errorDescription"))
+    add(reflectiveString("localizedDescription"))
+    add(reflectiveString("message"))
+    add(toString())
+}
+
+private fun Throwable.reflectiveString(propertyName: String): String? {
+    val getterName = buildString {
+        append("get")
+        append(propertyName.replaceFirstChar { char -> char.uppercase() })
+    }
+
+    return runCatching {
+        javaClass.methods
+            .firstOrNull { method ->
+                method.parameterCount == 0 &&
+                    (method.name == getterName || method.name == propertyName) &&
+                    method.returnType == String::class.java
+            }
+            ?.invoke(this) as? String
+    }.getOrNull()
+}
+
+fun extractAsyncButtonErrorMessage(raw: String?): String? {
+    if (raw.isNullOrBlank()) return null
     val trimmed = raw.trim()
+    val parsed = parseAsyncButtonErrorMessage(trimmed) ?: trimmed
 
-    val optionalQuoted = Regex("""Optional\("(.+)"\)""")
-        .find(trimmed)?.groupValues?.getOrNull(1)
-    if (!optionalQuoted.isNullOrBlank()) return optionalQuoted
+    if (parsed.isBlank()) return null
+    if (parsed.isTechnicalPayload()) return null
+    if (parsed.isGenericSystemMessage()) return null
 
-    val optionalPlain = Regex("""Optional\((.+)\)""")
-        .find(trimmed)?.groupValues?.getOrNull(1)
-    if (!optionalPlain.isNullOrBlank()) return optionalPlain.trim().trim('"')
+    return parsed
+}
 
-    return trimmed
+private fun String.isTechnicalPayload(): Boolean {
+    val normalized = trim()
+    if (normalized.matches(Regex("""^\d+\s+bytes\)?$""", RegexOption.IGNORE_CASE))) return true
+    if (normalized.contains("failureStatusCode(", ignoreCase = true)) return true
+    if (normalized.matches(Regex("""Optional\(\d+\s+bytes\)""", RegexOption.IGNORE_CASE))) return true
+    if (normalized.startsWith("Error Domain=", ignoreCase = true)) return true
+    return false
+}
+
+private fun String.isGenericSystemMessage(): Boolean {
+    val normalized = trim()
+    return normalized.contains("operation could", ignoreCase = true) &&
+        normalized.contains("be completed", ignoreCase = true)
 }
 
 /**
@@ -173,7 +276,7 @@ class AsyncButtonController internal constructor(
 fun rememberAsyncButtonController(
     action: suspend () -> Unit,
     errorMessageResolver: (Throwable?) -> String = { throwable ->
-        normalizeAsyncButtonErrorMessage(throwable?.localizedMessage ?: throwable?.message)
+        normalizeAsyncButtonErrorMessage(throwable)
     }
 ): AsyncButtonController {
     val loadingConfig = LocalAsyncButtonLoadingConfiguration.current
@@ -283,7 +386,7 @@ fun BSWAsyncButton(
     disableTextColor: Color? = null,
     action: suspend () -> Unit,
     errorMessageResolver: (Throwable?) -> String = { throwable ->
-        normalizeAsyncButtonErrorMessage(throwable?.localizedMessage ?: throwable?.message)
+        normalizeAsyncButtonErrorMessage(throwable)
     },
     progressView: @Composable (BSWAsyncButtonLoadingConfiguration.Style) -> Unit = { style ->
         DefaultAsyncButtonProgressView(style = style)

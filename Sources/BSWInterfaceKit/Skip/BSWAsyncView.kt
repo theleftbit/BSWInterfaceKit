@@ -208,15 +208,10 @@ fun BSWDefaultAsyncErrorView(
 }
 
 private fun Throwable.toDisplayMessage(): String {
-    val preferred = localizedMessage ?: message
-    val fallback = preferred ?: toString()
-
-    val optionalRegex = Regex("""errorDescription:\s*Optional\("(.+)"\)""")
-    optionalRegex.find(fallback)?.groupValues?.getOrNull(1)?.let { extracted ->
-        if (extracted.isNotBlank()) return extracted
-    }
-
-    return fallback
+    return extractAsyncButtonErrorMessage(this)
+        ?: localizedMessage
+        ?: message
+        ?: toString()
 }
 
 /**
