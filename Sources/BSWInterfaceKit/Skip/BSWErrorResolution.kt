@@ -170,6 +170,7 @@ private fun String.isTechnicalPayload(): Boolean {
 
 private fun String.isGenericSystemMessage(): Boolean {
     val normalized = trim()
+    if (normalized.equals("Something went wrong", ignoreCase = true)) return true
     return normalized.contains("operation could", ignoreCase = true) &&
         normalized.contains("be completed", ignoreCase = true)
 }
