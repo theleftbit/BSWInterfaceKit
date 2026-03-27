@@ -117,21 +117,6 @@ fun ProvideAsyncButtonOperationIdentifierKey(
     )
 }
 
-fun normalizeAsyncButtonErrorMessage(raw: String?): String {
-    if (raw.isNullOrBlank()) return "Something went wrong"
-    val trimmed = raw.trim()
-
-    val optionalQuoted = Regex("""Optional\("(.+)"\)""")
-        .find(trimmed)?.groupValues?.getOrNull(1)
-    if (!optionalQuoted.isNullOrBlank()) return optionalQuoted
-
-    val optionalPlain = Regex("""Optional\((.+)\)""")
-        .find(trimmed)?.groupValues?.getOrNull(1)
-    if (!optionalPlain.isNullOrBlank()) return optionalPlain.trim().trim('"')
-
-    return trimmed
-}
-
 /**
  * Shared async state holder used by Android button wrappers.
  *
@@ -173,7 +158,7 @@ class AsyncButtonController internal constructor(
 fun rememberAsyncButtonController(
     action: suspend () -> Unit,
     errorMessageResolver: (Throwable?) -> String = { throwable ->
-        normalizeAsyncButtonErrorMessage(throwable?.localizedMessage ?: throwable?.message)
+        normalizeAsyncButtonErrorMessage(throwable)
     }
 ): AsyncButtonController {
     val loadingConfig = LocalAsyncButtonLoadingConfiguration.current
@@ -283,7 +268,7 @@ fun BSWAsyncButton(
     disableTextColor: Color? = null,
     action: suspend () -> Unit,
     errorMessageResolver: (Throwable?) -> String = { throwable ->
-        normalizeAsyncButtonErrorMessage(throwable?.localizedMessage ?: throwable?.message)
+        normalizeAsyncButtonErrorMessage(throwable)
     },
     progressView: @Composable (BSWAsyncButtonLoadingConfiguration.Style) -> Unit = { style ->
         DefaultAsyncButtonProgressView(style = style)
