@@ -9,3 +9,4 @@ build:
         - 'api("androidx.navigation3:navigation3-runtime:1.0.0")'
         - 'api("androidx.navigation3:navigation3-ui:1.0.0")'
         - 'api("androidx.navigationevent:navigationevent:1.0.0")'
+        - 'api("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")'
