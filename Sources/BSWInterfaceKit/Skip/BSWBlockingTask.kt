@@ -126,31 +126,6 @@ fun <Input> PerformBlockingTask(
 }
 
 @Composable
-fun <Input> PerformBlockingTaskHost(
-    state: BlockingTaskState<Input>,
-    loadingTitle: String,
-    successMessage: String? = null,
-    successDisplayMillis: Long = 1000L,
-    confirmationStrategy: AsyncBlockingTaskConfirmationStrategy = AsyncBlockingTaskConfirmationStrategy.NotRequired,
-    errorMessage: (Throwable?) -> String = { throwable -> normalizeAsyncButtonErrorMessage(throwable) },
-    errorDisplayMillis: Long = 1500L,
-    scrimAlpha: Float = 0.35f,
-    task: suspend (Input) -> Unit
-) {
-    rememberBlockingTaskPresenter(
-        state = state,
-        loadingTitle = loadingTitle,
-        successMessage = successMessage,
-        successDisplayMillis = successDisplayMillis,
-        confirmationStrategy = confirmationStrategy,
-        errorMessage = errorMessage,
-        errorDisplayMillis = errorDisplayMillis,
-        scrimAlpha = scrimAlpha,
-        task = task
-    )
-}
-
-@Composable
 private fun <Input> rememberBlockingTaskPresenter(
     state: BlockingTaskState<Input>,
     loadingTitle: String,
