@@ -106,6 +106,10 @@ fun <T : Any> BSWNavDisplay(
     entryDecorators: List<NavEntryDecorator<T>>? = null,
     entryProvider: (key: T) -> NavEntry<T>,
 ) {
+    if (backStack.isEmpty()) {
+        return
+    }
+
     val resolvedEntryDecorators = entryDecorators ?: rememberBSWNavEntryDecorators()
 
     NavDisplay(
