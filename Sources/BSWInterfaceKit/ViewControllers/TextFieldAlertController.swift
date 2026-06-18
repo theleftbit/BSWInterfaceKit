@@ -31,43 +31,50 @@ public enum TextFieldAlertController {
         actionValidator: @escaping ActionValidator = { $0.count > 0 },
         onAction: @escaping (String?) -> (),
         onCancelAction: (() -> ())? = nil) -> UIViewController {
-        let alertVC = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
-
-        var observation: NSObjectProtocol!
-        var textField: UITextField!
-
-        let action = UIAlertAction(title: actionTitle, style: .default) { _ in
-            onAction(textField.text)
-            observation = nil
-            textField = nil
-        }
-        action.isEnabled = false
-        alertVC.addAction(action)
-        
-        let cancel = UIAlertAction(title: cancelTitle, style: .cancel) {  _ in
-            onCancelAction?()
-            observation = nil
-            textField = nil
-        }
-        alertVC.addAction(cancel)
-        
-        alertVC.addTextField {
-            guard observation == nil else { return }
-            $0.text = initialValue
-            $0.placeholder = placeholder
-            $0.textContentType = textContentType
-            $0.isSecureTextEntry = (textContentType == .password)
-            observation = NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: $0, queue: OperationQueue.main) { [weak action] (note) in
-                guard let t = note.object as? UITextField else { return }
-                MainActor.assumeIsolated {
-                    textField = t
-                    action?.isEnabled = actionValidator(t.text ?? "")
+            let alertVC = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
+            
+            var observation: NSObjectProtocol!
+            var textField: UITextField!
+            
+            let action = UIAlertAction(title: actionTitle, style: .default) { _ in
+                onAction(textField.text)
+                observation = nil
+                textField = nil
+            }
+            action.isEnabled = false
+            alertVC.addAction(action)
+            
+            let cancel = UIAlertAction(title: cancelTitle, style: .cancel) {  _ in
+                onCancelAction?()
+                observation = nil
+                textField = nil
+            }
+            alertVC.addAction(cancel)
+            
+            alertVC.addTextField { [weak action] inputTextField in
+                guard observation == nil else { return }
+                
+                inputTextField.text = initialValue
+                inputTextField.placeholder = placeholder
+                inputTextField.textContentType = textContentType
+                inputTextField.isSecureTextEntry = (textContentType == .password)
+                
+                observation = NotificationCenter.default.addObserver(
+                    forName: UITextField.textDidChangeNotification,
+                    object: inputTextField,
+                    queue: OperationQueue.main
+                ) { note in
+                    guard let t = note.object as? UITextField else { return }
+                    
+                    MainActor.assumeIsolated {
+                        textField = t
+                        action?.isEnabled = actionValidator(t.text ?? "")
+                    }
                 }
             }
+            
+            return alertVC
         }
-
-        return alertVC
-    }
 }
 
 #endif
