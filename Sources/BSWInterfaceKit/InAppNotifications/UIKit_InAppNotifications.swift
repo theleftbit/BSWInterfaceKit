@@ -225,13 +225,17 @@ private class InAppNotificationView: UIView {
             removeFromSuperview()
             return
         }
-        UIView.animate(withDuration: 0.1, animations: {
+
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            guard let self else { return }
             self.frame.origin.y = self.frame.origin.y + 5
-        }, completion: {
-            (complete: Bool) in
-            UIView.animate(withDuration: 0.25, animations: {
+        }, completion: { [weak self] _ in
+            guard let self else { return }
+
+            UIView.animate(withDuration: 0.25, animations: { [weak self] in
+                guard let self else { return }
                 self.center.y = -self.frame.height
-            }, completion: { [weak self] (complete) in
+            }, completion: { [weak self] _ in
                 self?.completion()
                 self?.removeFromSuperview()
             })

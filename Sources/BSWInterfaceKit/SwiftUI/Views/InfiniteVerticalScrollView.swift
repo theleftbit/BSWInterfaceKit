@@ -226,7 +226,7 @@ public struct InfiniteVerticalScrollView<Item: Identifiable & Sendable, ItemView
                 return
             }
             Task { @MainActor in
-                try await Task.sleep(for: .seconds(0.3))
+                try? await Task.sleep(for: .seconds(0.3))
                 withAnimation(.default) {
                     self.scrollPosition.scrollTo(id: newValueID, anchor: .bottom)
                 }
