@@ -56,7 +56,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
         let subArray = items.suffix(5)
         if subArray.contains(where: { $0.id == item.id }) {
             Task {
-                try await loadMoreContent()
+                try? await loadMoreContent()
             }
         }
     }
