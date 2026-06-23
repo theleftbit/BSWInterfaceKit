@@ -1,0 +1,937 @@
+{
+  "GenerateScreenshots.sh": {
+    "mtime": 1765895985.3394167,
+    "ast_hash": "ea12a77e0bab9da9f0bb41f6bc523831",
+    "semantic_hash": ""
+  },
+  "Package.swift": {
+    "mtime": 1774521647.610793,
+    "ast_hash": "7f06bd5ef5fe7f89bf7d1de03bcafe49",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Behaviour/MailComposerBehaviour.swift": {
+    "mtime": 1765895985.3397474,
+    "ast_hash": "3bc65ee03230fc464b659412f0dedb8a",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Behaviour/MediaPickerBehavior.swift": {
+    "mtime": 1765895985.339833,
+    "ast_hash": "6692f30bd6cf37661fec7fbe5cf787b7",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Behaviour/UpdatePageControlOnScrollBehavior.swift": {
+    "mtime": 1765895985.3398976,
+    "ast_hash": "5d86b149a25719866fae0cabeb6573a5",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Cells/InfiniteLoadingCollectionViewCell.swift": {
+    "mtime": 1765895985.3399742,
+    "ast_hash": "384a2b047bc4dbc468d1ad442cea35e7",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Cells/PhotoCollectionViewCell.swift": {
+    "mtime": 1765895985.3400304,
+    "ast_hash": "dc85c7dbdbdb1b6af86b34c4be8630d5",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/CollectionViewLayout/HorizontalPagedCollectionViewLayout.swift": {
+    "mtime": 1765895985.340112,
+    "ast_hash": "7116b50dc1eacc20e8e9ea38473a1e51",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/DataSource/CollectionViewDiffableDataSource.swift": {
+    "mtime": 1765895985.3402,
+    "ast_hash": "c5d2c596c72f5d2465dc35b951953e2b",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/DataSource/PagingCollectionViewDataSource.swift": {
+    "mtime": 1765895985.3402655,
+    "ast_hash": "38f822250325e6759037d5759e47d407",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/DataSource/SelectableTableViewDataSource.swift": {
+    "mtime": 1765895985.3403254,
+    "ast_hash": "105c2efa9dbbb59ce4ee517a79d0c953",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/Keyboard+LayoutGuide.swift": {
+    "mtime": 1765895985.3404052,
+    "ast_hash": "c873769ac76fc26616624ca391c4581c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/Localizable.swift": {
+    "mtime": 1782204022.7363994,
+    "ast_hash": "9f87bea6910aa92b19af80d7549271b9",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/NSAttributedStrings+Utilities.swift": {
+    "mtime": 1765895985.3405364,
+    "ast_hash": "93413ab3ea9b0dc120d5af9df3cf3897",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIActivityIndicatorViewStyle.swift": {
+    "mtime": 1765895985.340582,
+    "ast_hash": "1dd0a3e3e584048765a65de643275224",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIButton+Utilities.swift": {
+    "mtime": 1765895985.3406315,
+    "ast_hash": "6b19cab7c56307db084372259fda45fb",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UICollectionView+Utilities.swift": {
+    "mtime": 1765895985.3406754,
+    "ast_hash": "3f5af80ab26f979eebc4335a33903c14",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UICollectionViewCell+Utilities.swift": {
+    "mtime": 1765895985.340723,
+    "ast_hash": "a26156da1a3a1bab0e0c0366dfea89d6",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIColor+Utilities.swift": {
+    "mtime": 1765895985.3407817,
+    "ast_hash": "6041ef4997fc22c7ea75ea09a9fa8e73",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIContentView+Utilities.swift": {
+    "mtime": 1765895985.3408294,
+    "ast_hash": "247071f68e3f1f8e8586bcfe35a93d5d",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIEdgeInsets+Utilities.swift": {
+    "mtime": 1765895985.3408737,
+    "ast_hash": "1e34084d5e270c0e4db7e97b42e6d1dc",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIFont+Utilities.swift": {
+    "mtime": 1765895985.3409197,
+    "ast_hash": "0c64fa29ab18932e253312650ed796d5",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIImage+Utilities.swift": {
+    "mtime": 1765895985.3409686,
+    "ast_hash": "530889a88b08312b41eba9a354928110",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIImageView+Download.swift": {
+    "mtime": 1765895985.341025,
+    "ast_hash": "4f19704160135f1c24c3c737df3eb8b6",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIImageView+Utilities.swift": {
+    "mtime": 1765895985.3410718,
+    "ast_hash": "dd19dc7f7891e4e74a3f97d7c4414bb8",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UILabel+Utilities.swift": {
+    "mtime": 1765895985.341117,
+    "ast_hash": "dfd9f8037b318992e022436deb9ccae5",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIResponder.swift": {
+    "mtime": 1765895985.341159,
+    "ast_hash": "d81557ffeecae589c3edcfce639dc891",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIScreen+Utilities.swift": {
+    "mtime": 1765895985.341221,
+    "ast_hash": "1102878f0dcdfd3434819f58da8752c9",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIStackView+Utilities.swift": {
+    "mtime": 1765895985.3412733,
+    "ast_hash": "a4e0acbca189673ed9a0ab31ae651cdc",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UITableView+Utilities.swift": {
+    "mtime": 1765895985.3413184,
+    "ast_hash": "05490a17fa067f61300b5c91d52ca2d2",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UITextField+Utilities.swift": {
+    "mtime": 1765895985.3413632,
+    "ast_hash": "6e2cb1165ef2869b07093703aa587274",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIView+Utilities.swift": {
+    "mtime": 1765895985.341428,
+    "ast_hash": "e823701d374492f96b16b11d2ac09fab",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIViewController+FetchData.swift": {
+    "mtime": 1765895985.3414867,
+    "ast_hash": "ddaa3c06ccb9ff7642319a5987cf3520",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIViewController+States.swift": {
+    "mtime": 1765895985.3415432,
+    "ast_hash": "41e1cf6fe1e9c8d8f7833d96d36f6462",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIViewController+Utilities.swift": {
+    "mtime": 1765895985.3416007,
+    "ast_hash": "10c66ba97a3f9e4621507b038c78c943",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/UIWindow+Utilities.swift": {
+    "mtime": 1765895985.3416421,
+    "ast_hash": "e2992ac00f6e9e0b234083454597f9a9",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Extensions/iOSAppOnMac.swift": {
+    "mtime": 1765895985.3416834,
+    "ast_hash": "39fb5abaf9f90de225e3f0db6e86c4ea",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/InAppNotifications/SwiftUI_InAppNotifications.swift": {
+    "mtime": 1769022089.0044649,
+    "ast_hash": "3d2edee3cb9ec590825953a0bfe47d1f",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/InAppNotifications/UIKit_InAppNotifications.swift": {
+    "mtime": 1782204022.7372031,
+    "ast_hash": "de90e3dc9ce99969f24255dd5a5f5088",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Model/Photo.swift": {
+    "mtime": 1765895985.3418758,
+    "ast_hash": "c4cb247a5d3a2da0a7f4b6b00e6f4996",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Operations/PresentAlertOperation.swift": {
+    "mtime": 1765895985.3419535,
+    "ast_hash": "37652a2d1be603ce9e6db2bd019d7d74",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Protocols/IntrinsicSizeCalculable.swift": {
+    "mtime": 1765895985.3420243,
+    "ast_hash": "763ec37cf863f97e293f428a15f81d0e",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Protocols/ViewModel.swift": {
+    "mtime": 1765895985.3420684,
+    "ast_hash": "d63a9b5a861ddbc5c6d4d8421a014c78",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWAsyncButton.kt": {
+    "mtime": 1774613150.3667235,
+    "ast_hash": "615cc12d7657d0c95855e5119e69c152",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWAsyncView.kt": {
+    "mtime": 1774522090.6138244,
+    "ast_hash": "c6a80a4279b4de0f8e0edf187d6ff586",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWBackButton.kt": {
+    "mtime": 1774432756.1271884,
+    "ast_hash": "ac0ae806ae1717d7ec0bdc991a55e320",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWBlockingTask.kt": {
+    "mtime": 1776163830.4838133,
+    "ast_hash": "cbaec70015af663183f81a3ff84fb23f",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWErrorResolution.kt": {
+    "mtime": 1774615159.5958555,
+    "ast_hash": "03007bad236b7878f0b63a713d54554c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWHUD.kt": {
+    "mtime": 1765895985.3421454,
+    "ast_hash": "f6dd243aec4a5eab92541739d54dc4ed",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWNavDisplay.kt": {
+    "mtime": 1782204022.7382305,
+    "ast_hash": "7204eca2ea07b9ecb9ac00d5b9d46e52",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWSheet.kt": {
+    "mtime": 1774432756.126709,
+    "ast_hash": "4cdde093578243c420cdc53191508e7a",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/BSWSwiftViewModelHolder.kt": {
+    "mtime": 1776164707.2775278,
+    "ast_hash": "2956a1a01c2db8a6c218d5d097dd6ae9",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Social/SocialAuthentication+Facebook.swift": {
+    "mtime": 1765895985.3422785,
+    "ast_hash": "3bd573fc4607097e9383ace027f786bb",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Social/SocialAuthentication.swift": {
+    "mtime": 1765895985.3423326,
+    "ast_hash": "a0c3da6587506a63d75474551c9cffeb",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Stylesheet/TextStyler.swift": {
+    "mtime": 1765895985.3424156,
+    "ast_hash": "ba9128833bb5123beb79c4674260e3e4",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Actors/PagingHandler.swift": {
+    "mtime": 1782204022.7387016,
+    "ast_hash": "d5810a87f3d62ab4bc9f48b5dffef1d0",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/DataSource/InfiniteScrollingDataSource.swift": {
+    "mtime": 1782204022.7395132,
+    "ast_hash": "a3b840ac0bff3b5d8d9c793d7fe8bfeb",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Extensions/SwiftUI+AlwaysPopover.swift": {
+    "mtime": 1765895985.3426044,
+    "ast_hash": "5d99c63bc43ef18e154ea3de5a2eab21",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Extensions/SwiftUI+View.swift": {
+    "mtime": 1774522155.8583038,
+    "ast_hash": "af05762d82965dcfd3bc01e135b809f3",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Extensions/View+ViewBuilders.swift": {
+    "mtime": 1772536426.3151205,
+    "ast_hash": "c63ff8d5b7fd5b1beb46cffe8ac45b24",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/LibraryContent.swift": {
+    "mtime": 1770639732.1957543,
+    "ast_hash": "9e8f8b49f6e87a1871a70dc6d991d558",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Previews/AsyncView+Preview.swift": {
+    "mtime": 1765895985.342807,
+    "ast_hash": "af4229b05ba4c3c878004e0e05aaa275",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Previews/InfiniteScrollingDataSource+Preview.swift": {
+    "mtime": 1771579814.734644,
+    "ast_hash": "510e7073a6815f48cea2f0f1b2e8485b",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Protocols/PlaceholderDataProvider.swift": {
+    "mtime": 1765895985.3429313,
+    "ast_hash": "9885e9f144919958a82366849a1cfd80",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Tracking/AsyncOperationTracer.swift": {
+    "mtime": 1765895985.3430061,
+    "ast_hash": "f67eae6c570ff007befb60043171a96c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/ViewModifiers/ActionBar.swift": {
+    "mtime": 1771788378.7161868,
+    "ast_hash": "f154bba961403b138a7f62d7e1f88f4c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/ViewModifiers/BlockingTask.swift": {
+    "mtime": 1776767853.8631675,
+    "ast_hash": "9d9c3f21b9ce2cb096b72d279cc21221",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/ViewModifiers/HUDView.swift": {
+    "mtime": 1770718649.3487835,
+    "ast_hash": "eb6c47398458e718f899bfafd53f5660",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/ViewModifiers/IntrinsicHeightSheet.swift": {
+    "mtime": 1772536426.315923,
+    "ast_hash": "4ce536a6059940693b395266ea99b4ec",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/ViewModifiers/Shimmer.swift": {
+    "mtime": 1765895985.3432698,
+    "ast_hash": "957295033a76f12a63ac76c17b706de3",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Views/AsyncButton.swift": {
+    "mtime": 1774373380.9027503,
+    "ast_hash": "bdc5836e06b8c1d86236cec340c3b6af",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Views/AsyncView.swift": {
+    "mtime": 1774373380.9170406,
+    "ast_hash": "a77857f1808abdf0657bd89157b92e06",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Views/InfiniteVerticalScrollView.swift": {
+    "mtime": 1782204022.740045,
+    "ast_hash": "51a231b5b63ece96668992e040cd6e2f",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Views/JSONTreeView.swift": {
+    "mtime": 1765895985.3435607,
+    "ast_hash": "9e0832930bbff339f750a6dc7ce11717",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/SwiftUI/Views/PhotoView.swift": {
+    "mtime": 1773178794.9450505,
+    "ast_hash": "fb10340bc1640a3161ecaecfd0454176",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/ViewControllers/BottomContainerViewController.swift": {
+    "mtime": 1765895985.343713,
+    "ast_hash": "9042fa196fba4238cfc7aecaa8e03ca0",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/ViewControllers/ContainerViewController.swift": {
+    "mtime": 1765895985.3437686,
+    "ast_hash": "9ef7e7d8f7930b955ce3d90c4cd2b872",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/ViewControllers/PhotoGalleryViewController.swift": {
+    "mtime": 1765895985.3438225,
+    "ast_hash": "476cf53bf29fed1f91a82bd9ff2d4af7",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/ViewControllers/Presentations/CardPresentation.swift": {
+    "mtime": 1765895985.3439193,
+    "ast_hash": "89b55504b01f8c2d1fd48d6b8cdd1191",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/ViewControllers/Presentations/MarqueePresentation.swift": {
+    "mtime": 1765895985.3439963,
+    "ast_hash": "fec8afb6558d676fc99631f69bc72271",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/ViewControllers/TextFieldAlertController.swift": {
+    "mtime": 1782204022.7405965,
+    "ast_hash": "b15ee6381c0920f7a51b0adb4af75c9a",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/AvatarView.swift": {
+    "mtime": 1765895985.3441138,
+    "ast_hash": "3ef9d0e73ce4bc0f5a97eb3cdbf98d2c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/CheckboxButton.swift": {
+    "mtime": 1765895985.344161,
+    "ast_hash": "b2b6633a0e8e961196280a3abfd70101",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/ErrorView.swift": {
+    "mtime": 1765895985.344214,
+    "ast_hash": "f7e2688aa29405f91709ef1226a04b3b",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/LinkAwareLabel.swift": {
+    "mtime": 1765895985.3442698,
+    "ast_hash": "937736ca7c71a08fa8a0e840d0278740",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/LoadingView.swift": {
+    "mtime": 1765895985.3443115,
+    "ast_hash": "5817d76e71600fe34d0270c8d73aefac",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/PhotoGalleryView.swift": {
+    "mtime": 1765895985.344367,
+    "ast_hash": "6fa5321880212ba42519f01a538aa26a",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/PresentationBackgroundView.swift": {
+    "mtime": 1765895985.3444123,
+    "ast_hash": "ef1e07c17dc8270c01831ba7fc65ed27",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/RangeSlider.swift": {
+    "mtime": 1765895985.3444774,
+    "ast_hash": "afa76dd779ee8707efaf1113a45c7bd2",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/RoundLayer.swift": {
+    "mtime": 1765895985.3445215,
+    "ast_hash": "da48dbef8077897201e8697837cc6a9c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/SeparatorView.swift": {
+    "mtime": 1765895985.3445644,
+    "ast_hash": "d6022b08e16ef4210273f61a725ebc6b",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Views/StackViews/ScrollableStackView.swift": {
+    "mtime": 1765895985.344663,
+    "ast_hash": "05598439ee2ad4d742f44594d2d6be98",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/Animations/BSWZoomImageTransition.m": {
+    "mtime": 1765895985.3447878,
+    "ast_hash": "0274ddd1c393fc3c057108564b2154e2",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/Animations/BSWZoomTransition.m": {
+    "mtime": 1765895985.344854,
+    "ast_hash": "43e8d2f35f5859dbe8b2c14f9a849f9c",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/CollectionViewLayout/BSWCollectionViewLeftAlignedLayout.m": {
+    "mtime": 1765895985.3449395,
+    "ast_hash": "ed1e8e4e7d211f65af0709619db26eff",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/Extensions/UIView+Utilities.m": {
+    "mtime": 1765895985.345024,
+    "ast_hash": "a58c5ec91480c1ad6003e2ab4e11a2fc",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/Extensions/UIViewController+Utilities.m": {
+    "mtime": 1765895985.3450756,
+    "ast_hash": "73e064550f7389163940c798f3a31535",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/include/BSWCollectionViewLeftAlignedLayout.h": {
+    "mtime": 1765895985.3451495,
+    "ast_hash": "9a6fbe8df55dff909c1d0c5a6251b18f",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/include/BSWZoomImageTransition.h": {
+    "mtime": 1765895985.345205,
+    "ast_hash": "b85b81aecd748ea2ef6ace37fb34bb9f",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/include/BSWZoomTransition.h": {
+    "mtime": 1765895985.3452456,
+    "ast_hash": "fe5140262f9ec933be491271f45fb1ec",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/include/BSWZoomTransitionType.h": {
+    "mtime": 1765895985.3452954,
+    "ast_hash": "18f9679a9b2ab84e7291ef59852c8fb6",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/include/UIView+Utilities.h": {
+    "mtime": 1765895985.3453412,
+    "ast_hash": "86b31d53bf03d6692c8e401392982ac4",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKitObjC/include/UIViewController+Utilities.h": {
+    "mtime": 1765895985.3453913,
+    "ast_hash": "c926c3ea4f1b894dc4a64c0ae985093e",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/BSWSnapshotTest.swift": {
+    "mtime": 1770646036.8730078,
+    "ast_hash": "d2f13b140317d0890d555900c8e21079",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Errors.swift": {
+    "mtime": 1765895985.3455644,
+    "ast_hash": "3bd7c9d4f2853accc7a36dc25dafb1f7",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/AvatarViewTests.swift": {
+    "mtime": 1765895985.3456376,
+    "ast_hash": "2e0ca7117fd8ec6b85ac19e4f5f4f1db",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/CardPresentationTests.swift": {
+    "mtime": 1765895985.345682,
+    "ast_hash": "1e1fc4a0f9a384c879ce9605d5a14911",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/CheckboxButtonTests.swift": {
+    "mtime": 1765895985.345725,
+    "ast_hash": "bd115147a1f7181c2cea49700ab19f24",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/ClassicProfileViewControllerTests.swift": {
+    "mtime": 1765895985.345779,
+    "ast_hash": "de52edf0fd2a86b08f8563034d064785",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/CollectionViewDiffableDataSourceTests.swift": {
+    "mtime": 1765895985.345851,
+    "ast_hash": "63c10880e73430c61c3eed9f4707debc",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/ContentViewTests.swift": {
+    "mtime": 1765895985.3459163,
+    "ast_hash": "827a99122fe3d62cd84af02b383e9407",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/HorizontalPagedCollectionViewLayoutTests.swift": {
+    "mtime": 1765895985.3459687,
+    "ast_hash": "b31b2220cf4ea51e8a8399ca94b8ac46",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/IntrinsicSizeCalculableTests.swift": {
+    "mtime": 1765895985.3460097,
+    "ast_hash": "2d502509cd973a3b696dbf21920deca7",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/NSAttributedStringTests.swift": {
+    "mtime": 1765895985.3460593,
+    "ast_hash": "05e575329ab923ac5b5636955968163b",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/Profiles/ClassicProfileViewModel.swift": {
+    "mtime": 1765895985.346133,
+    "ast_hash": "511366f402c0be2d7234b2f9ab268f84",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/RangeSliderTests.swift": {
+    "mtime": 1765895985.3461761,
+    "ast_hash": "bb8a6296b37a381eca2a2e2d1a769adc",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/RoundLayerTests.swift": {
+    "mtime": 1765895985.3462238,
+    "ast_hash": "ec363c4a0c6dfb2c14394099f650c7a8",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/SelectableTableViewDataSourceTests.swift": {
+    "mtime": 1765895985.3462687,
+    "ast_hash": "083cebc1aa34130ad0eb7fdf52b1b4d4",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/SeparatorViewTests.swift": {
+    "mtime": 1765895985.3463132,
+    "ast_hash": "c80770ecb56a6163d0e0750ac6b323e2",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/ShadowTests.swift": {
+    "mtime": 1765895985.346359,
+    "ast_hash": "437aa9ec0457a64ece988b4ec7797c38",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/TextStylerTests.swift": {
+    "mtime": 1765895985.3464022,
+    "ast_hash": "e24584bb18abf4bcc4425cfc1848ed52",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/UIColorTests.swift": {
+    "mtime": 1765895985.3464475,
+    "ast_hash": "c8cc1694954d3bb1eef5b3a51d83b0be",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/UIViewControllerTaskTests.swift": {
+    "mtime": 1765895985.3464894,
+    "ast_hash": "181b2b7d4ac6de8f7d14ecc08ae9af6a",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/UIViewControllerTests.swift": {
+    "mtime": 1765895985.346546,
+    "ast_hash": "f85ed408f153cbceae2647ad40656db0",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/UIViewTests.swift": {
+    "mtime": 1765895985.346593,
+    "ast_hash": "ad6a9139aad11a532d35f4ace8fabca7",
+    "semantic_hash": ""
+  },
+  "build.sh": {
+    "mtime": 1765895985.3527746,
+    "ast_hash": "d983dda53f5bca5d381e0ce6fdd2992e",
+    "semantic_hash": ""
+  },
+  ".github/workflows/buildEmerge.yml": {
+    "mtime": 1765895985.339027,
+    "ast_hash": "1f91936c28c83d0fdead42956b2ce312",
+    "semantic_hash": ""
+  },
+  ".github/workflows/swift.yml": {
+    "mtime": 1782204022.7358832,
+    "ast_hash": "83b87eb6a21a349ce5e3c31e24fe70db",
+    "semantic_hash": ""
+  },
+  ".spi.yml": {
+    "mtime": 1765895985.3391716,
+    "ast_hash": "6abfeb8855f51b336f782542de46a02c",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1774438407.6622422,
+    "ast_hash": "11b5fcd7ad2a32164e682e7ca5427645",
+    "semantic_hash": ""
+  },
+  "Sources/BSWInterfaceKit/Skip/skip.yml": {
+    "mtime": 1776164707.2778833,
+    "ast_hash": "39322381c29a5b2d7ac5250b7b22724f",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/NSAttributedStringTests/applyAttributes.1.txt": {
+    "mtime": 1765895985.3490698,
+    "ast_hash": "5873374285e542bebcc64698a5006e17",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/NSAttributedStringTests/applyAttributes_multiple.1.txt": {
+    "mtime": 1765895985.3491213,
+    "ast_hash": "fc915abc92352b512dfe05751c9f255c",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/NSAttributedStringTests/bolding.1.txt": {
+    "mtime": 1765895985.3491657,
+    "ast_hash": "5cae082619253c68d76d9c5bd023eff5",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/NSAttributedStringTests/lineHeightMultiplier.1.txt": {
+    "mtime": 1765895985.3492098,
+    "ast_hash": "b9393655eb94bf1ac9f9dbb58e524199",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/NSAttributedStringTests/links.1.txt": {
+    "mtime": 1765895985.3492682,
+    "ast_hash": "adadf539bd6bd11aa852f290d9d561b3",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/AvatarViewTests/layoutHuge.3x.png": {
+    "mtime": 1765895985.3467155,
+    "ast_hash": "9918b8b81c93801dd6f8cae61c9efdf5",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/AvatarViewTests/layoutNormal.3x.png": {
+    "mtime": 1765895985.346772,
+    "ast_hash": "ea0b281ea0a539d87c0094ef7829cb1f",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/AvatarViewTests/layoutWithCameraHuge.3x.png": {
+    "mtime": 1765895985.3468473,
+    "ast_hash": "703d83a903b259e2a911fd238fa69700",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/CheckboxButtonTests/checkboxButton.3x.png": {
+    "mtime": 1765895985.3469307,
+    "ast_hash": "d4b88001a106d7281da41d21f504b87a",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/CheckboxButtonTests/checkboxButtonSelected.3x.png": {
+    "mtime": 1765895985.34699,
+    "ast_hash": "597fccb3b24f1709549726f385fbaab6",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/ClassicProfileViewControllerTests/sampleLayout.402x874.png": {
+    "mtime": 1774521647.6118166,
+    "ast_hash": "2291352a36b25971496d17082e060119",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/CollectionViewDiffableDataSourceTests/layout.3x.png": {
+    "mtime": 1774521647.6129057,
+    "ast_hash": "77479e4a170fa4b7f33b6c846c531521",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/ContentViewTests/layout.402x874.png": {
+    "mtime": 1774521647.6133506,
+    "ast_hash": "4f723b64300d2495a295195e40de677b",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/HorizontalPagedCollectionViewLayoutTests/availableWidthLayout.402x874.png": {
+    "mtime": 1765895985.348355,
+    "ast_hash": "c690961b90247f2767c0cb5d7312cefc",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/HorizontalPagedCollectionViewLayoutTests/centeredLayout.402x874.png": {
+    "mtime": 1774521647.6137478,
+    "ast_hash": "efb3140b245d9db149959c04a6bb61f0",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/HorizontalPagedCollectionViewLayoutTests/layout.402x874.png": {
+    "mtime": 1765895985.3489726,
+    "ast_hash": "7846d6ac00f8173a91b3685ac45a5d23",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/RangeSliderTests/layout.3x.png": {
+    "mtime": 1765895985.3493826,
+    "ast_hash": "100dfea697827ed8c25ec26321b04a94",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/RoundLayerTests/layout.3x.png": {
+    "mtime": 1774521647.6141436,
+    "ast_hash": "2c4618efde1c7112241d1f86335d89ef",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/SelectableTableViewDataSourceTests/layout.402x874.png": {
+    "mtime": 1774521647.6143923,
+    "ast_hash": "65fde98bc1cd924b2523d4bef6d4c68a",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/SeparatorViewTests/layout.3x.png": {
+    "mtime": 1765895985.3498662,
+    "ast_hash": "09e0be15b1352809dd8278a55ab3b452",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/ShadowTests/layout.402x874.png": {
+    "mtime": 1765895985.350202,
+    "ast_hash": "c44af267774831b8c69e5f1480d14b06",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/TextStylerTests/body.3x.png": {
+    "mtime": 1774521647.614807,
+    "ast_hash": "e1b1d7b245c89983ff08f9b59fb0ef1f",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/TextStylerTests/boldedString.3x.png": {
+    "mtime": 1774521647.6151848,
+    "ast_hash": "4af399543d853ad9bde73013b3c05bce",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/TextStylerTests/footnote.3x.png": {
+    "mtime": 1765895985.3504372,
+    "ast_hash": "d22dcf0e9266ecc0510f56d6ea94ff5f",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/TextStylerTests/headline.3x.png": {
+    "mtime": 1774521647.6153188,
+    "ast_hash": "e1b1d7b245c89983ff08f9b59fb0ef1f",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/TextStylerTests/subheadline.3x.png": {
+    "mtime": 1774521647.615682,
+    "ast_hash": "37d613c1a66af06f7344728b55216571",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/TextStylerTests/title.3x.png": {
+    "mtime": 1774521647.6159465,
+    "ast_hash": "c71d1af64b036dcc9808bdd91ae1202e",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTaskTests/taskErrorView.402x874.png": {
+    "mtime": 1774521647.61634,
+    "ast_hash": "f48bedfc0d4fe578835e63647ba82261",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTaskTests/taskLoadingView.402x874.png": {
+    "mtime": 1765895985.3511024,
+    "ast_hash": "56f8e24370e5947f7a8da45f648d47e8",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTaskTests/taskSuccessView.402x874.png": {
+    "mtime": 1774521647.616597,
+    "ast_hash": "f042cb10a4392dc7ccd3794a8825c1d7",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTests/addBottomActionButton.402x874.png": {
+    "mtime": 1774521647.6169157,
+    "ast_hash": "1aba96d9241223f66fa4ccad06b12634",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTests/addBottomActionButtonWithMargin.402x874.png": {
+    "mtime": 1774521647.6172628,
+    "ast_hash": "663fe61ef26219ef59814c373348a28b",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTests/addBottomController.402x874.png": {
+    "mtime": 1765895985.3520458,
+    "ast_hash": "ec7b38e7693ce51575a1e7fe33c19c67",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTests/errorView.402x874.png": {
+    "mtime": 1774521647.6176841,
+    "ast_hash": "1c561151c509d9ff1dd413c7401634e0",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewControllerTests/loadingView.402x874.png": {
+    "mtime": 1765895985.3524477,
+    "ast_hash": "a9c49b671f9f32b22e71c72593a22963",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewTests/centerInSuperview.3x.png": {
+    "mtime": 1765895985.3525405,
+    "ast_hash": "2854825074cee4fad7c8ed8a3a275fb7",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewTests/fillSuperview.3x.png": {
+    "mtime": 1765895985.3525968,
+    "ast_hash": "220783d6d15aa7dc7668dc812cd4c580",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewTests/fillSuperviewLayoutMargins.3x.png": {
+    "mtime": 1765895985.3526547,
+    "ast_hash": "643af6766b1443bfaff458a667742f45",
+    "semantic_hash": ""
+  },
+  "Tests/BSWInterfaceKitTests/Suite/__Snapshots__/UIViewTests/roundedCorners.3x.png": {
+    "mtime": 1765895985.3527224,
+    "ast_hash": "458ce3e50c9bf7f248ebfe1e5732097d",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1782226079.9751117,
+    "ast_hash": "9f048ebc72e7ee90456ceea9be4e55d5",
+    "semantic_hash": ""
+  },
+  "Docs/00-index.md": {
+    "mtime": 1782226079.9830678,
+    "ast_hash": "8fe1f83f640d4358ded422887922ec71",
+    "semantic_hash": ""
+  },
+  "Docs/_templates/adr.md": {
+    "mtime": 1782226079.978295,
+    "ast_hash": "5228ae9a8aad05fd5f5a1b628a4f2139",
+    "semantic_hash": ""
+  },
+  "Docs/context/module-map.md": {
+    "mtime": 1782226079.9775379,
+    "ast_hash": "1dce02908c620fb5ce17f32b2df479cb",
+    "semantic_hash": ""
+  },
+  "Docs/context/platform-support.md": {
+    "mtime": 1782226079.9779456,
+    "ast_hash": "1b45e9b68f5e27acc172d9f179177a9f",
+    "semantic_hash": ""
+  },
+  "Docs/context/project-overview.md": {
+    "mtime": 1782226079.977753,
+    "ast_hash": "834a4f11f2f855066d6b462836e600af",
+    "semantic_hash": ""
+  },
+  "Docs/decisions/001-shared-ui-foundation-package.md": {
+    "mtime": 1782226079.9821172,
+    "ast_hash": "78631f56dee0013c95c3d9545ea05cb4",
+    "semantic_hash": ""
+  },
+  "Docs/decisions/002-plain-android-compose-primitives.md": {
+    "mtime": 1782226079.9818835,
+    "ast_hash": "b3f1676b83e21730f374973556c3364d",
+    "semantic_hash": ""
+  },
+  "Docs/features/android-skip.md": {
+    "mtime": 1782226079.9789934,
+    "ast_hash": "a3a119968e4f31410d2e573fb00bb273",
+    "semantic_hash": ""
+  },
+  "Docs/features/data-sources-and-layouts.md": {
+    "mtime": 1782226079.9812324,
+    "ast_hash": "95920ea75ac8385a7e6032e5ca87e0e3",
+    "semantic_hash": ""
+  },
+  "Docs/features/media-social-integrations.md": {
+    "mtime": 1782226079.9788072,
+    "ast_hash": "c95909be78860701e3b5546feb879c41",
+    "semantic_hash": ""
+  },
+  "Docs/features/objective-c-compatibility.md": {
+    "mtime": 1782226079.9802446,
+    "ast_hash": "780a0af324c6e8457c246ca1baf6c0b7",
+    "semantic_hash": ""
+  },
+  "Docs/features/styling-and-extensions.md": {
+    "mtime": 1782226079.9793699,
+    "ast_hash": "c1767b74984aae6de51c06adf0e3f026",
+    "semantic_hash": ""
+  },
+  "Docs/features/swiftui-async.md": {
+    "mtime": 1782226079.9806237,
+    "ast_hash": "262078bc8fec7e76838e7c141ce19827",
+    "semantic_hash": ""
+  },
+  "Docs/features/swiftui-modifiers.md": {
+    "mtime": 1782226079.9814303,
+    "ast_hash": "83e8327f2d79a9580e168d7ae319b743",
+    "semantic_hash": ""
+  },
+  "Docs/features/uikit-views-and-controllers.md": {
+    "mtime": 1782226079.979846,
+    "ast_hash": "cb37a85eedd6aad21cefe19652b8b5fc",
+    "semantic_hash": ""
+  },
+  "Docs/todo/pending-technical.md": {
+    "mtime": 1782226079.9828384,
+    "ast_hash": "f7d4605a9e98bdb5718c588563d981a5",
+    "semantic_hash": ""
+  }
+}
