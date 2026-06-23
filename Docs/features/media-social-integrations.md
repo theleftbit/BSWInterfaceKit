@@ -21,3 +21,7 @@ This area is currently iOS-only.
 ## In-App Notifications
 
 UIKit and SwiftUI in-app notification helpers provide reusable transient notification presentation. Keep copy and product-specific styling outside this package where possible.
+
+## Scroll And Presentation Behaviors
+
+`UpdatePageControlOnScrollBehavior` keeps `UIPageControl` in sync with horizontal or vertical scrolling. Presentation-related UIKit helpers in this area should stay generic and avoid product-specific copy.

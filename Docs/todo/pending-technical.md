@@ -7,6 +7,7 @@ Last updated: 2026-06-23.
 - Decide whether Mac Catalyst, tvOS and visionOS should be declared as package platforms or only kept in dependency conditions.
 - Keep README Android support notes aligned with `Sources/BSWInterfaceKit/Skip/`.
 - Add focused DocC examples for `AsyncView`, `AsyncButton`, `performBlockingTask`, `CollectionViewDiffableDataSource`, `MediaPickerBehavior` and `BSWSheet`.
+- Add focused DocC examples for `PhotoView`, `JSONTreeView`, `RootViewController`, `BottomContainerViewController` and `UpdatePageControlOnScrollBehavior`.
 - Review which UIKit APIs are intended to support macOS, Mac Catalyst, tvOS or watchOS and document intentional exclusions.
 - Keep snapshot expectations updated when shared visual behavior changes intentionally.
 - Periodically check that Android Compose primitives stay plain infrastructure rather than accumulating product-specific copy or branding.

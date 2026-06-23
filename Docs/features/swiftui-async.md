@@ -22,6 +22,12 @@ Loading behavior is configured through `AsyncButtonLoadingConfiguration` and rel
 
 `InfiniteScrollingDataSource`, `InfiniteVerticalScrollView` and `PagingHandler` coordinate paged loading for SwiftUI lists. `PagingHandler` owns item state, loading state and fetch results; views consume this state to request more content as the user scrolls.
 
+## Display Helpers
+
+`PhotoView` renders `Photo` values in SwiftUI using Nuke-backed loading on Apple platforms and configurable placeholder styling.
+
+`JSONTreeView` displays nested JSON-like values as an expandable SwiftUI tree for debugging and inspection surfaces.
+
 ## Operation Tracing
 
 `AsyncOperationTracer` records begin/end/error lifecycle information for async operations. This is useful when diagnosing slow or failing async UI flows.

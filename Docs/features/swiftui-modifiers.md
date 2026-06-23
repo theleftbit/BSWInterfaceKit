@@ -21,7 +21,13 @@ The implementation branches by platform:
 - `actionBar(...)` provides a reusable SwiftUI bottom/action-bar surface.
 - `intrinsicHeightSheet(...)` helps sheet presentation size to content.
 - `shimmer(...)` provides redacted loading motion.
+- `alwaysPopover(...)` keeps popover-style presentation available where the platform would otherwise adapt it.
+- View-builder helpers provide conditional view composition without pushing app-specific logic into package call sites.
 - In-app notification modifiers bridge event-style notification display into SwiftUI.
+
+## Xcode Library Content
+
+`LibraryContent` exposes selected SwiftUI package views to Xcode's library browser. Keep this list focused on reusable primitives that make sense outside a single product.
 
 ## State Ownership
 

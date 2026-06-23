@@ -29,4 +29,4 @@ Android-only source lives under `Sources/BSWInterfaceKit/Skip/` and is intention
 
 ## Compatibility Rule
 
-New shared SwiftUI-style APIs should decide explicitly whether they need Android parity. UIKit/AppKit-only APIs must remain guarded. Android Compose APIs should keep the `BSW` prefix used in the README to avoid collisions with Skip-generated SwiftUI symbols.
+New shared SwiftUI-style APIs should decide explicitly whether they need Android parity. UIKit and AppKit-adjacent APIs must remain guarded with import or availability checks. Android Compose APIs should keep the `BSW` prefix used in the README to avoid collisions with Skip-generated SwiftUI symbols.

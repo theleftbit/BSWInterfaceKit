@@ -865,13 +865,13 @@
     "semantic_hash": ""
   },
   "Docs/context/module-map.md": {
-    "mtime": 1782226079.9775379,
-    "ast_hash": "1dce02908c620fb5ce17f32b2df479cb",
+    "mtime": 1782226655.6093402,
+    "ast_hash": "3a8cca9821fcb1e274d962c26b3200b0",
     "semantic_hash": ""
   },
   "Docs/context/platform-support.md": {
-    "mtime": 1782226079.9779456,
-    "ast_hash": "1b45e9b68f5e27acc172d9f179177a9f",
+    "mtime": 1782226655.6096568,
+    "ast_hash": "dcf7d395342aee2f994de187e7a7775a",
     "semantic_hash": ""
   },
   "Docs/context/project-overview.md": {
@@ -900,8 +900,8 @@
     "semantic_hash": ""
   },
   "Docs/features/media-social-integrations.md": {
-    "mtime": 1782226079.9788072,
-    "ast_hash": "c95909be78860701e3b5546feb879c41",
+    "mtime": 1782226655.6087391,
+    "ast_hash": "873dfb59a3a6ba7f12326d8528843135",
     "semantic_hash": ""
   },
   "Docs/features/objective-c-compatibility.md": {
@@ -910,28 +910,28 @@
     "semantic_hash": ""
   },
   "Docs/features/styling-and-extensions.md": {
-    "mtime": 1782226079.9793699,
-    "ast_hash": "c1767b74984aae6de51c06adf0e3f026",
+    "mtime": 1782226655.6090517,
+    "ast_hash": "eab930745795b9c77a3a7a49d1c0a198",
     "semantic_hash": ""
   },
   "Docs/features/swiftui-async.md": {
-    "mtime": 1782226079.9806237,
-    "ast_hash": "262078bc8fec7e76838e7c141ce19827",
+    "mtime": 1782226655.6076117,
+    "ast_hash": "9a8369863a30b9e60ba480589c760fd2",
     "semantic_hash": ""
   },
   "Docs/features/swiftui-modifiers.md": {
-    "mtime": 1782226079.9814303,
-    "ast_hash": "83e8327f2d79a9580e168d7ae319b743",
+    "mtime": 1782226655.6080618,
+    "ast_hash": "c37662903950012b2b081db98f85f8a0",
     "semantic_hash": ""
   },
   "Docs/features/uikit-views-and-controllers.md": {
-    "mtime": 1782226079.979846,
-    "ast_hash": "cb37a85eedd6aad21cefe19652b8b5fc",
+    "mtime": 1782226655.6083982,
+    "ast_hash": "526e4283efcc10653c682c51798aff8a",
     "semantic_hash": ""
   },
   "Docs/todo/pending-technical.md": {
-    "mtime": 1782226079.9828384,
-    "ast_hash": "f7d4605a9e98bdb5718c588563d981a5",
+    "mtime": 1782226655.6099536,
+    "ast_hash": "8c2ce9239733814c40e48d65d90c153a",
     "semantic_hash": ""
   }
 }

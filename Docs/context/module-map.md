@@ -11,6 +11,8 @@ Important public surfaces include:
 - `InfiniteVerticalScrollView`
 - `InfiniteScrollingDataSource`
 - `PagingHandler`
+- `PhotoView`
+- `JSONTreeView`
 - `HUDState` and `HUDConfiguration`
 - `performBlockingTask(...)`
 - `AsyncOperationTracer`
@@ -22,9 +24,10 @@ UIKit source covers reusable views, cells, view controllers, behaviors, extensio
 Important areas include:
 
 - `AvatarView`, `ErrorView`, `LoadingView`, `RangeSlider`, `CheckboxButton`, `SeparatorView`, `LinkAwareLabel` and `ScrollableStackView`.
-- `ContainerViewController`, `BottomContainerViewController`, `PhotoGalleryViewController` and `TextFieldAlertController`.
+- `ContainerViewController`, `RootViewController`, `BottomContainerViewController`, `PhotoGalleryViewController` and `TextFieldAlertController`.
 - `CollectionViewDiffableDataSource`, `PagingCollectionViewDiffableDataSource` and `SelectableTableViewDataSource`.
 - `CardPresentation` and `MarqueePresentation`.
+- `MediaPickerBehavior`, `MessageComposerBehavior`, `UpdatePageControlOnScrollBehavior` and UIKit in-app notification helpers.
 
 ## Android Skip
 

@@ -9,7 +9,9 @@ Common view types include:
 - `AvatarView` for circular user images backed by `Photo`.
 - `ErrorView` and `LoadingView` for reusable state surfaces.
 - `RangeSlider`, `CheckboxButton`, `SeparatorView`, `RoundLayer` and `LinkAwareLabel`.
-- `PhotoGalleryView` and `PhotoGalleryViewController` for image galleries.
+- `PhotoGalleryView`, `PhotoGalleryViewController` and `PhotoCollectionViewCell` for image galleries and zoomable photo collection content.
+- `InfiniteLoadingCollectionViewCell` for collection pagination loading rows.
+- `PresentationBackgroundView` for card-style presentation dimming and dismissal.
 - `ScrollableStackView` for stack-based scrolling layouts.
 
 ## Controllers
@@ -19,6 +21,8 @@ Common view types include:
 `BottomContainerViewController` and presentation helpers provide reusable bottom/card presentation patterns.
 
 `TextFieldAlertController` wraps a text-input alert flow.
+
+`PresentAlertOperation` is an internal operation used by UIKit state/error flows to serialize alert presentation.
 
 ## State Views
 
