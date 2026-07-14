@@ -1,13 +1,13 @@
 {
-  "originHash" : "76b759574426985b5388eba2e2a96871bbfd220ecfa4c3c920a749891f0ae946",
+  "originHash" : "db375c7294e0caf3238f5cce72d59e935a5a4ad58741de48524c6eacce6ee4d9",
   "pins" : [
     {
       "identity" : "bswfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "revision" : "b3f443d15032f3483db5e3ccc15889029ac69fc2",
-        "version" : "7.4.0"
+        "revision" : "4d2fcea1afd760ef90b1f58b3a558f03e42ca26a",
+        "version" : "8.0.0"
       }
     },
     {
