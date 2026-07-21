@@ -79,8 +79,12 @@ public struct GalleryView: View {
                 )
                 .padding(.bottom, 16)
             }
+            #if canImport(UIKit)
+            /// is only available in macOS 26.0 or newer
             .tabViewStyle(.page(indexDisplayMode: .never))
+            #endif
             #if os(Android)
+            .tabViewStyle(.page(indexDisplayMode: .never))
             /// SkipUI renders page-style TabView as a Compose HorizontalPager,
             /// which cannot be measured intrinsically. A fixed height prevents Compose
             /// from crashing while measuring the full-screen gallery.
@@ -108,8 +112,8 @@ public struct GalleryView: View {
     
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
+        #if canImport(UIKit)
         ToolbarItem(placement: .topBarTrailing) {
-            #if canImport(Darwin)
             if #available(iOS 26.0, *) {
                 Button(
                     role: .close,
@@ -118,10 +122,10 @@ public struct GalleryView: View {
             } else {
                 fallbackButton
             }
-            #else
-            fallbackButton
-            #endif
         }
+        #else
+        fallbackButton
+        #endif
     }
     
     @ViewBuilder
