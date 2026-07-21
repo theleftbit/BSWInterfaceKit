@@ -8,6 +8,18 @@ import SkipFuseUI
 import SwiftUI
 #endif
 
+#if canImport(Darwin)
+#Preview {
+    GalleryView(
+        urls: [
+            URL(string: "https://picsum.photos/id/237/1200/1200")!,
+            URL(string: "https://picsum.photos/id/1025/1200/1200")!
+        ],
+        currentPhotoSelectedIndex: .constant(0)
+    )
+}
+#endif
+
 public struct GalleryView: View {
 
     @Binding
