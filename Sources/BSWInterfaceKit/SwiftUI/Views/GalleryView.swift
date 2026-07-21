@@ -57,7 +57,6 @@ public struct GalleryView: View {
                 cell(url, index: index)
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
         .overlay(alignment: .topTrailing) {
             Button(action: dismiss.callAsFunction) {
                 Image(systemName: "xmark")
@@ -75,6 +74,7 @@ public struct GalleryView: View {
         }
         .ignoresSafeArea()
         #if canImport(UIKit)
+        .tabViewStyle(.page(indexDisplayMode: .never))
         .statusBarHidden()
         #else
         /// SkipUI renders page-style TabView as a Compose HorizontalPager,
