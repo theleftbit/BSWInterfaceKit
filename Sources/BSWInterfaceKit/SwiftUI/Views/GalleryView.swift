@@ -71,6 +71,7 @@ public struct GalleryView: View {
             }
         }
         .overlay(alignment: .topTrailing) {
+            #if canImport(Darwin)
             if #available(iOS 26.0, *) {
                 Button(
                     role: .close,
@@ -79,14 +80,11 @@ public struct GalleryView: View {
                 .padding(.trailing, 16)
                 .padding(.top, 32)
             } else {
-                Button(action: dismiss.callAsFunction) {
-                    Image(systemName: "xmark")
-                        .font(.title3)
-                        .foregroundStyle(.primary)
-                }
-                .padding(.trailing, 16)
-                .padding(.top, 32)
+                fallbackButton
             }
+            #else
+            fallbackButton
+            #endif
         }
         .overlay(alignment: .bottom) {
             PageIndicator(
@@ -123,5 +121,16 @@ public struct GalleryView: View {
             withAnimation { scale = scale == 1 ? 3.5 : 1 }
         }
         #endif
+    }
+    
+    @ViewBuilder
+    private var fallbackButton: some View {
+        Button(action: dismiss.callAsFunction) {
+            Image(systemName: "xmark")
+                .font(.title3)
+                .foregroundStyle(.primary)
+        }
+        .padding(.trailing, 16)
+        .padding(.top, 32)
     }
 }
