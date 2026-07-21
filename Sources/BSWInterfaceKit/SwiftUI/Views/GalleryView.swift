@@ -16,16 +16,17 @@ public struct GalleryView: View {
     @Environment(\.dismiss)
     var dismiss
     
-    @State
-    var scale: CGFloat = 1
-
-    #if canImport(Darwin)
-    @GestureState
-    var magnification: CGFloat = 1
-
     private var pageIDs: [String] {
         urls.indices.map(String.init)
     }
+
+    #if canImport(Darwin)
+    @State
+    var scale: CGFloat = 1
+    
+    @GestureState
+    var magnification: CGFloat = 1
+
     private var displayScale: CGFloat {
         min(max(scale * magnification, 1), 3.5)
     }
