@@ -74,7 +74,7 @@ public struct GalleryView: View {
             .padding(.bottom, 16)
         }
         .ignoresSafeArea()
-        #if canImport(Darwin)
+        #if canImport(UIKit)
         .statusBarHidden()
         #else
         /// SkipUI renders page-style TabView as a Compose HorizontalPager,
