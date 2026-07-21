@@ -71,11 +71,21 @@ public struct GalleryView: View {
             }
         }
         .overlay(alignment: .topTrailing) {
-            Button(action: dismiss.callAsFunction) {
-                Image(systemName: "xmark")
-                    .font(.title3)
-                    .foregroundStyle(.primary)
-                    .padding(16)
+            if #available(iOS 26.0, *) {
+                Button(
+                    role: .close,
+                    action: dismiss.callAsFunction
+                )
+                .padding(.trailing, 16)
+                .padding(.top, 32)
+            } else {
+                Button(action: dismiss.callAsFunction) {
+                    Image(systemName: "xmark")
+                        .font(.title3)
+                        .foregroundStyle(.primary)
+                }
+                .padding(.trailing, 16)
+                .padding(.top, 32)
             }
         }
         .overlay(alignment: .bottom) {
