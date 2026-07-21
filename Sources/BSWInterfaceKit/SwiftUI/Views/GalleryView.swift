@@ -130,6 +130,8 @@ public struct GalleryView: View {
             Image(systemName: "xmark")
                 .font(.title3)
                 .foregroundStyle(.primary)
+                .padding(8)
         }
+        .buttonStyle(.plain)
     }
 }
