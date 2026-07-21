@@ -1,0 +1,105 @@
+//
+//  Created by Michele Restuccia on 21/7/26.
+//
+
+#if os(Android)
+import SkipFuseUI
+#else
+import SwiftUI
+#endif
+
+public struct GalleryView: View {
+
+    @Binding
+    var currentPhotoSelectedIndex: Int
+
+    @Environment(\.dismiss)
+    var dismiss
+    
+    @State
+    var scale: CGFloat = 1
+
+    #if canImport(Darwin)
+    @GestureState
+    var magnification: CGFloat = 1
+
+    private var pageIDs: [String] {
+        urls.indices.map(String.init)
+    }
+    private var displayScale: CGFloat {
+        min(max(scale * magnification, 1), 3.5)
+    }
+
+    private var magnificationGesture: some Gesture {
+        MagnifyGesture()
+            .updating($magnification) { value, state, _ in
+                state = value.magnification
+            }
+            .onEnded { value in
+                scale = min(max(scale * value.magnification, 1), 3.5)
+            }
+    }
+    #endif
+
+    private let urls: [URL]
+    
+    public init(
+        urls: [URL],
+        currentPhotoSelectedIndex: Binding<Int>
+    ) {
+        self.urls = urls
+        self._currentPhotoSelectedIndex = currentPhotoSelectedIndex
+    }
+
+    public var body: some View {
+        TabView(selection: $currentPhotoSelectedIndex) {
+            ForEach(Array(urls.enumerated()), id: \.offset) { index, url in
+                cell(url, index: index)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .overlay(alignment: .topTrailing) {
+            Button(action: dismiss.callAsFunction) {
+                Image(systemName: "xmark")
+                    .font(.title3)
+                    .foregroundStyle(.primary)
+                    .padding(16)
+            }
+        }
+        .overlay(alignment: .bottom) {
+            PageIndicator(
+                itemIDs: pageIDs,
+                selectedID: String(currentPhotoSelectedIndex),
+            )
+            .padding(.bottom, 16)
+        }
+        .ignoresSafeArea()
+        #if canImport(Darwin)
+        .statusBarHidden()
+        #else
+        /// SkipUI renders page-style TabView as a Compose HorizontalPager,
+        /// which cannot be measured intrinsically. A fixed height prevents Compose
+        /// from crashing while measuring the full-screen gallery.
+        .frame(height: 520)
+        #endif
+    }
+
+    @ViewBuilder
+    private func cell(_ url: URL, index: Int) -> some View {
+        PhotoView(
+            photo: .init(url: url),
+            configuration: .init(
+                placeholder: .init(shape: .rectangle, color: .clear)
+            )
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .tag(index)
+        #if canImport(Darwin)
+        .scaleEffect(displayScale)
+        .gesture(magnificationGesture)
+        .onTapGesture(count: 2) {
+            withAnimation { scale = scale == 1 ? 3.5 : 1 }
+        }
+        #endif
+    }
+}
