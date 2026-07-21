@@ -65,45 +65,28 @@ public struct GalleryView: View {
     }
 
     public var body: some View {
-        TabView(selection: $currentPhotoSelectedIndex) {
-            ForEach(Array(urls.enumerated()), id: \.offset) { index, url in
-                cell(url, index: index)
+        NavigationStack {
+            TabView(selection: $currentPhotoSelectedIndex) {
+                ForEach(Array(urls.enumerated()), id: \.offset) { index, url in
+                    cell(url, index: index)
+                }
             }
-        }
-        .overlay(alignment: .topTrailing) {
-            #if canImport(Darwin)
-            if #available(iOS 26.0, *) {
-                Button(
-                    role: .close,
-                    action: dismiss.callAsFunction
+            .toolbar { toolbarContent }
+            .overlay(alignment: .bottom) {
+                PageIndicator(
+                    itemIDs: pageIDs,
+                    selectedID: String(currentPhotoSelectedIndex),
                 )
-                .padding(.trailing, 16)
-                .padding(.top, 32)
-            } else {
-                fallbackButton
+                .padding(.bottom, 16)
             }
-            #else
-            fallbackButton
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            #if os(Android)
+            /// SkipUI renders page-style TabView as a Compose HorizontalPager,
+            /// which cannot be measured intrinsically. A fixed height prevents Compose
+            /// from crashing while measuring the full-screen gallery.
+            .frame(height: 520)
             #endif
         }
-        .overlay(alignment: .bottom) {
-            PageIndicator(
-                itemIDs: pageIDs,
-                selectedID: String(currentPhotoSelectedIndex),
-            )
-            .padding(.bottom, 16)
-        }
-        .ignoresSafeArea()
-        #if canImport(UIKit)
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .statusBarHidden()
-        #else
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        /// SkipUI renders page-style TabView as a Compose HorizontalPager,
-        /// which cannot be measured intrinsically. A fixed height prevents Compose
-        /// from crashing while measuring the full-screen gallery.
-        .frame(height: 520)
-        #endif
     }
 
     @ViewBuilder
@@ -123,6 +106,24 @@ public struct GalleryView: View {
         #endif
     }
     
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            #if canImport(Darwin)
+            if #available(iOS 26.0, *) {
+                Button(
+                    role: .close,
+                    action: dismiss.callAsFunction
+                )
+            } else {
+                fallbackButton
+            }
+            #else
+            fallbackButton
+            #endif
+        }
+    }
+    
     @ViewBuilder
     private var fallbackButton: some View {
         Button(action: dismiss.callAsFunction) {
@@ -130,7 +131,5 @@ public struct GalleryView: View {
                 .font(.title3)
                 .foregroundStyle(.primary)
         }
-        .padding(.trailing, 16)
-        .padding(.top, 32)
     }
 }
