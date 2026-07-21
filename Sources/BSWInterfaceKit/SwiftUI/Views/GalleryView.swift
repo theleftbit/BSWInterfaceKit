@@ -90,6 +90,7 @@ public struct GalleryView: View {
         .tabViewStyle(.page(indexDisplayMode: .never))
         .statusBarHidden()
         #else
+        .tabViewStyle(.page(indexDisplayMode: .never))
         /// SkipUI renders page-style TabView as a Compose HorizontalPager,
         /// which cannot be measured intrinsically. A fixed height prevents Compose
         /// from crashing while measuring the full-screen gallery.
@@ -101,9 +102,7 @@ public struct GalleryView: View {
     private func cell(_ url: URL, index: Int) -> some View {
         PhotoView(
             photo: .init(url: url),
-            configuration: .init(
-                placeholder: .init(shape: .rectangle, color: .clear)
-            )
+            configuration: .init(placeholder: .init(shape: .rectangle, color: .clear))
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .tag(index)
