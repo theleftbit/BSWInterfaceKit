@@ -115,16 +115,15 @@ public struct GalleryView: View {
         #if canImport(UIKit)
         ToolbarItem(placement: .topBarTrailing) {
             if #available(iOS 26.0, *) {
-                Button(
-                    role: .close,
-                    action: dismiss.callAsFunction
-                )
+                Button(role: .close, action: dismiss.callAsFunction)
             } else {
                 fallbackButton
             }
         }
         #else
-        fallbackButton
+        ToolbarItem {
+            fallbackButton
+        }
         #endif
     }
     
