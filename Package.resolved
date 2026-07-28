@@ -1,13 +1,13 @@
 {
-  "originHash" : "7269f6d02660079876ef7dffa244f31f5c847fbd1f56b8da838f3663f30b9d5c",
+  "originHash" : "db375c7294e0caf3238f5cce72d59e935a5a4ad58741de48524c6eacce6ee4d9",
   "pins" : [
     {
       "identity" : "bswfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/theleftbit/BSWFoundation.git",
       "state" : {
-        "revision" : "7089710a9d6f0f413049dde74a3a6233b3b7e2eb",
-        "version" : "7.3.2"
+        "revision" : "4d2fcea1afd760ef90b1f58b3a558f03e42ca26a",
+        "version" : "8.0.0"
       }
     },
     {
@@ -53,6 +53,15 @@
       "state" : {
         "revision" : "82645ec760917961cfa08c9c0c7104a57a0fa4b1",
         "version" : "1.3.3"
+      }
+    },
+    {
+      "identity" : "swift-http-types",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-http-types.git",
+      "state" : {
+        "revision" : "db774a277f60063a32d854f2980299caf06da041",
+        "version" : "1.6.0"
       }
     },
     {

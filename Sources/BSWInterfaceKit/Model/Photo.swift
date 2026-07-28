@@ -109,16 +109,6 @@ extension Photo {
     }
 }
 
-// For some reason `CGSize` isn't `Hashable`
-#if canImport(Darwin)
-extension CGSize: @retroactive Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(width)
-        hasher.combine(height)
-    }
-}
-#endif
-
 // This was generated with ChatGPT o4-mini-high, so take with a grain of salt
 extension Image: @retroactive Hashable {
     public static func == (lhs: Image, rhs: Image) -> Bool {
