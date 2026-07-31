@@ -1,6 +1,10 @@
 
-import SwiftUI
 import Observation
+#if os(Android)
+import SkipFuse
+#else
+import SwiftUI
+#endif
 
 /// As of iOS 18 and aligned releases, this is no longer recommended as
 /// there are cleaner alternatives like `InfiniteVerticalScrollView`
@@ -35,19 +39,19 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
     }
     
     public func insert(_ newItems: [ListItem], position: Int = 0) {
-        withAnimation {
+        performAnimatedMutation {
             self.items.insert(contentsOf: newItems, at: position)
         }
     }
     
     public func appendItem(_ newItem: ListItem) {
-        withAnimation {
+        performAnimatedMutation {
             self.items.append(newItem)
         }
     }
     
     public func removeItem(_ item: ListItem) {
-        withAnimation {
+        performAnimatedMutation {
             self.items.removeAll(where: { $0.id == item.id })
         }
     }
@@ -68,6 +72,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
         try await loadMoreContent()
     }
     
+#if os(iOS)
     /// Use at your own peril
     public var unsafeItemsBinding: Binding<[ListItem]> {
         .init(get: {
@@ -76,6 +81,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
             self.items = newItems
         })
     }
+#endif
 
     /// MARK: Private
     
@@ -86,14 +92,14 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
         }
         
         let previousState = self.state
-        withAnimation {
+        performAnimatedMutation {
             self.state = .loading
         }
         
         do {
             let (newItems, thereAreMorePages) = try await self.itemFetcher(currentPage)
             
-            withAnimation {
+            performAnimatedMutation {
                 self.state = thereAreMorePages ? .canLoadMorePages(currentPage: currentPage + 1) : .noMorePages
                 self.items.append(contentsOf: newItems)
             }
@@ -101,9 +107,19 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
             if error is CancellationError {} else {
                 self.paginationError = error
             }
-            withAnimation {
+            performAnimatedMutation {
                 self.state = previousState
             }
         }
+    }
+
+    private func performAnimatedMutation(_ mutation: () -> Void) {
+#if os(Android)
+        mutation()
+#else
+        withAnimation {
+            mutation()
+        }
+#endif
     }
 }
