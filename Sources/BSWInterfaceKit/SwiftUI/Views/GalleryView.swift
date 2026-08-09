@@ -71,7 +71,6 @@ public struct GalleryView: View {
                     cell(url, index: index)
                 }
             }
-            .toolbar { toolbarContent }
             .overlay(alignment: .bottom) {
                 PageIndicator(
                     itemIDs: pageIDs,
@@ -80,26 +79,35 @@ public struct GalleryView: View {
                 .padding(.bottom, 16)
             }
             #if canImport(UIKit)
-            /// is only available in macOS 26.0 or newer
+            .toolbar { toolbarContent }
             .tabViewStyle(.page(indexDisplayMode: .never))
             #endif
             #if os(Android)
+            .navigationBarHidden(true)
+            .overlay(alignment: .topTrailing) {
+                fallbackButton
+                    .padding([.top, .trailing], 16)
+            }
             .tabViewStyle(.page(indexDisplayMode: .never))
             /// SkipUI renders page-style TabView as a Compose HorizontalPager,
             /// which cannot be measured intrinsically. A fixed height prevents Compose
             /// from crashing while measuring the full-screen gallery.
-            .frame(height: 520)
             #endif
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     @ViewBuilder
     private func cell(_ url: URL, index: Int) -> some View {
         PhotoView(
             photo: .init(url: url),
-            configuration: .init(placeholder: .init(shape: .rectangle, color: .clear))
+            configuration: .init(
+                placeholder: .init(shape: .rectangle, color: .clear),
+                contentMode: .fill
+            )
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
         .tag(index)
         #if canImport(Darwin)
         .scaleEffect(displayScale)
@@ -120,10 +128,6 @@ public struct GalleryView: View {
                 fallbackButton
             }
         }
-        #else
-        ToolbarItem {
-            fallbackButton
-        }
         #endif
     }
     
@@ -131,7 +135,13 @@ public struct GalleryView: View {
     private var fallbackButton: some View {
         Button(action: dismiss.callAsFunction) {
             Image(systemName: "xmark")
+                #if os(Android)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 32, height: 32)
+                #else
                 .font(.title3)
+                #endif
                 .foregroundStyle(.primary)
                 .padding(8)
         }
