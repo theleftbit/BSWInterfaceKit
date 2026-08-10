@@ -66,3 +66,6 @@ fastlane/screenshots
 BSWInterfaceKit-*.xcarchive
 BSWInterfaceKit.xcframework.zip
 BSWInterfaceKit.xcframework
+
+# Graphify generated output
+graphify-out/
