@@ -103,7 +103,7 @@ public struct GalleryView: View {
             photo: .init(url: url),
             configuration: .init(
                 placeholder: .init(shape: .rectangle, color: .clear),
-                contentMode: .fill
+                contentMode: .fit
             )
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
