@@ -118,9 +118,9 @@ public struct GalleryView: View {
         #endif
     }
     
+    #if canImport(UIKit)
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        #if canImport(UIKit)
         ToolbarItem(placement: .topBarTrailing) {
             if #available(iOS 26.0, *) {
                 Button(role: .close, action: dismiss.callAsFunction)
@@ -128,8 +128,8 @@ public struct GalleryView: View {
                 fallbackButton
             }
         }
-        #endif
     }
+    #endif
     
     @ViewBuilder
     private var fallbackButton: some View {
