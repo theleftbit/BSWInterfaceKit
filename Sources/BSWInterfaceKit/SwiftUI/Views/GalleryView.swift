@@ -1,0 +1,150 @@
+//
+//  Created by Michele Restuccia on 21/7/26.
+//
+
+#if os(Android)
+import SkipFuseUI
+#else
+import SwiftUI
+#endif
+
+#if canImport(Darwin)
+#Preview {
+    GalleryView(
+        urls: [
+            URL(string: "https://picsum.photos/id/237/1200/1200")!,
+            URL(string: "https://picsum.photos/id/1025/1200/1200")!
+        ],
+        currentPhotoSelectedIndex: .constant(0)
+    )
+}
+#endif
+
+public struct GalleryView: View {
+
+    @Binding
+    var currentPhotoSelectedIndex: Int
+
+    @Environment(\.dismiss)
+    var dismiss
+    
+    private var pageIDs: [String] {
+        urls.indices.map(String.init)
+    }
+
+    #if canImport(Darwin)
+    @State
+    var scale: CGFloat = 1
+    
+    @GestureState
+    var magnification: CGFloat = 1
+
+    private var displayScale: CGFloat {
+        min(max(scale * magnification, 1), 3.5)
+    }
+
+    private var magnificationGesture: some Gesture {
+        MagnifyGesture()
+            .updating($magnification) { value, state, _ in
+                state = value.magnification
+            }
+            .onEnded { value in
+                scale = min(max(scale * value.magnification, 1), 3.5)
+            }
+    }
+    #endif
+
+    private let urls: [URL]
+    
+    public init(
+        urls: [URL],
+        currentPhotoSelectedIndex: Binding<Int>
+    ) {
+        self.urls = urls
+        self._currentPhotoSelectedIndex = currentPhotoSelectedIndex
+    }
+
+    public var body: some View {
+        NavigationStack {
+            TabView(selection: $currentPhotoSelectedIndex) {
+                ForEach(Array(urls.enumerated()), id: \.offset) { index, url in
+                    cell(url, index: index)
+                }
+            }
+            .overlay(alignment: .bottom) {
+                PageIndicator(
+                    itemIDs: pageIDs,
+                    selectedID: String(currentPhotoSelectedIndex),
+                )
+                .padding(.bottom, 16)
+            }
+            #if canImport(UIKit)
+            .toolbar { toolbarContent }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            #endif
+            #if os(Android)
+            .navigationBarHidden(true)
+            .overlay(alignment: .topTrailing) {
+                fallbackButton
+                    .padding([.top, .trailing], 16)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            /// SkipUI renders page-style TabView as a Compose HorizontalPager,
+            /// which cannot be measured intrinsically. A fixed height prevents Compose
+            /// from crashing while measuring the full-screen gallery.
+            #endif
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private func cell(_ url: URL, index: Int) -> some View {
+        PhotoView(
+            photo: .init(url: url),
+            configuration: .init(
+                placeholder: .init(shape: .rectangle, color: .clear),
+                contentMode: .fit
+            )
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+        .tag(index)
+        #if canImport(Darwin)
+        .scaleEffect(displayScale)
+        .gesture(magnificationGesture)
+        .onTapGesture(count: 2) {
+            withAnimation { scale = scale == 1 ? 3.5 : 1 }
+        }
+        #endif
+    }
+    
+    #if canImport(UIKit)
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            if #available(iOS 26.0, *) {
+                Button(role: .close, action: dismiss.callAsFunction)
+            } else {
+                fallbackButton
+            }
+        }
+    }
+    #endif
+    
+    @ViewBuilder
+    private var fallbackButton: some View {
+        Button(action: dismiss.callAsFunction) {
+            Image(systemName: "xmark")
+                #if os(Android)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 32, height: 32)
+                #else
+                .font(.title3)
+                #endif
+                .foregroundStyle(.primary)
+                .padding(8)
+        }
+        .buttonStyle(.plain)
+    }
+}
