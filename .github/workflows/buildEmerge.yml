@@ -3,6 +3,7 @@ name: Build Emerge
 on:
   push:
     branches: [develop]
+  workflow_dispatch:
 
 jobs:
   build:
