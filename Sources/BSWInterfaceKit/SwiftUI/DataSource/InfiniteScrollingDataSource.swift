@@ -72,7 +72,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
         try await loadMoreContent()
     }
     
-#if os(iOS)
+    #if os(iOS)
     /// Use at your own peril
     public var unsafeItemsBinding: Binding<[ListItem]> {
         .init(get: {
@@ -81,7 +81,7 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
             self.items = newItems
         })
     }
-#endif
+    #endif
 
     /// MARK: Private
     
@@ -114,12 +114,12 @@ open class InfiniteScrollingDataSource<ListItem: Identifiable & Sendable> {
     }
 
     private func performAnimatedMutation(_ mutation: () -> Void) {
-#if os(Android)
+        #if os(Android)
         mutation()
-#else
+        #else
         withAnimation {
             mutation()
         }
-#endif
+        #endif
     }
 }
