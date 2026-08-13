@@ -82,6 +82,7 @@ private class PagingHandlerPreviewViewModel {
  Use `loadMoreContent()` to fetch the next page,
  and `getState()`/`getItems()` to read the results from outside the actor.
  */
+
 // SKIP @nobridge
 public actor PagingHandler<Item: Sendable> {
     
@@ -153,9 +154,11 @@ public actor PagingHandler<Item: Sendable> {
         }
     }
     
-    /// - Returns: A pre-filled mock instance of `PagingHandler`. (Not for production)
     public static func mock() -> PagingHandler {
-        let handler = PagingHandler(initialPage: 0, fetchPage: { _ in .empty })
+        let handler = PagingHandler(
+            initialPage: 0,
+            fetchPage: { _ in .empty }
+        )
         Task { await handler.setNoMorePages() }
         return handler
     }
