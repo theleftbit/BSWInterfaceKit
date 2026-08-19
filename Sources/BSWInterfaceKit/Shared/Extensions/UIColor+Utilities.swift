@@ -52,7 +52,7 @@ public extension Color {
     }
 }
 
-#if canImport(UIKit.UIColor)
+#if canImport(UIKit)
 
 import UIKit
 

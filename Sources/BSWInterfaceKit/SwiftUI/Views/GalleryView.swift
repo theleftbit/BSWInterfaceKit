@@ -71,30 +71,13 @@ public struct GalleryView: View {
                     cell(url, index: index)
                 }
             }
-            .overlay(alignment: .bottom) {
-                PageIndicator(
-                    itemIDs: pageIDs,
-                    selectedID: String(currentPhotoSelectedIndex),
-                )
-                .padding(.bottom, 16)
-            }
-            #if canImport(UIKit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .toolbar { toolbarContent }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            #endif
-            #if os(Android)
-            .navigationBarHidden(true)
-            .overlay(alignment: .topTrailing) {
-                fallbackButton
-                    .padding([.top, .trailing], 16)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            /// SkipUI renders page-style TabView as a Compose HorizontalPager,
-            /// which cannot be measured intrinsically. A fixed height prevents Compose
-            /// from crashing while measuring the full-screen gallery.
-            #endif
+            .platformPageIndicator(
+                itemIDs: pageIDs,
+                selectedID: String(currentPhotoSelectedIndex)
+            )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     @ViewBuilder
@@ -118,18 +101,27 @@ public struct GalleryView: View {
         #endif
     }
     
-    #if canImport(UIKit)
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: {
+            #if os(macOS)
+            .primaryAction
+            #else
+            .topBarTrailing
+            #endif
+        }()) {
+            #if canImport(UIKit)
             if #available(iOS 26.0, *) {
                 Button(role: .close, action: dismiss.callAsFunction)
             } else {
                 fallbackButton
             }
+            #elseif os(Android)
+            fallbackButton
+            #endif
         }
     }
-    #endif
+    
     
     @ViewBuilder
     private var fallbackButton: some View {
