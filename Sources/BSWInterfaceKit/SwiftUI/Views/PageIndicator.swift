@@ -8,15 +8,37 @@ import SkipFuseUI
 import SwiftUI
 #endif
 
-/// The native PageTabViewStyle indicator is not rendered consistently by Skip on Android.
+/// Uses native page indicators on iOS and a custom indicator on Android,
+/// where white native dots are not visible on white backgrounds.
 
-public struct PageIndicator: View {
+public extension View {
+    
+    @ViewBuilder
+    func platformPageIndicator(itemIDs: [String], selectedID: String) -> some View {
+        #if canImport(UIKit)
+        tabViewStyle(.page(indexDisplayMode: .always))
+        #elseif os(Android)
+        tabViewStyle(.page(indexDisplayMode: .never))
+            .overlay(alignment: .bottom) {
+                PageIndicator(
+                    itemIDs: itemIDs,
+                    selectedID: selectedID
+                )
+                .padding(.bottom, 16)
+            }
+        #else
+        self
+        #endif
+    }
+}
+
+struct PageIndicator: View {
     
     private let itemIDs: [String]
     private let selectedID: String
     private let color: Color
     
-    public init(
+    init(
         itemIDs: [String],
         selectedID: String,
         color: Color = .primary
@@ -26,7 +48,7 @@ public struct PageIndicator: View {
         self.color = color
     }
     
-    public var body: some View {
+    var body: some View {
         HStack(spacing: 8) {
             ForEach(itemIDs.indices, id: \.self) { index in
                 Circle()
