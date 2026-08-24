@@ -25,8 +25,8 @@ var packageDependencies: [Package.Dependency] = [
 
 if skipIsEnabled {
     packageDependencies.append(contentsOf: [
-        .package(url: "https://source.skip.tools/skip.git", from: "1.9.6"),
-        .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.18.1"),
+        .package(url: "https://github.com/skiptools/skip.git", from: "1.9.7"),
+        .package(url: "https://github.com/skiptools/skip-fuse-ui.git", from: "1.18.1"),
     ])
 }
 
