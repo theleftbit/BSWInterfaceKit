@@ -19,7 +19,7 @@ let applePlatforms = TargetDependencyCondition.when(
 
 var packageDependencies: [Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.19.4"),
-    .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "8.0.0"),
+    .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "26.8.0"),
     .package(url: "https://github.com/kean/Nuke.git", from: "13.2.0"),
 ]
 
