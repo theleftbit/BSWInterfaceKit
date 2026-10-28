@@ -132,7 +132,6 @@ struct iOSHUDModifier<Loader: View>: ViewModifier {
                                 .opacity(animatedValue ? 0.25 : 0)
                         }
                     }
-                    .preferredColorScheme(.light)
                     .task {
                         try? await Task.sleep(for: .seconds(0.1))
                         withAnimation {
