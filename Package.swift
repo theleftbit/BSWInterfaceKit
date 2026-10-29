@@ -18,15 +18,15 @@ let applePlatforms = TargetDependencyCondition.when(
 )
 
 var packageDependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.19.4"),
-    .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "26.8.0"),
+    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.19.7"),
+    .package(url: "https://github.com/theleftbit/BSWFoundation.git", from: "26.9.0"),
     .package(url: "https://github.com/kean/Nuke.git", from: "13.2.0"),
 ]
 
 if skipIsEnabled {
     packageDependencies.append(contentsOf: [
-        .package(url: "https://github.com/skiptools/skip.git", from: "1.9.7"),
-        .package(url: "https://github.com/skiptools/skip-fuse-ui.git", from: "1.18.1"),
+        .package(url: "https://github.com/skiptools/skip.git", from: "1.9.20"),
+        .package(url: "https://github.com/skiptools/skip-fuse-ui.git", from: "1.19.3"),
     ])
 }
 
