@@ -50,6 +50,15 @@ sealed interface AsyncPhase<out D : Any> {
     data class Error(val throwable: Throwable) : AsyncPhase<Nothing>
 }
 
+private enum class AsyncPhaseKind { Loading, Loaded, Error }
+
+private val AsyncPhase<*>.kind: AsyncPhaseKind
+    get() = when (this) {
+        AsyncPhase.Idle, AsyncPhase.Loading -> AsyncPhaseKind.Loading
+        is AsyncPhase.Loaded<*> -> AsyncPhaseKind.Loaded
+        is AsyncPhase.Error -> AsyncPhaseKind.Error
+    }
+
 data class AsyncOperation<ID, Data : Any>(
     var id: ID,
     var phase: AsyncPhase<Data>,
@@ -116,12 +125,13 @@ fun <Data : Any, ID : Any> BSWAsyncView(
         fetchData()
     }
 
+    // Compose can keep a transition's target state alive after disposal, so AnimatedContent never holds the loaded data.
     AnimatedContent(
-        targetState = operation.phase,
+        targetState = operation.phase.kind,
         transitionSpec = {
             val shouldCrossfade =
-                initialState is AsyncPhase.Loading &&
-                    (targetState is AsyncPhase.Loaded<*> || targetState is AsyncPhase.Error)
+                initialState == AsyncPhaseKind.Loading &&
+                    (targetState == AsyncPhaseKind.Loaded || targetState == AsyncPhaseKind.Error)
 
             if (shouldCrossfade) {
                 (
@@ -135,12 +145,12 @@ fun <Data : Any, ID : Any> BSWAsyncView(
             }
         },
         label = "BSWAsyncViewPhase"
-    ) { phase ->
-        when (phase) {
-            is AsyncPhase.Idle,
-            is AsyncPhase.Loading -> loadingView()
-            is AsyncPhase.Loaded<*> -> hostedView((phase as AsyncPhase.Loaded<Data>).data)
-            is AsyncPhase.Error -> errorView(phase.throwable) { fetchData() }
+    ) { kind ->
+        val phase = operation.phase
+        when (kind) {
+            AsyncPhaseKind.Loading -> loadingView()
+            AsyncPhaseKind.Loaded -> (phase as? AsyncPhase.Loaded<Data>)?.let { hostedView(it.data) }
+            AsyncPhaseKind.Error -> (phase as? AsyncPhase.Error)?.let { errorView(it.throwable) { fetchData() } }
         }
     }
 }
