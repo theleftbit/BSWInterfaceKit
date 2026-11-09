@@ -17,6 +17,10 @@ jobs:
         lfs: true
 
     - name: Build XCFramework
+      # Size analysis does not need stable module interfaces. HTTPTypes cannot
+      # currently compile with library evolution enabled.
+      env:
+        BUILD_LIBRARY_FOR_DISTRIBUTION: "NO"
       run: sh build.sh $PRODUCT_NAME
 
     - name: Upload artifact to Emerge

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set -e
+set -eo pipefail
+
+# Emerge can use compiler-specific modules; distribution builds keep stable interfaces.
+BUILD_LIBRARY_FOR_DISTRIBUTION="${BUILD_LIBRARY_FOR_DISTRIBUTION:-YES}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd -P)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
@@ -46,7 +49,7 @@ build_framework() {
         -derivedDataPath "$XCODEBUILD_DERIVED_DATA_PATH" \
         -sdk "$sdk" \
         -destination "$destination" \
-        BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+        BUILD_LIBRARY_FOR_DISTRIBUTION="$BUILD_LIBRARY_FOR_DISTRIBUTION" \
         INSTALL_PATH='Library/Frameworks' \
         OTHER_SWIFT_FLAGS=-no-verify-emitted-module-interface \
         | xcbeautify
@@ -62,6 +65,7 @@ build_framework() {
 
 echo "Modifying Package.swift"
 backup_package_swift
+trap restore_package_swift EXIT
 modify_package_swift
 
 build_framework "iphonesimulator" "generic/platform=iOS Simulator" "$PACKAGE_NAME"
@@ -70,7 +74,11 @@ build_framework "iphoneos" "generic/platform=iOS" "$PACKAGE_NAME"
 echo "Builds completed successfully."
 
 rm -rf "$PACKAGE_NAME.xcframework"
-xcodebuild -create-xcframework -framework $PACKAGE_NAME-iphonesimulator.xcarchive/Products/Library/Frameworks/$PACKAGE_NAME.framework -framework $PACKAGE_NAME-iphoneos.xcarchive/Products/Library/Frameworks/$PACKAGE_NAME.framework -output $PACKAGE_NAME.xcframework
+XCFRAMEWORK_OPTIONS=()
+if [ "$BUILD_LIBRARY_FOR_DISTRIBUTION" = "NO" ]; then
+    XCFRAMEWORK_OPTIONS+=(-allow-internal-distribution)
+fi
+xcodebuild -create-xcframework "${XCFRAMEWORK_OPTIONS[@]}" -framework $PACKAGE_NAME-iphonesimulator.xcarchive/Products/Library/Frameworks/$PACKAGE_NAME.framework -framework $PACKAGE_NAME-iphoneos.xcarchive/Products/Library/Frameworks/$PACKAGE_NAME.framework -output $PACKAGE_NAME.xcframework
 
 cp -r $PACKAGE_NAME-iphonesimulator.xcarchive/dSYMs $PACKAGE_NAME.xcframework/ios-arm64_x86_64-simulator
 cp -r $PACKAGE_NAME-iphoneos.xcarchive/dSYMs $PACKAGE_NAME.xcframework/ios-arm64
@@ -79,3 +87,4 @@ zip -r "$PACKAGE_NAME.xcframework.zip" "$PACKAGE_NAME.xcframework"
 
 echo "Restoring Package.swift"
 restore_package_swift
+trap - EXIT
