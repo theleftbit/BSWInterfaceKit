@@ -185,6 +185,12 @@ struct PerformEquatableBlockingView<T: Equatable, V: View>: View {
                     Text(confirmationMessage)
                 }
             }
+            .onChange(of: isShowingConfirmation) { _, isShowing in
+                // Alerts can close without a button (Android outside tap or Back).
+                // onChange runs after the button action, so a Confirm has already
+                // resumed and this is a no-op; otherwise treat it as Cancel.
+                if !isShowing { handleConfirmation(false) }
+            }
     }
     
     @MainActor
